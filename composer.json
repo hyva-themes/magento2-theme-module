@@ -1,0 +1,25 @@
+{
+  "name": "wigman/magento2-tailwind-module",
+  "version": "1.0.0",
+  "description": "Magento Tailwind Theme companion module",
+  "type": "magento2-module",
+  "require": {
+    "magento/framework": "*",
+    "magento/module-catalog": "103.0.*",
+    "magento/module-checkout": "100.3.*",
+    "magento/module-cms": "103.0.*",
+    "magento/module-customer": "102.0.*",
+    "magento/module-theme": "101.0.*"
+  },
+  "license": [
+    ""
+  ],
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "Wigman\\Tailwind\\": "src/"
+    }
+  }
+}
