@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="\Magento\Framework\View\File\FileList\Collator">
+        <plugin name="file_collator_plugin" type="Wigman\Tailwind\View\File\FileList\CollatorPlugin"/>
+    </type>
+</config>
