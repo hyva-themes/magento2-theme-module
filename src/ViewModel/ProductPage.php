@@ -93,4 +93,10 @@ class ProductPage implements ArgumentInterface
     {
         return $this->cartHelper->getAddUrl($product, $additional);
     }
+    
+    
+    public function getCurrency()
+    {
+        return $this->priceCurrency->getCurrency()->getCurrencyCode();
+    }
 }
