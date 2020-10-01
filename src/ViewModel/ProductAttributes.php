@@ -1,7 +1,13 @@
 <?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Wigman Interactive. All rights reserved.
+ * This product is licensed per Magento production install
+ */
+
 declare(strict_types=1);
 
-namespace Wigman\Tailwind\ViewModel;
+namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;

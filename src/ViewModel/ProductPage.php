@@ -1,12 +1,16 @@
 <?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Wigman Interactive. All rights reserved.
+ * This product is licensed per Magento production install
+ */
+
 declare(strict_types=1);
 
-namespace Wigman\Tailwind\ViewModel;
+namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Helper\Cart;
-use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
-use Magento\Framework\Phrase;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -93,8 +97,8 @@ class ProductPage implements ArgumentInterface
     {
         return $this->cartHelper->getAddUrl($product, $additional);
     }
-    
-    
+
+
     public function getCurrency()
     {
         return $this->priceCurrency->getCurrency()->getCurrencyCode();

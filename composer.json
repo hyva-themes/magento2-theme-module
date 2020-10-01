@@ -1,7 +1,7 @@
 {
-  "name": "hyva-themes/magento2-tailwind-module",
+  "name": "hyva-themes/magento2-theme-module",
   "version": "1.0.0",
-  "description": "Magento Tailwind Theme companion module",
+  "description": "Hyva Themes companion module",
   "type": "magento2-module",
   "require": {
     "magento/framework": "*",
@@ -19,7 +19,7 @@
       "src/registration.php"
     ],
     "psr-4": {
-      "Wigman\\Tailwind\\": "src/"
+      "Hyva\\Theme\\": "src/"
     }
   }
 }

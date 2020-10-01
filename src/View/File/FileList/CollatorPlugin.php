@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Wigman\Tailwind\View\File\FileList;
+namespace Hyva\Theme\View\File\FileList;
 
 use Magento\Framework\View\File\FileList\Collator;
 
