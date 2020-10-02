@@ -11,9 +11,11 @@
     "magento/module-customer": "103.0.*",
     "magento/module-theme": "101.1.*"
   },
-  "license": [
-    ""
-  ],
+  "authors": [{
+    "name": "Hyvä Themes, Wigman Interactive",
+    "email": "info@hyva.io"
+  }],
+  "license": "see LICENSE.md",
   "autoload": {
     "files": [
       "src/registration.php"
