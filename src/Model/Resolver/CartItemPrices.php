@@ -1,0 +1,45 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Hyva\Theme\Model\Resolver;
+
+use Magento\Framework\GraphQl\Config\Element\Field;
+use Magento\Framework\GraphQl\Query\ResolverInterface;
+use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use Magento\Quote\Model\Quote\Item;
+use Magento\QuoteGraphQl\Model\Resolver\CartItemPrices as QuoteCartItemPrices;
+
+class CartItemPrices extends QuoteCartItemPrices implements ResolverInterface
+{
+    /**
+     * Add quote item price including tax
+     *
+     * @param Field $field
+     * @param \Magento\Framework\GraphQl\Query\Resolver\ContextInterface $context
+     * @param ResolveInfo $info
+     * @param array|null $value
+     * @param array|null $args
+     * @return array|array[]|\Magento\Framework\GraphQl\Query\Resolver\Value|mixed
+     * @throws \Exception
+     */
+    public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
+    {
+        $return = parent::resolve($field, $context, $info, $value, $args);
+
+        /** @var Item $cartItem */
+        $cartItem = $value['model'];
+        $currencyCode = $cartItem->getQuote()->getQuoteCurrencyCode();
+
+        return $return + [
+            'price_incl_tax' => [
+                'currency' => $currencyCode,
+                'value' => $cartItem->getPriceInclTax(),
+            ],
+            'row_total_incl_tax' => [
+                'currency' => $currencyCode,
+                'value' => $cartItem->getRowTotalInclTax(),
+            ]
+        ];
+    }
+}
