@@ -1,0 +1,189 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Hyva\Theme\ViewModel\Cart;
+
+use Magento\Framework\View\Element\Block\ArgumentInterface;
+
+class GraphQlQueries implements ArgumentInterface
+{
+    /**
+     * @return string
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
+    public function getCartGraphQlQuery()
+    {
+        return '
+              total_quantity
+              items {
+                id
+                prices {
+                price {
+                    value
+                  }
+                row_total {
+                    value
+                    currency
+                }
+                row_total_incl_tax {
+                    value
+                    currency
+                }
+                price_incl_tax{
+                    value
+                  }
+                }
+                product {
+                  id
+                  name
+                  sku
+                  small_image {
+                    label
+                    url
+                  }
+                  url_key
+                  price_tiers {
+                      quantity
+                      final_price {
+                        value
+                      }
+                      discount {
+                        amount_off
+                        percent_off
+                      }
+                  }
+                }
+                quantity
+                ... on SimpleCartItem {
+                  customizable_options {
+                    label
+                      values {
+                        label
+                        value
+                        price {
+                        value
+                      }
+                    }
+                  }
+                }
+                ... on ConfigurableCartItem {
+                  configurable_options {
+                    id
+                    option_label
+                    value_label
+                  }
+                  }
+                }
+              available_payment_methods {
+                code
+                title
+              }
+              selected_payment_method {
+                code
+                title
+              }
+              applied_coupons {
+                code
+              }
+              shipping_addresses {
+                selected_shipping_method {
+                    amount {
+                        value
+                        currency
+                    }
+                    carrier_title
+                    method_title
+                }
+              }
+              prices {
+                grand_total {
+                  value
+                  currency
+                }
+                subtotal_excluding_tax {
+                  value
+                  currency
+                }
+                subtotal_including_tax {
+                  value
+                  currency
+                }
+                applied_taxes {
+                  amount {
+                      value
+                      currency
+                  }
+                  label
+                }
+                discounts {
+                  amount {
+                      value
+                      currency
+                  }
+                  label
+                }
+              }
+          ';
+    }
+
+    public function getCouponAddQuery()
+    {
+        return 'applyCouponToCart (
+                    input: {
+                      cart_id: "${cartId}",
+                      coupon_code: "${couponCode}",
+                    }
+                ){
+                    cart {
+                        ' . $this->getCartGraphQlQuery() . '
+                    }
+                }';
+    }
+
+    public function getCouponRemoveQuery()
+    {
+        return 'removeCouponFromCart(
+                    input: {
+                      cart_id: "${cartId}"
+                    }
+                  ) {
+                    cart {
+                        ' . $this->getCartGraphQlQuery() . '
+                    }
+                 }';
+    }
+
+    public function getCartItemUpdateQuery()
+    {
+        return 'updateCartItems(
+                 input: {
+                  cart_id: "${cartId}",
+                  cart_items: [
+                    {
+                      cart_item_id: ${itemId}
+                      quantity: ${qty}
+                    }
+                  ]
+                }
+              ) {
+                cart {
+                    ' . $this->getCartGraphQlQuery() . '
+                }
+             }';
+    }
+
+    public function getCartItemRemoveQuery()
+    {
+        return 'removeItemFromCart(
+                input: {
+                    cart_id: "${cartId}",
+                    cart_item_id: ${itemId}
+                  }
+                ){
+                cart {
+                    ' . $this->getCartGraphQlQuery() . '
+                }
+             }';
+    }
+}
