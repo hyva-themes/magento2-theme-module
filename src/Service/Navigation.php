@@ -1,0 +1,201 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Hyva\Theme\Service;
+
+use Magento\Catalog\Model\Category;
+use Magento\Framework\Data\Collection;
+use Magento\Framework\Data\Tree\Node;
+use Magento\Framework\Data\Tree\NodeFactory;
+use Magento\Framework\Data\TreeFactory;
+
+/** @see \Magento\Catalog\Plugin\Block\Topmenu */
+
+class Navigation
+{
+    /**
+     * Catalog category
+     *
+     * @var \Magento\Catalog\Helper\Category
+     */
+    private $catalogCategory;
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory
+     */
+    private $collectionFactory;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
+     * @var \Magento\Catalog\Model\Layer\Resolver
+     */
+    private $layerResolver;
+
+    /**
+     * @var NodeFactory
+     */
+    private $nodeFactory;
+
+    /**
+     * @var TreeFactory
+     */
+    private $treeFactory;
+
+    private $menu;
+    /**
+     * Initialize dependencies.
+     *
+     * @param \Magento\Catalog\Helper\Category $catalogCategory
+     * @param \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory $categoryCollectionFactory
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param NodeFactory $nodeFactory
+     * @param TreeFactory $treeFactory
+     * @param \Magento\Catalog\Model\Layer\Resolver $layerResolver
+     */
+    public function __construct(
+        \Magento\Catalog\Helper\Category $catalogCategory,
+        \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory $categoryCollectionFactory,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        NodeFactory $nodeFactory,
+        TreeFactory $treeFactory,
+        \Magento\Catalog\Model\Layer\Resolver $layerResolver
+    ) {
+        $this->catalogCategory = $catalogCategory;
+        $this->collectionFactory = $categoryCollectionFactory;
+        $this->storeManager = $storeManager;
+        $this->layerResolver = $layerResolver;
+        $this->nodeFactory = $nodeFactory;
+        $this->treeFactory = $treeFactory;
+    }
+
+    private function getMenu()
+    {
+        if (!$this->menu) {
+            $this->menu = $this->nodeFactory->create(
+                [
+                    'data'    => [],
+                    'idField' => 'root',
+                    'tree'    => $this->treeFactory->create(),
+                ]
+            );
+        }
+        return $this->menu;
+    }
+
+    /**
+     * Build category tree for menu block.
+     *
+     * @return void
+     * @SuppressWarnings("PMD.UnusedFormalParameter")
+     */
+    public function getMenuTree() {
+        $rootId = $this->storeManager->getStore()->getRootCategoryId();
+        $storeId = $this->storeManager->getStore()->getId();
+
+        /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $collection */
+        $collection = $this->getCategoryTree($storeId, $rootId);
+        $currentCategory = $this->getCurrentCategory();
+        $mapping = [$rootId => $this->getMenu()];
+        foreach ($collection as $category) {
+            $categoryParentId = $category->getParentId();
+            if (!isset($mapping[$categoryParentId])) {
+                $parentIds = $category->getParentIds();
+                foreach ($parentIds as $parentId) {
+                    if (isset($mapping[$parentId])) {
+                        $categoryParentId = $parentId;
+                    }
+                }
+            }
+
+            /** @var Node $parentCategoryNode */
+            $parentCategoryNode = $mapping[$categoryParentId];
+
+            $categoryNode = new Node(
+                $this->getCategoryAsArray(
+                    $category,
+                    $currentCategory,
+                    $category->getParentId() == $categoryParentId
+                ),
+                'id',
+                $parentCategoryNode->getTree(),
+                $parentCategoryNode
+            );
+            $parentCategoryNode->addChild($categoryNode);
+
+            $mapping[$category->getId()] = $categoryNode; //add node in stack
+        }
+
+        return $this->getMenu();
+    }
+
+    /**
+     * Get current Category from catalog layer
+     *
+     * @return Category
+     */
+    private function getCurrentCategory()
+    {
+        $catalogLayer = $this->layerResolver->get();
+
+        if (!$catalogLayer) {
+            return null;
+        }
+
+        return $catalogLayer->getCurrentCategory();
+    }
+
+    /**
+     * Convert category to array
+     *
+     * @param Category $category
+     * @param Category $currentCategory
+     * @param bool $isParentActive
+     * @return array
+     */
+    private function getCategoryAsArray($category, $currentCategory, $isParentActive)
+    {
+        $categoryId = $category->getId();
+        return [
+            'name' => $category->getName(),
+            'id' => 'category-node-' . $categoryId,
+            'url' => $this->catalogCategory->getCategoryUrl($category),
+            'has_active' => in_array((string)$categoryId, explode('/', (string)$currentCategory->getPath()), true),
+            'is_active' => $categoryId == $currentCategory->getId(),
+            'is_category' => true,
+            'is_parent_active' => $isParentActive,
+            'position' => $category->getData('position')
+        ];
+    }
+
+    /**
+     * Get Category Tree
+     *
+     * @param int $storeId
+     * @param int $rootId
+     * @return \Magento\Catalog\Model\ResourceModel\Category\Collection
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function getCategoryTree($storeId, $rootId)
+    {
+        /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $collection */
+        $collection = $this->collectionFactory->create();
+        $collection->setStoreId($storeId);
+        $collection->addAttributeToSelect('name');
+        $collection->addFieldToFilter('path', ['like' => '1/' . $rootId . '/%']); //load only from store root
+        $collection->addAttributeToFilter('include_in_menu', 1);
+        $collection->addIsActiveFilter();
+        $collection->addNavigationMaxDepthFilter();
+        $collection->addUrlRewriteToResult();
+        $collection->addOrder('level', Collection::SORT_ORDER_ASC);
+        $collection->addOrder('position', Collection::SORT_ORDER_ASC);
+        $collection->addOrder('parent_id', Collection::SORT_ORDER_ASC);
+        $collection->addOrder('entity_id', Collection::SORT_ORDER_ASC);
+
+        return $collection;
+    }
+}
