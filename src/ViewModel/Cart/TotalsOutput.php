@@ -32,8 +32,13 @@ class TotalsOutput implements ArgumentInterface
 
     public function getTaxLabelAddition()
     {
-        return $this->config->displayCartSubtotalExclTax() ? __('excl.')
-            : $this->config->displayCartSubtotalBoth() ? '' : __('incl.');
+        return $this->config->displayCartSubtotalExclTax() ?
+            __('excl.') :
+            (
+            $this->config->displayCartSubtotalBoth() ?
+                '' :
+                __('incl.')
+            );
     }
 
     public function getShippingLabelAddition()
