@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="after.body.start">
+            <block name="head.js" class="Magento\Framework\View\Element\Template" template="Hyva_Theme::page/js/variables.phtml" />
+        </referenceContainer>
+
+        <referenceContainer name="before.body.end">
+            <block name="script-alpine-js" template="Hyva_Theme::page/js/alpinejs.phtml"/>
+            <block name="script-cookies" template="Hyva_Theme::page/js/cookies.phtml"/>
+            <block name="script-private-content" template="Hyva_Theme::page/js/private-content.phtml"/>
+        </referenceContainer>
+    </body>
+</page>
