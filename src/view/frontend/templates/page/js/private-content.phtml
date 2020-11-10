@@ -71,6 +71,8 @@ use Magento\Framework\View\Element\Template;
                     } else {
                         fetchPrivateContent([]);
                     }
+                } else {
+                    dispatchPrivateContent({});
                 }
 
             } catch (error) {
