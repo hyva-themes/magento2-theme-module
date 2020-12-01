@@ -99,9 +99,20 @@ class ProductPage implements ArgumentInterface
         return $this->cartHelper->getAddUrl($product, $additional);
     }
 
-
-    public function getCurrency()
+    /**
+     * @deprecated Use `$this->getCurrencyData()['code']` instead.
+     */
+    public function getCurrency(): string
     {
-        return $this->priceCurrency->getCurrency()->getCurrencyCode();
+        return $this->getCurrencyData()['code'];
+    }
+
+    public function getCurrencyData(): array
+    {
+        $currency = $this->priceCurrency->getCurrency();
+        return [
+            'code' => $currency->getCurrencyCode(),
+            'symbol' => $currency->getCurrencySymbol()
+        ];
     }
 }
