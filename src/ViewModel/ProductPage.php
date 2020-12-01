@@ -115,4 +115,11 @@ class ProductPage implements ArgumentInterface
             'symbol' => $currency->getCurrencySymbol()
         ];
     }
+
+    public function currency($value, $format = true, $includeContainer = true)
+    {
+        return $format
+            ? $this->priceCurrency->convertAndFormat($value, $includeContainer)
+            : $this->priceCurrency->convert($value);
+    }
 }
