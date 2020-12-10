@@ -9,6 +9,6 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="\Magento\Framework\View\File\FileList\Collator">
-        <plugin name="file_collator_plugin" type="Hyva\Theme\View\File\FileList\CollatorPlugin"/>
+        <plugin name="file_collator_plugin" type="Hyva\Theme\Plugin\File\FileList\CollatorPlugin"/>
     </type>
 </config>

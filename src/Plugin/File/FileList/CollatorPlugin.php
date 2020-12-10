@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Hyva\Theme\View\File\FileList;
+namespace Hyva\Theme\Plugin\File\FileList;
 
 use Magento\Framework\View\File\FileList\Collator;
 
