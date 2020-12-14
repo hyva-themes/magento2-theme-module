@@ -18,5 +18,6 @@
             <block name="script-cookies" template="Hyva_Theme::page/js/cookies.phtml"/>
             <block name="script-private-content" template="Hyva_Theme::page/js/private-content.phtml"/>
         </referenceContainer>
+
     </body>
 </page>
