@@ -11,10 +11,13 @@ declare(strict_types=1);
 namespace Hyva\Theme\Service;
 
 use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryColleciton;
 use Magento\Framework\Data\Collection;
 use Magento\Framework\Data\Tree\Node;
 use Magento\Framework\Data\Tree\NodeFactory;
 use Magento\Framework\Data\TreeFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /** @see \Magento\Catalog\Plugin\Block\Topmenu */
 
@@ -79,7 +82,7 @@ class Navigation
         $this->treeFactory = $treeFactory;
     }
 
-    private function getMenu()
+    private function getMenu(): Node
     {
         if (!$this->menu) {
             $this->menu = $this->nodeFactory->create(
@@ -96,14 +99,16 @@ class Navigation
     /**
      * Build category tree for menu block.
      *
-     * @return void
+     * @return Node
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      * @SuppressWarnings("PMD.UnusedFormalParameter")
      */
-    public function getMenuTree() {
+    public function getMenuTree()
+    {
         $rootId = $this->storeManager->getStore()->getRootCategoryId();
         $storeId = $this->storeManager->getStore()->getId();
 
-        /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $collection */
         $collection = $this->getCategoryTree($storeId, $rootId);
         $currentCategory = $this->getCurrentCategory();
         $mapping = [$rootId => $this->getMenu()];
@@ -118,7 +123,6 @@ class Navigation
                 }
             }
 
-            /** @var Node $parentCategoryNode */
             $parentCategoryNode = $mapping[$categoryParentId];
 
             $categoryNode = new Node(
@@ -183,12 +187,12 @@ class Navigation
      *
      * @param int $storeId
      * @param int $rootId
-     * @return \Magento\Catalog\Model\ResourceModel\Category\Collection
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return CategoryColleciton
+     * @throws LocalizedException
      */
     private function getCategoryTree($storeId, $rootId)
     {
-        /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $collection */
+        /** @var CategoryColleciton $collection */
         $collection = $this->collectionFactory->create();
         $collection->setStoreId($storeId);
         $collection->addAttributeToSelect('name');

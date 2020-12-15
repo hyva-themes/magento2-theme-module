@@ -116,7 +116,10 @@ use Magento\Framework\View\Element\Template;
                             try {
                                 var browserStorage = getBrowserStorage();
                                 browserStorage.setItem(private_content_key, JSON.stringify(data));
-                                browserStorage.setItem(private_content_expire_key, new Date(Date.now() + (ttl * 1000)).toISOString());
+                                browserStorage.setItem(
+                                    private_content_expire_key,
+                                    new Date(Date.now() + (ttl * 1000)).toISOString()
+                                );
                             } catch (error) {
                                 console.warn("Couldn't store privateContent", error);
                             }

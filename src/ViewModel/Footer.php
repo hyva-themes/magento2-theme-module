@@ -20,9 +20,8 @@ class Footer implements ArgumentInterface
      */
     private $scopeConfig;
 
-    public function __construct(
-        ScopeConfigInterface $scopeConfig
-    ) {
+    public function __construct(ScopeConfigInterface $scopeConfig)
+    {
         $this->scopeConfig = $scopeConfig;
     }
 

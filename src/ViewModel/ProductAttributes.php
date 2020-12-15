@@ -63,13 +63,15 @@ class ProductAttributes implements ArgumentInterface
         $code = $config['code'];
         $attribute = $product->getResource()->getAttribute($code);
 
-        if (!$attribute) { return; }
+        if (!$attribute) {
+            return [];
+        }
 
         $call = $config['call'] ?: 'default';
         $label = $config['label'] ?: 'default';
         $cssClass = $config['css_class'] ?: 'attribute';
 
-        $defaultData = $this->getAttributeData($attribute,$product);
+        $defaultData = $this->getAttributeData($attribute, $product);
 
         return [
             'label' => ($label === 'default') ? $defaultData['label'] : $label,
@@ -93,9 +95,8 @@ class ProductAttributes implements ArgumentInterface
         $attributes = $product->getAttributes();
         foreach ($attributes as $attribute) {
             if ($this->isVisibleOnFrontend($attribute, $excludeAttr)) {
-                $attributeData = $this->getAttributeData($attribute,$product);
-                if ($attributeData && $attributeData['value'])
-                {
+                $attributeData = $this->getAttributeData($attribute, $product);
+                if ($attributeData && $attributeData['value']) {
                     $data[$attribute->getAttributeCode()] = $attributeData;
                 }
             }
@@ -118,7 +119,6 @@ class ProductAttributes implements ArgumentInterface
             'value' => $value,
             'code' => $attribute->getAttributeCode(),
         ];
-
     }
 
     /**

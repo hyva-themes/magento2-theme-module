@@ -5,12 +5,8 @@ namespace Hyva\Theme\Block\Catalog;
 use Magento\Framework\View\Element\Template;
 
 class Breadcrumbs extends Template
-
 {
-    /**
-     * @return $this
-     */
-    protected function _prepareLayout()
+    protected function _prepareLayout(): Template
     {
         parent::_prepareLayout();
         $this->getLayout()->createBlock(\Magento\Catalog\Block\Breadcrumbs::class);
