@@ -13,7 +13,7 @@ namespace Hyva\Theme\Observer;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Event\Observer as Event;
 use Magento\Framework\Event\ObserverInterface;
-use Hyva\Theme\ViewModel\ProductRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
 
 /**
  * Class RegisterCurrentProduct
@@ -28,19 +28,19 @@ use Hyva\Theme\ViewModel\ProductRegistry;
 class RegisterCurrentProduct implements ObserverInterface
 {
     /**
-     * @var ProductRegistry
+     * @var CurrentProduct
      */
-    private $productRegistry;
+    private $currentProduct;
 
-    public function __construct(ProductRegistry $currentProduct)
+    public function __construct(CurrentProduct $currentProduct)
     {
-        $this->productRegistry = $currentProduct;
+        $this->currentProduct = $currentProduct;
     }
 
     public function execute(Event $event)
     {
         /** @var ProductInterface $product */
         $product = $event->getData('product');
-        $this->productRegistry->set($product);
+        $this->currentProduct->set($product);
     }
 }

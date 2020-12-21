@@ -11,9 +11,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Product;
 use Magento\Framework\App\ActionInterface;
-use Magento\Framework\Registry;
 use Magento\Framework\Url\Helper\Data as UrlHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -25,19 +23,9 @@ use Magento\Store\Model\ScopeInterface as StoreScopeInterface;
 class ProductAlert implements ArgumentInterface
 {
     /**
-     * @var null|Product $product
-     */
-    protected $product = null;
-
-    /**
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-
-    /**
-     * @var ProductRegistry $coreRegistry
-     */
-    private $coreRegistry;
 
     /**
      * @var UrlHelper
@@ -54,79 +42,49 @@ class ProductAlert implements ArgumentInterface
      */
     private $productAlertHelper;
 
-    private $productRegistryViewModel;
-
     /**
      * @param ScopeConfigInterface $scopeConfig
-     * @param ProductRegistry $coreRegistry
      * @param UrlHelper $urlHelper
      * @param UrlInterface $urlBuilder
      * @param ProductAlertHelper $productAlertHelper
-     * @param ProductRegistry $productRegistryViewModel
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        Registry $coreRegistry,
         UrlHelper $urlHelper,
         UrlInterface $urlBuilder,
-        ProductAlertHelper $productAlertHelper,
-        ProductRegistry $productRegistryViewModel
+        ProductAlertHelper $productAlertHelper
     ) {
         $this->scopeConfig = $scopeConfig;
-        $this->coreRegistry = $coreRegistry;
         $this->urlHelper = $urlHelper;
         $this->urlBuilder = $urlBuilder;
         $this->productAlertHelper = $productAlertHelper;
-        $this->productRegistryViewModel = $productRegistryViewModel;
     }
 
-    /**
-     * @return ProductInterface|bool
-     * @throws Product\Exception
-     */
-    protected function getProduct()
-    {
-        if ($this->product && $this->product->getId()) {
-            return $this->product;
-        }
-
-        if ($this->productRegistryViewModel->exists()) {
-            return $this->productRegistryViewModel->get();
-        }
-        return false;
-    }
-
-    public function setProduct(Product $product): ProductAlert
-    {
-        $this->product = $product;
-        return $this;
-    }
-
-    public function getSaveUrl(string $type): string
+    public function getSaveUrl(ProductInterface $product, string $type): string
     {
         return $this->urlBuilder->getUrl(
             'productalert/add/' . $type,
             [
-                'product_id' => $this->getProduct()->getId(),
+                'product_id' => $product->getId(),
                 ActionInterface::PARAM_NAME_URL_ENCODED => $this->urlHelper->getEncodedUrl()
             ]
         );
     }
 
-    public function showStockAlert(): bool
+    public function showStockAlert(ProductInterface $product): bool
     {
-        return $this->getProduct() &&
-            !$this->getProduct()->isAvailable() &&
+        return $product &&
+            !$product->isAvailable() &&
             $this->scopeConfig->isSetFlag(
                 ProductAlertObserver::XML_PATH_STOCK_ALLOW,
                 StoreScopeInterface::SCOPE_STORE
             );
     }
 
-    public function showPriceAlert(): bool
+    public function showPriceAlert(ProductInterface $product): bool
     {
-        return $this->getProduct() &&
-            $this->getProduct()->isSalable()
+        return $product &&
+            $product->isSalable()
             && $this->scopeConfig->isSetFlag(
                 ProductAlertObserver::XML_PATH_PRICE_ALLOW,
                 StoreScopeInterface::SCOPE_STORE

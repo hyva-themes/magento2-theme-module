@@ -15,7 +15,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 
-class ProductRegistry implements ArgumentInterface
+class CurrentProduct implements ArgumentInterface
 {
     /**
      * @var ProductInterface
