@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel\Product;
 
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Registry;
@@ -52,6 +53,7 @@ class Alert implements ArgumentInterface
      * @var ProductAlertHelper
      */
     private ProductAlertHelper $productAlertHelper;
+    private \Hyva\Theme\ViewModel\Product\Registry $productRegistryViewModel;
 
     /**
      * @param ScopeConfigInterface $scopeConfig
@@ -59,27 +61,34 @@ class Alert implements ArgumentInterface
      * @param UrlHelper $urlHelper
      * @param UrlInterface $urlBuilder
      * @param ProductAlertHelper $productAlertHelper
+     * @param \Hyva\Theme\ViewModel\Product\Registry $productRegistryViewModel
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         Registry $coreRegistry,
         UrlHelper $urlHelper,
         UrlInterface $urlBuilder,
-        ProductAlertHelper $productAlertHelper
+        ProductAlertHelper $productAlertHelper,
+        \Hyva\Theme\ViewModel\Product\Registry $productRegistryViewModel
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->coreRegistry = $coreRegistry;
         $this->urlHelper = $urlHelper;
         $this->urlBuilder = $urlBuilder;
         $this->productAlertHelper = $productAlertHelper;
+        $this->productRegistryViewModel = $productRegistryViewModel;
     }
 
     /**
-     * @return Product|bool
+     * @return ProductInterface|bool
      */
     protected function getProduct()
     {
-        $product = $this->coreRegistry->registry('current_product');
+        if ($this->product && $this->product->getId()) {
+            return $this->product;
+        }
+
+        $product = $this->productRegistryViewModel->get();
         if ($product && $product->getId()) {
             return $product;
         }
