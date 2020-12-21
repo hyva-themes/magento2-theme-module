@@ -10,7 +10,11 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="after.body.start">
-            <block name="head.js" class="Magento\Framework\View\Element\Template" template="Hyva_Theme::page/js/variables.phtml" />
+            <block name="head.js" class="Magento\Framework\View\Element\Template" template="Hyva_Theme::page/js/variables.phtml">
+                <arguments>
+                    <argument name="cookie_view_model" xsi:type="object">Hyva\Theme\ViewModel\Cookie</argument>
+                </arguments>
+            </block>
         </referenceContainer>
 
         <referenceContainer name="before.body.end">
