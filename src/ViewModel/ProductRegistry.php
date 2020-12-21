@@ -14,7 +14,6 @@ use Magento\Catalog\Model\Product\Exception as ProductException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
-use Magento\Tests\NamingConvention\true\bool;
 
 class ProductRegistry implements ArgumentInterface
 {
