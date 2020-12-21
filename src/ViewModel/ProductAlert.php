@@ -82,6 +82,7 @@ class ProductAlert implements ArgumentInterface
 
     /**
      * @return ProductInterface|bool
+     * @throws Product\Exception
      */
     protected function getProduct()
     {
@@ -89,9 +90,8 @@ class ProductAlert implements ArgumentInterface
             return $this->product;
         }
 
-        $product = $this->productRegistryViewModel->get();
-        if ($product && $product->getId()) {
-            return $product;
+        if ($this->productRegistryViewModel->exists()) {
+            return $this->productRegistryViewModel->get();
         }
         return false;
     }

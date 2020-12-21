@@ -10,9 +10,11 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Catalog\Model\Product\Exception as ProductException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
+use Magento\Tests\NamingConvention\true\bool;
 
 class ProductRegistry implements ArgumentInterface
 {
@@ -36,13 +38,23 @@ class ProductRegistry implements ArgumentInterface
         $this->currentProduct = $product;
     }
 
+    /**
+     * @return ProductInterface
+     * @throws ProductException
+     */
     public function get(): ProductInterface
     {
-        return $this->currentProduct ?? $this->createNullProduct();
+        if ($this->exists()) {
+            return $this->currentProduct;
+        }
+        throw new ProductException(__('Product is not set on ProductRegistry.'));
     }
 
-    private function createNullProduct(): ProductInterface
+    /**
+     * @return bool
+     */
+    public function exists(): bool
     {
-        return $this->productFactory->create();
+        return ($this->currentProduct && $this->currentProduct->getId());
     }
 }
