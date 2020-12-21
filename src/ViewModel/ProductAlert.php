@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Hyva\Theme\ViewModel\Product;
+namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
@@ -22,7 +22,7 @@ use Magento\ProductAlert\Helper\Data as ProductAlertHelper;
 use Magento\ProductAlert\Model\Observer as ProductAlertObserver;
 use Magento\Store\Model\ScopeInterface as StoreScopeInterface;
 
-class Alert implements ArgumentInterface
+class ProductAlert implements ArgumentInterface
 {
     /**
      * @var null|Product $product
@@ -35,33 +35,34 @@ class Alert implements ArgumentInterface
     private $scopeConfig;
 
     /**
-     * @var Registry $coreRegistry
+     * @var ProductRegistry $coreRegistry
      */
-    private Registry $coreRegistry;
+    private $coreRegistry;
 
     /**
      * @var UrlHelper
      */
-    private UrlHelper $urlHelper;
+    private $urlHelper;
 
     /**
      * @var UrlInterface
      */
-    private UrlInterface $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @var ProductAlertHelper
      */
-    private ProductAlertHelper $productAlertHelper;
-    private \Hyva\Theme\ViewModel\Product\Registry $productRegistryViewModel;
+    private $productAlertHelper;
+
+    private $productRegistryViewModel;
 
     /**
      * @param ScopeConfigInterface $scopeConfig
-     * @param Registry $coreRegistry
+     * @param ProductRegistry $coreRegistry
      * @param UrlHelper $urlHelper
      * @param UrlInterface $urlBuilder
      * @param ProductAlertHelper $productAlertHelper
-     * @param \Hyva\Theme\ViewModel\Product\Registry $productRegistryViewModel
+     * @param ProductRegistry $productRegistryViewModel
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -69,7 +70,7 @@ class Alert implements ArgumentInterface
         UrlHelper $urlHelper,
         UrlInterface $urlBuilder,
         ProductAlertHelper $productAlertHelper,
-        \Hyva\Theme\ViewModel\Product\Registry $productRegistryViewModel
+        ProductRegistry $productRegistryViewModel
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->coreRegistry = $coreRegistry;
@@ -95,7 +96,7 @@ class Alert implements ArgumentInterface
         return false;
     }
 
-    public function setProduct(Product $product): Alert
+    public function setProduct(Product $product): ProductAlert
     {
         $this->product = $product;
         return $this;

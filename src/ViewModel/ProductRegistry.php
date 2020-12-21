@@ -8,13 +8,13 @@
 
 declare(strict_types=1);
 
-namespace Hyva\Theme\ViewModel\Product;
+namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 
-class Registry implements ArgumentInterface
+class ProductRegistry implements ArgumentInterface
 {
     /**
      * @var ProductInterface

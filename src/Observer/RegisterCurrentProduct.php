@@ -13,7 +13,7 @@ namespace Hyva\Theme\Observer;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Event\Observer as Event;
 use Magento\Framework\Event\ObserverInterface;
-use Hyva\Theme\ViewModel\Product\Registry as ProductRegistry;
+use Hyva\Theme\ViewModel\ProductRegistry;
 
 /**
  * Class RegisterCurrentProduct
