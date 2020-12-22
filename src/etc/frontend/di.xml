@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\View\TemplateEngine\Php">
+        <arguments>
+            <argument name="blockVariables" xsi:type="array">
+                <item name="viewModels" xsi:type="object">Hyva\Theme\Model\ViewModelRegistry</item>
+                <item name="csp" xsi:type="object">Magento\Csp\Api\InlineUtilInterface\Proxy</item>
+                <item name="secureRenderer" xsi:type="object">Magento\Framework\View\Helper\SecureHtmlRenderer\Proxy</item>
+                <item name="escaper" xsi:type="object">Magento\Framework\Escaper</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
