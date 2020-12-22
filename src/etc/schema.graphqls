@@ -7,3 +7,10 @@ type CartItemPrices {
     price_incl_tax: Money!
     row_total_incl_tax: Money!
 }
+
+type Query {
+    cachedCurrency: Currency
+        @resolver(class: "Magento\\DirectoryGraphQl\\Model\\Resolver\\Currency")
+        @doc(description: "The cachedCurrency query returns information about store currency and contains a 'config' cache key.")
+        @cache(cacheIdentity: "Hyva\\Theme\\Model\\Resolver\\ConfigIdentity")
+}
