@@ -11,4 +11,12 @@
     <type name="\Magento\Framework\View\File\FileList\Collator">
         <plugin name="file_collator_plugin" type="Hyva\Theme\Plugin\File\FileList\CollatorPlugin"/>
     </type>
+
+    <type name="Magento\Framework\View\TemplateEngine\Php">
+        <arguments>
+            <argument name="blockVariables" xsi:type="array">
+                <item name="viewModels" xsi:type="object">Hyva\Theme\Model\ViewModelRegistry</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
