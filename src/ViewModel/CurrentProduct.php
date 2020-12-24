@@ -25,7 +25,7 @@ class CurrentProduct implements ArgumentInterface
     /**
      * @var ProductInterfaceFactory
      */
-    private ProductInterfaceFactory $productFactory;
+    private $productFactory;
 
     public function __construct(ProductInterfaceFactory $productFactory)
     {
