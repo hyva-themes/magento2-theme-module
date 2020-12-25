@@ -8,5 +8,5 @@
 -->
 <theme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/theme.xsd">
     <title>Hyvä Test</title>
-    <parent>Hyva/reset</parent>
+    <parent>Hyva/default</parent>
 </theme>
