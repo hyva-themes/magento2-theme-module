@@ -13,6 +13,9 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Framework\View\DesignInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
+/**
+ * View model that provides information about the current theme
+ */
 class Theme implements ArgumentInterface
 {
     /**
@@ -25,6 +28,11 @@ class Theme implements ArgumentInterface
         $this->viewDesign = $viewDesign;
     }
 
+    /**
+     * Returns true if the current theme is a Hyva theme, i.e. a descendant of Hyva/reset (or any Hyva namespaced theme)
+     *
+     * @return bool
+     */
     public function isHyva(): bool
     {
         $theme = $this->viewDesign->getDesignTheme();
