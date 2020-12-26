@@ -21,6 +21,11 @@
     ],
     "psr-4": {
       "Hyva\\Theme\\": "src/"
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "Hyva\\Theme\\": "tests/src/"
+      }
     }
   }
 }

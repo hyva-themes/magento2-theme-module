@@ -105,12 +105,8 @@ class TemplateVariableTest extends TestCase
      */
     private function registerTestTheme(): void
     {
-        /** @var Registration $registration */
-        $registration = $this->objectManager->get(Registration::class);
-        $registration->register();
-        /** @var DesignInterface $design */
-        $design = $this->objectManager->get(DesignInterface::class);
-        $design->setDesignTheme('Hyva/test');
+        ThemeFixture::registerTestThemes();
+        ThemeFixture::setCurrentTheme('Hyva/test');
     }
 
     private function createTemplate(string $templateFile, string $templateContents): void

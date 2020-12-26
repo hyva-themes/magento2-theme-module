@@ -5,10 +5,8 @@ namespace Hyva\Theme;
 
 use Hyva\Theme\Service\CurrentTheme;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\DesignInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\AbstractController;
-use Magento\Theme\Model\Theme\Registration;
 
 /**
  * @magentoAppArea frontend
@@ -27,7 +25,7 @@ class CurrentThemeServiceTest extends AbstractController
     {
         $this->objectManager = Bootstrap::getObjectManager();
         $this->themeService = Bootstrap::getObjectManager()->get(CurrentTheme::class);
-        $this->registerTestThemes();
+        ThemeFixture::registerTestThemes();
     }
 
     /** @test */
@@ -61,20 +59,8 @@ class CurrentThemeServiceTest extends AbstractController
         $this->assertTrue($this->themeService->isHyva(), 'Hyvä test theme should be recognized as Hyvä theme');
     }
 
-    /**
-     * Re-register themes from the magentoComponentsDir fixture
-     */
-    private function registerTestThemes(): void
-    {
-        /** @var Registration $registration */
-        $registration = $this->objectManager->get(Registration::class);
-        $registration->register();
-    }
-
     private function givenCurrentTheme(string $themePath): void
     {
-        /** @var DesignInterface $design */
-        $design = Bootstrap::getObjectManager()->get(DesignInterface::class);
-        $design->setDesignTheme($themePath);
+        ThemeFixture::setCurrentTheme($themePath);
     }
 }
