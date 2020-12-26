@@ -10,6 +10,10 @@
     "magento/module-customer": ">=102.0.0",
     "magento/module-theme": ">=101.0.0"
   },
+  "require-dev": {
+      "hyva-themes/magento2-reset-theme":  "^1.0.0",
+      "hyva-themes/magento2-default-theme":  "^0.1.0"
+  },
   "authors": [{
     "name": "Hyvä Themes, Wigman Interactive",
     "email": "info@hyva.io"
