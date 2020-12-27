@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace integration\ViewModel;
+namespace Hyva\Theme;
 
-use Hyva\Theme\ViewModel\Theme;
+use Hyva\Theme\Service\CurrentTheme;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\DesignInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -15,18 +15,18 @@ use Magento\Theme\Model\Theme\Registration;
  * @magentoAppIsolation enabled
  * @magentoComponentsDir ../../../../vendor/hyva-themes/magento2-theme-module/tests/integration/_files/design
  */
-class ThemeViewModelTest extends AbstractController
+class CurrentThemeServiceTest extends AbstractController
 {
     /** @var ObjectManagerInterface */
     private $objectManager;
 
-    /** @var Theme */
-    private $themeViewModel;
+    /** @var CurrentTheme */
+    private $themeService;
 
     protected function setUp(): void
     {
         $this->objectManager = Bootstrap::getObjectManager();
-        $this->themeViewModel = Bootstrap::getObjectManager()->get(Theme::class);
+        $this->themeService = Bootstrap::getObjectManager()->get(CurrentTheme::class);
         $this->registerTestThemes();
     }
 
@@ -34,14 +34,14 @@ class ThemeViewModelTest extends AbstractController
     public function luma_is_not_hyva()
     {
         $this->givenCurrentTheme('Magento/luma');
-        $this->assertFalse($this->themeViewModel->isHyva(), 'Luma should not be recognized as Hyvä theme');
+        $this->assertFalse($this->themeService->isHyva(), 'Luma should not be recognized as Hyvä theme');
     }
 
     /** @test */
     public function hyva_default_theme_is_hyva()
     {
         $this->givenCurrentTheme('Hyva/default');
-        $this->assertTrue($this->themeViewModel->isHyva(), 'Hyvä default theme should be recognized as Hyvä theme');
+        $this->assertTrue($this->themeService->isHyva(), 'Hyvä default theme should be recognized as Hyvä theme');
     }
 
     /** @test */
@@ -49,7 +49,7 @@ class ThemeViewModelTest extends AbstractController
     {
         $this->givenCurrentTheme('Custom/extend');
         $this->assertTrue(
-            $this->themeViewModel->isHyva(),
+            $this->themeService->isHyva(),
             'Custom theme extending Hyvä default theme should be recognized as Hyvä theme'
         );
     }
@@ -58,7 +58,7 @@ class ThemeViewModelTest extends AbstractController
     public function custom_theme_extending_hyva_reset_is_hyva()
     {
         $this->givenCurrentTheme('Custom/copy');
-        $this->assertTrue($this->themeViewModel->isHyva(), 'Hyvä test theme should be recognized as Hyvä theme');
+        $this->assertTrue($this->themeService->isHyva(), 'Hyvä test theme should be recognized as Hyvä theme');
     }
 
     /**

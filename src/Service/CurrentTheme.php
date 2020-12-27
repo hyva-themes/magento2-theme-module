@@ -8,15 +8,14 @@
 
 declare(strict_types=1);
 
-namespace Hyva\Theme\ViewModel;
+namespace Hyva\Theme\Service;
 
 use Magento\Framework\View\DesignInterface;
-use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 /**
- * View model that provides information about the current theme
+ * Provides information about the current theme
  */
-class Theme implements ArgumentInterface
+class CurrentTheme
 {
     /**
      * @var DesignInterface
