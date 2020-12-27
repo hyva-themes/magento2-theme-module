@@ -22,6 +22,14 @@ declare(strict_types=1);
         window.dispatchEvent(messagesEvent);
     }
     {
+        var defaultConfig = {
+            expires: null,
+            path: '/',
+            domain: null,
+            secure: false,
+            lifetime: null
+        }
+
         function initFormKey() {
             var inputSelector = 'input[name="form_key"]';
             var allowedCharacters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -40,7 +48,7 @@ declare(strict_types=1);
 
             if (!formKey) {
                 formKey = generateRandomString();
-                setCookie('form_key', formKey, 0);
+                setCookie('form_key', formKey);
             }
             Array.from(document.querySelectorAll(inputSelector)).map(function (input) {
                 input.value = formKey
@@ -60,7 +68,16 @@ declare(strict_types=1);
 
             dispatchMessages(messages);
 
-            deleteCookie('mage-messages');
+            <?php
+            /**
+             * In \Magento\Theme\Controller\Result\MessagePlugin::setCookie
+             * the cookie-domain is not set. Therefore, we need to skip it
+             * here as well.
+             */
+            ?>
+            // empty `mage-messages` cookie
+            const skipSetDomain = true;
+            setCookie('mage-messages','', -1, skipSetDomain);
         }
 
         function getCookie(name) {
@@ -68,21 +85,41 @@ declare(strict_types=1);
             return v ? v[2] : null;
         }
 
-        function setCookie(name, value, days) {
-            var expires = '';
+        function setCookie(name, value, days, skipSetDomain) {
+            var expires,
+                path,
+                domain,
+                secure;
+
+            var cookieConfig = window.COOKIE_CONFIG || {};
 
             if (days) {
-                var d = new Date;
-                d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
-                expires = ";expires=" + d.toGMTString();
+                expires = lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultConfig);
+            } else {
+                expires = lifetimeToExpires(window.COOKIE_CONFIG, defaultConfig) || defaultConfig.expires;
             }
+            path = cookieConfig.path || defaultConfig.path;
+            domain = !skipSetDomain && (cookieConfig.domain || defaultConfig.domain);
+            secure = cookieConfig.secure || defaultConfig.secure;
+
             document.cookie = name + "=" + encodeURIComponent(value) +
-                ";path=/" +
-                expires;
+                (expires ? '; expires=' + expires.toGMTString() :  '') +
+                (path ? '; path=' + path : '') +
+                (domain ? '; domain=' + domain : '') +
+                (secure ? '; secure' : '');
         }
 
-        function deleteCookie(name) {
-            setCookie(name, '', -1);
+        function lifetimeToExpires(options, defaults) {
+
+            var lifetime = options.lifetime || defaults.lifetime;
+
+            if (lifetime) {
+                var date = new Date;
+                date.setTime(date.getTime() + lifetime * 1000);
+                return date;
+            }
+
+            return null;
         }
 
         window.addEventListener('load', function () {

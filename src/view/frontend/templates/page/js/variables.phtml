@@ -8,11 +8,26 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Cookie as CookieViewModel;
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var CookieViewModel $cookieViewModel */
+$cookieViewModel = $viewModels->require(Hyva\Theme\ViewModel\Cookie::class);
 ?>
 <script>
     var BASE_URL = '<?= /* @noEscape */ $block->getUrl('/') ?>';
     var THEME_PATH = '<?= /* @noEscape */ $block->getViewFileUrl('/') ?>';
+    var COOKIE_CONFIG = {
+        "expires": null,
+        "path": "<?= $escaper->escapeJs($cookieViewModel->getPath()) ?>",
+        "domain": "<?= $escaper->escapeJs($cookieViewModel->getDomain()) ?>",
+        "secure": false,
+        "lifetime": "<?= $escaper->escapeJs($cookieViewModel->getLifetime()) ?>"
+    }
 </script>
