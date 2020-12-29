@@ -99,7 +99,10 @@ use Magento\Framework\View\Element\Template;
                 sections.join(',')
             ), {
                 method: 'GET',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             })
                 .then(function (response) {
                     return response.json()
