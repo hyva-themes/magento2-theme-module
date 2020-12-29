@@ -101,7 +101,7 @@ use Magento\Framework\View\Element\Template;
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest' // Serverside de-personalization will occur when we won't do a valid Ajax request on the backend
                 }
             })
                 .then(function (response) {
