@@ -32,7 +32,7 @@ use Magento\Framework\View\Layout;
  * - the product list widget
  * - the price renderer block
  *
- * @event layout_generate_blocks_before
+ * @event layout_load_before
  * @see \Magento\Framework\View\Layout\Builder::generateLayoutBlocks()
  */
 class AddLayoutHandles implements ObserverInterface

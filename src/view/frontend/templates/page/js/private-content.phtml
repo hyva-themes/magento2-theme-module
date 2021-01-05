@@ -92,6 +92,14 @@ use Magento\Framework\View\Element\Template;
             window.dispatchEvent(privateContentEvent);
         }
 
+        <?php 
+        /**
+         * We use 'X-Requested-With': 'XMLHttpRequest' to prevent Magento from clearing the customer session
+         * in \Magento\PageCache\Model\DepersonalizeChecker::checkIfDepersonalize
+         * Otherwise, \Magento\Tax\Plugin\Checkout\CustomerData\Cart::afterGetSectionData can't add tax to
+         * cart items.
+         */
+        ?>
         function fetchPrivateContent(sections) {
             fetch('<?= $block->escapeUrl(
                 $block->getBaseUrl()
@@ -99,7 +107,10 @@ use Magento\Framework\View\Element\Template;
                 sections.join(',')
             ), {
                 method: 'GET',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             })
                 .then(function (response) {
                     return response.json()

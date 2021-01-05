@@ -7,6 +7,7 @@ use Magento\Framework\View\DesignInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\AbstractController;
 use Magento\TestFramework\View\Layout;
+use Magento\Theme\Model\Theme\Registration;
 
 /**
  * @magentoAppArea frontend
@@ -32,8 +33,9 @@ class LayoutUpdateHandlesTest extends AbstractController
             $layout->getUpdate()->getHandles(),
             'Layout handles should be unchanged'
         );
-    }    /** @test */
+    }
 
+    /** @test */
     public function added_with_hyva_prefix_if_hyva_theme()
     {
         $this->givenCurrentTheme('Hyva/default');
@@ -56,8 +58,25 @@ class LayoutUpdateHandlesTest extends AbstractController
         );
     }
 
+    /** @test */
+    public function block_loaded_from_hyva_prefix_layout()
+    {
+        $this->givenCurrentTheme('Hyva/test');
+        $this->dispatch('/');
+        /** @var Layout $layout */
+        $layout = $this->_objectManager->get(Layout::class);
+        $this->assertNotFalse(
+            $layout->getBlock('hyva.custom.block'),
+            'Custom block from hyva_* layout should be loaded in hyva theme'
+        );
+    }
+
     private function givenCurrentTheme(string $themePath): void
     {
+        /** @var Registration $registration */
+        $registration = Bootstrap::getObjectManager()->get(Registration::class);
+        $registration->register();
+
         /** @var DesignInterface $design */
         $design = Bootstrap::getObjectManager()->get(DesignInterface::class);
         $design->setDesignTheme($themePath);
