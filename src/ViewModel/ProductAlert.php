@@ -25,22 +25,22 @@ class ProductAlert implements ArgumentInterface
     /**
      * @var ScopeConfigInterface
      */
-    private $scopeConfig;
+    protected $scopeConfig;
 
     /**
      * @var UrlHelper
      */
-    private $urlHelper;
+    protected $urlHelper;
 
     /**
      * @var UrlInterface
      */
-    private $urlBuilder;
+    protected $urlBuilder;
 
     /**
      * @var ProductAlertHelper
      */
-    private $productAlertHelper;
+    protected $productAlertHelper;
 
     /**
      * @param ScopeConfigInterface $scopeConfig

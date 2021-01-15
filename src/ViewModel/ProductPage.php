@@ -31,12 +31,12 @@ class ProductPage implements ArgumentInterface
     /**
      * @var PriceCurrencyInterface
      */
-    private $priceCurrency;
+    protected $priceCurrency;
 
     /**
      * @var Cart
      */
-    private $cartHelper;
+    protected $cartHelper;
 
     /**
      * @param Registry $registry

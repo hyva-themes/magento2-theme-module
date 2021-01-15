@@ -16,7 +16,7 @@ use Magento\Framework\GraphQl\Query\Resolver\IdentityInterface;
 class ConfigIdentity implements IdentityInterface
 {
     /** @var string */
-    private $cacheTag = Config::CACHE_TAG;
+    protected $cacheTag = Config::CACHE_TAG;
 
     /**
      * @param array $resolvedData

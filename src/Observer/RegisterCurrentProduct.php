@@ -30,7 +30,7 @@ class RegisterCurrentProduct implements ObserverInterface
     /**
      * @var CurrentProduct
      */
-    private $currentProduct;
+    protected $currentProduct;
 
     public function __construct(CurrentProduct $currentProduct)
     {

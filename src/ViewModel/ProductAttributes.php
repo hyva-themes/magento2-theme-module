@@ -32,7 +32,7 @@ class ProductAttributes implements ArgumentInterface
     /**
      * @var PriceCurrencyInterface
      */
-    private $priceCurrency;
+    protected $priceCurrency;
 
     /**
      * @param Registry $registry

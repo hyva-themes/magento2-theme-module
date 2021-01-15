@@ -20,7 +20,7 @@ class Navigation implements ArgumentInterface
     /**
      * @var NavigationService
      */
-    private $navigationService;
+    protected $navigationService;
 
     public function __construct(NavigationService $navigationService)
     {
@@ -41,7 +41,7 @@ class Navigation implements ArgumentInterface
      * @param Node $menuTree
      * @return array
      */
-    private function getMenuData(Node $menuTree)
+    protected function getMenuData(Node $menuTree)
     {
         $children = $menuTree->getChildren();
         $childLevel = $this->getChildLevel($menuTree->getLevel());
@@ -64,7 +64,7 @@ class Navigation implements ArgumentInterface
      * @param $child
      * @return array
      */
-    private function addSubMenu($child)
+    protected function addSubMenu($child)
     {
         if (!$child->hasChildren()) {
             return [];
@@ -77,7 +77,7 @@ class Navigation implements ArgumentInterface
      * @param Collection $children
      * @param int $childLevel
      */
-    private function removeChildrenWithoutActiveParent(Collection $children, int $childLevel): void
+    protected function removeChildrenWithoutActiveParent(Collection $children, int $childLevel): void
     {
         /** @var Node $child */
         foreach ($children as $child) {
@@ -91,7 +91,7 @@ class Navigation implements ArgumentInterface
      * @param $parentLevel
      * @return int
      */
-    private function getChildLevel($parentLevel): int
+    protected function getChildLevel($parentLevel): int
     {
         return $parentLevel === null ? 0 : $parentLevel + 1;
     }

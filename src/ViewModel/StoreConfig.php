@@ -18,7 +18,7 @@ class StoreConfig implements ArgumentInterface
     /**
      * @var ScopeConfigInterface
      */
-    private $scopeConfig;
+    protected $scopeConfig;
 
     public function __construct(ScopeConfigInterface $scopeConfig)
     {

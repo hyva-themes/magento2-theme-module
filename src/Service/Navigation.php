@@ -28,34 +28,34 @@ class Navigation
      *
      * @var \Magento\Catalog\Helper\Category
      */
-    private $catalogCategory;
+    protected $catalogCategory;
 
     /**
      * @var \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory
      */
-    private $collectionFactory;
+    protected $collectionFactory;
 
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
-    private $storeManager;
+    protected $storeManager;
 
     /**
      * @var \Magento\Catalog\Model\Layer\Resolver
      */
-    private $layerResolver;
+    protected $layerResolver;
 
     /**
      * @var NodeFactory
      */
-    private $nodeFactory;
+    protected $nodeFactory;
 
     /**
      * @var TreeFactory
      */
-    private $treeFactory;
+    protected $treeFactory;
 
-    private $menu;
+    protected $menu;
     /**
      * Initialize dependencies.
      *
@@ -82,7 +82,7 @@ class Navigation
         $this->treeFactory = $treeFactory;
     }
 
-    private function getMenu(): Node
+    protected function getMenu(): Node
     {
         if (!$this->menu) {
             $this->menu = $this->nodeFactory->create(
@@ -148,7 +148,7 @@ class Navigation
      *
      * @return Category
      */
-    private function getCurrentCategory()
+    protected function getCurrentCategory()
     {
         $catalogLayer = $this->layerResolver->get();
 
@@ -167,7 +167,7 @@ class Navigation
      * @param bool $isParentActive
      * @return array
      */
-    private function getCategoryAsArray($category, $currentCategory, $isParentActive)
+    protected function getCategoryAsArray($category, $currentCategory, $isParentActive)
     {
         $categoryId = $category->getId();
         return [
@@ -190,7 +190,7 @@ class Navigation
      * @return CategoryColleciton
      * @throws LocalizedException
      */
-    private function getCategoryTree($storeId, $rootId)
+    protected function getCategoryTree($storeId, $rootId)
     {
         /** @var CategoryColleciton $collection */
         $collection = $this->collectionFactory->create();
