@@ -79,8 +79,18 @@ class GraphQlQueries implements ArgumentInterface
                     option_label
                     value_label
                   }
+                }
+                ... on BundleCartItem {
+                  bundle_options {
+                    id
+                    label
+                    values {
+                      quantity
+                      label
+                    }
                   }
                 }
+              }
               available_payment_methods {
                 code
                 title
