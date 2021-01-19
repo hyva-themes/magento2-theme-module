@@ -1,0 +1,71 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+?>
+<script>
+    'use strict';
+    (function( hyva, undefined ) {
+
+        function lifetimeToExpires(options, defaults) {
+
+            var lifetime = options.lifetime || defaults.lifetime;
+
+            if (lifetime) {
+                var date = new Date;
+                date.setTime(date.getTime() + lifetime * 1000);
+                return date;
+            }
+
+            return null;
+        }
+
+        hyva.getCookie = (name) => {
+            var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+            return v ? v[2] : null;
+        }
+
+        hyva.setCookie = (name, value, days, skipSetDomain) => {
+            var expires,
+                path,
+                domain,
+                secure;
+
+            var cookieConfig = window.COOKIE_CONFIG || {};
+
+            if (days) {
+                expires = lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultConfig);
+            } else {
+                expires = lifetimeToExpires(window.COOKIE_CONFIG, defaultConfig) || defaultConfig.expires;
+            }
+            path = cookieConfig.path || defaultConfig.path;
+            domain = !skipSetDomain && (cookieConfig.domain || defaultConfig.domain);
+            secure = cookieConfig.secure || defaultConfig.secure;
+
+            document.cookie = name + "=" + encodeURIComponent(value) +
+                (expires ? '; expires=' + expires.toGMTString() : '') +
+                (path ? '; path=' + path : '') +
+                (domain ? '; domain=' + domain : '') +
+                (secure ? '; secure' : '');
+        }
+
+        hyva.getBrowserStorage = () => {
+            var browserStorage = window.localStorage || window.sessionStorage;
+            if (!browserStorage) {
+                return false;
+            }
+            try {
+                browserStorage.setItem('storage_test', 1);
+                browserStorage.removeItem('storage_test');
+            } catch (e) {
+                return false;
+            }
+            return browserStorage;
+        }
+    }( window.hyva = window.hyva || {} ));
+</script>

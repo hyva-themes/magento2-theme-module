@@ -11,6 +11,7 @@
     <body>
         <referenceContainer name="after.body.start">
             <block name="head.js" class="Magento\Framework\View\Element\Template" template="Hyva_Theme::page/js/variables.phtml"/>
+            <block name="head.hyva-scripts" template="Hyva_Theme::page/js/hyva.phtml"/>
         </referenceContainer>
 
         <referenceContainer name="before.body.end">
