@@ -22,6 +22,12 @@ declare(strict_types=1);
         window.dispatchEvent(messagesEvent);
     }
 
+<?php
+    /**
+     * The `hyva` JS namespace is being set by Hyva_Theme/src/view/frontend/templates/page/js/hyva.phtml
+     * and should be included through Hyva_Theme/src/view/frontend/layout/default_hyva.xml
+     */
+?>
     if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
         console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
     }

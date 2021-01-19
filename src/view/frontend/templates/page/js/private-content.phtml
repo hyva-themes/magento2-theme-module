@@ -25,6 +25,12 @@ use Magento\Framework\View\Element\Template;
 
         var ttl = 3600;
 
+<?php
+        /**
+         * The `hyva` JS namespace is being set by Hyva_Theme/src/view/frontend/templates/page/js/hyva.phtml
+         * and should be included through Hyva_Theme/src/view/frontend/layout/default_hyva.xml
+         */
+?>
         if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
             console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
         }
@@ -43,6 +49,14 @@ use Magento\Framework\View\Element\Template;
             try {
                 var isInvalid = false;
 
+<?php
+                /**
+                 * The `mage-cache-sessid` cookie is being unset from backend to
+                 * indicate that sectionData is invalidated and needs to be reloaded
+                 * in the frontend. So we mark it as invalid, and re-set then
+                 * `mage-cache-sessid` cookie
+                 */
+?>
                 if (!hyva.getCookie(mage_cache_session_id_key)) {
                     isInvalid = true;
                     setCookie(mage_cache_session_id_key, true)

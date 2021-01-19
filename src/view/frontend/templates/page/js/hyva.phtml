@@ -57,12 +57,14 @@ declare(strict_types=1);
         hyva.getBrowserStorage = () => {
             var browserStorage = window.localStorage || window.sessionStorage;
             if (!browserStorage) {
+                console.warn('Browser Storage is unavailable');
                 return false;
             }
             try {
                 browserStorage.setItem('storage_test', 1);
                 browserStorage.removeItem('storage_test');
-            } catch (e) {
+            } catch (error) {
+                console.warn('Browser Storage is not accessible', error);
                 return false;
             }
             return browserStorage;
