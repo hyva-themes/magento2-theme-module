@@ -59,7 +59,7 @@ use Magento\Framework\View\Element\Template;
 ?>
                 if (!hyva.getCookie(mage_cache_session_id_key)) {
                     isInvalid = true;
-                    setCookie(mage_cache_session_id_key, true)
+                    hyva.setCookie(mage_cache_session_id_key, true)
                 }
 
                 var cookieVersion = hyva.getCookie(private_content_version_key);
