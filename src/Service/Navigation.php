@@ -99,17 +99,18 @@ class Navigation
     /**
      * Build category tree for menu block.
      *
+     * @param int $maxLevel
      * @return Node
      * @throws LocalizedException
      * @throws NoSuchEntityException
      * @SuppressWarnings("PMD.UnusedFormalParameter")
      */
-    public function getMenuTree()
+    public function getMenuTree($maxLevel)
     {
         $rootId = $this->storeManager->getStore()->getRootCategoryId();
         $storeId = $this->storeManager->getStore()->getId();
 
-        $collection = $this->getCategoryTree($storeId, $rootId);
+        $collection = $this->getCategoryTree($storeId, $rootId, $maxLevel);
         $currentCategory = $this->getCurrentCategory();
         $mapping = [$rootId => $this->getMenu()];
         foreach ($collection as $category) {
@@ -187,10 +188,11 @@ class Navigation
      *
      * @param int $storeId
      * @param int $rootId
+     * @param int $maxLevel
      * @return CategoryColleciton
      * @throws LocalizedException
      */
-    private function getCategoryTree($storeId, $rootId)
+    private function getCategoryTree($storeId, $rootId, $maxLevel = 0)
     {
         /** @var CategoryColleciton $collection */
         $collection = $this->collectionFactory->create();
@@ -199,7 +201,11 @@ class Navigation
         $collection->addFieldToFilter('path', ['like' => '1/' . $rootId . '/%']); //load only from store root
         $collection->addAttributeToFilter('include_in_menu', 1);
         $collection->addIsActiveFilter();
-        $collection->addNavigationMaxDepthFilter();
+        if ($maxLevel > 0) {
+            $collection->addLevelFilter($maxLevel);
+        } else {
+            $collection->addNavigationMaxDepthFilter();
+        }
         $collection->addUrlRewriteToResult();
         $collection->addOrder('level', Collection::SORT_ORDER_ASC);
         $collection->addOrder('position', Collection::SORT_ORDER_ASC);

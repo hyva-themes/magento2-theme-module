@@ -13,6 +13,8 @@ namespace Hyva\Theme\ViewModel;
 use Hyva\Theme\Service\Navigation as NavigationService;
 use Magento\Framework\Data\Tree\Node;
 use Magento\Framework\Data\Tree\Node\Collection;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class Navigation implements ArgumentInterface
@@ -28,11 +30,13 @@ class Navigation implements ArgumentInterface
     }
 
     /**
-     * @return false|string
+     * @return array|false
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
-    public function getNavigation()
+    public function getNavigation($maxLevel = false)
     {
-        $menuTree = $this->navigationService->getMenuTree();
+        $menuTree = $this->navigationService->getMenuTree($maxLevel);
 
         return $this->getMenuData($menuTree);
     }

@@ -111,12 +111,12 @@ use Magento\Framework\View\Element\Template;
         }
 
 <?php
-/**
- * We use 'X-Requested-With': 'XMLHttpRequest' to prevent Magento from clearing the customer session
- * in \Magento\PageCache\Model\DepersonalizeChecker::checkIfDepersonalize
- * Otherwise, \Magento\Tax\Plugin\Checkout\CustomerData\Cart::afterGetSectionData can't add tax to
- * cart items.
- */
+        /**
+         * We use 'X-Requested-With': 'XMLHttpRequest' to prevent Magento from clearing the customer session
+         * in \Magento\PageCache\Model\DepersonalizeChecker::checkIfDepersonalize
+         * Otherwise, \Magento\Tax\Plugin\Checkout\CustomerData\Cart::afterGetSectionData can't add tax to
+         * cart items.
+         */
 ?>
         function fetchPrivateContent(sections) {
             fetch('<?= $escaper->escapeUrl(
