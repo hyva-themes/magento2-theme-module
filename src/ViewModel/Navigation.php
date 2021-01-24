@@ -30,6 +30,7 @@ class Navigation implements ArgumentInterface
     }
 
     /**
+     * @param bool|int $maxLevel
      * @return array|false
      * @throws LocalizedException
      * @throws NoSuchEntityException

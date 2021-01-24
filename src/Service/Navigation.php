@@ -167,6 +167,7 @@ class Navigation
      * @param Category $currentCategory
      * @param bool $isParentActive
      * @return array
+     * @throws LocalizedException
      */
     protected function getCategoryAsArray($category, $currentCategory, $isParentActive)
     {
@@ -175,6 +176,7 @@ class Navigation
             'name' => $category->getName(),
             'id' => 'category-node-' . $categoryId,
             'url' => $this->catalogCategory->getCategoryUrl($category),
+            'image' => $category->getImageUrl(),
             'has_active' => in_array((string)$categoryId, explode('/', (string)$currentCategory->getPath()), true),
             'is_active' => $categoryId == $currentCategory->getId(),
             'is_category' => true,
@@ -197,7 +199,7 @@ class Navigation
         /** @var CategoryColleciton $collection */
         $collection = $this->collectionFactory->create();
         $collection->setStoreId($storeId);
-        $collection->addAttributeToSelect('name');
+        $collection->addAttributeToSelect(['name', 'image']);
         $collection->addFieldToFilter('path', ['like' => '1/' . $rootId . '/%']); //load only from store root
         $collection->addAttributeToFilter('include_in_menu', 1);
         $collection->addIsActiveFilter();
