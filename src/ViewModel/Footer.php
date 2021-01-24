@@ -18,14 +18,14 @@ class Footer implements ArgumentInterface
     /**
      * @var ScopeConfigInterface
      */
-    private $scopeConfig;
+    protected $scopeConfig;
 
     public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
     }
 
-    private function getStoreConfig($path)
+    protected function getStoreConfig($path)
     {
         return $this->scopeConfig->getValue($path, 'store');
     }

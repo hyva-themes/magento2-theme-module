@@ -20,7 +20,7 @@ class CurrentTheme
     /**
      * @var DesignInterface
      */
-    private $viewDesign;
+    protected $viewDesign;
 
     public function __construct(DesignInterface $viewDesign)
     {

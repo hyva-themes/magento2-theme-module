@@ -40,7 +40,7 @@ class AddLayoutHandles implements ObserverInterface
     /**
      * @var CurrentTheme
      */
-    private $theme;
+    protected $theme;
 
     public function __construct(CurrentTheme $theme)
     {

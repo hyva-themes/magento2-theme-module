@@ -17,7 +17,7 @@ class ViewModelRegistry
     /**
      * @var ObjectManagerInterface
      */
-    private $objectManager;
+    protected $objectManager;
 
     public function __construct(ObjectManagerInterface $objectManager)
     {

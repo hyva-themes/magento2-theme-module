@@ -21,7 +21,7 @@ use Magento\Framework\View\TemplateEngine\Php;
 class PhpPlugin
 {
     /** @var ViewModelRegistry */
-    private $viewModelRegistry;
+    protected $viewModelRegistry;
 
     public function __construct(ViewModelRegistry $viewModelRegistry)
     {
