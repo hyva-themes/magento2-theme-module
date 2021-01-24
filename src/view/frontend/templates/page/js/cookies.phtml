@@ -21,6 +21,17 @@ declare(strict_types=1);
         });
         window.dispatchEvent(messagesEvent);
     }
+
+<?php
+    /**
+     * The `hyva` JS namespace is being set by Hyva_Theme/src/view/frontend/templates/page/js/hyva.phtml
+     * and should be included through Hyva_Theme/src/view/frontend/layout/default_hyva.xml
+     */
+?>
+    if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
+        console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
+    }
+
     {
         var defaultConfig = {
             expires: null,
@@ -44,11 +55,11 @@ declare(strict_types=1);
                 return formKey;
             }
 
-            var formKey = getCookie('form_key');
+            var formKey = hyva.getCookie('form_key');
 
             if (!formKey) {
                 formKey = generateRandomString();
-                setCookie('form_key', formKey);
+                hyva.setCookie('form_key', formKey);
             }
             Array.from(document.querySelectorAll(inputSelector)).map(function (input) {
                 input.value = formKey
@@ -58,7 +69,7 @@ declare(strict_types=1);
 
         function initMessages() {
             try {
-                var messages = getCookie('mage-messages');
+                var messages = hyva.getCookie('mage-messages');
                 messages = messages ? JSON.parse(decodeURIComponent(messages).replace(/\+/g, ' ')) : [];
                 window.mageMessages = messages;
             } catch (error) {
@@ -77,49 +88,7 @@ declare(strict_types=1);
             ?>
             // empty `mage-messages` cookie
             const skipSetDomain = true;
-            setCookie('mage-messages','', -1, skipSetDomain);
-        }
-
-        function getCookie(name) {
-            var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-            return v ? v[2] : null;
-        }
-
-        function setCookie(name, value, days, skipSetDomain) {
-            var expires,
-                path,
-                domain,
-                secure;
-
-            var cookieConfig = window.COOKIE_CONFIG || {};
-
-            if (days) {
-                expires = lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultConfig);
-            } else {
-                expires = lifetimeToExpires(window.COOKIE_CONFIG, defaultConfig) || defaultConfig.expires;
-            }
-            path = cookieConfig.path || defaultConfig.path;
-            domain = !skipSetDomain && (cookieConfig.domain || defaultConfig.domain);
-            secure = cookieConfig.secure || defaultConfig.secure;
-
-            document.cookie = name + "=" + encodeURIComponent(value) +
-                (expires ? '; expires=' + expires.toGMTString() :  '') +
-                (path ? '; path=' + path : '') +
-                (domain ? '; domain=' + domain : '') +
-                (secure ? '; secure' : '');
-        }
-
-        function lifetimeToExpires(options, defaults) {
-
-            var lifetime = options.lifetime || defaults.lifetime;
-
-            if (lifetime) {
-                var date = new Date;
-                date.setTime(date.getTime() + lifetime * 1000);
-                return date;
-            }
-
-            return null;
+            hyva.setCookie('mage-messages','', -1, skipSetDomain);
         }
 
         window.addEventListener('load', function () {

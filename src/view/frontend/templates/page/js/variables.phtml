@@ -30,4 +30,6 @@ $cookieViewModel = $viewModels->require(Hyva\Theme\ViewModel\Cookie::class);
         "secure": false,
         "lifetime": "<?= $escaper->escapeJs($cookieViewModel->getLifetime()) ?>"
     }
+
+    window.hyva = window.hyva || {}
 </script>

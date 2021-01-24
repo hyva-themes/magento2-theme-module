@@ -9,7 +9,9 @@
 declare(strict_types=1);
 
 /** @var Template $block */
+/** @var Escaper $escaper */
 
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 ?>
@@ -19,54 +21,70 @@ use Magento\Framework\View\Element\Template;
         var private_content_key = 'mage-cache-storage';
         var private_content_expire_key = 'mage-cache-timeout';
         var private_content_version_key = 'private_content_version';
+        var mage_cache_session_id_key = 'mage-cache-sessid';
 
         var ttl = 3600;
 
-        function getCookie(name) {
-            var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-            return v ? v[2] : null;
-        }
-
-        function getBrowserStorage() {
-            var browserStorage = window.localStorage || window.sessionStorage;
-            if (!browserStorage) {
-                return false;
-            }
-            try {
-                browserStorage.setItem('storage_test', 1);
-                browserStorage.removeItem('storage_test');
-            } catch (e) {
-                return false;
-            }
-            return browserStorage;
+<?php
+        /**
+         * The `hyva` JS namespace is being set by Hyva_Theme/src/view/frontend/templates/page/js/hyva.phtml
+         * and should be included through Hyva_Theme/src/view/frontend/layout/default_hyva.xml
+         */
+?>
+        if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
+            console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
         }
 
         function loadSectionData () {
-            var browserStorage = getBrowserStorage();
+            var browserStorage = hyva.getBrowserStorage();
             if (!browserStorage) {
                 typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
                     [{
                         type: "warning",
-                        text: "<?= $block->escapeHtml(__('Please enable LocalStorage in your browser.')) ?>"
+                        text: "<?= $escaper->escapeHtml(__('Please enable LocalStorage in your browser.')) ?>"
                     }]
                 );
                 return;
             }
             try {
-                var cookieVersion = getCookie(private_content_version_key);
+                var isInvalid = false;
+
+<?php
+                /**
+                 * The `mage-cache-sessid` cookie is being unset from backend to
+                 * indicate that sectionData is invalidated and needs to be reloaded
+                 * in the frontend. So we mark it as invalid, and then re-set the
+                 * `mage-cache-sessid` cookie
+                 */
+?>
+                if (!hyva.getCookie(mage_cache_session_id_key)) {
+                    isInvalid = true;
+                    hyva.setCookie(mage_cache_session_id_key, true)
+                }
+
+                var cookieVersion = hyva.getCookie(private_content_version_key);
                 var storageVersion = browserStorage.getItem(private_content_version_key);
+
+                if (cookieVersion && !storageVersion || cookieVersion !== storageVersion) {
+                    isInvalid = true;
+                }
 
                 var privateContentExpires = browserStorage.getItem(private_content_expire_key);
                 if (privateContentExpires && new Date(privateContentExpires) < new Date()) {
                     browserStorage.removeItem(private_content_key);
                 }
 
-                if (cookieVersion && !storageVersion || cookieVersion !== storageVersion) {
+                if (isInvalid) {
                     fetchPrivateContent([]);
                     browserStorage.setItem(private_content_version_key, cookieVersion);
                 } else if (cookieVersion && storageVersion && cookieVersion === storageVersion) {
                     var privateContent = JSON.parse(browserStorage.getItem(private_content_key));
-                    if (privateContent && privateContentExpires) {
+                    if (
+                        privateContent &&
+                        privateContentExpires &&
+                        privateContent.cart &&
+                        privateContent.customer
+                    ) {
                         dispatchPrivateContent(privateContent);
                     } else {
                         fetchPrivateContent([]);
@@ -101,7 +119,7 @@ use Magento\Framework\View\Element\Template;
          */
 ?>
         function fetchPrivateContent(sections) {
-            fetch('<?= $block->escapeUrl(
+            fetch('<?= $escaper->escapeUrl(
                 $block->getBaseUrl()
             ) ?>/customer/section/load/?sections=' + encodeURIComponent(
                 sections.join(',')
@@ -125,7 +143,7 @@ use Magento\Framework\View\Element\Template;
                                 data.messages.messages = []
                             }
                             try {
-                                var browserStorage = getBrowserStorage();
+                                var browserStorage = hyva.getBrowserStorage();
                                 browserStorage.setItem(private_content_key, JSON.stringify(data));
                                 browserStorage.setItem(
                                     private_content_expire_key,
