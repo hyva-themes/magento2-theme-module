@@ -10,10 +10,13 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use ArrayIterator;
+use Iterator;
 use Magento\Catalog\Model\Product\Exception as ProductException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
+use Traversable;
 
 class CurrentProduct implements ArgumentInterface
 {
@@ -55,5 +58,61 @@ class CurrentProduct implements ArgumentInterface
     public function exists(): bool
     {
         return ($this->currentProduct && $this->currentProduct->getId());
+    }
+
+    /**
+     * Returns an iterator to loop over products while setting CurrentProduct to the current element in each iteration.
+     * Afterwards, the original value is restored.
+     *
+     * Example:
+     *
+     *      foreach($currentProduct->loop($productCollection)):
+     *          echo $block->getChildHtml('item');
+     *      endforeach;
+     *
+     * Now the child block "item" receives each item of $productCollection via the CurrentProduct view model
+     *
+     * @param iterable $iterable A product collection or array of products
+     * @return Iterator<ProductInterface>
+     */
+    public function loop(iterable $iterable): Iterator
+    {
+        if (is_array($iterable)) {
+            $iterable = new ArrayIterator($iterable);
+        }
+        return new class ($iterable, $this) extends \IteratorIterator {
+            /** @var CurrentProduct */
+            private $currentProduct;
+            /** @var ProductInterface */
+            private $originalCurrentProduct;
+
+            public function __construct(Traversable $iterator, CurrentProduct $currentProduct)
+            {
+                parent::__construct($iterator);
+                $this->currentProduct = $currentProduct;
+            }
+
+            public function rewind()
+            {
+                $this->originalCurrentProduct = $this->currentProduct->get();
+                parent::rewind();
+            }
+
+            public function current()
+            {
+                $current = parent::current();
+                $this->currentProduct->set($current);
+                return $current;
+            }
+
+            public function valid()
+            {
+                $valid = parent::valid();
+                if (!$valid && $this->originalCurrentProduct) {
+                    $this->currentProduct->set($this->originalCurrentProduct);
+                }
+                return $valid;
+            }
+        };
     }
 }
