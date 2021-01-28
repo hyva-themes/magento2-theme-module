@@ -12,8 +12,8 @@ namespace Hyva\Theme\ViewModel;
 
 /**
  * @version 0.4.2
- * @method string arrowUpHtml(string $classnames)
- * @method string checkHtml(string $classnames)
+ * @method string arrowUpHtml(string $classnames = '', ?int $width = null, ?int $height = null)
+ * @method string checkHtml(string $classnames = '', ?int $width = null, ?int $height = null)
  * @todo write a script to add all the other magic methods
  */
 interface Heroicons

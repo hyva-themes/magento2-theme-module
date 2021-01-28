@@ -103,6 +103,79 @@ class SvgIconsTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function adds_css_classes()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $expectedSvg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            SVG;
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('check', 'h-6 w-6')));
+
+    }
+
+    /**
+     * @test
+     */
+    public function adds_width_and_height()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $expectedSvg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="12">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            SVG;
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('check', '', 16, 12)));
+    }
+
+    /**
+     * @test
+     */
+    public function adds_classes_width_and_height_with_magic_method()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $expectedSvg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-red" width="16" height="12">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            SVG;
+        $this->assertEquals($expectedSvg, trim($svgIcons->checkHtml('text-red', 16, 12)));
+    }
+
+    /**
+     * @test
+     */
+    public function strips_malicious_tags()
+    {
+        $this->markTestSkipped('not necessary since the SVG files are never user provided');
+        $this->givenCurrentTheme('Hyva/test');
+        $svgWithScript = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path onmouseover="alert('gotcha')" stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+                <script>alert('Hi!')</script>
+            </svg>
+            SVG;
+        $sanitizedSvg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+            </svg>
+            SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom/evil-icon.svg', $svgWithScript);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['iconSet' => 'custom']);
+        $this->assertEquals(
+            $sanitizedSvg,
+            trim($svgIcons->renderHtml('evil-icon'))
+        );
+    }
+
     private function givenCurrentTheme(string $themePath): void
     {
         /** @var Registration $registration */

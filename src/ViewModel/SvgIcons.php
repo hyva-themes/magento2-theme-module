@@ -42,13 +42,25 @@ class SvgIcons implements ArgumentInterface
      *
      * @param string $icon The SVG file name without .svg suffix
      * @param string $classNames CSS classes to add to the root element, space separated
+     * @param int|null $width Width in px (recommended to render in correct size without CSS)
+     * @param int|null $height Height in px (recommended to render in correct size without CSS)
      * @return string
      */
-    public function renderHtml(string $icon, string $classNames = ''): string
+    public function renderHtml(string $icon, string $classNames = '', ?int $width = null, ?int $height = null): string
     {
-        //TODO sanitize SVGs as in integer-net/magento2-storegraphics
-        //TODO add CSS classes
-        return \file_get_contents($this->getFilePath($icon));
+        //TODO evaluate if SimpleXml causes performance issues, it might help to cache results
+        $svg = \file_get_contents($this->getFilePath($icon));
+        $svgXml = new \SimpleXMLElement($svg);
+        if (trim($classNames)) {
+            $svgXml->addAttribute('class', $classNames);
+        }
+        if ($width) {
+            $svgXml->addAttribute('width', (string) $width);
+        }
+        if ($height) {
+            $svgXml->addAttribute('height', (string) $height);
+        }
+        return \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
     }
 
     public function __call($method, $args)
