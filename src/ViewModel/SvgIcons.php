@@ -13,6 +13,15 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Framework\View\Asset;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
+/**
+ * This generic SvgIcons view model can be used to render any icon set (i.e. subdirectory in web/svg).
+ *
+ * The icon set can be configured with di.xml or by extending the class. The module ships with Heroicons
+ * and two preconfigured view models:
+ *
+ * @see HeroiconsSolid
+ * @see HeroiconsOutline
+ */
 class SvgIcons implements ArgumentInterface
 {
     public const HEROICONS_OUTLINE = 'heroicons/outline';
@@ -63,6 +72,10 @@ class SvgIcons implements ArgumentInterface
         return \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
     }
 
+    /**
+     * Magic method to allow iconNameHtml() instead of renderHtml('icon-name'). Subclasses may
+     * use @method doc blocks to provide autocompletion for available icons.
+     */
     public function __call($method, $args)
     {
         if (\preg_match('/^(.*)Html$/', $method, $matches)) {
@@ -81,7 +94,10 @@ class SvgIcons implements ArgumentInterface
         return strtolower(preg_replace('/(.)([A-Z])/', "$1-$2", $in));
     }
 
-    private function getFilePath(string $icon)
+    /**
+     * Return full path to icon file, respecting theme fallback
+     */
+    private function getFilePath(string $icon): string
     {
         $assetFileId = 'Hyva_Theme::svg/' . $this->iconSet . '/' . $icon . '.svg';
         return $this->assetRepository->createAsset($assetFileId)->getSourceFile();
