@@ -19,6 +19,6 @@ class HeroiconsSolid extends SvgIcons implements Heroicons
 {
     public function __construct(Asset\Repository $assetRepository)
     {
-        parent::__construct($assetRepository, self::HEROICONS_OUTLINE);
+        parent::__construct($assetRepository, self::HEROICONS_SOLID);
     }
 }
