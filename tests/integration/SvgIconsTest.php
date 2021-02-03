@@ -5,6 +5,7 @@ namespace Hyva\Theme;
 
 use Hyva\Theme\Service\CurrentTheme;
 use Hyva\Theme\ViewModel\Heroicons;
+use Magento\Framework\App\CacheInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\DesignInterface;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -22,12 +23,15 @@ class SvgIconsTest extends TestCase
     private $objectManager;
 
     /** @var string[] */
-    private ?array $testViewFiles;
+    private ?array $testViewFiles = [];
 
     protected function setUp(): void
     {
         $this->testViewFiles = [];
         $this->objectManager = Bootstrap::getObjectManager();
+        /** @var CacheInterface $cache */
+        $cache = $this->objectManager->get(CacheInterface::class);
+        $cache->clean(['HYVA_ICONS']);
         ThemeFixture::registerTestThemes();
     }
 
@@ -224,7 +228,7 @@ class SvgIconsTest extends TestCase
     /**
      * @test
      */
-    public function renders_same_icon_fast()
+    public function renders_repeated_icon_fast()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
@@ -234,5 +238,29 @@ class SvgIconsTest extends TestCase
         }
         $seconds = microtime(true) - $startTime;
         $this->assertLessThan(0.01, $seconds, 'Rendering the same SVG 100 times should take less than 10ms');
+    }
+
+    /**
+     * @test
+     */
+    public function caches_icons_based_on_width_and_height()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $first = $svgIcons->renderHtml('cake', 'w-6 h-6', 32, 32);
+        $second = $svgIcons->renderHtml('cake', 'w-6 h-6', 16, 16);
+        $this->assertNotEquals($first, $second, 'Different width + height parameters should result in different SVGs');
+    }
+
+    /**
+     * @test
+     */
+    public function caches_icons_based_on_class_names()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $first = $svgIcons->renderHtml('document', 'w-6 h-6');
+        $second = $svgIcons->renderHtml('document', 'w-5 h-5');
+        $this->assertNotEquals($first, $second, 'Different class names should result in different SVGs');
     }
 }

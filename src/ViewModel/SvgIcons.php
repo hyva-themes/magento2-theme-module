@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Framework\App\CacheInterface;
 use Magento\Framework\View\Asset;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
@@ -24,6 +25,8 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
  */
 class SvgIcons implements ArgumentInterface
 {
+    private const CACHE_TAG = 'HYVA_ICONS';
+
     public const HEROICONS_OUTLINE = 'heroicons/outline';
     public const HEROICONS_SOLID   = 'heroicons/solid';
 
@@ -38,14 +41,23 @@ class SvgIcons implements ArgumentInterface
     private $assetRepository;
 
     /**
+     * @var CacheInterface
+     */
+    private CacheInterface $cache;
+
+    /**
      * @var array<string,string>
      */
     private $svgCache = [];
 
-    public function __construct(Asset\Repository $assetRepository, string $iconSet = self::HEROICONS_OUTLINE)
-    {
+    public function __construct(
+        Asset\Repository $assetRepository,
+        CacheInterface $cache,
+        string $iconSet = self::HEROICONS_OUTLINE
+    ) {
         $this->iconSet = $iconSet;
         $this->assetRepository = $assetRepository;
+        $this->cache = $cache;
     }
 
     /**
@@ -63,8 +75,8 @@ class SvgIcons implements ArgumentInterface
     public function renderHtml(string $icon, string $classNames = '', ?int $width = null, ?int $height = null): string
     {
         $cacheKey = $icon . '/' . $classNames . '#' . $width . '#' . $height;
-        if (isset($this->svgCache[$cacheKey])) {
-            return $this->svgCache[$cacheKey];
+        if ($result = $this->cache->load($cacheKey)) {
+            return $result;
         }
         $svg = \file_get_contents($this->getFilePath($icon));
         $svgXml = new \SimpleXMLElement($svg);
@@ -77,8 +89,9 @@ class SvgIcons implements ArgumentInterface
         if ($height) {
             $svgXml->addAttribute('height', (string) $height);
         }
-        $this->svgCache[$cacheKey] = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
-        return $this->svgCache[$cacheKey];
+        $result = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
+        $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
+        return $result;
     }
 
     /**

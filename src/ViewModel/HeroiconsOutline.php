@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Framework\App\CacheInterface;
 use Magento\Framework\View\Asset;
 
 /**
@@ -17,8 +18,8 @@ use Magento\Framework\View\Asset;
  */
 class HeroiconsOutline extends SvgIcons implements Heroicons
 {
-    public function __construct(Asset\Repository $assetRepository)
+    public function __construct(Asset\Repository $assetRepository, CacheInterface $cache)
     {
-        parent::__construct($assetRepository, self::HEROICONS_OUTLINE);
+        parent::__construct($assetRepository, $cache, self::HEROICONS_OUTLINE);
     }
 }
