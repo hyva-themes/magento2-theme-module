@@ -220,4 +220,19 @@ class SvgIconsTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @test
+     */
+    public function renders_same_icon_fast()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $startTime = microtime(true);
+        for ($i=0; $i<100; ++$i) {
+            $svgIcons->renderHtml('clock');
+        }
+        $seconds = microtime(true) - $startTime;
+        $this->assertLessThan(0.01, $seconds, 'Rendering the same SVG 100 times should take less than 10ms');
+    }
 }

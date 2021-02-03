@@ -37,6 +37,11 @@ class SvgIcons implements ArgumentInterface
      */
     private $assetRepository;
 
+    /**
+     * @var array<string,string>
+     */
+    private $svgCache = [];
+
     public function __construct(Asset\Repository $assetRepository, string $iconSet = self::HEROICONS_OUTLINE)
     {
         $this->iconSet = $iconSet;
@@ -57,7 +62,10 @@ class SvgIcons implements ArgumentInterface
      */
     public function renderHtml(string $icon, string $classNames = '', ?int $width = null, ?int $height = null): string
     {
-        //TODO evaluate if SimpleXml causes performance issues, it might help to cache results
+        $cacheKey = $icon . '/' . $classNames . '#' . $width . '#' . $height;
+        if (isset($this->svgCache[$cacheKey])) {
+            return $this->svgCache[$cacheKey];
+        }
         $svg = \file_get_contents($this->getFilePath($icon));
         $svgXml = new \SimpleXMLElement($svg);
         if (trim($classNames)) {
@@ -69,7 +77,8 @@ class SvgIcons implements ArgumentInterface
         if ($height) {
             $svgXml->addAttribute('height', (string) $height);
         }
-        return \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
+        $this->svgCache[$cacheKey] = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
+        return $this->svgCache[$cacheKey];
     }
 
     /**
