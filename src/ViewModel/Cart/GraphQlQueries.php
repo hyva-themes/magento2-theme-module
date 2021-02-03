@@ -69,6 +69,7 @@ class GraphQlQueries implements ArgumentInterface
                         value
                         price {
                         value
+                        type
                       }
                     }
                   }
