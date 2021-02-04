@@ -43,7 +43,7 @@ class SvgIcons implements ArgumentInterface
     /**
      * @var CacheInterface
      */
-    private CacheInterface $cache;
+    private $cache;
 
     /**
      * @var array<string,string>
