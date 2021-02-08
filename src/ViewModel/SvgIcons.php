@@ -74,7 +74,7 @@ class SvgIcons implements ArgumentInterface
      */
     public function renderHtml(string $icon, string $classNames = '', ?int $width = null, ?int $height = null): string
     {
-        $cacheKey = $icon . '/' . $classNames . '#' . $width . '#' . $height;
+        $cacheKey = $this->iconSet . '/' . $icon . '/' . $classNames . '#' . $width . '#' . $height;
         if ($result = $this->cache->load($cacheKey)) {
             return $result;
         }

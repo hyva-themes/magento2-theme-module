@@ -258,9 +258,22 @@ class SvgIconsTest extends TestCase
     public function caches_icons_based_on_class_names()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $first = $svgIcons->renderHtml('document', 'w-6 h-6');
         $second = $svgIcons->renderHtml('document', 'w-5 h-5');
         $this->assertNotEquals($first, $second, 'Different class names should result in different SVGs');
+    }
+
+    /**
+     * @test
+     */
+    public function caches_icons_based_on_icon_set()
+    {
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $outlineIcons */
+        $outlineIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+        $solidIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsSolid::class);
+        $first = $outlineIcons->renderHtml('eye', 'w-6 h-6');
+        $second = $solidIcons->renderHtml('eye', 'w-6 h-6');
+        $this->assertNotEquals($first, $second, 'Different icon sets for the same icon should result in different SVGs');
     }
 }
