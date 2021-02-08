@@ -53,7 +53,7 @@ class SvgIcons implements ArgumentInterface
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
-        string $iconSet = self::HEROICONS_OUTLINE
+        string $iconSet = ''
     ) {
         $this->iconSet = $iconSet;
         $this->assetRepository = $assetRepository;

@@ -48,8 +48,8 @@ class SvgIconsTest extends TestCase
      */
     public function renders_svg_with_code(string $code, string $method, string $expectedSvg)
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml($code)));
     }
 
@@ -59,8 +59,8 @@ class SvgIconsTest extends TestCase
      */
     public function renders_svg_with_magic_method(string $code, string $method, string $expectedSvg)
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons|Heroicons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $this->assertEquals(
             $expectedSvg,
             trim($svgIcons->$method())
@@ -79,8 +79,8 @@ class SvgIconsTest extends TestCase
             </svg>
             SVG;
         $this->createViewFile('Hyva_Theme/web/svg/heroicons/outline/check.svg', $overriddenSvg);
-        /** @var \Hyva\Theme\ViewModel\SvgIcons|Heroicons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $this->assertEquals(
             $overriddenSvg,
             trim($svgIcons->checkHtml())
@@ -110,10 +110,30 @@ class SvgIconsTest extends TestCase
     /**
      * @test
      */
+    public function can_be_used_without_icon_set_in_theme()
+    {
+        $this->givenCurrentTheme('Hyva/test');
+        $svg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+            </svg>
+            SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $svg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $this->assertEquals(
+            $svg,
+            trim($svgIcons->renderHtml('custom-icon'))
+        );
+    }
+
+    /**
+     * @test
+     */
     public function adds_css_classes()
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -128,8 +148,8 @@ class SvgIconsTest extends TestCase
      */
     public function adds_width_and_height()
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="12">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -143,8 +163,8 @@ class SvgIconsTest extends TestCase
      */
     public function adds_classes_width_and_height_with_magic_method()
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-red" width="16" height="12">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -230,8 +250,8 @@ class SvgIconsTest extends TestCase
      */
     public function renders_repeated_icon_fast()
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $startTime = microtime(true);
         for ($i=0; $i<100; ++$i) {
             $svgIcons->renderHtml('clock');
@@ -245,8 +265,8 @@ class SvgIconsTest extends TestCase
      */
     public function caches_icons_based_on_width_and_height()
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
-        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\SvgIcons::class);
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $first = $svgIcons->renderHtml('cake', 'w-6 h-6', 32, 32);
         $second = $svgIcons->renderHtml('cake', 'w-6 h-6', 16, 16);
         $this->assertNotEquals($first, $second, 'Different width + height parameters should result in different SVGs');
@@ -257,7 +277,7 @@ class SvgIconsTest extends TestCase
      */
     public function caches_icons_based_on_class_names()
     {
-        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $first = $svgIcons->renderHtml('document', 'w-6 h-6');
         $second = $svgIcons->renderHtml('document', 'w-5 h-5');
@@ -277,3 +297,4 @@ class SvgIconsTest extends TestCase
         $this->assertNotEquals($first, $second, 'Different icon sets for the same icon should result in different SVGs');
     }
 }
+
