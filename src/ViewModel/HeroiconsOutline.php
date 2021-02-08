@@ -18,6 +18,8 @@ use Magento\Framework\View\Asset;
  */
 class HeroiconsOutline extends SvgIcons implements Heroicons
 {
+    private const HEROICONS_OUTLINE = 'heroicons/outline';
+
     public function __construct(Asset\Repository $assetRepository, CacheInterface $cache)
     {
         parent::__construct($assetRepository, $cache, self::HEROICONS_OUTLINE);

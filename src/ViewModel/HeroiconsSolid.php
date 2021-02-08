@@ -18,6 +18,8 @@ use Magento\Framework\View\Asset;
  */
 class HeroiconsSolid extends SvgIcons implements Heroicons
 {
+    private const HEROICONS_SOLID   = 'heroicons/solid';
+
     public function __construct(Asset\Repository $assetRepository, CacheInterface $cache)
     {
         parent::__construct($assetRepository, $cache, self::HEROICONS_SOLID);

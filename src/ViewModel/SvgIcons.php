@@ -27,9 +27,6 @@ class SvgIcons implements ArgumentInterface
 {
     private const CACHE_TAG = 'HYVA_ICONS';
 
-    public const HEROICONS_OUTLINE = 'heroicons/outline';
-    public const HEROICONS_SOLID   = 'heroicons/solid';
-
     /**
      * @var string Path relative to asset directory Hyva_Theme::svg/
      */
