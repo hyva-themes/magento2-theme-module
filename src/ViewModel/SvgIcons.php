@@ -27,9 +27,6 @@ class SvgIcons implements ArgumentInterface
 {
     private const CACHE_TAG = 'HYVA_ICONS';
 
-    public const HEROICONS_OUTLINE = 'heroicons/outline';
-    public const HEROICONS_SOLID   = 'heroicons/solid';
-
     /**
      * @var string Path relative to asset directory Hyva_Theme::svg/
      */
@@ -53,7 +50,7 @@ class SvgIcons implements ArgumentInterface
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
-        string $iconSet = self::HEROICONS_OUTLINE
+        string $iconSet = ''
     ) {
         $this->iconSet = $iconSet;
         $this->assetRepository = $assetRepository;
@@ -74,7 +71,7 @@ class SvgIcons implements ArgumentInterface
      */
     public function renderHtml(string $icon, string $classNames = '', ?int $width = null, ?int $height = null): string
     {
-        $cacheKey = $icon . '/' . $classNames . '#' . $width . '#' . $height;
+        $cacheKey = $this->iconSet . '/' . $icon . '/' . $classNames . '#' . $width . '#' . $height;
         if ($result = $this->cache->load($cacheKey)) {
             return $result;
         }
