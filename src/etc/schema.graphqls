@@ -1,6 +1,11 @@
+# Hyvä Themes - https://hyva.io
+# Copyright © Hyvä Themes 2020-present. All rights reserved.
+# This product is licensed per Magento install
+# See https://hyva.io/license
 
 interface CartItemInterface {
     prices: CartItemPrices @resolver(class: "\\Hyva\\Theme\\Model\\Resolver\\CartItemPrices")
+    product_type: String! @resolver(class: "\\Hyva\\Theme\\Model\\Resolver\\CartItemType")
 }
 
 type CartItemPrices {

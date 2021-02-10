@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ *
+ * Send emails for orders which are created via GraphQl
+ * See https://github.com/magento/magento2/pull/28352
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_model_service_quote_submit_success">
+        <observer name="sendEmail" instance="Magento\Quote\Observer\SubmitObserver" />
+    </event>
+</config>

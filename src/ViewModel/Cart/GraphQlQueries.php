@@ -40,6 +40,7 @@ class GraphQlQueries implements ArgumentInterface
                     value
                   }
                 }
+                product_type
                 product {
                   id
                   name
@@ -49,6 +50,7 @@ class GraphQlQueries implements ArgumentInterface
                     url
                   }
                   url_key
+                  url_suffix
                   price_tiers {
                       quantity
                       final_price {
