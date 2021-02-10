@@ -40,6 +40,7 @@ class GraphQlQueries implements ArgumentInterface
                     value
                   }
                 }
+                product_type
                 product {
                   id
                   name

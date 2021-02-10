@@ -1,6 +1,7 @@
 
 interface CartItemInterface {
     prices: CartItemPrices @resolver(class: "\\Hyva\\Theme\\Model\\Resolver\\CartItemPrices")
+    product_type: String! @resolver(class: "\\Hyva\\Theme\\Model\\Resolver\\CartItemType")
 }
 
 type CartItemPrices {
