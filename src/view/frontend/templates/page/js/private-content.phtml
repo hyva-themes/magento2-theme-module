@@ -18,12 +18,12 @@ use Magento\Framework\View\Element\Template;
 <script>
     'use strict';
     {
-        var private_content_key = 'mage-cache-storage';
-        var private_content_expire_key = 'mage-cache-timeout';
-        var private_content_version_key = 'private_content_version';
-        var mage_cache_session_id_key = 'mage-cache-sessid';
+        const private_content_key = 'mage-cache-storage';
+        const private_content_expire_key = 'mage-cache-timeout';
+        const private_content_version_key = 'private_content_version';
+        const mage_cache_session_id_key = 'mage-cache-sessid';
 
-        var ttl = 3600;
+        const ttl = 3600;
 
 <?php
         /**
@@ -36,7 +36,7 @@ use Magento\Framework\View\Element\Template;
         }
 
         function loadSectionData () {
-            var browserStorage = hyva.getBrowserStorage();
+            const browserStorage = hyva.getBrowserStorage();
             if (!browserStorage) {
                 typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
                     [{
@@ -47,7 +47,7 @@ use Magento\Framework\View\Element\Template;
                 return;
             }
             try {
-                var isInvalid = false;
+                let isInvalid = false;
 
 <?php
                 /**
@@ -64,23 +64,22 @@ use Magento\Framework\View\Element\Template;
                     hyva.setCookie(mage_cache_session_id_key, true, days, skipSetDomain)
                 }
 
-                var cookieVersion = hyva.getCookie(private_content_version_key);
-                var storageVersion = browserStorage.getItem(private_content_version_key);
+                const cookieVersion = hyva.getCookie(private_content_version_key);
+                const storageVersion = browserStorage.getItem(private_content_version_key);
 
                 if (cookieVersion && !storageVersion || cookieVersion !== storageVersion) {
                     isInvalid = true;
                 }
 
-                var privateContentExpires = browserStorage.getItem(private_content_expire_key);
+                const privateContentExpires = browserStorage.getItem(private_content_expire_key);
                 if (privateContentExpires && new Date(privateContentExpires) < new Date()) {
                     browserStorage.removeItem(private_content_key);
                 }
 
                 if (isInvalid) {
                     fetchPrivateContent([]);
-                    browserStorage.setItem(private_content_version_key, cookieVersion);
                 } else if (cookieVersion && storageVersion && cookieVersion === storageVersion) {
-                    var privateContent = JSON.parse(browserStorage.getItem(private_content_key));
+                    const privateContent = JSON.parse(browserStorage.getItem(private_content_key));
                     if (
                         privateContent &&
                         privateContentExpires &&
@@ -104,7 +103,7 @@ use Magento\Framework\View\Element\Template;
         window.addEventListener('reload-customer-section-data', loadSectionData);
 
         function dispatchPrivateContent(data) {
-            var privateContentEvent = new CustomEvent("private-content-loaded", {
+            const privateContentEvent = new CustomEvent("private-content-loaded", {
                 detail: {
                     data: data
                 }
@@ -145,12 +144,14 @@ use Magento\Framework\View\Element\Template;
                                 data.messages.messages = []
                             }
                             try {
-                                var browserStorage = hyva.getBrowserStorage();
+                                const browserStorage = hyva.getBrowserStorage();
                                 browserStorage.setItem(private_content_key, JSON.stringify(data));
                                 browserStorage.setItem(
                                     private_content_expire_key,
                                     new Date(Date.now() + (ttl * 1000)).toISOString()
                                 );
+                                const newCookieVersion = hyva.getCookie(private_content_version_key);
+                                browserStorage.setItem(private_content_version_key, newCookieVersion);
                             } catch (error) {
                                 console.warn("Couldn't store privateContent", error);
                             }
