@@ -69,22 +69,6 @@ use Magento\Framework\View\Element\Template;
 
                 if (cookieVersion && !storageVersion || cookieVersion !== storageVersion) {
                     isInvalid = true;
-
-<?php
-                /**
-                 * If there is no cookie set, we want to set it now, otherwise Magento
-                 * will do it only on first POST request (see \Magento\Framework\App\PageCache\Version::process)
-                 * The "magic number" 2147483648 is the return value of getrandmax()
-                 * on many platforms, plus 1.
-                */
-?>
-                    if (!cookieVersion) {
-                        let rand = Math.floor(Math.random() * 2147483648),
-                            time = Math.floor(new Date().getTime() / 1000),
-                            days = 315360000; // Ten years
-                        cookieVersion = hyva.hash(rand + time);
-                        hyva.setCookie(private_content_version_key, cookieVersion, days);
-                    }
                 }
 
                 var privateContentExpires = browserStorage.getItem(private_content_expire_key);

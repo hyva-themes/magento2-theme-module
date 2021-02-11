@@ -69,14 +69,5 @@ declare(strict_types=1);
             }
             return browserStorage;
         }
-
-        // Simple hashing function with quite low collision chance
-        hyva.hash = function(s) {
-            for (var i = 0, h = 0xdeadbeef; i < s.length; i++) {
-                h = Math.imul(h ^ s.charCodeAt(i), 2654435761);
-            }
-            return (h ^ h >>> 16) >>> 0;
-        };
-
     }( window.hyva = window.hyva || {} ));
 </script>
