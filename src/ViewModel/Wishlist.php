@@ -29,5 +29,9 @@ class Wishlist implements ArgumentInterface
     {
         return $this->wishlistHelper->isAllow();
     }
-}
 
+    public function isAllowInCart(): bool
+    {
+        return $this->wishlistHelper->isAllowInCart();
+    }
+}
