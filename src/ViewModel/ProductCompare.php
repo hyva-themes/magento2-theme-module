@@ -17,7 +17,7 @@ use Magento\Store\Model\ScopeInterface;
 class ProductCompare implements ArgumentInterface
 {
     private const CONFIG_PATH_SHOW_COMPARE_IN_PRODUCT_LIST = 'catalog/frontend/show_add_to_compare_in_list';
-    private const CONFIG_PATH_SHOW_COMPARE_ON_PRODUCT_PAGE = 'catalog/frontend/show_add_to_compare_in_list';
+    private const CONFIG_PATH_SHOW_COMPARE_ON_PRODUCT_PAGE = 'catalog/frontend/show_add_to_compare_on_product_page';
 
     /**
      * @var ScopeConfigInterface
