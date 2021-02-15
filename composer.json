@@ -12,12 +12,12 @@
     "magento/module-wishlist": ">=101.0.0"
   },
   "require-dev": {
-      "hyva-themes/magento2-reset-theme":  "^1.0.0",
-      "hyva-themes/magento2-default-theme":  "^0.1.0",
+    "hyva-themes/magento2-reset-theme":  "*",
+    "hyva-themes/magento2-default-theme":  "*",
     "tddwizard/magento2-fixtures": "^1.0"
   },
   "authors": [{
-    "name": "Hyvä Themes, Wigman Interactive",
+    "name": "Hyvä Themes B.V.",
     "email": "info@hyva.io"
   }],
   "license": "see LICENSE.md",
