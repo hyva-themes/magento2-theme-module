@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Cookie as CookieViewModel;
+use Hyva\Theme\ViewModel\Store as StoreViewModel;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -19,6 +20,9 @@ use Magento\Framework\View\Element\Template;
 
 /** @var CookieViewModel $cookieViewModel */
 $cookieViewModel = $viewModels->require(Hyva\Theme\ViewModel\Cookie::class);
+
+/** @var StoreViewModel $storeViewModel */
+$storeViewModel = $viewModels->require(StoreViewModel::class);
 ?>
 <script>
     var BASE_URL = '<?= /* @noEscape */ $block->getUrl('/') ?>';
@@ -29,7 +33,8 @@ $cookieViewModel = $viewModels->require(Hyva\Theme\ViewModel\Cookie::class);
         "domain": "<?= $escaper->escapeJs($cookieViewModel->getDomain()) ?>",
         "secure": false,
         "lifetime": "<?= $escaper->escapeJs($cookieViewModel->getLifetime()) ?>"
-    }
+    };
+    var CURRENT_STORE_CODE = '<?= $storeViewModel->getStoreCode(); ?>';
 
     window.hyva = window.hyva || {}
 </script>
