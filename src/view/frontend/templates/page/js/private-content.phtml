@@ -22,6 +22,7 @@ use Magento\Framework\View\Element\Template;
         const private_content_expire_key = 'mage-cache-timeout';
         const private_content_version_key = 'private_content_version';
         const mage_cache_session_id_key = 'mage-cache-sessid';
+        const last_visited_store_key = 'last_visited_store';
 
         const ttl = 3600;
 
@@ -48,6 +49,18 @@ use Magento\Framework\View\Element\Template;
             }
             try {
                 let isInvalid = false;
+
+<?php
+                /**
+                 * Usually store switch is made via POST requests, but if this happen on other ways (eg. the customer
+                 * changing manually the base url, or landing from search engines on a different store) we need to
+                 * request again private contents
+                */
+?>
+                if (hyva.getCookie(last_visited_store_key) != CURRENT_STORE_CODE) {
+                    isInvalid = true;
+                }
+                hyva.setCookie(last_visited_store_key, CURRENT_STORE_CODE, false, false);
 
 <?php
                 /**
