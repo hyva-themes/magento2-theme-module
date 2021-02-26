@@ -15,4 +15,12 @@
     <type name="Magento\Framework\View\TemplateEngine\Php">
         <plugin name="php_template_engine_plugin" type="Hyva\Theme\Plugin\TemplateEngine\PhpPlugin"/>
     </type>
+
+    <type name="Magento\Cms\Model\Template\FilterProvider">
+        <arguments>
+            <argument name="pageFilter" xsi:type="string">Hyva\Theme\Model\Template\Filter</argument>
+            <argument name="blockFilter" xsi:type="string">Hyva\Theme\Model\Template\Filter</argument>
+        </arguments>
+    </type>
+
 </config>
