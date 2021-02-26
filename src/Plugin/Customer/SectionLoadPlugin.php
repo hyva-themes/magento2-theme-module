@@ -16,6 +16,9 @@ use Magento\Framework\App\PageCache\Version;
 class SectionLoadPlugin extends Version
 {
     /**
+     * If we don't have a `private_content_version` cookie yet,
+     * always create one on /customer/section/load requests
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function beforeExecute(Load $subject)
