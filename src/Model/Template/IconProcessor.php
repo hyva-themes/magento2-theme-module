@@ -42,10 +42,10 @@ class IconProcessor implements ProcessorInterface
      * Processes {{icon}} directives and turns them into inline SVG elements
      *
      * Valid formats:
-     * {{icon path="heroicons/solid/shopping-cart" classes="w-6 h-6" width=12 height=12}}
+     * {{icon "heroicons/solid/shopping-cart" classes="w-6 h-6" width=12 height=12}}
      *
      * Custom icons stored in `web/svg/` like `web/svg/cart.svg`:
-     * {{icon path="cart"}}
+     * {{icon "cart"}}
      *
      * @param mixed $path Template var, scalar or null if nothing has been passed to the directive.
      * @param string[] $parameters Additional parameters.
