@@ -16,11 +16,11 @@
         <plugin name="php_template_engine_plugin" type="Hyva\Theme\Plugin\TemplateEngine\PhpPlugin"/>
     </type>
 
-    <type name="Magento\Cms\Model\Template\FilterProvider">
+    <type name="Magento\Framework\Filter\SimpleDirective\ProcessorPool">
         <arguments>
-            <argument name="pageFilter" xsi:type="string">Hyva\Theme\Model\Template\Filter</argument>
-            <argument name="blockFilter" xsi:type="string">Hyva\Theme\Model\Template\Filter</argument>
+            <argument name="processors" xsi:type="array">
+                <item name="icon" xsi:type="object">Hyva\Theme\Model\Template\IconProcessor</item>
+            </argument>
         </arguments>
     </type>
-
 </config>
