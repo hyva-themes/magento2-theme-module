@@ -19,3 +19,7 @@ type Query {
         @doc(description: "The cachedCurrency query returns information about store currency and contains a 'config' cache key.")
         @cache(cacheIdentity: "Hyva\\Theme\\Model\\Resolver\\ConfigIdentity")
 }
+
+interface ProductInterface {
+    visibility: Int @doc(description: "The visibility assigned to the product.")
+}
