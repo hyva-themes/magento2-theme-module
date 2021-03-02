@@ -11,11 +11,10 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Directory\Model\Currency as CurrencyModel;
-use Magento\Directory\Model\CurrencyFactory;
 use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Framework\Escaper;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Locale\Bundle\CurrencyBundle as CurrencyBundle;
+use Magento\Framework\Locale\Bundle\CurrencyBundle;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -26,8 +25,8 @@ class Currency implements ArgumentInterface
     /** @var StoreManagerInterface */
     protected $storeManager;
 
-    /** @var CurrencyFactory */
-    protected $currencyFactory;
+    /** @var CurrencyModel */
+    protected $currencyModel;
 
     /** @var PostHelper */
     protected $postDataHelper;
@@ -51,12 +50,12 @@ class Currency implements ArgumentInterface
         StoreManagerInterface $storeManager,
         Escaper $escaper,
         UrlInterface $urlBuilder,
-        CurrencyFactory $currencyFactory,
+        CurrencyModel $currencyModel,
         PostHelper $postDataHelper,
         ResolverInterface $localeResolver
     ) {
         $this->storeManager = $storeManager;
-        $this->currencyFactory = $currencyFactory;
+        $this->currencyModel = $currencyModel;
         $this->postDataHelper = $postDataHelper;
         $this->localeResolver = $localeResolver;
         $this->escaper = $escaper;
@@ -88,7 +87,7 @@ class Currency implements ArgumentInterface
             $currencies = [];
             $codes = $this->storeManager->getStore()->getAvailableCurrencyCodes(true);
             if (is_array($codes) && count($codes) > 1) {
-                $rates = $this->currencyFactory->create()->getCurrencyRates(
+                $rates = $this->currencyModel->getCurrencyRates(
                     $this->storeManager->getStore()->getBaseCurrency(),
                     $codes
                 );
