@@ -19,6 +19,9 @@ use Magento\Store\Model\Group;
 use Magento\Store\Model\Store as StoreModel;
 use Magento\Store\Model\StoreManagerInterface;
 
+/**
+ * Reimplemented from @see \Magento\Store\Block\Switcher
+ */
 class StoreSwitcher implements ArgumentInterface
 {
     /** @var StoreManagerInterface */
