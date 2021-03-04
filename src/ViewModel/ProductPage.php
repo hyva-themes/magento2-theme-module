@@ -12,9 +12,11 @@ namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Helper\Cart;
+use Magento\Framework\Phrase;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Catalog\Helper\Output;
 
 class ProductPage implements ArgumentInterface
 {
@@ -39,17 +41,26 @@ class ProductPage implements ArgumentInterface
     protected $cartHelper;
 
     /**
+     * @var Output
+     */
+    protected $productOutputHelper;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
+     * @param Cart $cartHelper
+     * @param Output $productOutputHelper
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
-        Cart $cartHelper
+        Cart $cartHelper,
+        Output $productOutputHelper
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
+        $this->productOutputHelper = $productOutputHelper;
     }
 
     /**
@@ -68,12 +79,15 @@ class ProductPage implements ArgumentInterface
         $product = $this->getProduct();
 
         if ($shortDescription = $product->getShortDescription()) {
-            return $shortDescription;
+            $excerpt = $this->excerptFromDescription($shortDescription);
+            return $this->productAttributeHtml($product, $excerpt, 'short_description');
         }
 
         if ($description = $product->getDescription()) {
-            return $this->excerptFromDescription($description);
+            $excerpt = $this->excerptFromDescription($description);
+            return $this->productAttributeHtml($product, $excerpt, 'description');
         }
+
         return "";
     }
 
@@ -126,5 +140,15 @@ class ProductPage implements ArgumentInterface
         return $format
             ? $this->priceCurrency->convertAndFormat($value, $includeContainer)
             : $this->priceCurrency->convert($value);
+    }
+
+    /**
+     * @param string|Phrase $attributeHtml
+     * @param string $attributeName
+     * @return mixed
+     */
+    public function productAttributeHtml(Product $product, $attributeHtml, $attributeName)
+    {
+        return $this->productOutputHelper->productAttribute($product, $attributeHtml, $attributeName);
     }
 }
