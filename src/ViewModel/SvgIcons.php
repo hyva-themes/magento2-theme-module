@@ -12,6 +12,7 @@ namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\View\Asset;
+use Magento\Framework\View\DesignInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 /**
@@ -43,6 +44,11 @@ class SvgIcons implements ArgumentInterface
     private $cache;
 
     /**
+     * @var DesignInterface
+     */
+    private $design;
+
+    /**
      * @var array<string,string>
      */
     private $svgCache = [];
@@ -50,11 +56,13 @@ class SvgIcons implements ArgumentInterface
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
+        DesignInterface $design,
         string $iconSet = ''
     ) {
         $this->iconSet = $iconSet;
         $this->assetRepository = $assetRepository;
         $this->cache = $cache;
+        $this->design = $design;
     }
 
     /**
@@ -71,7 +79,7 @@ class SvgIcons implements ArgumentInterface
      */
     public function renderHtml(string $icon, string $classNames = '', ?int $width = null, ?int $height = null): string
     {
-        $cacheKey = $this->iconSet . '/' . $icon . '/' . $classNames . '#' . $width . '#' . $height;
+        $cacheKey = $this->design->getDesignTheme()->getCode() . '/' . $this->iconSet . '/' . $icon . '/' . $classNames . '#' . $width . '#' . $height;
         if ($result = $this->cache->load($cacheKey)) {
             return $result;
         }
