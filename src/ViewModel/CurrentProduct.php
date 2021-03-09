@@ -12,7 +12,6 @@ namespace Hyva\Theme\ViewModel;
 
 use ArrayIterator;
 use Iterator;
-use Magento\Catalog\Model\Product\Exception as ProductException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
@@ -42,14 +41,14 @@ class CurrentProduct implements ArgumentInterface
 
     /**
      * @return ProductInterface
-     * @throws ProductException
+     * @throws \RuntimeException
      */
     public function get(): ProductInterface
     {
         if ($this->exists()) {
             return $this->currentProduct;
         }
-        throw new ProductException(__('Product is not set on ProductRegistry.'));
+        throw new \RuntimeException('Product is not set on ProductRegistry.');
     }
 
     /**

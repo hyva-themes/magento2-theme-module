@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\Data\CategoryInterfaceFactory;
@@ -39,14 +38,14 @@ class CurrentCategory implements ArgumentInterface
 
     /**
      * @return CategoryInterface
-     * @throws LocalizedException
+     * @throws \RuntimeException
      */
     public function get(): CategoryInterface
     {
         if ($this->exists()) {
             return $this->currentCategory;
         }
-        throw new LocalizedException(__('Category is not set on CategoryRegistry.'));
+        throw new \RuntimeException('Category is not set on CategoryRegistry.');
     }
 
     /**
