@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Observer;
 
+use Hyva\Theme\ViewModel\CurrentCategory;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Framework\Event\Observer as Event;
 use Magento\Framework\Event\ObserverInterface;
@@ -32,9 +33,18 @@ class RegisterCurrentProduct implements ObserverInterface
      */
     protected $currentProduct;
 
-    public function __construct(CurrentProduct $currentProduct)
+    /**
+     * @var CurrentCategory
+    */
+    protected $currentCategory;
+
+    public function __construct(
+        CurrentProduct $currentProduct,
+        CurrentCategory $currentCategory
+    )
     {
         $this->currentProduct = $currentProduct;
+        $this->currentCategory = $currentCategory;
     }
 
     public function execute(Event $event)
@@ -42,5 +52,9 @@ class RegisterCurrentProduct implements ObserverInterface
         /** @var ProductInterface $product */
         $product = $event->getData('product');
         $this->currentProduct->set($product);
+
+        if ($product->getCategory()) {
+            $this->currentCategory->set($product->getCategory());
+        }
     }
 }
