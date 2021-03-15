@@ -91,13 +91,13 @@ class SvgIcons implements ArgumentInterface
         $svg = \file_get_contents($this->getFilePath($icon));
         $svgXml = new \SimpleXMLElement($svg);
         if (trim($classNames)) {
-            $svgXml->addAttribute('class', $classNames);
+            $svgXml['class'] = $classNames;
         }
         if ($width) {
-            $svgXml->addAttribute('width', (string) $width);
+            $svgXml['width'] = (string) $width;
         }
         if ($height) {
-            $svgXml->addAttribute('height', (string) $height);
+            $svgXml['height'] = (string) $height;
         }
         $result = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
         $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
