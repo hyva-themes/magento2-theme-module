@@ -25,6 +25,29 @@ declare(strict_types=1);
             return null;
         }
 
+        function generateRandomString() {
+
+            const allowedCharacters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                length = 16;
+
+            let formKey = '',
+                charactersLength = allowedCharacters.length;
+
+            for (var i = 0; i < length; i++) {
+                formKey += allowedCharacters[Math.round(Math.random() * (charactersLength - 1))]
+            }
+
+            return formKey;
+        }
+
+        const defaultCookieConfig = {
+            expires: null,
+            path: '/',
+            domain: null,
+            secure: false,
+            lifetime: null
+        }
+
         hyva.getCookie = (name) => {
             var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
             return v ? v[2] : null;
@@ -39,13 +62,13 @@ declare(strict_types=1);
             var cookieConfig = window.COOKIE_CONFIG || {};
 
             if (days) {
-                expires = lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultConfig);
+                expires = lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultCookieConfig);
             } else {
-                expires = lifetimeToExpires(window.COOKIE_CONFIG, defaultConfig) || defaultConfig.expires;
+                expires = lifetimeToExpires(window.COOKIE_CONFIG, defaultCookieConfig) || defaultCookieConfig.expires;
             }
-            path = cookieConfig.path || defaultConfig.path;
-            domain = !skipSetDomain && (cookieConfig.domain || defaultConfig.domain);
-            secure = cookieConfig.secure || defaultConfig.secure;
+            path = cookieConfig.path || defaultCookieConfig.path;
+            domain = !skipSetDomain && (cookieConfig.domain || defaultCookieConfig.domain);
+            secure = cookieConfig.secure || defaultCookieConfig.secure;
 
             document.cookie = name + "=" + encodeURIComponent(value) +
                 (expires ? '; expires=' + expires.toGMTString() : '') +
@@ -98,6 +121,17 @@ declare(strict_types=1);
             document.body.appendChild(form);
 
             form.submit();
+        }
+
+        hyva.getFormKey = function () {
+            let formKey = hyva.getCookie('form_key');
+
+            if (!formKey) {
+                formKey = generateRandomString();
+                hyva.setCookie('form_key', formKey);
+            }
+
+            return formKey;
         }
 
     }( window.hyva = window.hyva || {} ));

@@ -32,42 +32,18 @@ declare(strict_types=1);
         console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
     }
 
-    {
-        var defaultConfig = {
-            expires: null,
-            path: '/',
-            domain: null,
-            secure: false,
-            lifetime: null
-        }
+    (function( hyva, undefined ) {
 
-        function initFormKey() {
-            var inputSelector = 'input[name="form_key"]';
-            var allowedCharacters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            var length = 16;
+        hyva.initFormKey = () => {
+            const inputSelector = 'input[name="form_key"]',
+                formKey = hyva.getFormKey();
 
-            function generateRandomString() {
-                var formKey = '';
-                var charactersLength = allowedCharacters.length;
-                for (var i = 0; i < length; i++) {
-                    formKey += allowedCharacters[Math.round(Math.random() * (charactersLength - 1))]
-                }
-                return formKey;
-            }
-
-            var formKey = hyva.getCookie('form_key');
-
-            if (!formKey) {
-                formKey = generateRandomString();
-                hyva.setCookie('form_key', formKey);
-            }
             Array.from(document.querySelectorAll(inputSelector)).map(function (input) {
                 input.value = formKey
             });
-
         }
 
-        function initMessages() {
+        hyva.initMessages = () => {
             try {
                 var messages = hyva.getCookie('mage-messages');
                 messages = messages ? JSON.parse(decodeURIComponent(messages).replace(/\+/g, ' ')) : [];
@@ -92,8 +68,9 @@ declare(strict_types=1);
         }
 
         window.addEventListener('load', function () {
-            initFormKey();
-            initMessages();
+            hyva.initFormKey();
+            hyva.initMessages();
         })
-    }
+
+    }( window.hyva = window.hyva || {} ));
 </script>
