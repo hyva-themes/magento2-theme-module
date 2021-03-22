@@ -11,4 +11,9 @@
     <type name="\Magento\Customer\Controller\Section\Load">
         <plugin name="customer_controller_section_load" type="Hyva\Theme\Plugin\Customer\SectionLoadPlugin"/>
     </type>
+    <type name="Magento\Catalog\CustomerData\CompareProducts">
+        <plugin name="add_images"
+                type="Hyva\Theme\Plugin\CompareCustomerData\AddImages"
+                sortOrder="100"/>
+    </type>
 </config>

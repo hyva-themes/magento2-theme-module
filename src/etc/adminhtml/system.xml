@@ -15,6 +15,10 @@
                     <label>Show Add To Compare In Product List</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="show_sidebar_in_list" translate="label comment" type="select" sortOrder="110" showInDefault="1" canRestore="1">
+                    <label>Show Compare Sidebar On Product List</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="110" showInDefault="1" canRestore="1">
                     <label>Show Add To Compare On Product Page</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

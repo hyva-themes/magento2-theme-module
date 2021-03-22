@@ -17,6 +17,7 @@ use Magento\Store\Model\ScopeInterface;
 class ProductCompare implements ArgumentInterface
 {
     private const CONFIG_PATH_SHOW_COMPARE_IN_PRODUCT_LIST = 'catalog/frontend/show_add_to_compare_in_list';
+    private const CONFIG_PATH_SHOW_COMPARE_SIDEBAR_IN_LIST = 'catalog/frontend/show_sidebar_in_list';
     private const CONFIG_PATH_SHOW_COMPARE_ON_PRODUCT_PAGE = 'catalog/frontend/show_add_to_compare_on_product_page';
 
     /**
@@ -33,8 +34,15 @@ class ProductCompare implements ArgumentInterface
     {
         return (bool) $this->scopeConfig->getValue(
             self::CONFIG_PATH_SHOW_COMPARE_IN_PRODUCT_LIST,
-            ScopeInterface::SCOPE_STORES,
-            null
+            ScopeInterface::SCOPE_STORES
+        );
+    }
+
+    public function showCompareSidebar(): bool
+    {
+        return (bool) $this->scopeConfig->getValue(
+            self::CONFIG_PATH_SHOW_COMPARE_IN_PRODUCT_LIST,
+            ScopeInterface::SCOPE_STORES
         );
     }
 
@@ -42,8 +50,7 @@ class ProductCompare implements ArgumentInterface
     {
         return (bool) $this->scopeConfig->getValue(
             self::CONFIG_PATH_SHOW_COMPARE_ON_PRODUCT_PAGE,
-            ScopeInterface::SCOPE_STORES,
-            null
+            ScopeInterface::SCOPE_STORES
         );
     }
 }
