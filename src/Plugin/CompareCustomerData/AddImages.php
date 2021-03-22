@@ -12,8 +12,14 @@ use Magento\Framework\Exception\NoSuchEntityException;
 
 class AddImages
 {
-    private ImageFactory $imageFactory;
-    private ProductRepository $productRepository;
+    /**
+     * @var ImageFactory
+     */
+    private $imageFactory;
+    /**
+     * @var ProductRepository
+     */
+    private $productRepository;
 
     public function __construct(ImageFactory $imageFactory, ProductRepository $productRepository)
     {
