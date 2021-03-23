@@ -5,8 +5,17 @@
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
-
 declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Currency;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Currency $currencyViewModel */
+$currencyViewModel = $viewModels->require(Currency::class);
 ?>
 <script>
     'use strict';
@@ -70,7 +79,7 @@ declare(strict_types=1);
             return browserStorage;
         }
 
-        hyva.postForm = function(postParams) {
+        hyva.postForm = (postParams) => {
             const form = document.createElement("form");
 
             let data = postParams.data;
@@ -98,6 +107,31 @@ declare(strict_types=1);
             document.body.appendChild(form);
 
             form.submit();
+        }
+
+        hyva.formatPrice = (value, showSign) => {
+            var formatter = new Intl.NumberFormat(
+                document.documentElement.lang,
+                {
+                    style: 'currency',
+                    currency: '<?= $escaper->escapeHtml($currencyViewModel->getCurrentCurrencyCode()) ?>',
+                    signDisplay: showSign ? "always" : "auto"
+                }
+            );
+            return (typeof Intl.NumberFormat.prototype.formatToParts) ?
+                formatter.formatToParts(value).map(({type, value}) => {
+                    switch (type) {
+                        case 'currency':
+                            return '<?= $currencyViewModel->getCurrentCurrencySymbol() ?: ""; ?>' || value;
+                        case 'minusSign':
+                            return '- ';
+                        case 'plusSign':
+                            return '+ ';
+                        default :
+                            return value;
+                    }
+                }).reduce((string, part) => string + part) :
+                formatter.format(value);
         }
 
     }( window.hyva = window.hyva || {} ));
