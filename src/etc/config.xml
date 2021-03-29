@@ -12,6 +12,7 @@
         <catalog>
             <frontend>
                 <show_add_to_compare_in_list>1</show_add_to_compare_in_list>
+                <show_sidebar_in_list>1</show_sidebar_in_list>
                 <show_add_to_compare_on_product_page>1</show_add_to_compare_on_product_page>
             </frontend>
         </catalog>
