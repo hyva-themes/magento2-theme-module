@@ -22,4 +22,5 @@ type Query {
 
 interface ProductInterface {
     visibility: Int @doc(description: "The visibility assigned to the product.")
+    status: Int @doc(description: "The status assigned to the product, 0 for disabled, 1 for enabled.")
 }
