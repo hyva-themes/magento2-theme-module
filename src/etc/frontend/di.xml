@@ -8,12 +8,21 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\App\FrontControllerInterface">
+        <!--
+        /**
+          * Adds a 'X-Generated-By: Hyvä Themes' header to frontend requests
+          * Removing or altering the header message violates the terms of usage.
+          */
+        -->
+        <plugin name="front-controller-hyva-header" type="Hyva\Theme\Plugin\FrontController\HyvaHeaderPlugin"/>
+    </type>
+
     <type name="\Magento\Customer\Controller\Section\Load">
         <plugin name="customer_controller_section_load" type="Hyva\Theme\Plugin\Customer\SectionLoadPlugin"/>
     </type>
+
     <type name="Magento\Catalog\CustomerData\CompareProducts">
-        <plugin name="add_images"
-                type="Hyva\Theme\Plugin\CompareCustomerData\AddImages"
-                sortOrder="100"/>
+        <plugin name="add_images" type="Hyva\Theme\Plugin\CompareCustomerData\AddImages" sortOrder="100"/>
     </type>
 </config>
