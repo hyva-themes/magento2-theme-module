@@ -26,6 +26,14 @@
         <plugin name="add_images" type="Hyva\Theme\Plugin\CompareCustomerData\AddImages" sortOrder="100"/>
     </type>
 
+    <type name="Magento\PageCache\Controller\Block\Esi">
+        <plugin name="add_view_model_cache_tags" type="Hyva\Theme\Plugin\PageCache\AddViewModelCacheTagesToEsiResponse"/>
+    </type>
+
+    <type name="Magento\Framework\View\LayoutInterface">
+        <plugin name="save_double_cached_block_cache_tags" type="Hyva\Theme\Plugin\PageCache\SaveTagsForCachedBlocks"/>
+    </type>
+
     <!-- Add workaround for baseOldPrice missing in Magento versiony < 2.4.2 -->
     <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
         <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToConfigurableProductOptions"/>

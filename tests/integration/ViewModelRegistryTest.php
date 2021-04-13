@@ -4,12 +4,16 @@ declare(strict_types=1);
 namespace Hyva\Theme;
 
 use Hyva\Theme\Model\InvalidViewModelClass;
+use Hyva\Theme\Model\ViewModelCacheTags;
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\StubViewModels;
 use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Session;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
+
+use function array_merge as merge;
 
 /**
  * @magentoAppIsolation enabled
@@ -63,5 +67,38 @@ class ViewModelRegistryTest extends TestCase
             . "Magento\Framework\View\Element\Block\ArgumentInterface can be used as view model"
         );
         $this->viewModelRegistry->require(Session\Generic::class);
+    }
+
+    /**
+     * @test
+     * @dataProvider viewModelIdentityDataProvider
+     */
+    public function records_identities_of_required_viewmodels(array $viewModelClasses, array $expected): void
+    {
+        foreach ($viewModelClasses as $viewModelClass) {
+            $this->viewModelRegistry->require($viewModelClass);
+        }
+        /** @var ViewModelCacheTags $vieModelIdentities */
+        $vieModelIdentities = $this->objectManager->get(ViewModelCacheTags::class);
+        $this->assertSame($expected, $vieModelIdentities->get());
+    }
+
+    public function viewModelIdentityDataProvider(): array
+    {
+        return [
+            'no-view-models' => [[], []],
+            'non-identity' => [[StubViewModels\NoIdentity::class], []],
+            'empty-identity' => [[StubViewModels\EmptyIdentities::class], []],
+            'simgle-identity' => [[StubViewModels\SingleIdentity::class], StubViewModels\SingleIdentity::TAGS],
+            'multipe-identity' => [[StubViewModels\MultipleIdentities::class], StubViewModels\MultipleIdentities::TAGS],
+            'multipe-view-models' => [
+                [StubViewModels\SingleIdentity::class, StubViewModels\MultipleIdentities::class],
+                merge(StubViewModels\SingleIdentity::TAGS, StubViewModels\MultipleIdentities::TAGS)
+            ],
+            'duplicate' => [
+                [StubViewModels\MultipleIdentities::class, StubViewModels\MultipleIdentities::class],
+                StubViewModels\MultipleIdentities::TAGS
+            ],
+        ];
     }
 }

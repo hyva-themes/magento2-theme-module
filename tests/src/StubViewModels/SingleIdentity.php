@@ -1,0 +1,17 @@
+<?php declare(strict_types=1);
+
+namespace Hyva\Theme\StubViewModels;
+
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\View\Element\Block\ArgumentInterface;
+
+class SingleIdentity implements ArgumentInterface, IdentityInterface
+{
+    const TAGS = ['single_identity'];
+
+    public function getIdentities()
+    {
+        return self::TAGS;
+    }
+
+}

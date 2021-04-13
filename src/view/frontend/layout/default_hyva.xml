@@ -18,6 +18,7 @@
             <block name="script-alpine-js" template="Hyva_Theme::page/js/alpinejs.phtml"/>
             <block name="script-cookies" template="Hyva_Theme::page/js/cookies.phtml"/>
             <block name="script-private-content" template="Hyva_Theme::page/js/private-content.phtml"/>
+            <block name="view-model-identities" class="Hyva\Theme\Block\ViewModelCacheTagsBlock"/>
         </referenceContainer>
 
     </body>

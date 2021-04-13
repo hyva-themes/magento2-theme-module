@@ -13,12 +13,13 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Helper\Cart;
 use Magento\Framework\Phrase;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Helper\Output;
 
-class ProductPage implements ArgumentInterface
+class ProductPage implements ArgumentInterface, IdentityInterface
 {
     /**
      * @var Product
@@ -150,5 +151,12 @@ class ProductPage implements ArgumentInterface
     public function productAttributeHtml(Product $product, $attributeHtml, $attributeName)
     {
         return $this->productOutputHelper->productAttribute($product, $attributeHtml, $attributeName);
+    }
+
+    public function getIdentities()
+    {
+        return ($product = $this->getProduct())
+            ? $product->getIdentities()
+            : [];
     }
 }
