@@ -16,6 +16,8 @@ use Magento\Framework\Phrase;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Helper\Output;
 
@@ -47,6 +49,11 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     protected $productOutputHelper;
 
     /**
+     * @var JsonSerializer
+     */
+    private $jsonSerializer;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      * @param Cart $cartHelper
@@ -56,12 +63,14 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
         Cart $cartHelper,
-        Output $productOutputHelper
+        Output $productOutputHelper,
+        JsonSerializer $jsonSerializer
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
         $this->productOutputHelper = $productOutputHelper;
+        $this->jsonSerializer = $jsonSerializer;
     }
 
     /**
@@ -126,8 +135,8 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     {
         $currency = $this->priceCurrency->getCurrency();
         return [
-            'code' => $currency->getCurrencyCode(),
-            'symbol' => $currency->getCurrencySymbol()
+            'code'   => $currency->getCurrencyCode(),
+            'symbol' => $currency->getCurrencySymbol(),
         ];
     }
 
@@ -155,8 +164,16 @@ class ProductPage implements ArgumentInterface, IdentityInterface
 
     public function getIdentities()
     {
-        return ($product = $this->getProduct())
-            ? $product->getIdentities()
+        return isset($this->_product)
+            ? $this->_product->getIdentities()
             : [];
+    }
+
+    /**
+     * @param scalar[] $cacheInfo
+     */
+    public function hashCacheKeyInfo(array $cacheInfo): string
+    {
+        return sha1($this->jsonSerializer->serialize($cacheInfo));
     }
 }
