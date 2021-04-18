@@ -16,10 +16,10 @@ use Magento\Framework\Phrase;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
-use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Helper\Output;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 
 class ProductPage implements ArgumentInterface, IdentityInterface
 {
@@ -64,7 +64,7 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         PriceCurrencyInterface $priceCurrency,
         Cart $cartHelper,
         Output $productOutputHelper,
-        JsonSerializer $jsonSerializer
+        JsonSerializer $jsonSerializer,
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
@@ -167,13 +167,5 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         return isset($this->_product)
             ? $this->_product->getIdentities()
             : [];
-    }
-
-    /**
-     * @param scalar[] $cacheInfo
-     */
-    public function hashCacheKeyInfo(array $cacheInfo): string
-    {
-        return sha1($this->jsonSerializer->serialize($cacheInfo));
     }
 }
