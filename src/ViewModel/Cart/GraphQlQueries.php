@@ -25,18 +25,18 @@ class GraphQlQueries implements ArgumentInterface
               items {
                 id
                 prices {
-                price {
+                  price {
                     value
                   }
-                row_total {
+                  row_total {
                     value
                     currency
-                }
-                row_total_incl_tax {
+                  }
+                  row_total_incl_tax {
                     value
                     currency
-                }
-                price_incl_tax{
+                  }
+                  price_incl_tax{
                     value
                   }
                 }
@@ -76,6 +76,33 @@ class GraphQlQueries implements ArgumentInterface
                     }
                   }
                 }
+                ... on VirtualCartItem {
+                  customizable_options {
+                    label
+                      values {
+                        label
+                        value
+                        price {
+                        value
+                        type
+                      }
+                    }
+                  }
+                }
+                ... on DownloadableCartItem {
+                  customizable_options {
+                    label
+                      values {
+                        label
+                        value
+                        price {
+                        value
+                        type
+                      }
+                    }
+                  }
+                }
+
                 ... on ConfigurableCartItem {
                   configurable_options {
                     id
@@ -90,6 +117,17 @@ class GraphQlQueries implements ArgumentInterface
                     values {
                       quantity
                       label
+                    }
+                  }
+                  customizable_options {
+                    label
+                      values {
+                        label
+                        value
+                        price {
+                        value
+                        type
+                      }
                     }
                   }
                 }
