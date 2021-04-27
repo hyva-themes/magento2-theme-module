@@ -23,4 +23,14 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\QuoteGraphQl\Model\CartItem\DataProvider\CustomizableOptionValue\Composite">
+        <arguments>
+            <argument name="customizableOptionValues" xsi:type="array">
+                <item name="file"
+                      xsi:type="string">Hyva\Theme\Model\CartItem\DataProvider\CustomizableOptionValue\File
+                </item>
+            </argument>
+        </arguments>
+    </type>
 </config>

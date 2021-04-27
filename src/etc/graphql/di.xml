@@ -14,4 +14,9 @@
         <plugin name="cart-items-resolver"
                 type="Hyva\Theme\Plugin\QuoteGraphQL\CartItemsResolverPlugin" sortOrder="-1"/>
     </type>
+
+    <type name="Magento\QuoteGraphQl\Model\CartItem\DataProvider\CustomizableOption">
+        <plugin name="graphQlQueries"
+                type="Hyva\Theme\Plugin\QuoteGraphQL\CustomizableOptionPlugin" sortOrder="-1"/>
+    </type>
 </config>
