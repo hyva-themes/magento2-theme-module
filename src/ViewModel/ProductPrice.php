@@ -1,0 +1,172 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+namespace Hyva\Theme\ViewModel;
+
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\Option;
+use Magento\Catalog\Model\Product\Option\Value;
+use Magento\Catalog\Pricing\Price\CustomOptionPriceInterface;
+use Magento\Framework\Pricing\Price\PriceInterface;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Framework\Pricing\PriceInfoInterface;
+use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Tax\Model\Config;
+
+class ProductPrice implements ArgumentInterface
+{
+
+    /**
+     * @var Product
+     */
+    protected $product = null;
+
+    /**
+     * @var PriceInfoInterface
+     */
+    protected $priceInfo = null;
+    /**
+     * @var PriceCurrencyInterface
+     */
+    protected $priceCurrency;
+    /**
+     * @var Config
+     */
+    protected $taxConfig;
+    /**
+     * @var CurrentProduct
+     */
+    private $currentProduct;
+
+    /**
+     * @param PriceCurrencyInterface $priceCurrency
+     */
+    public function __construct(
+        PriceCurrencyInterface $priceCurrency,
+        Config $taxConfig,
+        CurrentProduct $currentProduct
+    )
+    {
+        $this->priceCurrency = $priceCurrency;
+        $this->taxConfig = $taxConfig;
+        $this->currentProduct = $currentProduct;
+    }
+
+    public function getPriceValue(string $priceType): float
+    {
+        $priceAmount = $this->getPrice($priceType)->getAmount();
+
+        if ($this->displayPriceIncludingTax()) {
+            return $priceAmount->getValue();
+        } else {
+            return $priceAmount->getBaseAmount();
+        }
+    }
+
+    public function getPrice(string $priceType): PriceInterface
+    {
+        return $this->getPriceInfo()->getPrice($priceType);
+    }
+
+    /**
+     * @return PriceInfoInterface
+     */
+    protected function getPriceInfo(): PriceInfoInterface
+    {
+        if (!$this->priceInfo) {
+            $this->priceInfo = $this->getProduct()->getPriceInfo();
+        }
+        return $this->priceInfo;
+    }
+
+    protected function getProduct(): ?Product
+    {
+        if (!$this->product) {
+            $this->currentProduct->get();
+        }
+        return $this->product;
+    }
+
+    /**
+     * @param Product $product
+     */
+    public function setProduct(Product $product)
+    {
+        $this->product = $product;
+    }
+
+    /**
+     * Check if we have display in catalog prices including tax
+     *
+     * @return bool
+     */
+    public function displayPriceIncludingTax(): bool
+    {
+        return $this->getPriceDisplayType() == Config::DISPLAY_TYPE_INCLUDING_TAX ||
+            $this->getPriceDisplayType() == Config::DISPLAY_TYPE_BOTH;
+    }
+
+    /**
+     * Get product price display type
+     *  1 - Excluding tax
+     *  2 - Including tax
+     *  3 - Both
+     *
+     * @param null|int|string|Store $store
+     * @return int
+     */
+    public function getPriceDisplayType($store = null): int
+    {
+        return $this->taxConfig->getPriceDisplayType($store);
+    }
+
+    public function currency($value, $format = true, $includeContainer = true)
+    {
+        return $format
+            ? $this->priceCurrency->convertAndFormat($value, $includeContainer)
+            : $this->priceCurrency->convert($value);
+    }
+
+    public function getTierPrices($priceType)
+    {
+        $tierPrices = $this->getPrice($priceType)->getTierPriceList();
+        $displayTax = $this->displayPriceIncludingTax();
+
+        // overrides the 'website_price' key with the required price including or excluding tax
+        return array_map(
+            function ($a, $b) use ($displayTax) {
+                $b['website_price'] = $displayTax ? $b['price']->getValue() : $b['price']->getBaseAmount();
+                return $b;
+            },
+            array_keys($tierPrices),
+            array_values($tierPrices)
+        );
+    }
+
+    /**
+     * @param Option|Value $option
+     * @param string $priceType
+     * @return float|mixed
+     */
+    public function getCustomOptionPrice($option, string $priceType)
+    {
+        if ($option->getPriceType() === 'percent') {
+            return $option->getPrice();
+        }
+
+        $customOptionPrice = $this->getPrice($priceType);
+        $displayTax = $this->displayPriceIncludingTax();
+
+        $context = [CustomOptionPriceInterface::CONFIGURATION_OPTION_FLAG => true];
+        $optionPrice = $customOptionPrice->getCustomAmount($option->getPrice(), $displayTax, $context);
+
+        return $optionPrice->getValue($displayTax ? null : 'tax');
+    }
+}

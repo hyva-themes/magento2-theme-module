@@ -116,6 +116,11 @@ class ProductPage implements ArgumentInterface
         ];
     }
 
+    public function format($value): string
+    {
+        return $this->priceCurrency->format($value);
+    }
+
     public function currency($value, $format = true, $includeContainer = true)
     {
         return $format
