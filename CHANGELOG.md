@@ -6,6 +6,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.2...master
+
+## [1.1.2] - 2021-05-03
+### Added
+- **GQL support for customOption of `file` type**
+
+  See `src/Model/CartItem/DataProvider/CustomizableOptionValue/File.php`, `src/Plugin/QuoteGraphQL/CustomizableOptionPlugin.php`
+
+- **GQL added custom options for Virtual, Downloadable and Bundle to cart**
+  
+  See `src/ViewModel/Cart/GraphQlQueries.php`
+  Configurables are not yet included due to a core-bug that will be fixed in 2.4.3: https://github.com/magento/magento2/issues/31180
+
+- **customOptions viewModel** that allows to override the pthml file for customOptions of dropdown/multiselect/radio/checkbox types.
+  
+  By default, Magento renders `select` custom-options with a toHtml() method in `\Magento\Catalog\Block\Product\View\Options\Type\Select\Multiple`. This can now be replaced with a proper pthml file using this viewModel.
+
+  See `src/ViewModel/CustomOption.php`
+  
+- **ProductPrices viewModel** that calculates product prices, tier prices and custom options on Product Detail pages.
+
+  See `src/ViewModel/ProductPrice.php`
+
+### Changed
+- none
+
+### Removed
+- none
+
+[1.1.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.1...1.1.2
+
 ## [1.1.1] - 2021-04-08
 ### Added
 - **SwatchRenderer ViewModel**
@@ -13,6 +44,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   Used to determine wheter an attribute should render as swatch: `isSwatchAttribute($attribute)`
   
   See `src/ViewModel/SwatchRenderer.php`
+
+### Changed
+- none
+
+### Removed
+- none
+
+[1.1.1]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.0...1.1.1
 
 ## [1.1.0] - 2021-04-02
 ### Added
@@ -110,7 +149,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **`<script>` tags no longer contain the `defer` attribute**
   
   Since these have no effect...
-  
+
+[1.1.0]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.0.7...1.1.0  
 
 ## [1.0.7] - 2021-02-15
 ### Added
@@ -123,8 +163,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 - none
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.1...master
-[1.1.1]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.0...1.1.1
-[1.1.0]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.0.7...1.1.0
 [1.0.7]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.0.6...1.0.7
-
