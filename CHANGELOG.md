@@ -6,7 +6,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.2...master
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.3...master
+
+## [1.1.3] - 2021-05-07
+### Added
+- **Fix: polyfill baseOldPrice in priceinfo for Magento versions < 2.4.2**
+
+  Hyva Themes 1.1.2 depends on the baseOldPrice being set, but that property only was added in Magento 2.4.2. This
+  Release adds compatibility for older Magento versions by polyfilling the price info baseOldPrice if it doesn't exist.
+
+### Changed
+- **Deprecated \Hyva\Theme\ViewModel\ProductPrice::setProduct()**
+
+  Pass the $product instance as an argument to price methods instead of using internal state.
+  This improves reusability of templates regardless of the order they are rendered in.
+  The method still is preserved for backward compatibility, but is no longer used by default Hyva theme.
+  https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/37
+
+### Removed
+- none
 
 ## [1.1.2] - 2021-05-03
 ### Added

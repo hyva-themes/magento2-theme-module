@@ -52,16 +52,15 @@ class ProductPrice implements ArgumentInterface
         PriceCurrencyInterface $priceCurrency,
         Config $taxConfig,
         CurrentProduct $currentProduct
-    )
-    {
+    ) {
         $this->priceCurrency = $priceCurrency;
         $this->taxConfig = $taxConfig;
         $this->currentProduct = $currentProduct;
     }
 
-    public function getPriceValue(string $priceType): float
+    public function getPriceValue(string $priceType, Product $product = null): float
     {
-        $priceAmount = $this->getPrice($priceType)->getAmount();
+        $priceAmount = $this->getPrice($priceType, $product)->getAmount();
 
         if ($this->displayPriceIncludingTax()) {
             return $priceAmount->getValue();
@@ -70,22 +69,27 @@ class ProductPrice implements ArgumentInterface
         }
     }
 
-    public function getPrice(string $priceType): PriceInterface
+    public function getPrice(string $priceType, Product $product = null): PriceInterface
     {
-        return $this->getPriceInfo()->getPrice($priceType);
+        return $this->getPriceInfo($product)->getPrice($priceType);
     }
 
     /**
      * @return PriceInfoInterface
      */
-    protected function getPriceInfo(): PriceInfoInterface
+    protected function getPriceInfo(Product $product = null): PriceInfoInterface
     {
         if (!$this->priceInfo) {
-            $this->priceInfo = $this->getProduct()->getPriceInfo();
+            $product = $product ?? $this->getProduct();
+            $this->priceInfo = $product->getPriceInfo();
         }
         return $this->priceInfo;
     }
 
+    /**
+     * @return Product|null
+     * @deprecated Pass the product instance to price methods instead
+     */
     protected function getProduct(): ?Product
     {
         if (!$this->product) {
@@ -96,6 +100,7 @@ class ProductPrice implements ArgumentInterface
 
     /**
      * @param Product $product
+     * @deprecated Pass the $product instance as a second argument to price methods instead
      */
     public function setProduct(Product $product)
     {
@@ -134,9 +139,9 @@ class ProductPrice implements ArgumentInterface
             : $this->priceCurrency->convert($value);
     }
 
-    public function getTierPrices($priceType)
+    public function getTierPrices($priceType, Product $product = null)
     {
-        $tierPrices = $this->getPrice($priceType)->getTierPriceList();
+        $tierPrices = $this->getPrice($priceType, $product)->getTierPriceList();
         $displayTax = $this->displayPriceIncludingTax();
 
         // overrides the 'website_price' key with the required price including or excluding tax
@@ -153,15 +158,16 @@ class ProductPrice implements ArgumentInterface
     /**
      * @param Option|Value $option
      * @param string $priceType
+     * @param Product|null $product
      * @return float|mixed
      */
-    public function getCustomOptionPrice($option, string $priceType)
+    public function getCustomOptionPrice($option, string $priceType, Product $product = null)
     {
         if ($option->getPriceType() === 'percent') {
             return $option->getPrice();
         }
 
-        $customOptionPrice = $this->getPrice($priceType);
+        $customOptionPrice = $this->getPrice($priceType, $product);
         $displayTax = $this->displayPriceIncludingTax();
 
         $context = [CustomOptionPriceInterface::CONFIGURATION_OPTION_FLAG => true];
