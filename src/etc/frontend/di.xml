@@ -25,4 +25,15 @@
     <type name="Magento\Catalog\CustomerData\CompareProducts">
         <plugin name="add_images" type="Hyva\Theme\Plugin\CompareCustomerData\AddImages" sortOrder="100"/>
     </type>
+
+    <!-- Add workaround for baseOldPrice missing in Magento versiony < 2.4.2 -->
+    <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
+        <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToConfigurableProductOptions"/>
+    </type>
+    <type name="Magento\ConfigurableProduct\Model\Product\Type\Configurable\Variations\Prices">
+        <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToConfigurableProductPriceVariations"/>
+    </type>
+    <type name="Magento\Catalog\Block\Product\View">
+        <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToProductViewBlockJson"/>
+    </type>
 </config>
