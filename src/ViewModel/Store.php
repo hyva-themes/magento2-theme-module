@@ -75,4 +75,13 @@ class Store implements ArgumentInterface
     {
         return $this->getStore()->getId();
     }
+
+    /**
+     * @return int
+     * @throws NoSuchEntityException
+     */
+    public function getWebsiteId()
+    {
+        return $this->getStore()->getWebsiteId();
+    }
 }
