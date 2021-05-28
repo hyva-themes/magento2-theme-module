@@ -11,15 +11,13 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
-use Magento\Checkout\Helper\Cart;
+use Magento\Checkout\Helper\Cart as CartHelper;
 use Magento\Framework\Phrase;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
-use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Catalog\Helper\Output;
-use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use Magento\Catalog\Helper\Output as ProductOutputHelper;
 
 class ProductPage implements ArgumentInterface, IdentityInterface
 {
@@ -39,38 +37,31 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     protected $priceCurrency;
 
     /**
-     * @var Cart
+     * @var CartHelper
      */
     protected $cartHelper;
 
     /**
-     * @var Output
+     * @var ProductOutputHelper
      */
     protected $productOutputHelper;
 
     /**
-     * @var JsonSerializer
-     */
-    private $jsonSerializer;
-
-    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
-     * @param Cart $cartHelper
-     * @param Output $productOutputHelper
+     * @param CartHelper $cartHelper
+     * @param ProductOutputHelper $productOutputHelper
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
-        Cart $cartHelper,
-        Output $productOutputHelper,
-        JsonSerializer $jsonSerializer,
+        CartHelper $cartHelper,
+        ProductOutputHelper $productOutputHelper
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
         $this->productOutputHelper = $productOutputHelper;
-        $this->jsonSerializer = $jsonSerializer;
     }
 
     /**
