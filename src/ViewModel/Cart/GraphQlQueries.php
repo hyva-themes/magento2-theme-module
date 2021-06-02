@@ -145,12 +145,26 @@ class GraphQlQueries implements ArgumentInterface
               }
               shipping_addresses {
                 selected_shipping_method {
-                    amount {
-                        value
-                        currency
-                    }
-                    carrier_title
-                    method_title
+                  amount {
+                    value
+                    currency
+                  }
+                  carrier_title
+                  method_title
+                  method_code
+                }
+                available_shipping_methods {
+                  price_excl_tax {
+                    value
+                    currency
+                  }
+                  price_incl_tax {
+                    value
+                    currency
+                  }
+                  carrier_title
+                  method_title
+                  method_code
                 }
               }
               prices {
