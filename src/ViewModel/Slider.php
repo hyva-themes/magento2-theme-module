@@ -16,7 +16,7 @@ use Magento\Framework\View\LayoutInterface;
 class Slider implements ArgumentInterface
 {
     public const TEMPLATE_FILE = 'Magento_Theme::elements/slider-generic.phtml';
-    public const DATA_JS_DEFAULT_FN = '(component, data) => data';
+    public const DATA_JS_DEFAULT_FN = '(data, component) => data';
 
     /**
      * @var LayoutInterface
