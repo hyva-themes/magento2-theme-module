@@ -15,8 +15,6 @@ use Magento\Framework\View\LayoutInterface;
 
 class Slider implements ArgumentInterface
 {
-    public const DATA_JS_DEFAULT_FN = '(data, component) => data';
-
     /**
      * @var LayoutInterface
      */
@@ -37,25 +35,6 @@ class Slider implements ArgumentInterface
         $sliderBlock = $this->createTemplateBlock("slider.{$id}", [
             'items'    => $items,
             'template' => $sliderTemplateFile,
-        ]);
-
-        $this->addSliderItemChildBlock($sliderBlock, $id, $itemTemplateFile);
-
-        return $sliderBlock;
-    }
-
-    public function getSliderForQuery(
-        string $itemTemplateFile,
-        string $gqlQuery,
-        string $queryDataProcessorJsFunction = self::DATA_JS_DEFAULT_FN,
-        string $sliderTemplateFile = 'Magento_Theme::elements/slider-gql.phtml'
-    ): AbstractBlock {
-        $id = md5($gqlQuery . $queryDataProcessorJsFunction . $sliderTemplateFile . $itemTemplateFile);
-
-        $sliderBlock = $this->createTemplateBlock("slider.{$id}", [
-            'graphql_query'           => $gqlQuery,
-            'query_data_processor_js' => $queryDataProcessorJsFunction,
-            'template'                => $sliderTemplateFile,
         ]);
 
         $this->addSliderItemChildBlock($sliderBlock, $id, $itemTemplateFile);
