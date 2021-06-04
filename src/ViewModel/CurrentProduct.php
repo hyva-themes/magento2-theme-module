@@ -12,12 +12,13 @@ namespace Hyva\Theme\ViewModel;
 
 use ArrayIterator;
 use Iterator;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Traversable;
 
-class CurrentProduct implements ArgumentInterface
+class CurrentProduct implements ArgumentInterface, IdentityInterface
 {
     /**
      * @var ProductInterface
@@ -113,5 +114,12 @@ class CurrentProduct implements ArgumentInterface
                 return $valid;
             }
         };
+    }
+
+    public function getIdentities()
+    {
+        return $this->currentProduct instanceof IdentityInterface
+            ? $this->currentProduct->getIdentities()
+            : [];
     }
 }

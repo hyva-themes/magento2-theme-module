@@ -11,14 +11,15 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
-use Magento\Checkout\Helper\Cart;
+use Magento\Checkout\Helper\Cart as CartHelper;
 use Magento\Framework\Phrase;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Catalog\Helper\Output;
+use Magento\Catalog\Helper\Output as ProductOutputHelper;
 
-class ProductPage implements ArgumentInterface
+class ProductPage implements ArgumentInterface, IdentityInterface
 {
     /**
      * @var Product
@@ -36,26 +37,26 @@ class ProductPage implements ArgumentInterface
     protected $priceCurrency;
 
     /**
-     * @var Cart
+     * @var CartHelper
      */
     protected $cartHelper;
 
     /**
-     * @var Output
+     * @var ProductOutputHelper
      */
     protected $productOutputHelper;
 
     /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
-     * @param Cart $cartHelper
-     * @param Output $productOutputHelper
+     * @param CartHelper $cartHelper
+     * @param ProductOutputHelper $productOutputHelper
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
-        Cart $cartHelper,
-        Output $productOutputHelper
+        CartHelper $cartHelper,
+        ProductOutputHelper $productOutputHelper
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
@@ -125,8 +126,8 @@ class ProductPage implements ArgumentInterface
     {
         $currency = $this->priceCurrency->getCurrency();
         return [
-            'code' => $currency->getCurrencyCode(),
-            'symbol' => $currency->getCurrencySymbol()
+            'code'   => $currency->getCurrencyCode(),
+            'symbol' => $currency->getCurrencySymbol(),
         ];
     }
 
@@ -150,5 +151,12 @@ class ProductPage implements ArgumentInterface
     public function productAttributeHtml(Product $product, $attributeHtml, $attributeName)
     {
         return $this->productOutputHelper->productAttribute($product, $attributeHtml, $attributeName);
+    }
+
+    public function getIdentities()
+    {
+        return isset($this->_product)
+            ? $this->_product->getIdentities()
+            : [];
     }
 }

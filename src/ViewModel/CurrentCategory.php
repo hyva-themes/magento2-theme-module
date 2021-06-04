@@ -10,11 +10,12 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\Data\CategoryInterfaceFactory;
 
-class CurrentCategory implements ArgumentInterface
+class CurrentCategory implements ArgumentInterface, IdentityInterface
 {
     /**
      * @var CategoryInterface
@@ -54,5 +55,15 @@ class CurrentCategory implements ArgumentInterface
     public function exists(): bool
     {
         return ($this->currentCategory && $this->currentCategory->getId());
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getIdentities()
+    {
+        return $this->exists() && $this->currentCategory instanceof IdentityInterface
+            ? $this->currentCategory->getIdentities()
+            : [];
     }
 }

@@ -12,12 +12,13 @@ namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Phrase;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
-class ProductAttributes implements ArgumentInterface
+class ProductAttributes implements ArgumentInterface, IdentityInterface
 {
     /**
      * @var Product
@@ -42,7 +43,7 @@ class ProductAttributes implements ArgumentInterface
         Registry $registry,
         PriceCurrencyInterface $priceCurrency
     ) {
-        $this->coreRegistry = $registry;
+        $this->coreRegistry  = $registry;
         $this->priceCurrency = $priceCurrency;
     }
 
@@ -59,25 +60,25 @@ class ProductAttributes implements ArgumentInterface
 
     public function getAttributeFromLayoutConfig($config)
     {
-        $product = $this->getProduct();
-        $code = $config['code'];
+        $product   = $this->getProduct();
+        $code      = $config['code'];
         $attribute = $product->getResource()->getAttribute($code);
 
         if (!$attribute) {
             return [];
         }
 
-        $call = $config['call'] ?: 'default';
-        $label = $config['label'] ?: 'default';
+        $call     = $config['call'] ?: 'default';
+        $label    = $config['label'] ?: 'default';
         $cssClass = $config['css_class'] ?: 'attribute';
 
         $defaultData = $this->getAttributeData($attribute, $product);
 
         return [
-            'label' => ($label === 'default') ? $defaultData['label'] : $label,
-            'value' => ($call !== 'default') ? $product->{$call}() : $defaultData['value'],
-            'code' => $code,
-            'css_class' => $cssClass
+            'label'     => ($label === 'default') ? $defaultData['label'] : $label,
+            'value'     => ($call !== 'default') ? $product->{$call}() : $defaultData['value'],
+            'code'      => $code,
+            'css_class' => $cssClass,
         ];
     }
 
@@ -90,8 +91,8 @@ class ProductAttributes implements ArgumentInterface
      */
     public function getAllVisibleAttributes(array $excludeAttr = [])
     {
-        $data = [];
-        $product = $this->getProduct();
+        $data       = [];
+        $product    = $this->getProduct();
         $attributes = $product->getAttributes();
         foreach ($attributes as $attribute) {
             if ($this->isVisibleOnFrontend($attribute, $excludeAttr)) {
@@ -109,7 +110,7 @@ class ProductAttributes implements ArgumentInterface
         $value = $attribute->getFrontend()->getValue($product);
 
         if ($value instanceof Phrase) {
-            $value = (string)$value;
+            $value = (string) $value;
         } elseif ($attribute->getFrontendInput() == 'price' && is_string($value)) {
             $value = $this->priceCurrency->convertAndFormat($value);
         }
@@ -117,7 +118,7 @@ class ProductAttributes implements ArgumentInterface
         return [
             'label' => $attribute->getStoreLabel(),
             'value' => $value,
-            'code' => $attribute->getAttributeCode(),
+            'code'  => $attribute->getAttributeCode(),
         ];
     }
 
@@ -137,5 +138,12 @@ class ProductAttributes implements ArgumentInterface
             $attribute->getIsVisibleOnFront()
             && !in_array($attribute->getAttributeCode(), $excludeAttr)
         );
+    }
+
+    public function getIdentities()
+    {
+        return ($product = $this->getProduct())
+            ? $product->getIdentities()
+            : [];
     }
 }

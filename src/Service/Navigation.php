@@ -181,7 +181,8 @@ class Navigation
             'is_active' => $categoryId == $currentCategory->getId(),
             'is_category' => true,
             'is_parent_active' => $isParentActive,
-            'position' => $category->getData('position')
+            'position' => $category->getData('position'),
+            'identities' => $category->getIdentities(),
         ];
     }
 
