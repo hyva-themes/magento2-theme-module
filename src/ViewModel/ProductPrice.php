@@ -139,6 +139,11 @@ class ProductPrice implements ArgumentInterface
             : $this->priceCurrency->convert($value);
     }
 
+    public function format($value, $includeContainer = true)
+    {
+        return $this->priceCurrency->format($value, $includeContainer);
+    }
+
     public function getTierPrices($priceType, Product $product = null)
     {
         $tierPrices = $this->getPrice($priceType, $product)->getTierPriceList();
