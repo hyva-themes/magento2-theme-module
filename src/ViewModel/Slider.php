@@ -15,9 +15,6 @@ use Magento\Framework\View\LayoutInterface;
 
 class Slider implements ArgumentInterface
 {
-    public const TEMPLATE_FILE = 'Magento_Theme::elements/slider-generic.phtml';
-    public const DATA_JS_DEFAULT_FN = '(data, component) => data';
-
     /**
      * @var LayoutInterface
      */
@@ -30,33 +27,14 @@ class Slider implements ArgumentInterface
 
     public function getSliderForItems(
         string $itemTemplateFile,
-        string $itemsJson,
-        string $sliderTemplateFile = self::TEMPLATE_FILE
+        array $items,
+        string $sliderTemplateFile = 'Magento_Theme::elements/slider-php.phtml'
     ): AbstractBlock {
-        $id = md5($itemsJson . $sliderTemplateFile . $itemTemplateFile);
+        $id = md5($sliderTemplateFile . $itemTemplateFile);
 
         $sliderBlock = $this->createTemplateBlock("slider.{$id}", [
-            'slider_items_json' => $itemsJson,
-            'template'          => $sliderTemplateFile,
-        ]);
-
-        $this->addSliderItemChildBlock($sliderBlock, $id, $itemTemplateFile);
-
-        return $sliderBlock;
-    }
-
-    public function getSliderForQuery(
-        string $itemTemplateFile,
-        string $gqlQuery,
-        string $queryDataProcessorJsFunction = self::DATA_JS_DEFAULT_FN,
-        string $sliderTemplateFile = self::TEMPLATE_FILE
-    ): AbstractBlock {
-        $id = md5($gqlQuery . $queryDataProcessorJsFunction . $sliderTemplateFile . $itemTemplateFile);
-
-        $sliderBlock = $this->createTemplateBlock("slider.{$id}", [
-            'graphql_query'           => $gqlQuery,
-            'query_data_processor_js' => $queryDataProcessorJsFunction,
-            'template'                => $sliderTemplateFile,
+            'items'    => $items,
+            'template' => $sliderTemplateFile,
         ]);
 
         $this->addSliderItemChildBlock($sliderBlock, $id, $itemTemplateFile);
