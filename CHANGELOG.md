@@ -8,13 +8,83 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.3...master
 
+## [1.1.4] - 2021-06-09
+### Added
+- **ViewModel Cache Tags
+
+  ViewModels can now contain cache tags which are added to the block that renders output from that ViewModel.
+  This enables you to, for example, render menu-items in any block and add the cache tags of the menu items to that block.
+  
+  This requires you to add a getIdentities method to the ViewModel you use to load in identities with.
+
+  See commit [`cd8c38bb`](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/cd8c38bb85f52641759d1ec0e70ee2c2f6062c99)
+
+- **Cookie Consent now prevents cookies from being stored until accepted**
+
+  It is now possible to prevent the theme to store cookies in the browser if the client doesn't give consent and the Magento 2 cookie restriction feature is enabled.
+  
+  The cookies are stored in a temp js object window.cookie_temp_storage and only if the user already gave the consent (information stored in  user_allowed_save_cookie cookie) or after an explicit confirmation (the banner of hyva-themes/magento2-default-theme/Magento_Cookie/templates/notices.phtml), they will be saved.
+  
+  There is also a config to save necessary cookies that don't require confirmation (the e-commerce without these cookies cannot work, eg: form_key), stored in the window.cookie_consent_configuration object.
+  
+  In this object is also possible to add different categories to the cookie that requires different logic to be handled; the variable cookie_consent needs to be properly set for this.
+  Cookies not declared in the cookie_consent_configuration are saved only after the confirmation.
+
+  See commit [`a19f65d4`](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/a19f65d4b9085bfd027fe376ea764b5801c1a955)
+
+  Thanks to Mirko Cesaro (Bitbull) for contributing
+
+- **ProductPage ViewModel now has productAttributeHtml() method**
+
+  This method parses template tags (directives) for attributes so that attributes like `description` now render store variables and other `{{directives}}`
+
+  See `src/ViewModel/ProductPage.php`
+  
+  Thanks to Vincent MARMIESSE (PH2M) for contributing
+
+- **Cart GraphQl queries now contain available shipping methods**
+
+  Added available methods with and without vat
+  Added method_code to allow matching
+  
+  See `src/ViewModel/Cart/GraphQlQueries.php`
+
+  Thanks to Alexander Menk (imi) for contributing.
+
+- **Added EmailToFriend viewModel** loading configuration values for SendFriend functionality
+  
+  See `src/ViewModel/EmailToFriend.php`
+  
+- **Added `format` method to ProductPrice view model**
+
+  When calling $priceViewModel->currency($amount), the amount is treated as the
+  base currency and converted to the current currency before being formatted.
+
+  If $amount already is in the store view currency, this leads to double conversions.
+
+  Now, the pricecurrency format() method is exposed through the view model.
+
+  See `src/ViewModel/ProductPrice.php`
+  
+- **Add view model for easy use of generic slider**
+  
+  A new `Slider` View Model was added that allows you to create more generic sliders in conjection with a generic slider phtml file in `Magento_Theme::elements/slider-php.phtml` and `Magento_Theme::elements/slider-gql.phtml`
+
+  See `src/ViewModel/Slider.php`
+
+### Changed
+- none
+
+### Removed
+- none
+
 ## [1.1.3] - 2021-05-07
 ### Added
 - **Fix: polyfill baseOldPrice in priceinfo for Magento versions < 2.4.2**
 
   Hyva Themes 1.1.2 depends on the baseOldPrice being set, but that property only was added in Magento 2.4.2. This
   Release adds compatibility for older Magento versions by polyfilling the price info baseOldPrice if it doesn't exist.
-
+  
 ### Changed
 - **Deprecated \Hyva\Theme\ViewModel\ProductPrice::setProduct()**
 
