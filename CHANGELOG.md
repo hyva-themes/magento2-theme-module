@@ -78,6 +78,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 - none
 
+[1.1.4]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.3...1.1.4
+
 ## [1.1.3] - 2021-05-07
 ### Added
 - **Fix: polyfill baseOldPrice in priceinfo for Magento versions < 2.4.2**
@@ -95,6 +97,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 - none
+
+[1.1.3]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.2...1.1.3
 
 ## [1.1.2] - 2021-05-03
 ### Added
