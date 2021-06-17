@@ -6,11 +6,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.4...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.5...main
+
+## [1.1.5] - 2021-06-17
+
+### Added
+- none
+
+### Changed
+- A bugfix for the ViewModelCacheTags class that expected at least one view model on a page to implement the IdentityInterface.  
+  This situation could happen on customized Hyvä based themes. This fix removes this requirement, so no error is thrown any more.
+
+### Removed
+- none
+
+[1.1.5]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.4...1.1.5
 
 ## [1.1.4] - 2021-06-16
 ### Added
-- **ViewModel Cache Tags
+- **ViewModel Cache Tags**
 
   ViewModels can now contain cache tags which are added to the block that renders output from that ViewModel.
   This enables you to, for example, render menu-items in any block and add the cache tags of the menu items to that block.
