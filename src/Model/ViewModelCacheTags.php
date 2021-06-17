@@ -27,7 +27,7 @@ class ViewModelCacheTags
     public function get(): array
     {
         // wait with collecting the identities until they are needed to catch all of them
-        return unique(merge(...map(function (IdentityInterface $viewModel): array {
+        return unique(merge([], ...map(function (IdentityInterface $viewModel): array {
             return $viewModel->getIdentities();
         }, $this->viewModels)));
     }
