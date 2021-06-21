@@ -17,6 +17,9 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Traversable;
+use function array_merge as merge;
+use function array_unique as unique;
+use function array_values as values;
 
 class CurrentProduct implements ArgumentInterface, IdentityInterface
 {
@@ -30,6 +33,11 @@ class CurrentProduct implements ArgumentInterface, IdentityInterface
      */
     protected $productFactory;
 
+    /**
+     * @var string[]
+     */
+    private $cacheIdentities = [];
+
     public function __construct(ProductInterfaceFactory $productFactory)
     {
         $this->productFactory = $productFactory;
@@ -38,6 +46,7 @@ class CurrentProduct implements ArgumentInterface, IdentityInterface
     public function set(ProductInterface $product): void
     {
         $this->currentProduct = $product;
+        $this->collectIdentities($product);
     }
 
     /**
@@ -116,10 +125,15 @@ class CurrentProduct implements ArgumentInterface, IdentityInterface
         };
     }
 
+    private function collectIdentities(ProductInterface $product)
+    {
+        if ($product instanceof IdentityInterface) {
+            $this->cacheIdentities = merge($this->cacheIdentities, values($product->getIdentities()));
+        }
+    }
+
     public function getIdentities()
     {
-        return $this->currentProduct instanceof IdentityInterface
-            ? $this->currentProduct->getIdentities()
-            : [];
+        return unique($this->cacheIdentities);
     }
 }
