@@ -23,14 +23,7 @@
             </argument>
         </arguments>
     </type>
-
-    <type name="Magento\QuoteGraphQl\Model\CartItem\DataProvider\CustomizableOptionValue\Composite">
-        <arguments>
-            <argument name="customizableOptionValues" xsi:type="array">
-                <item name="file"
-                      xsi:type="string">Hyva\Theme\Model\CartItem\DataProvider\CustomizableOptionValue\File
-                </item>
-            </argument>
-        </arguments>
+    <type name="Magento\Elasticsearch\Model\Adapter\Index\Builder">
+        <plugin name="custom_like_search_builder" type="Hyva\Theme\Plugin\AutoComplete\Model\Adapter\Index\AutoCompleteBuilder"></plugin>
     </type>
 </config>
