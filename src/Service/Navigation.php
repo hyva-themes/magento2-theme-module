@@ -169,7 +169,7 @@ class Navigation
      * @return array
      * @throws LocalizedException
      */
-    protected function getCategoryAsArray($category, $currentCategory, $isParentActive)
+    public function getCategoryAsArray($category, $currentCategory, $isParentActive)
     {
         $categoryId = $category->getId();
         return [
@@ -195,7 +195,7 @@ class Navigation
      * @return CategoryColleciton
      * @throws LocalizedException
      */
-    protected function getCategoryTree($storeId, $rootId, $maxLevel = 0)
+    public function getCategoryTree($storeId, $rootId, $maxLevel = 0)
     {
         /** @var CategoryColleciton $collection */
         $collection = $this->collectionFactory->create();
