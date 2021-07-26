@@ -21,6 +21,7 @@ use Magento\Framework\View\Element\Template;
         const private_content_key = 'mage-cache-storage';
         const private_content_expire_key = 'mage-cache-timeout';
         const private_content_version_key = 'private_content_version';
+        const section_data_ids_key = 'section_data_ids';
         const mage_cache_session_id_key = 'mage-cache-sessid';
         const last_visited_store_key = 'last_visited_store';
 
@@ -158,13 +159,28 @@ use Magento\Framework\View\Element\Template;
                             }
                             try {
                                 const browserStorage = hyva.getBrowserStorage();
+                                const expiresAt = new Date(Date.now() + (ttl * 1000)).toISOString();
                                 browserStorage.setItem(private_content_key, JSON.stringify(data));
                                 browserStorage.setItem(
                                     private_content_expire_key,
-                                    new Date(Date.now() + (ttl * 1000)).toISOString()
+                                    expiresAt
                                 );
                                 const newCookieVersion = hyva.getCookie(private_content_version_key);
                                 browserStorage.setItem(private_content_version_key, newCookieVersion);
+
+                                // We don't need the section_data_ids in Hyvä, but we store them for compatibility
+                                // with Luma Fallback. Otherwise, not all sections are loaded in Luma Checkout
+                                hyva.setCookie(
+                                    section_data_ids_key,
+                                    JSON.stringify(
+                                        Object.keys(data).reduce((sectionDataIds, sectionKey) => {
+                                            sectionDataIds[sectionKey] = data[sectionKey]['data_id'];
+                                            return sectionDataIds;
+                                        }, {})
+                                    ),
+                                    false,
+                                    true
+                                );
                             } catch (error) {
                                 console.warn("Couldn't store privateContent", error);
                             }
