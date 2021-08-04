@@ -27,6 +27,9 @@ class CartItemsResolverPlugin
         $itemsData
     ) {
         foreach ($itemsData as $index => $cartItem) {
+            if (!is_array($cartItem)) {
+                continue;
+            }
             /**
              * If `product_type` is set as quote_item_option we're dealing
              * with a Grouped product and want to set the url_key to the
