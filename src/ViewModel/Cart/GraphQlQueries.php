@@ -24,6 +24,7 @@ class GraphQlQueries implements ArgumentInterface
               total_quantity
               items {
                 id
+                errors
                 prices {
                   price {
                     value
@@ -61,6 +62,7 @@ class GraphQlQueries implements ArgumentInterface
                         percent_off
                       }
                   }
+                  stock_status
                 }
                 quantity
                 ... on SimpleCartItem {
