@@ -10,7 +10,14 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\QuoteGraphQl\Model\Resolver\CartItems">
-        <!-- Make sure it runs before Magento\GraphQlCache\Model\Plugin\Query\Resolver -->
+        <!--
+        /**
+         * Make sure it runs before Magento\GraphQlCache\Model\Plugin\Query\Resolver
+         * This plugin:
+         * - adds quoteItem errors per quoteItem
+         * - adds the right parent-url of grouped products to quoteItems
+         */
+        -->
         <plugin name="cart-items-resolver"
                 type="Hyva\Theme\Plugin\QuoteGraphQL\CartItemsResolverPlugin" sortOrder="-1"/>
     </type>
