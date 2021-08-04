@@ -28,14 +28,14 @@ class CartItemsResolverPlugin
     ) {
         foreach ($itemsData as $index => $cartItem) {
             /**
-             * This cartItem is likely a error message
+             * This cartItem is likely an error message
              */
             if (!is_array($cartItem)) {
                 continue;
             }
 
             /**
-             * Add errors to the cartItem
+             * Add errors to the quoteItem
              */
             $quoteItem = $cartItem['model'];
             if ($quoteItem->getHasError() && $quoteItem->getMessage()) {
