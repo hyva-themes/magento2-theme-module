@@ -34,7 +34,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left'],
         'position'            => 'center',
         'dialog-name'         => 'dialog',
-        'dialog-classes'      => ['inline-block', 'bg-white', 'shadow-xl', 'rounded-lg', 'p-10', 'text-gray-700'],
+        'dialog-classes'      => ['inline-block', 'bg-white', 'shadow-xl', 'rounded-lg', 'p-10'],
         'aria-labelledby'     => null,
         'aria-label'          => null,
         'content-template'    => null,
@@ -90,12 +90,12 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData($data, $key, $classes);
     }
 
-    public function withOverlay(): ModalBuilderInterface
+    public function overlayEnabled(): ModalBuilderInterface
     {
         return $this->withData($this->data, 'overlay', true);
     }
 
-    public function withoutOverlay(): ModalBuilderInterface
+    public function overlayDisabled(): ModalBuilderInterface
     {
         return $this->withData($this->data, 'overlay', false);
     }

@@ -10,9 +10,9 @@ namespace Hyva\Theme\Model\Modal;
 
 interface ModalBuilderInterface
 {
-    public function withOverlay(): ModalBuilderInterface;
+    public function overlayEnabled(): ModalBuilderInterface;
 
-    public function withoutOverlay(): ModalBuilderInterface;
+    public function overlayDisabled(): ModalBuilderInterface;
 
     public function initiallyHidden(): ModalBuilderInterface;
 
