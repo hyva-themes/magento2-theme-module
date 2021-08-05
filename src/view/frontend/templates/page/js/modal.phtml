@@ -8,9 +8,12 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\ViewModel\Modal;
+
 /** @var \Magento\Framework\View\Element\Template $block */
 /** @var \Magento\Framework\Escaper $escaper */
 /** @var \Hyva\Theme\Model\ViewModelRegistry $viewModels */
+
 
 ?>
 <script>
@@ -81,8 +84,7 @@ declare(strict_types=1);
         window.hyva.modal = function(options) {
 
             const config = Object.assign({
-                dialog: 'dialog', // default dialog ref name
-                trigger: 'trigger', // default trigger ref name (to focus when modal is closed)
+                dialog: '<?= Modal::DEFAULT_NAME ?>', // default dialog ref name
                 duration: 300, // ms before allowing subsequent hiding of modals for nested modals (see transition duration)
                 transitionEnter: 'transition ease-out duration-300',
                 transitionEnterStart: 'opacity-0',
@@ -98,13 +100,14 @@ declare(strict_types=1);
                     const focusTargetAfterHide = determineTrigger(this.$refs, dialog, trigger);
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
                     const dialogElement = this.$refs[name];
+                    const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
 
                     this[isOpenProp(name)] = true;
-                    setSiblingsInert(dialogElement, true);
+                    useOverlay && setSiblingsInert(dialogElement, true);
                     setFocusAfterTransition(dialogElement, config.duration);
 
                     stack.push({name, viewModel: this, focusTarget: focusTargetAfterHide, time: Date.now()});
-                    if (stack.length === 1) {
+                    if (useOverlay) {
                         document.body.classList.add('overflow-hidden');
                     }
                 },
@@ -118,7 +121,7 @@ declare(strict_types=1);
 
                     const modal = stack.pop() || {};
                     const name = modal.name;
-                    const nextFocusAfterHide = modal.focusTarget || this.$refs[config.trigger];
+                    const nextFocusAfterHide = modal.focusTarget;
                     const dialogElement = this.$refs[name];
 
                     this[isOpenProp(name)] = false;
@@ -127,6 +130,7 @@ declare(strict_types=1);
                         nextFocusAfterHide.focus()
                     });
 
+                    // todo: all remaining modals have x-no-overlay set, remove overflow-hidden
                     if (stack.length === 0) {
                         document.body.classList.remove('overflow-hidden');
                     }
