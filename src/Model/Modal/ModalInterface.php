@@ -10,9 +10,11 @@ namespace Hyva\Theme\Model\Modal;
 
 interface ModalInterface
 {
+    public function isOverlayDisabled(): bool;
+
     public function getOverlayClasses(): string;
 
-    public function isOverlayDisabled(): bool;
+    public function getContainerClasses(): string;
 
     public function getContentHtml(): string;
 

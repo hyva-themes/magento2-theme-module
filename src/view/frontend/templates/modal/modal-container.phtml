@@ -17,16 +17,18 @@
  */
 
 ?>
-<div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?> x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')" class="<?= $escaper->escapeHtmlAttr($modal->getOverlayClasses()) ?>">
-    <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog"
-         <?php if ($modal->isOverlayDisabled()): ?>x-no-overlay<?php endif; ?>
-         <?php if ($modal->getAriaLabel()): ?>
-             aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"
-         <?php endif; ?>
-         <?php if ($modal->getAriaLabelledby()): ?>
-             aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
-         <?php endif; ?>
-         class="<?= $modal->getDialogClasses() ?>">
-        <?= $modal->getContentHtml() ?>
+<div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?> x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')" class="<?= $modal->getOverlayClasses() ?>">
+    <div class="<?= $modal->getContainerClasses() ?>">
+        <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog"
+             <?php if ($modal->isOverlayDisabled()): ?>x-no-overlay<?php endif; ?>
+             <?php if ($modal->getAriaLabel()): ?>
+                 aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"
+             <?php endif; ?>
+             <?php if ($modal->getAriaLabelledby()): ?>
+                 aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
+             <?php endif; ?>
+             class="<?= $modal->getDialogClasses() ?>">
+            <?= $modal->getContentHtml() ?>
+        </div>
     </div>
 </div>

@@ -30,7 +30,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         'overlay'             => true, // mask background when dialog is visible
         'is-initially-hidden' => true,
         'container-template'  => 'Hyva_Theme::modal/modal-container.phtml',
-        'overlay-classes'     => ['bg-black', 'bg-opacity-50'],
+        'overlay-classes'     => ['fixed', 'inset-0', 'bg-black', 'bg-opacity-50'],
         'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left'],
         'position'            => 'center',
         'dialog-name'         => 'dialog',
@@ -43,15 +43,15 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
     ];
 
     private $positionClasses = [
-        'top'          => ['inset-x-0', 'top-0'],
-        'right'        => ['inset-y-0', 'right-0'],
-        'bottom'       => ['inset-x-0', 'bottom-0'],
-        'left'         => ['inset-y-0', 'left-0'],
+        'top'          => ['inset-x-0', 'top-0', 'pt-1'],
+        'right'        => ['inset-y-0', 'right-0', 'pr-1'],
+        'bottom'       => ['inset-x-0', 'bottom-0', 'pb-1'],
+        'left'         => ['inset-y-0', 'left-0', 'pl-1'],
         'center'       => ['inset-0'],
-        'top-left'     => ['left-0', 'top-0'],
-        'top-right'    => ['top-0', 'right-0'],
-        'bottom-right' => ['bottom-0', 'right-0'],
-        'bottom-left'  => ['bottom-0', 'left-0'],
+        'top-left'     => ['left-0', 'top-0', 'pt-1', 'pl-1'],
+        'top-right'    => ['top-0', 'right-0', 'pt-1', 'pr-1'],
+        'bottom-right' => ['bottom-0', 'right-0', 'pb-1', 'pr-1'],
+        'bottom-left'  => ['bottom-0', 'left-0', 'pb-1', 'pl-1'],
     ];
 
     /**
@@ -244,10 +244,14 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
 
     public function getOverlayClasses(): string
     {
+        return $this->data['overlay'] ? implode(' ', $this->data['overlay-classes']) : '';
+    }
+
+    public function getContainerClasses(): string
+    {
         $classes = merge(
-            ($this->data['overlay'] ? $this->data['overlay-classes'] : []),
             $this->data['container-classes'],
-            $this->positionClasses[$this->data['position']]
+            $this->positionClasses[$this->data['position']],
         );
         return implode(' ', $classes);
     }
