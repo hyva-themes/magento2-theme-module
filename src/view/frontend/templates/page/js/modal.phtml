@@ -63,7 +63,7 @@ use Hyva\Theme\ViewModel\Modal;
             return 'is' + ucFirst(dialogName) + 'Open';
         }
 
-        function determineTrigger(refs, dialog, trigger) {
+        function determineTrigger($refs, dialog, trigger) {
             // if show() was called without arguments use the event target as open trigger
             if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog.target && dialog.target.focus) {
                 return dialog.target;
@@ -73,12 +73,21 @@ use Hyva\Theme\ViewModel\Modal;
                 return trigger.target;
             }
             // if show('name', 'trigger') was called with the ref name of the trigger element use that as the trigger
-            if (typeof trigger === 'string' && refs[trigger]) {
-                return refs[trigger];
+            if (typeof trigger === 'string' && $refs[trigger]) {
+                return $refs[trigger];
             } else {
                 // unknown trigger - no focus will be set when the dialog is hidden.
                 return null;
             }
+        }
+
+        function haveAllRemainingModalsOverlayDisabled($refs)
+        {
+            const overflowDisabled = stack.filter((modal) => {
+                const dialog = $refs[modal.name];
+                return dialog && dialog.hasAttribute('x-no-overlay')
+            });
+            return overflowDisabled.length === stack.length;
         }
 
         window.hyva.modal = function(options) {
@@ -130,8 +139,7 @@ use Hyva\Theme\ViewModel\Modal;
                         nextFocusAfterHide.focus()
                     });
 
-                    // todo: all remaining modals have x-no-overlay set, remove overflow-hidden
-                    if (stack.length === 0) {
+                    if (stack.length === 0 || haveAllRemainingModalsOverlayDisabled(this.$refs)) {
                         document.body.classList.remove('overflow-hidden');
                     }
                 },
