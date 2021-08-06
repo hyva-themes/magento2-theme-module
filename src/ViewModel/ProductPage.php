@@ -18,9 +18,13 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Helper\Output as ProductOutputHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class ProductPage implements ArgumentInterface, IdentityInterface
 {
+    /** Recently Viewed lifetime */
+    const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
+    
     /**
      * @var Product
      */
@@ -47,21 +51,35 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     protected $productOutputHelper;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    protected $_scopeConfigInterface;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      * @param CartHelper $cartHelper
      * @param ProductOutputHelper $productOutputHelper
+     * @param LayoutInterface $layout
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
         CartHelper $cartHelper,
-        ProductOutputHelper $productOutputHelper
+        ProductOutputHelper $productOutputHelper,
+        ScopeConfigInterface $ScopeConfigInterface
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
         $this->productOutputHelper = $productOutputHelper;
+        $this->_scopeConfigInterface = $ScopeConfigInterface;
+    }
+
+    public function getRecentlyViewedLifeTime()
+    {
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return $this->_scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
     }
 
     /**
