@@ -81,12 +81,14 @@ use Hyva\Theme\ViewModel\Modal;
             }
         }
 
-        function haveAllRemainingModalsOverlayDisabled($refs)
+        function overlayDisabled(dialog) {
+            return dialog && dialog.hasAttribute('x-no-overlay')
+        }
+
+        function areRemainingModalsWithoutOverlay()
         {
-            const overflowDisabled = stack.filter((modal) => {
-                const dialog = $refs[modal.name];
-                return dialog && dialog.hasAttribute('x-no-overlay')
-            });
+            const overflowDisabled = stack.map(modal => modal.viewModel.$refs[modal.name]).filter(overlayDisabled)
+
             return overflowDisabled.length === stack.length;
         }
 
@@ -139,7 +141,7 @@ use Hyva\Theme\ViewModel\Modal;
                         nextFocusAfterHide.focus()
                     });
 
-                    if (stack.length === 0 || haveAllRemainingModalsOverlayDisabled(this.$refs)) {
+                    if (stack.length === 0 || areRemainingModalsWithoutOverlay()) {
                         document.body.classList.remove('overflow-hidden');
                     }
                 },
@@ -178,7 +180,10 @@ use Hyva\Theme\ViewModel\Modal;
         document.addEventListener('click', function(e) {
             if (stack.length > 0) {
                 const modal = stack[stack.length -1];
-                if (modal.time + 10 < Date.now() && ! modal.viewModel.$refs[modal.name].contains(e.target)) {
+                const dialog = modal.viewModel.$refs[modal.name];
+                if (modal.time + 10 < Date.now() && // if last click processing is more than 10ms ago
+                    ! overlayDisabled(dialog) && // if dialog has overlay
+                    ! dialog.contains(e.target)) { // if click is outside of dialog
                     modal.viewModel.hide();
                 }
             }

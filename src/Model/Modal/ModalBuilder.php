@@ -27,8 +27,6 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
     /**
      * @var mixed[]
      *
-     * @todo: check disabling the backdrop leaves the page clickable
-     * @todo: check click away is disabled for modals without a backdrop
      * @todo: make transition and duration configurable
      *
      */
