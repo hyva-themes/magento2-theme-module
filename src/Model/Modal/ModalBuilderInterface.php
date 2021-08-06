@@ -20,17 +20,17 @@ interface ModalBuilderInterface
 
     public function withOverlayClasses(string ...$classes): ModalBuilderInterface;
 
-    public function addOverlayClass(string $class): ModalBuilderInterface;
+    public function addOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
-    public function removeOverlayClass(string $class): ModalBuilderInterface;
+    public function removeOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
     public function withContainerTemplate(string $template): ModalBuilderInterface;
 
     public function withContainerClasses(string ...$classes): ModalBuilderInterface;
 
-    public function addContainerClass(string $class): ModalBuilderInterface;
+    public function addContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
-    public function removeContainerClass(string $class): ModalBuilderInterface;
+    public function removeContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
     public function positionTop(): ModalBuilderInterface;
 
@@ -56,9 +56,9 @@ interface ModalBuilderInterface
 
     public function withDialogClasses(string ...$classes): ModalBuilderInterface;
 
-    public function addDialogClass(string $class): ModalBuilderInterface;
+    public function addDialogClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
-    public function removeDialogClass(string $class): ModalBuilderInterface;
+    public function removeDialogClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
     public function withAriaLabel(string $label): ModalBuilderInterface;
 

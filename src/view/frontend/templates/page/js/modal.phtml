@@ -105,7 +105,7 @@ use Hyva\Theme\ViewModel\Modal;
             let lastHide = 0;
 
             return {
-                ['show'](dialog, trigger) {
+                show(dialog, trigger) {
                     const focusTargetAfterHide = determineTrigger(this.$refs, dialog, trigger);
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
                     const dialogElement = this.$refs[name];
@@ -120,7 +120,7 @@ use Hyva\Theme\ViewModel\Modal;
                         document.body.classList.add('overflow-hidden');
                     }
                 },
-                ['hide']() {
+                hide() {
                     // Guard against Escape being pressed multiple times before a transition is finished, otherwise
                     // this function will pop further dialogs from the stack but the display will not update.
                     if (Date.now() - lastHide < config.duration) {
@@ -144,7 +144,7 @@ use Hyva\Theme\ViewModel\Modal;
                     }
                 },
                 [isOpenProp(config.dialog)]: false,
-                ['overlay'](dialog) {
+                overlay(dialog) {
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
                     return {
                         ['x-show']() {

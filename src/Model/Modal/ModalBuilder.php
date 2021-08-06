@@ -12,6 +12,7 @@ use Magento\Framework\View\Element\BlockInterface;
 use Magento\Framework\View\Element\Template as TemplateBlock;
 use Magento\Framework\View\LayoutInterface;
 
+use function array_filter as filter;
 use function array_merge as merge;
 use function array_search as search;
 use function array_splice as splice;
@@ -25,12 +26,17 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
 
     /**
      * @var mixed[]
+     *
+     * @todo: check disabling the backdrop leaves the page clickable
+     * @todo: check click away is disabled for modals without a backdrop
+     * @todo: make transition and duration configurable
+     *
      */
     private $defaults = [
         'overlay'             => true, // mask background when dialog is visible
         'is-initially-hidden' => true,
         'container-template'  => 'Hyva_Theme::modal/modal-container.phtml',
-        'overlay-classes'     => ['fixed', 'inset-0', 'bg-black', 'bg-opacity-50'],
+        'overlay-classes'     => ['fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'z-10'],
         'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left'],
         'position'            => 'center',
         'dialog-name'         => 'dialog',
@@ -73,20 +79,17 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return new self($this->layout, $data);
     }
 
-    private function addClass(array $data, string $key, string $class): ModalBuilderInterface
+    private function addClasses(array $data, string $key, array $toAdd): ModalBuilderInterface
     {
-        $classes   = $this->data[$key];
-        $classes[] = $class;
+        $classes = merge($this->data[$key], $toAdd);
         return $this->withData($data, $key, $classes);
     }
 
-    private function removeClass(array $data, string $key, string $class): ModalBuilderInterface
+    private function removeClasses(array $data, string $key, array $toRemove): ModalBuilderInterface
     {
-        $classes = $this->data[$key];
-        $pos     = search($class, $classes, true);
-        if ($pos !== false) {
-            splice($classes, $pos, 1);
-        }
+        $classes = filter($this->data[$key], function (string $class) use ($toRemove): bool {
+            return ! in_array($class, $toRemove, true);
+        });
         return $this->withData($data, $key, $classes);
     }
 
@@ -115,14 +118,14 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData($this->data, 'overlay-classes', $classes);
     }
 
-    public function addOverlayClass(string $class): ModalBuilderInterface
+    public function addOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->addClass($this->data, 'overlay-classes', $class);
+        return $this->addClasses($this->data, 'overlay-classes', merge([$class], $moreClasses));
     }
 
-    public function removeOverlayClass(string $class): ModalBuilderInterface
+    public function removeOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->removeClass($this->data, 'overlay-classes', $class);
+        return $this->removeClasses($this->data, 'overlay-classes', merge([$class], $moreClasses));
     }
 
     public function withContainerTemplate(string $template): ModalBuilderInterface
@@ -135,14 +138,14 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData($this->data, 'container-classes', $classes);
     }
 
-    public function addContainerClass(string $class): ModalBuilderInterface
+    public function addContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->addClass($this->data, 'container-classes', $class);
+        return $this->addClasses($this->data, 'container-classes', merge([$class], $moreClasses));
     }
 
-    public function removeContainerClass(string $class): ModalBuilderInterface
+    public function removeContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->removeClass($this->data, 'container-classes', $class);
+        return $this->removeClasses($this->data, 'container-classes', merge([$class], $moreClasses));
     }
 
     public function positionTop(): ModalBuilderInterface
@@ -200,14 +203,14 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData($this->data, 'dialog-classes', $classes);
     }
 
-    public function addDialogClass(string $class): ModalBuilderInterface
+    public function addDialogClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->addClass($this->data, 'dialog-classes', $class);
+        return $this->addClasses($this->data, 'dialog-classes', merge([$class], $moreClasses));
     }
 
-    public function removeDialogClass(string $class): ModalBuilderInterface
+    public function removeDialogClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->removeClass($this->data, 'dialog-classes', $class);
+        return $this->removeClasses($this->data, 'dialog-classes', merge([$class], $moreClasses));
     }
 
     public function withAriaLabel(?string $label): ModalBuilderInterface
