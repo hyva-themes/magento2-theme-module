@@ -10,17 +10,12 @@ declare(strict_types=1);
 
 use Hyva\Theme\ViewModel\Modal;
 
-/** @var \Magento\Framework\View\Element\Template $block */
-/** @var \Magento\Framework\Escaper $escaper */
-/** @var \Hyva\Theme\Model\ViewModelRegistry $viewModels */
-
-
 ?>
 <script>
     'use strict';
 
     (function () {
-        const stack = [];
+        const modals = [];
 
         function setSiblingsInert(dialogElement, toState) {
             // Walk up the DOM, toggle inert attribute the siblings at each level
@@ -81,15 +76,15 @@ use Hyva\Theme\ViewModel\Modal;
             }
         }
 
-        function overlayDisabled(dialog) {
+        function isOverlayDisabled(dialog) {
             return dialog && dialog.hasAttribute('x-no-overlay')
         }
 
-        function areRemainingModalsWithoutOverlay()
+        function areRemainingModalsWithoutOverlay(modals)
         {
-            const overflowDisabled = stack.map(modal => modal.viewModel.$refs[modal.name]).filter(overlayDisabled)
+            const overflowDisabled = modals.map(modal => modal.viewModel.$refs[modal.name]).filter(isOverlayDisabled);
 
-            return overflowDisabled.length === stack.length;
+            return overflowDisabled.length === modals.length;
         }
 
         window.hyva.modal = function(options) {
@@ -114,10 +109,10 @@ use Hyva\Theme\ViewModel\Modal;
                     const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
 
                     this[isOpenProp(name)] = true;
-                    useOverlay && setSiblingsInert(dialogElement, true);
+                    useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
 
-                    stack.push({name, viewModel: this, focusTarget: focusTargetAfterHide, time: Date.now()});
+                    modals.push({name, viewModel: this, focusTarget: focusTargetAfterHide, time: Date.now()});
                     if (useOverlay) {
                         document.body.classList.add('overflow-hidden');
                     }
@@ -130,18 +125,16 @@ use Hyva\Theme\ViewModel\Modal;
                     }
                     lastHide = Date.now();
 
-                    const modal = stack.pop() || {};
+                    const modal = modals.pop() || {};
                     const name = modal.name;
                     const nextFocusAfterHide = modal.focusTarget;
                     const dialogElement = this.$refs[name];
 
                     this[isOpenProp(name)] = false;
-                    setSiblingsInert(dialogElement, false);
-                    nextFocusAfterHide && this.$nextTick(() => {
-                        nextFocusAfterHide.focus()
-                    });
+                    this.$nextTick(() => setSiblingsInert(dialogElement, false));
+                    nextFocusAfterHide && this.$nextTick(() => nextFocusAfterHide.focus());
 
-                    if (stack.length === 0 || areRemainingModalsWithoutOverlay()) {
+                    if (modals.length === 0 || areRemainingModalsWithoutOverlay(modals)) {
                         document.body.classList.remove('overflow-hidden');
                     }
                 },
@@ -164,8 +157,8 @@ use Hyva\Theme\ViewModel\Modal;
         }
 
         window.hyva.modal.pop = function () {
-            if (stack.length > 0) {
-                const modal = stack[stack.length -1];
+            if (modals.length > 0) {
+                const modal = modals[modals.length -1];
                 modal.viewModel.hide();
             }
         }
@@ -178,11 +171,11 @@ use Hyva\Theme\ViewModel\Modal;
 
         // add generic modal @click.away handler
         document.addEventListener('click', function(e) {
-            if (stack.length > 0) {
-                const modal = stack[stack.length -1];
+            if (modals.length > 0) {
+                const modal = modals[modals.length -1];
                 const dialog = modal.viewModel.$refs[modal.name];
                 if (modal.time + 10 < Date.now() && // if last click processing is more than 10ms ago
-                    ! overlayDisabled(dialog) && // if dialog has overlay
+                    ! isOverlayDisabled(dialog) && // if dialog has overlay
                     ! dialog.contains(e.target)) { // if click is outside of dialog
                     modal.viewModel.hide();
                 }

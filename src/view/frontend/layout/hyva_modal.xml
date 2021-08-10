@@ -10,7 +10,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <script src="https://cdn.jsdelivr.net/npm/wicg-inert@3.1.1/dist/inert.js" src_type="url" defer="true"/>
+        <script src="https://cdn.jsdelivr.net/npm/wicg-inert@3.1.1/dist/inert.min.js" src_type="url" defer="true"/>
     </head>
     <body>
         <referenceContainer name="before.body.end">
