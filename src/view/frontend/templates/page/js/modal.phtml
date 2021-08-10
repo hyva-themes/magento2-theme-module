@@ -17,7 +17,27 @@ use Hyva\Theme\ViewModel\Modal;
     (function () {
         const modals = [];
 
+        function loadInertPolyfill(callback) {
+            const polyfill = document.createElement('script');
+            polyfill.src = 'https://cdn.jsdelivr.net/npm/wicg-inert@3.1.1/dist/inert.min.js';
+            callback && polyfill.addEventListener('load', callback);
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
+        }
+
+        let isInterPolyfillLoaded = 0;
         function setSiblingsInert(dialogElement, toState) {
+            if (isInterPolyfillLoaded === 0) {
+                isInterPolyfillLoaded = 1;
+                loadInertPolyfill(() => {
+                    isInterPolyfillLoaded = 2;
+                    setSiblingsInert(dialogElement, toState)
+                })
+                return;
+            }
+            if (isInterPolyfillLoaded === 1) {
+                return;
+            }
             // Walk up the DOM, toggle inert attribute the siblings at each level
             let el = dialogElement;
             while (el && (el = el.parentElement)) {
