@@ -25,17 +25,17 @@ use Hyva\Theme\ViewModel\Modal;
             firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
         }
 
-        let isInterPolyfillLoaded = 0;
+        let isInertPolyfillLoaded = 0;
         function setSiblingsInert(dialogElement, toState) {
-            if (isInterPolyfillLoaded === 0) {
-                isInterPolyfillLoaded = 1;
+            if (isInertPolyfillLoaded === 0) {
+                isInertPolyfillLoaded = 1;
                 loadInertPolyfill(() => {
-                    isInterPolyfillLoaded = 2;
+                    isInertPolyfillLoaded = 2;
                     setSiblingsInert(dialogElement, toState)
                 })
                 return;
             }
-            if (isInterPolyfillLoaded === 1) {
+            if (isInertPolyfillLoaded === 1) {
                 return;
             }
             // Walk up the DOM, toggle inert attribute the siblings at each level
