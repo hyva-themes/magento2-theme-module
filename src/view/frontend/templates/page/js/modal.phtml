@@ -1,0 +1,205 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\Modal;
+
+?>
+<script>
+    'use strict';
+
+    (function () {
+        const modals = [];
+
+        function loadInertPolyfill(callback) {
+            const polyfill = document.createElement('script');
+            polyfill.src = 'https://cdn.jsdelivr.net/npm/wicg-inert@3.1.1/dist/inert.min.js';
+            callback && polyfill.addEventListener('load', callback);
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
+        }
+
+        let isInterPolyfillLoaded = 0;
+        function setSiblingsInert(dialogElement, toState) {
+            if (isInterPolyfillLoaded === 0) {
+                isInterPolyfillLoaded = 1;
+                loadInertPolyfill(() => {
+                    isInterPolyfillLoaded = 2;
+                    setSiblingsInert(dialogElement, toState)
+                })
+                return;
+            }
+            if (isInterPolyfillLoaded === 1) {
+                return;
+            }
+            // Walk up the DOM, toggle inert attribute the siblings at each level
+            let el = dialogElement;
+            while (el && (el = el.parentElement)) {
+                if (el === document.body || el.parentElement === null) continue;
+
+                [...el.parentElement.children].filter(sibling => sibling !== el).forEach(sibling => {
+                    sibling.inert = toState;
+                })
+            }
+        }
+
+        function focusables(dialogElement) {
+            return [...dialogElement.querySelectorAll('a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])')]
+                .filter(el => !el.hasAttribute('disabled'));
+        }
+
+        function firstVisible(elements) {
+            const a = Array.from(elements);
+            for (let i = 0; i < a.length; i++) {
+                if (a[i].offsetWidth || a[i].offsetHeight || a[i].getClientRects().length) return a[i];
+            }
+            return null;
+        }
+
+        function setFocusAfterTransition(dialogElement, duration) {
+            window.setTimeout(() => {
+                const focusElement = firstVisible(dialogElement.querySelectorAll('[x-focus-first]')) ||
+                    focusables(dialogElement)[0] || null;
+                focusElement && focusElement.focus();
+            }, duration + 1);
+        }
+
+        function ucFirst(s) {
+            return s.substr(0, 1).toUpperCase() + s.substr(1);
+        }
+
+        function isOpenProp(dialogName) {
+            return 'is' + ucFirst(dialogName) + 'Open';
+        }
+
+        function determineTrigger($refs, dialog, trigger) {
+            // if show() was called without arguments use the event target as open trigger
+            if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog.target && dialog.target.focus) {
+                return dialog.target;
+            }
+            // if show('name', $event) was called with the event as the second argument use the event target as trigger
+            if (typeof dialog === 'string' && typeof trigger === 'object' && trigger.target && trigger.target.focus) {
+                return trigger.target;
+            }
+            // if show('name', 'trigger') was called with the ref name of the trigger element use that as the trigger
+            if (typeof trigger === 'string' && $refs[trigger]) {
+                return $refs[trigger];
+            } else {
+                // unknown trigger - no focus will be set when the dialog is hidden.
+                return null;
+            }
+        }
+
+        function isOverlayDisabled(dialog) {
+            return dialog && dialog.hasAttribute('x-no-overlay')
+        }
+
+        function areRemainingModalsWithoutOverlay(modals)
+        {
+            const overflowDisabled = modals.map(modal => modal.viewModel.$refs[modal.name]).filter(isOverlayDisabled);
+
+            return overflowDisabled.length === modals.length;
+        }
+
+        window.hyva.modal = function(options) {
+
+            const config = Object.assign({
+                dialog: '<?= Modal::DEFAULT_NAME ?>', // default dialog ref name
+                duration: 300, // ms before allowing subsequent hiding of modals for nested modals (see transition duration)
+                transitionEnter: 'transition ease-out duration-300',
+                transitionEnterStart: 'opacity-0',
+                transitionEnterEnd: 'opacity-100',
+                transitionLeave: 'transition ease-in duration-300',
+                transitionLeaveStart: 'opacity-100',
+                transitionLeaveEnd: 'opacity-0',
+            }, options);
+            let lastHide = 0;
+
+            return {
+                show(dialog, trigger) {
+                    const focusTargetAfterHide = determineTrigger(this.$refs, dialog, trigger);
+                    const name = typeof dialog === 'string' ? dialog : config.dialog;
+                    const dialogElement = this.$refs[name];
+                    const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
+
+                    this[isOpenProp(name)] = true;
+                    useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
+                    setFocusAfterTransition(dialogElement, config.duration);
+
+                    modals.push({name, viewModel: this, focusTarget: focusTargetAfterHide, time: Date.now()});
+                    if (useOverlay) {
+                        document.body.classList.add('overflow-hidden');
+                    }
+                },
+                hide() {
+                    // Guard against Escape being pressed multiple times before a transition is finished, otherwise
+                    // this function will pop further dialogs from the stack but the display will not update.
+                    if (Date.now() - lastHide < config.duration) {
+                        return;
+                    }
+                    lastHide = Date.now();
+
+                    const modal = modals.pop() || {};
+                    const name = modal.name;
+                    const nextFocusAfterHide = modal.focusTarget;
+                    const dialogElement = this.$refs[name];
+
+                    this[isOpenProp(name)] = false;
+                    this.$nextTick(() => setSiblingsInert(dialogElement, false));
+                    nextFocusAfterHide && this.$nextTick(() => nextFocusAfterHide.focus());
+
+                    if (modals.length === 0 || areRemainingModalsWithoutOverlay(modals)) {
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                },
+                [isOpenProp(config.dialog)]: false,
+                overlay(dialog) {
+                    const name = typeof dialog === 'string' ? dialog : config.dialog;
+                    return {
+                        ['x-show']() {
+                            return this[isOpenProp(name)];
+                        },
+                        ['x-transition:enter']: config.transitionEnter,
+                        ['x-transition:enter-start']: config.transitionEnterStart,
+                        ['x-transition:enter-end']: config.transitionEnterEnd,
+                        ['x-transition:leave']: config.transitionLeave,
+                        ['x-transition:leave-start']: config.transitionLeaveStart,
+                        ['x-transition:leave-end']: config.transitionLeaveEnd,
+                    };
+                }
+            };
+        }
+
+        window.hyva.modal.pop = function () {
+            if (modals.length > 0) {
+                const modal = modals[modals.length -1];
+                modal.viewModel.hide();
+            }
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                window.hyva.modal.pop();
+            }
+        });
+
+        // add generic modal @click.away handler
+        document.addEventListener('click', function(e) {
+            if (modals.length > 0) {
+                const modal = modals[modals.length -1];
+                const dialog = modal.viewModel.$refs[modal.name];
+                if (modal.time + 10 < Date.now() && // if last click processing is more than 10ms ago
+                    ! isOverlayDisabled(dialog) && // if dialog has overlay
+                    ! dialog.contains(e.target)) { // if click is outside of dialog
+                    modal.viewModel.hide();
+                }
+            }
+        });
+    })();
+</script>

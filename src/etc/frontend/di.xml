@@ -44,4 +44,7 @@
     <type name="Magento\Catalog\Block\Product\View">
         <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToProductViewBlockJson"/>
     </type>
+
+    <preference for="Hyva\Theme\Model\Modal\ModalBuilderInterface" type="Hyva\Theme\Model\Modal\ModalBuilder"/>
+    <preference for="Hyva\Theme\Model\Modal\ModalInterface" type="Hyva\Theme\Model\Modal\ModalBuilder"/>
 </config>
