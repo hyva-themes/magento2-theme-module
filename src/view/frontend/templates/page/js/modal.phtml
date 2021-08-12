@@ -9,6 +9,11 @@
 declare(strict_types=1);
 
 use Hyva\Theme\ViewModel\Modal;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
 
 ?>
 <script>
@@ -19,7 +24,7 @@ use Hyva\Theme\ViewModel\Modal;
 
         function loadInertPolyfill(callback) {
             const polyfill = document.createElement('script');
-            polyfill.src = 'https://cdn.jsdelivr.net/npm/wicg-inert@3.1.1/dist/inert.min.js';
+            polyfill.src = '<?= $escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js')) ?>';
             callback && polyfill.addEventListener('load', callback);
             const firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
