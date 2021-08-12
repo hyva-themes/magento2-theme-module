@@ -75,31 +75,34 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         return $this->_product;
     }
 
-    public function getShortDescription(): string
-    {
+    public function getShortDescription(
+        bool $excerpt = true,
+        bool $stripTags = true
+    ): string {
         $product = $this->getProduct();
+        $result = "";
 
         if ($shortDescription = $product->getShortDescription()) {
-            $excerpt = $this->excerptFromDescription($shortDescription);
-            return $this->productAttributeHtml($product, $excerpt, 'short_description');
+            $shortDescription = $excerpt ? $this->excerptFromDescription($shortDescription) : $shortDescription;
+            $result = $this->productAttributeHtml($product, $shortDescription, 'short_description');
         }
 
         if ($description = $product->getDescription()) {
-            $excerpt = $this->excerptFromDescription($description);
-            return $this->productAttributeHtml($product, $excerpt, 'description');
+            $description = $excerpt ? $this->excerptFromDescription($description) : $description;
+            $result = $this->productAttributeHtml($product, $description, 'description');
         }
 
-        return "";
+        return $stripTags ? strip_tags($result) : $result;
     }
 
     protected function excerptFromDescription(string $description): string
     {
         // if we have at least one <p></p>, take the first one as excerpt
         if ($paragraphs = preg_split('#</p><p>|<p>|</p>#i', $description, -1, PREG_SPLIT_NO_EMPTY)) {
-            return strip_tags($paragraphs[0]);
+            return $paragraphs[0];
         }
         // otherwise, take the first sentence
-        return explode('.', strip_tags($description))[0] . '.';
+        return explode('.', $description)[0] . '.';
     }
 
     /**
