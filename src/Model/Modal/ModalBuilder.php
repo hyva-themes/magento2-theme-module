@@ -25,17 +25,18 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
     private $data = [];
 
     /**
+     * Note the z-10 class is part of both the overlay-classes and container-classes.
+     * With a backdrop the z-index is required on the overlay element, without a backdrop on the container.
+     * This is needed because otherwise the store-switcher overlays the dialog.
+     *
      * @var mixed[]
-     *
-     * @todo: make transition and duration configurable
-     *
      */
     private $defaults = [
         'overlay'             => true, // mask background when dialog is visible
         'is-initially-hidden' => true,
         'container-template'  => 'Hyva_Theme::modal/modal-container.phtml',
         'overlay-classes'     => ['fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'z-10'],
-        'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left'],
+        'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left', 'z-10'],
         'position'            => 'center',
         'dialog-name'         => 'dialog',
         'dialog-classes'      => ['inline-block', 'bg-white', 'shadow-xl', 'rounded-lg', 'p-10'],
