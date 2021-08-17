@@ -85,9 +85,7 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         if ($shortDescription = $product->getShortDescription()) {
             $shortDescription = $excerpt ? $this->excerptFromDescription($shortDescription) : $shortDescription;
             $result = $this->productAttributeHtml($product, $shortDescription, 'short_description');
-        }
-
-        if ($description = $product->getDescription()) {
+        } elseif ($description = $product->getDescription()) {
             $description = $excerpt ? $this->excerptFromDescription($description) : $description;
             $result = $this->productAttributeHtml($product, $description, 'description');
         }
