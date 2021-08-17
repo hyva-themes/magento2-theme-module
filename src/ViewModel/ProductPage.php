@@ -90,7 +90,12 @@ class ProductPage implements ArgumentInterface, IdentityInterface
             $result = $this->productAttributeHtml($product, $description, 'description');
         }
 
-        return $stripTags ? strip_tags($result) : $result;
+        return $stripTags ? strip_tags($this->stripStyles($result)) : $result;
+    }
+
+    protected function stripStyles(string $html): string
+    {
+        return preg_replace('#<style>.+</style>#Usi', '', $html);
     }
 
     protected function excerptFromDescription(string $description): string
