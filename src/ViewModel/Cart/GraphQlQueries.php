@@ -146,7 +146,25 @@ class GraphQlQueries implements ArgumentInterface
               applied_coupons {
                 code
               }
+              billing_address {
+                country {
+                  code
+                }
+                region {
+                  label
+                  region_id
+                }
+                postcode
+              }
               shipping_addresses {
+                country {
+                  code
+                }
+                region {
+                  label
+                  region_id
+                }
+                postcode
                 selected_shipping_method {
                   amount {
                     value
