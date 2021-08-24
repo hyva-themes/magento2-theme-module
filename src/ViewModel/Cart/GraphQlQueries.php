@@ -22,6 +22,7 @@ class GraphQlQueries implements ArgumentInterface
     {
         return '
               total_quantity
+              is_virtual
               items {
                 id
                 errors
