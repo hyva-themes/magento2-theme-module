@@ -6,7 +6,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.6...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.7...main
+
+## [1.1.7] - 2021-08-25
+
+[1.1.7]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.6...1.1.7
+
+### Added
+
+- **Add cart data required for shipping and tax estimation to GraphQL cart query**
+ 
+  This is a preparatory change for shipping estimation support that will be part of the next release.
+
+  - Add [billing and shipping address](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/19326809442a64afd6e83b3e7aa2c6681f744d9c)
+  - Add [is_virtual field](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/85fe6f0404aafba21f16c179b93c92af26354a35)
+  
+- **Changelog for release 1.1.6**
+
+  The changelog updates for the previous release where missing and are now included below.
+
+### Changed
+
+- **Bugfix: Render modal overlay above store-switcher**
+
+  See this [commit](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/ea5b3964c07ef083c6b3c31ea2f30ae2bbd861c4)
+
+- **Bugfix: Use product short description if present**
+
+  The change introduced in the previous release 1.1.6 contained a bug that is now [fixed](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/265bfabca403b00d493fdb11117ffc1cf7854282). 
+
+- **Bugfix: Remove PageBuilder style tag content from product description excerpt**
+
+  The `strip_tags` command keeps styles as part of the return value, which is not intended. This is particularly relevant in combination with PageBuilder.
+
+  See fix [commit](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/d0f5a959a8121e4b7376953cc4197612f1519be5)
+
+### Removed
+
+- nothing
 
 ## [1.1.6] - 2021-08-12
 
