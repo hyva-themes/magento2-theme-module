@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Customer\Model\Registration;
-use Magento\Customer\Model\Url;
+use Magento\Customer\Model\Url as CustomerUrl;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class CustomerRegistration implements ArgumentInterface
@@ -22,13 +22,13 @@ class CustomerRegistration implements ArgumentInterface
     protected $registration;
 
     /**
-     * @var Url
+     * @var CustomerUrl
      */
     protected $customerUrl;
 
     public function __construct(
         Registration $registration,
-        Url $customerUrl
+        CustomerUrl $customerUrl
     ) {
         $this->registration = $registration;
         $this->customerUrl = $customerUrl;
