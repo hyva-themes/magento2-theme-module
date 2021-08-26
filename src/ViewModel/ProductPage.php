@@ -53,33 +53,33 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     /**
      * @var ScopeConfigInterface
      */
-    protected $_scopeConfigInterface;
+    protected $scopeConfigInterface;
 
     /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      * @param CartHelper $cartHelper
      * @param ProductOutputHelper $productOutputHelper
-     * @param LayoutInterface $layout
+     * @param ScopeConfigInterface $scopeConfigInterface
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
         CartHelper $cartHelper,
         ProductOutputHelper $productOutputHelper,
-        ScopeConfigInterface $ScopeConfigInterface
+        ScopeConfigInterface $scopeConfigInterface
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
         $this->productOutputHelper = $productOutputHelper;
-        $this->_scopeConfigInterface = $ScopeConfigInterface;
+        $this->scopeConfigInterface = $scopeConfigInterface;
     }
 
     public function getRecentlyViewedLifeTime()
     {
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-        return $this->_scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
+        return $this->scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
     }
 
     /**
