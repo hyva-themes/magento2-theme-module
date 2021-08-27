@@ -171,6 +171,7 @@ class GraphQlQueries implements ArgumentInterface
                     currency
                   }
                   carrier_title
+                  carrier_code
                   method_title
                   method_code
                 }
@@ -184,6 +185,7 @@ class GraphQlQueries implements ArgumentInterface
                     currency
                   }
                   carrier_title
+                  carrier_code
                   method_title
                   method_code
                 }
