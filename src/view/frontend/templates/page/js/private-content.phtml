@@ -136,7 +136,7 @@ use Magento\Framework\View\Element\Template;
         function fetchPrivateContent(sections) {
             fetch('<?= $escaper->escapeUrl(
                 $block->getBaseUrl()
-            ) ?>/customer/section/load/?sections=' + encodeURIComponent(
+            ) ?>customer/section/load/?sections=' + encodeURIComponent(
                 sections.join(',')
             ), {
                 method: 'GET',
