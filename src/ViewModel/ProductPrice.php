@@ -62,11 +62,12 @@ class ProductPrice implements ArgumentInterface
     {
         $priceAmount = $this->getPrice($priceType, $product)->getAmount();
 
-        if ($this->displayPriceIncludingTax()) {
-            return $priceAmount->getValue();
-        } else {
-            return $priceAmount->getBaseAmount();
-        }
+        $amount = $this->displayPriceIncludingTax()
+            ? $priceAmount->getValue()
+            : $priceAmount->getBaseAmount();
+
+        // Cast in case no price is set and $amount is null or a false
+        return (float) $amount;
     }
 
     public function getPrice(string $priceType, Product $product = null): PriceInterface
