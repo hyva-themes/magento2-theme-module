@@ -113,7 +113,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
 
     private function processCacheIdentities(array $menuData, $maxLevel): array
     {
-        if ($this->isNewMaxLevel($maxLevel)) {
+        if ($this->isNewMaxLevel($maxLevel) && !empty($menuData)) {
             $this->requestedMaxLevel = $maxLevel;
             $this->cacheIdentities   = unique(merge(...values(map([$this, 'extractCacheIdentities'], $menuData))));
         }
