@@ -63,7 +63,6 @@ class GraphQlQueries implements ArgumentInterface
                         percent_off
                       }
                   }
-                  stock_status
                 }
                 quantity
                 ... on SimpleCartItem {
