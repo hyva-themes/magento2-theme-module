@@ -36,7 +36,4 @@
             </argument>
         </arguments>
     </type>
-    <type name="Magento\Elasticsearch\Model\Adapter\Index\Builder">
-        <plugin name="custom_like_search_builder" type="Hyva\Theme\Plugin\AutoComplete\Model\Adapter\Index\AutoCompleteBuilder"></plugin>
-    </type>
 </config>
