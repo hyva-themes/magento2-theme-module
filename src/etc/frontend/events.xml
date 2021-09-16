@@ -13,6 +13,10 @@
         <observer name="hyva_theme_add_layout_handles"
                   instance="Hyva\Theme\Observer\AddLayoutHandles"/>
     </event>
+    <event name="load_file_layout_updates_xml_after">
+        <observer name="hyva_theme_add_layout_handles_updates"
+                  instance="Hyva\Theme\Observer\AddLayoutHandlesUpdates"/>
+    </event>
     <event name="catalog_controller_product_init_after">
         <observer name="hyva_theme_register_current_product"
                   instance="Hyva\Theme\Observer\RegisterCurrentProduct"/>
