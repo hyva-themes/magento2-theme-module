@@ -11,13 +11,20 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
-use Magento\Checkout\Helper\Cart;
+use Magento\Checkout\Helper\Cart as CartHelper;
+use Magento\Framework\Phrase;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Catalog\Helper\Output as ProductOutputHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
-class ProductPage implements ArgumentInterface
+class ProductPage implements ArgumentInterface, IdentityInterface
 {
+    /** Recently Viewed lifetime */
+    const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
+    
     /**
      * @var Product
      */
@@ -34,22 +41,45 @@ class ProductPage implements ArgumentInterface
     protected $priceCurrency;
 
     /**
-     * @var Cart
+     * @var CartHelper
      */
     protected $cartHelper;
 
     /**
+     * @var ProductOutputHelper
+     */
+    protected $productOutputHelper;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfigInterface;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
+     * @param CartHelper $cartHelper
+     * @param ProductOutputHelper $productOutputHelper
+     * @param ScopeConfigInterface $scopeConfigInterface
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
-        Cart $cartHelper
+        CartHelper $cartHelper,
+        ProductOutputHelper $productOutputHelper,
+        ScopeConfigInterface $scopeConfigInterface
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
+        $this->productOutputHelper = $productOutputHelper;
+        $this->scopeConfigInterface = $scopeConfigInterface;
+    }
+
+    public function getRecentlyViewedLifeTime()
+    {
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return $this->scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
     }
 
     /**
@@ -63,28 +93,37 @@ class ProductPage implements ArgumentInterface
         return $this->_product;
     }
 
-    public function getShortDescription(): string
-    {
+    public function getShortDescription(
+        bool $excerpt = true,
+        bool $stripTags = true
+    ): string {
         $product = $this->getProduct();
+        $result = "";
 
         if ($shortDescription = $product->getShortDescription()) {
-            return $shortDescription;
+            $shortDescription = $excerpt ? $this->excerptFromDescription($shortDescription) : $shortDescription;
+            $result = $this->productAttributeHtml($product, $shortDescription, 'short_description');
+        } elseif ($description = $product->getDescription()) {
+            $description = $excerpt ? $this->excerptFromDescription($description) : $description;
+            $result = $this->productAttributeHtml($product, $description, 'description');
         }
 
-        if ($description = $product->getDescription()) {
-            return $this->excerptFromDescription($description);
-        }
-        return "";
+        return $stripTags ? strip_tags($this->stripStyles($result)) : $result;
+    }
+
+    protected function stripStyles(string $html): string
+    {
+        return preg_replace('#<style>.+</style>#Usi', '', $html);
     }
 
     protected function excerptFromDescription(string $description): string
     {
         // if we have at least one <p></p>, take the first one as excerpt
         if ($paragraphs = preg_split('#</p><p>|<p>|</p>#i', $description, -1, PREG_SPLIT_NO_EMPTY)) {
-            return strip_tags($paragraphs[0]);
+            return $paragraphs[0];
         }
         // otherwise, take the first sentence
-        return explode('.', strip_tags($description))[0] . '.';
+        return explode('.', $description)[0] . '.';
     }
 
     /**
@@ -111,8 +150,8 @@ class ProductPage implements ArgumentInterface
     {
         $currency = $this->priceCurrency->getCurrency();
         return [
-            'code' => $currency->getCurrencyCode(),
-            'symbol' => $currency->getCurrencySymbol()
+            'code'   => $currency->getCurrencyCode(),
+            'symbol' => $currency->getCurrencySymbol(),
         ];
     }
 
@@ -126,5 +165,22 @@ class ProductPage implements ArgumentInterface
         return $format
             ? $this->priceCurrency->convertAndFormat($value, $includeContainer)
             : $this->priceCurrency->convert($value);
+    }
+
+    /**
+     * @param string|Phrase $attributeHtml
+     * @param string $attributeName
+     * @return mixed
+     */
+    public function productAttributeHtml(Product $product, $attributeHtml, $attributeName)
+    {
+        return $this->productOutputHelper->productAttribute($product, $attributeHtml, $attributeName);
+    }
+
+    public function getIdentities()
+    {
+        return isset($this->_product)
+            ? $this->_product->getIdentities()
+            : [];
     }
 }

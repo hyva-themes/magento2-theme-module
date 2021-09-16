@@ -12,12 +12,16 @@ namespace Hyva\Theme\ViewModel;
 
 use ArrayIterator;
 use Iterator;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Traversable;
+use function array_merge as merge;
+use function array_unique as unique;
+use function array_values as values;
 
-class CurrentProduct implements ArgumentInterface
+class CurrentProduct implements ArgumentInterface, IdentityInterface
 {
     /**
      * @var ProductInterface
@@ -29,6 +33,11 @@ class CurrentProduct implements ArgumentInterface
      */
     protected $productFactory;
 
+    /**
+     * @var string[]
+     */
+    private $cacheIdentities = [];
+
     public function __construct(ProductInterfaceFactory $productFactory)
     {
         $this->productFactory = $productFactory;
@@ -37,6 +46,7 @@ class CurrentProduct implements ArgumentInterface
     public function set(ProductInterface $product): void
     {
         $this->currentProduct = $product;
+        $this->collectIdentities($product);
     }
 
     /**
@@ -113,5 +123,17 @@ class CurrentProduct implements ArgumentInterface
                 return $valid;
             }
         };
+    }
+
+    private function collectIdentities(ProductInterface $product)
+    {
+        if ($product instanceof IdentityInterface) {
+            $this->cacheIdentities = merge($this->cacheIdentities, values($product->getIdentities()));
+        }
+    }
+
+    public function getIdentities()
+    {
+        return unique($this->cacheIdentities);
     }
 }

@@ -22,8 +22,10 @@ class GraphQlQueries implements ArgumentInterface
     {
         return '
               total_quantity
+              is_virtual
               items {
                 id
+                errors
                 prices {
                   price {
                     value
@@ -143,14 +145,48 @@ class GraphQlQueries implements ArgumentInterface
               applied_coupons {
                 code
               }
+              billing_address {
+                country {
+                  code
+                }
+                region {
+                  label
+                  region_id
+                }
+                postcode
+              }
               shipping_addresses {
+                country {
+                  code
+                }
+                region {
+                  label
+                  region_id
+                }
+                postcode
                 selected_shipping_method {
-                    amount {
-                        value
-                        currency
-                    }
-                    carrier_title
-                    method_title
+                  amount {
+                    value
+                    currency
+                  }
+                  carrier_title
+                  carrier_code
+                  method_title
+                  method_code
+                }
+                available_shipping_methods {
+                  price_excl_tax {
+                    value
+                    currency
+                  }
+                  price_incl_tax {
+                    value
+                    currency
+                  }
+                  carrier_title
+                  carrier_code
+                  method_title
+                  method_code
                 }
               }
               prices {

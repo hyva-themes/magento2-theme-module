@@ -13,16 +13,26 @@ namespace Hyva\Theme\ViewModel;
 use Hyva\Theme\Service\Navigation as NavigationService;
 use Magento\Framework\Data\Tree\Node;
 use Magento\Framework\Data\Tree\Node\Collection;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
-class Navigation implements ArgumentInterface
+use function array_map as map;
+use function array_merge as merge;
+use function array_unique as unique;
+use function array_values as values;
+
+class Navigation implements ArgumentInterface, IdentityInterface
 {
     /**
      * @var NavigationService
      */
     protected $navigationService;
+
+    private $requestedMaxLevel;
+
+    private $cacheIdentities;
 
     public function __construct(NavigationService $navigationService)
     {
@@ -39,7 +49,7 @@ class Navigation implements ArgumentInterface
     {
         $menuTree = $this->navigationService->getMenuTree($maxLevel);
 
-        return $this->getMenuData($menuTree);
+        return $this->processCacheIdentities($this->getMenuData($menuTree), $maxLevel);
     }
 
     /**
@@ -48,7 +58,7 @@ class Navigation implements ArgumentInterface
      */
     protected function getMenuData(Node $menuTree)
     {
-        $children = $menuTree->getChildren();
+        $children   = $menuTree->getChildren();
         $childLevel = $this->getChildLevel($menuTree->getLevel());
         $this->removeChildrenWithoutActiveParent($children, $childLevel);
         $parentPositionClass = $menuTree->getPositionClass();
@@ -99,5 +109,44 @@ class Navigation implements ArgumentInterface
     protected function getChildLevel($parentLevel): int
     {
         return $parentLevel === null ? 0 : $parentLevel + 1;
+    }
+
+    private function processCacheIdentities(array $menuData, $maxLevel): array
+    {
+        if ($this->isNewMaxLevel($maxLevel) && !empty($menuData)) {
+            $this->requestedMaxLevel = $maxLevel;
+            $this->cacheIdentities   = unique(merge(...values(map([$this, 'extractCacheIdentities'], $menuData))));
+        }
+        return map([$this, 'removeCacheIdentities'], $menuData);
+    }
+
+    private function isNewMaxLevel($maxLevel): bool
+    {
+        return !isset($this->cacheIdentities) || ( // this is the first request
+                $this->requestedMaxLevel !== false && // previous requests where not unlimited
+                $maxLevel > $this->requestedMaxLevel // this request has a higher limit than previous ones
+            );
+    }
+
+    private function extractCacheIdentities(array $menuData): array
+    {
+        $identities = $menuData['identities'] ?? [];
+        return merge($identities, ...values(map([$this, 'extractCacheIdentities'], $menuData['childData'] ?? [])));
+    }
+
+    private function removeCacheIdentities(array $menuData): array
+    {
+        $menuData['childData'] = map([$this, 'removeCacheIdentities'], $menuData['childData'] ?? []);
+        unset($menuData['identities']);
+
+        return $menuData;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getIdentities()
+    {
+        return $this->cacheIdentities ?? [];
     }
 }

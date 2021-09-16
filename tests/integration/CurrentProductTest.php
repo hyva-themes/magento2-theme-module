@@ -72,4 +72,27 @@ class CurrentProductTest extends TestCase
             'Current product should be unchanged after loop'
         );
     }
+
+    /**
+     * @test
+     */
+    public function aggregates_cache_identities_for_loop()
+    {
+        $originalProduct = $this->productRepository->get('original');
+        $this->currentProduct->set($originalProduct);
+        $tags[] = $originalProduct->getIdentities();
+        foreach ($this->currentProduct->loop($this->productCollectionFactory->create()) as $product) {
+            $tags[] = $product->getIdentities();
+        }
+        $expected = array_unique(array_merge(...$tags));
+        $actual   = $this->currentProduct->getIdentities();
+        sort($expected);
+        sort($actual);
+        $this->assertGreaterThan(
+            count($originalProduct->getIdentities()),
+            count($actual),
+            'Expected to aggregate more cache tags than only the ones provided by the original product'
+        );
+        $this->assertSame($expected, $actual, 'Cache tags do not match');
+    }
 }

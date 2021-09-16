@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Model;
 
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
@@ -17,7 +18,6 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
  * A registry that can return instances of any view model. They no longer need to be passed to each block via layout XML
  *
  * Available in templates as `$viewModels`. Uses the object manager internally, no need to duplicate its instance cache.
- *
  */
 class ViewModelRegistry
 {
@@ -26,9 +26,15 @@ class ViewModelRegistry
      */
     protected $objectManager;
 
-    public function __construct(ObjectManagerInterface $objectManager)
+    /**
+     * @var ViewModelCacheTags
+     */
+    private $viewModelCacheTags;
+
+    public function __construct(ObjectManagerInterface $objectManager, ViewModelCacheTags $viewModelCacheTags)
     {
-        $this->objectManager = $objectManager;
+        $this->objectManager      = $objectManager;
+        $this->viewModelCacheTags = $viewModelCacheTags;
     }
 
     /**
@@ -48,7 +54,9 @@ class ViewModelRegistry
         if (!$object instanceof ArgumentInterface) {
             throw InvalidViewModelClass::notAViewModel($viewModelClass);
         }
+
+        $this->viewModelCacheTags->collectFrom($object);
+
         return $object;
     }
-
 }

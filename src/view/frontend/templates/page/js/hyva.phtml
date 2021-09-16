@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
+use Magento\Cookie\Helper\Cookie;
 use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
@@ -50,45 +51,106 @@ $currencyViewModel = $viewModels->require(Currency::class);
             return formKey;
         }
 
-        const defaultCookieConfig = {
-            expires: null,
-            path: '/',
-            domain: null,
-            secure: false,
-            lifetime: null
-        }
+        const cookieTempStorage = {};
+
+        const internalCookie = {
+            get(name) {
+                const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+                return v ? v[2] : null;
+            },
+            set(name, value, days, skipSetDomain) {
+                let expires,
+                    path,
+                    domain,
+                    secure,
+                    samesite;
+
+                const defaultCookieConfig = {
+                    expires: null,
+                    path: '/',
+                    domain: null,
+                    secure: false,
+                    lifetime: null,
+                    samesite: 'lax'
+                };
+
+                const cookieConfig = window.COOKIE_CONFIG || {};
+
+                expires = days
+                    ? lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultCookieConfig)
+                    : lifetimeToExpires(window.COOKIE_CONFIG, defaultCookieConfig) || defaultCookieConfig.expires;
+
+                path = cookieConfig.path || defaultCookieConfig.path;
+                domain = !skipSetDomain && (cookieConfig.domain || defaultCookieConfig.domain);
+                secure = cookieConfig.secure || defaultCookieConfig.secure;
+                samesite = cookieConfig.samesite || defaultCookieConfig.samesite;
+
+                document.cookie = name + "=" + encodeURIComponent(value) +
+                    (expires ? '; expires=' + expires.toGMTString() : '') +
+                    (path ? '; path=' + path : '') +
+                    (domain ? '; domain=' + domain : '') +
+                    (secure ? '; secure' : '') +
+                    (samesite ? '; samesite=' + samesite : 'lax');
+            },
+            isWebsiteAllowedToSaveCookie() {
+                const allowedCookies = this.get('<?= /* @noEscape */  Cookie::IS_USER_ALLOWED_SAVE_COOKIE ?>');
+                if (allowedCookies) {
+                    const allowedWebsites = JSON.parse(unescape(allowedCookies));
+
+                    return allowedWebsites[CURRENT_WEBSITE_ID] === 1;
+                }
+                return false;
+            },
+            getGroupByCookieName(name) {
+                const cookieConsentConfig = window.cookie_consent_config || {};
+                let group = null;
+                for (let prop in cookieConsentConfig) {
+                    if (!cookieConsentConfig.hasOwnProperty(prop)) continue;
+                    if (cookieConsentConfig[prop].includes(name)) {
+                        group = prop;
+                        break;
+                    }
+                }
+                return group;
+            },
+            isCookieAllowed(name) {
+                const cookieGroup = this.getGroupByCookieName(name);
+                return cookieGroup
+                    ? window.cookie_consent_groups[cookieGroup]
+                    : this.isWebsiteAllowedToSaveCookie();
+            },
+            saveTempStorageCookies() {
+                for (const [name, data] of Object.entries(cookieTempStorage)) {
+                    if (this.isCookieAllowed(name)) {
+                        this.set(name, data['value'], data['days'], data['skipSetDomain']);
+                        delete cookieTempStorage[name];
+                    }
+                }
+            }
+        };
 
         hyva.getCookie = (name) => {
-            var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-            return v ? v[2] : null;
+            const cookieConfig = window.COOKIE_CONFIG || {};
+
+            if (cookieConfig.cookie_restriction_enabled && ! internalCookie.isCookieAllowed(name)) {
+                return cookieTempStorage[name] ? cookieTempStorage[name]['value'] : null;
+            }
+
+            return internalCookie.get(name);
         }
 
         hyva.setCookie = (name, value, days, skipSetDomain) => {
-            var expires,
-                path,
-                domain,
-                secure;
+            const cookieConfig = window.COOKIE_CONFIG || {};
 
-            var cookieConfig = window.COOKIE_CONFIG || {};
-
-            if (days) {
-                expires = lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultCookieConfig);
-            } else {
-                expires = lifetimeToExpires(window.COOKIE_CONFIG, defaultCookieConfig) || defaultCookieConfig.expires;
+            if (cookieConfig.cookie_restriction_enabled && ! internalCookie.isCookieAllowed(name)) {
+                cookieTempStorage[name] = {value, days, skipSetDomain};
+                return;
             }
-            path = cookieConfig.path || defaultCookieConfig.path;
-            domain = !skipSetDomain && (cookieConfig.domain || defaultCookieConfig.domain);
-            secure = cookieConfig.secure || defaultCookieConfig.secure;
-
-            document.cookie = name + "=" + encodeURIComponent(value) +
-                (expires ? '; expires=' + expires.toGMTString() : '') +
-                (path ? '; path=' + path : '') +
-                (domain ? '; domain=' + domain : '') +
-                (secure ? '; secure' : '');
+            return internalCookie.set(name, value, days, skipSetDomain);
         }
 
         hyva.getBrowserStorage = () => {
-            var browserStorage = window.localStorage || window.sessionStorage;
+            const browserStorage = window.localStorage || window.sessionStorage;
             if (!browserStorage) {
                 console.warn('Browser Storage is unavailable');
                 return false;
@@ -153,7 +215,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
                     signDisplay: showSign ? "always" : "auto"
                 }
             );
-            return (typeof Intl.NumberFormat.prototype.formatToParts) ?
+            return (typeof Intl.NumberFormat.prototype.formatToParts === 'function') ?
                 formatter.formatToParts(value).map(({type, value}) => {
                     switch (type) {
                         case 'currency':
@@ -168,6 +230,8 @@ $currencyViewModel = $viewModels->require(Currency::class);
                 }).reduce((string, part) => string + part) :
                 formatter.format(value);
         }
+
+        window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
 
     }( window.hyva = window.hyva || {} ));
 </script>
