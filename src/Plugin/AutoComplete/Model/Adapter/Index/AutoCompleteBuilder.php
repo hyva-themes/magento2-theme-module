@@ -1,11 +1,30 @@
 <?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
 namespace Hyva\Theme\Plugin\AutoComplete\Model\Adapter\Index;
 
-class AutoCompleteBuilder  {
+use Magento\Elasticsearch\Model\Adapter\Index\Builder;
 
-    public function afterBuild(\Magento\Elasticsearch\Model\Adapter\Index\Builder $subject, $result)
+class AutoCompleteBuilder
+{
+    /**
+     * @param Builder $subject
+     * @param $result
+     * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function afterBuild(Builder $subject, $result): array
     {
         $likeToken = $this->getLikeTokenizer();
+
         $result['analysis']['tokenizer'] = $likeToken;
         $result['analysis']['filter']['trigrams_filter'] = [
             'type' => 'ngram',
@@ -22,14 +41,15 @@ class AutoCompleteBuilder  {
         return $result;
     }
 
-
-    protected function getLikeTokenizer()
+    /**
+     * @return array
+     */
+    protected function getLikeTokenizer(): array
     {
-        $tokenizer = [
+        return [
             'default_tokenizer' => [
                 'type' => 'ngram'
             ],
         ];
-        return $tokenizer;
     }
 }
