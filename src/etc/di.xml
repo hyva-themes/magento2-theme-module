@@ -27,7 +27,6 @@
             </argument>
         </arguments>
     </type>
-
     <type name="Magento\QuoteGraphQl\Model\CartItem\DataProvider\CustomizableOptionValue\Composite">
         <arguments>
             <argument name="customizableOptionValues" xsi:type="array">
