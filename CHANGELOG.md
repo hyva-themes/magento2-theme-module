@@ -6,7 +6,88 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.7...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.8...main
+
+## [1.1.8] - 2021-09-24
+
+[1.1.8]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.7...1.1.8
+
+### Added
+
+- **Add ViewModel for SendFriend**
+
+  The new view model `\Hyva\Theme\ViewModel\SendFriend` supports getting the requested product and product image for the
+  send-to-friend feature.
+  Thank you Lucas an Staden @ ProxiBlue (@Realproxiblue) for the contribution!
+
+- **Add Supporting code for Search Autocomplete**
+
+  The QuoteGraphql cart item customizable option query resolver now provides file values via
+  `\Hyva\Theme\Model\CartItem\DataProvider\CustomizableOptionValue\File`.  
+  The new view model `\Hyva\Theme\ViewModel\Search` provides access to the relevant configuration settings and proxies
+  method calls through to the Magento native helpers.
+
+  Thank you to faran cheema @ Aware Digital (@faran) for the contribution!
+
+- **Add getRecentlyViewedLifeTime method to ProductPage view model**
+
+  This method provides the configured lifetime for the recently viewed products list.
+
+  Thank you to Graham Catterall @ Aware Digital (@grazima) for the contribution!
+
+- **Add getRegisterUrl method to CustomerRegistration view model**
+
+  This method provides the URL to the customer registration page.
+
+  Thank you to Rouven Rieker @ Semaio (@therouv) for the contribution!
+
+- **Add shipping information to CartGraphqlQueries view model**
+
+  This information is used by the estimate shipping feature.
+
+### Changed
+
+- **Bugfix: Fix menu navigation when no category exists**
+
+  This change is backward compatible. Check the [commit ed4db0](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/ed4db0537e73d92cbf3088258af95c64c7f42ad9)
+  for more information.
+
+  Thank you to Thibaut Faucher @ Magentizy (@tfaucher) for the contribution!
+
+- **Bugfix: Collect cache tags for nested blocks that are cached in both the FPC ESI and BLOCK_HTML cache**
+
+  This backward compatible change fixes a bug introduced by the splitting of the mobile and desktop menu in the 
+  default-theme.
+
+- **Remove double slash from URL when loading section data**
+
+  This change is backward compatible.
+
+  Thank you to Thomas Hauschild @ Ulferts Prygoda (@thomas.hauschild) for the contribution!
+
+- **Bugfix: Cast price value is cast to a float when custom product types return null price**
+
+  This change is backward compatible.
+
+- **Bugfix: Fix issues with old Safari browser**
+
+  Details on backward compatible change can be found in the [issue #75](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/75)
+
+  Thank you to Guus Portegies @ Cees en Co (@gjportegies) and Ryan Copeland (@ryan-copeland) for investigating!
+
+- **Bugfix: Load hyva_ prefix layout handles for layout handles added with <update>**
+
+  Implementation details can be found in the [merge request #112](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/112)
+
+  Thank you to Michał Biarda @ ORBA (@michal.biarda) for the contribution!
+
+### Removed
+
+- **Remove the `stock_status` field from the CartGraphqlQueries view model**
+
+  The change makes the cart page work on instances without MSI.  
+  The field is only available if MSI is active and since it is currently not used by
+  `hyva-themes/magento2-default-theme` and was only added preemptively, it was decided that it is best to remove it.
 
 ## [1.1.7] - 2021-08-25
 
