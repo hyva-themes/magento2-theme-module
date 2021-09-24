@@ -19,7 +19,7 @@ class Search implements ArgumentInterface
     /**
      * @var ScopeConfigInterface
      */
-    protected $scopeConfigInterface;
+    private $scopeConfigInterface;
 
     /**
      * @var SearchDataHelper
@@ -41,7 +41,7 @@ class Search implements ArgumentInterface
     /**
      * Retrieve minimum query length
      *
-     * @param mixed $store
+     * @param null|int|string $store
      * @return int
      */
     public function getMinQueryLength($store = null): int
@@ -60,7 +60,7 @@ class Search implements ArgumentInterface
     }
 
     /**
-     * @param null $query
+     * @param null|string $query
      * @return string
      */
     public function getResultUrl($query = null): string
@@ -89,7 +89,7 @@ class Search implements ArgumentInterface
     /**
      * Retrieve maximum query length
      *
-     * @param mixed $store
+     * @param null|int|string $store
      * @return int
      */
     public function getMaxQueryLength($store = null): int
