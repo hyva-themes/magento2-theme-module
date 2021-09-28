@@ -45,6 +45,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   This information is used by the estimate shipping feature.
 
+-**Add logo size and path resolver view models**
+
+  This change provides forward compatibility for Magento versions before 2.4.3 where the view models where added to the
+  core.
+
 ### Changed
 
 - **Bugfix: Fix menu navigation when no category exists**
