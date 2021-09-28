@@ -6,6 +6,8 @@
  * See https://hyva.io/license
  */
 
+declare(strict_types=1);
+
 namespace Hyva\Theme\Model\Template;
 
 use Hyva\Theme\ViewModel\SvgIcons;

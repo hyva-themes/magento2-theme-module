@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Hyvä Themes - https://hyva.io
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
@@ -6,10 +6,17 @@
  * See https://hyva.io/license
  */
 
-/** @var \Magento\Framework\View\Element\Template $block */
-/** @var \Magento\Framework\Escaper $escaper */
-/** @var \Hyva\Theme\Model\ViewModelRegistry $viewModels */
-/** @var \Hyva\Theme\Model\Modal\ModalInterface $modal */
+declare(strict_types=1);
+
+use Hyva\Theme\Model\Modal\ModalInterface;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var ModalInterface $modal */
 
 /**
  * This is the default modal container template
@@ -23,17 +30,19 @@
  * rounded-lg p-10 top-0 pt-1 inset-y-0 right-0 pr-1 inset-x-0 bottom-0 pb-1 left-0 pl-1
  */
 ?>
-<div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?> x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')" class="<?= $modal->getOverlayClasses() ?>">
-    <div class="<?= $modal->getContainerClasses() ?>">
+<div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?>
+    x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
+    class="<?= /** @noEscape  */ $modal->getOverlayClasses() ?>">
+    <div class="<?= /** @noEscape  */ $modal->getContainerClasses() ?>">
         <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog"
              <?php if ($modal->isOverlayDisabled()): ?>x-no-overlay<?php endif; ?>
-             <?php if ($modal->getAriaLabel()): ?>
-                 aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"
-             <?php endif; ?>
-             <?php if ($modal->getAriaLabelledby()): ?>
-                 aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
-             <?php endif; ?>
-             class="<?= $modal->getDialogClasses() ?>">
+            <?php if ($modal->getAriaLabel()): ?>
+                aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"
+            <?php endif; ?>
+            <?php if ($modal->getAriaLabelledby()): ?>
+                aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
+            <?php endif; ?>
+             class="<?= /** @noEscape  */ $modal->getDialogClasses() ?>">
             <?= $modal->getContentHtml() ?>
         </div>
     </div>

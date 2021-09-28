@@ -11,10 +11,18 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Framework\View\Model\Layout;
 
+use Magento\Framework\App\State;
+use Magento\Framework\Cache\FrontendInterface;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Filesystem\File\ReadFactory;
 use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\Url\ScopeResolverInterface;
+use Magento\Framework\View\Design\ThemeInterface;
+use Magento\Framework\View\DesignInterface;
+use Magento\Framework\View\File\CollectorInterface;
 use Magento\Framework\View\Layout\LayoutCacheKeyInterface;
+use Magento\Framework\View\Model\Layout\Update\Validator;
+use Psr\Log\LoggerInterface;
 
 /**
  * This change adds new event to the layout merging process, so it is easier to add hyva_ prefixed layout update
@@ -31,17 +39,17 @@ class Merge extends \Magento\Framework\View\Model\Layout\Merge
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Framework\View\DesignInterface $design,
-        \Magento\Framework\Url\ScopeResolverInterface $scopeResolver,
-        \Magento\Framework\View\File\CollectorInterface $fileSource,
-        \Magento\Framework\View\File\CollectorInterface $pageLayoutFileSource,
-        \Magento\Framework\App\State $appState,
-        \Magento\Framework\Cache\FrontendInterface $cache,
-        \Magento\Framework\View\Model\Layout\Update\Validator $validator,
-        \Psr\Log\LoggerInterface $logger,
+        DesignInterface $design,
+        ScopeResolverInterface $scopeResolver,
+        CollectorInterface $fileSource,
+        CollectorInterface $pageLayoutFileSource,
+        State $appState,
+        FrontendInterface $cache,
+        Validator $validator,
+        LoggerInterface $logger,
         ReadFactory $readFactory,
         EventManager $eventManager,
-        \Magento\Framework\View\Design\ThemeInterface $theme = null,
+        ThemeInterface $theme = null,
         $cacheSuffix = '',
         LayoutCacheKeyInterface $layoutCacheKey = null,
         SerializerInterface $serializer = null,

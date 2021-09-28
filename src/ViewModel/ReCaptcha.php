@@ -32,8 +32,7 @@ class ReCaptcha implements ArgumentInterface
 
     public function __construct(
         ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
     }
 
