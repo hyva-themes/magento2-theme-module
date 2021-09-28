@@ -88,7 +88,7 @@ class Currency implements ArgumentInterface
             $codes = $this->storeManager->getStore()->getAvailableCurrencyCodes(true);
             if (is_array($codes) && count($codes) > 1) {
                 $rates = $this->currencyModel->getCurrencyRates(
-                    $this->storeManager->getStore()->getBaseCurrency(),
+                    $this->storeManager->getStore()->getBaseCurrency()->getCode(),
                     $codes
                 );
 

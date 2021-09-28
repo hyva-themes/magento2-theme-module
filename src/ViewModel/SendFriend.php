@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Hyvä Themes - https://hyva.io
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
+
+declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
@@ -21,30 +23,35 @@ class SendFriend implements ArgumentInterface
 {
     const SMALL_IMAGE = 'product_small_image';
 
-    private ProductRepositoryInterface $productRepository;
+    private $productRepository;
 
-    private RequestInterface $request;
+    private $request;
 
-    private ProductImageFactory $productImageFactory;
+    private $productImageFactory;
 
+    /**
+     * @param ProductRepositoryInterface $productRepository
+     * @param RequestInterface $request
+     * @param ProductImageFactory $productImageFactory
+     */
     public function __construct(
         ProductRepositoryInterface $productRepository,
         RequestInterface $request,
         ProductImageFactory $productImageFactory
     ) {
-        $this->productRepository   = $productRepository;
-        $this->request             = $request;
+        $this->productRepository = $productRepository;
+        $this->request = $request;
         $this->productImageFactory = $productImageFactory;
     }
 
     /**
      * @return null|ProductInterface|Product
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
     public function getProduct(): ?ProductInterface
     {
         try {
-            $id = (int) $this->request->getParam('id');
+            $id = (int)$this->request->getParam('id');
             return $this->productRepository->getById($id);
         } catch (NoSuchEntityException $exception) {
             return null;
