@@ -1,0 +1,71 @@
+<?php declare(strict_types=1);
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+namespace Hyva\Theme\ViewModel\Logo;
+
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Registry;
+use Magento\Sales\Model\Order;
+use Magento\Store\Model\ScopeInterface;
+
+/**
+ * This class provides forward compatibility for Magento versions < 2.4.3
+ *
+ * @see \Magento\Theme\ViewModel\Block\Html\Header\LogoPathResolver (added in 2.4.3)
+ * @see \Magento\Sales\ViewModel\Header\LogoPathResolver (added in 2.4.3)
+ */
+class SalesLogoPathResolver
+{
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * Core registry
+     *
+     * @var Registry
+     */
+    private $coreRegistry;
+
+    /**
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Registry $registry
+     */
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        Registry $registry
+    ) {
+        $this->scopeConfig = $scopeConfig;
+        $this->coreRegistry = $registry;
+    }
+
+    /**
+     * Return logo image path
+     *
+     * @return string|null
+     */
+    public function getPath(): ?string
+    {
+        $path = null;
+        $storeId = null;
+        $order = $this->coreRegistry->registry('current_order');
+        if ($order instanceof Order) {
+            $storeId = $order->getStoreId();
+        }
+        $storeLogoPath = $this->scopeConfig->getValue(
+            'sales/identity/logo_html',
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+        if ($storeLogoPath !== null) {
+            $path = 'sales/store/logo_html/' . $storeLogoPath;
+        }
+        return $path;
+    }
+}
