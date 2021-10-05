@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel\Logo;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Registry;
+use Magento\Framework\View\Element\Template\Context as TemplateBlockContext;
+use Magento\MediaStorage\Helper\File\Storage\Database as DatabaseFileStorage;
 use Magento\Sales\Model\Order;
 use Magento\Store\Model\ScopeInterface;
 
@@ -21,36 +22,28 @@ use Magento\Store\Model\ScopeInterface;
  * @see \Magento\Theme\ViewModel\Block\Html\Header\LogoPathResolver (added in 2.4.3)
  * @see \Magento\Sales\ViewModel\Header\LogoPathResolver (added in 2.4.3)
  */
-class SalesLogoPathResolver
+class SalesLogoPathResolver extends LogoPathResolver
 {
     /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * Core registry
-     *
      * @var Registry
      */
     private $coreRegistry;
 
-    /**
-     * @param ScopeConfigInterface $scopeConfig
-     * @param Registry $registry
-     */
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        Registry $registry
+        TemplateBlockContext $context,
+        DatabaseFileStorage $fileStorageHelper,
+        Registry $coreRegistry,
+        array $data = []
     ) {
-        $this->scopeConfig = $scopeConfig;
-        $this->coreRegistry = $registry;
+        $this->coreRegistry = $coreRegistry;
+        parent::__construct($context, $fileStorageHelper, $data);
     }
 
     /**
      * Return logo image path
      *
      * @return string|null
+     * @see \Magento\Sales\ViewModel\Header\LogoPathResolver::getPath
      */
     public function getPath(): ?string
     {
@@ -60,7 +53,7 @@ class SalesLogoPathResolver
         if ($order instanceof Order) {
             $storeId = $order->getStoreId();
         }
-        $storeLogoPath = $this->scopeConfig->getValue(
+        $storeLogoPath = $this->_scopeConfig->getValue(
             'sales/identity/logo_html',
             ScopeInterface::SCOPE_STORE,
             $storeId
