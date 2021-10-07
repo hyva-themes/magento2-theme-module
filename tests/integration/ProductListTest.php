@@ -135,7 +135,7 @@ class ProductListTest extends TestCase
      *
      * @magentoDataFixture createMultipleLinkedProductsFixture
      */
-    public function testReturnsRrelatedItems()
+    public function testReturnsRelatedItems()
     {
         /** @var ProductRepositoryInterface $productRepository */
         $productRepository = ObjectManager::getInstance()->get(ProductRepositoryInterface::class);
@@ -144,7 +144,7 @@ class ProductListTest extends TestCase
         /** @var ProductList $sut */
         $sut = ObjectManager::getInstance()->create(ProductList::class);
 
-        $crosssell = $sut->addAscendingSortOrder('id')->getCrosssellItems($product);
+        $crosssell = $sut->addAscendingSortOrder('id')->getLinkedItems('crosssell', $product);
         $this->assertSkus(['related-product-1-0', 'related-product-1-3'], $crosssell);
 
         $related = $sut->addAscendingSortOrder('id')->getRelatedItems($product);

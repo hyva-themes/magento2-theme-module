@@ -15,15 +15,19 @@ use Magento\Catalog\Api\Data\ProductLinkInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ProductLink\Data\ListCriteria;
+use Magento\Catalog\Model\ProductLink\Data\ListResultInterface;
 use Magento\Catalog\Model\ProductLink\ProductLinkQuery;
-use Magento\Catalog\Model\ProductLink\Repository as ProductLinkRepository;
 use Magento\Framework\Api\Filter;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
+use Magento\Quote\Api\Data\CartItemInterface;
+use Magento\Quote\Model\Quote\Item as CartItem;
 use function array_map as map;
+use function array_merge as merge;
+use function array_unique as unique;
 
 class ProductList implements ArgumentInterface
 {
@@ -46,11 +50,6 @@ class ProductList implements ArgumentInterface
      * @var ProductRepositoryInterface
      */
     private $productRepository;
-
-    /**
-     * @var ProductLinkRepository
-     */
-    private $productLinkRepository;
 
     /**
      * @var ProductLinkQuery
@@ -80,56 +79,62 @@ class ProductList implements ArgumentInterface
     }
 
     /**
-     * @param Product|ProductInterface $product
+     * @param CartItem|CartItemInterface ...$cartItems
      * @return ProductInterface[]
      */
-    public function getCrosssellItems(Product $product): array
+    public function getCrosssellItems(CartItem ...$cartItems): array
     {
-        return $this->getLinkedItems($product, 'crosssell');
+        return $this->getLinkedItems('crosssell', ...$cartItems);
     }
 
     /**
-     * @param Product|ProductInterface $product
+     * @param Product|ProductInterface ...$products
      * @return ProductInterface[]
      */
-    public function getRelatedItems(Product $product): array
+    public function getRelatedItems(Product ...$products): array
     {
-        return $this->getLinkedItems($product, 'related');
+        return $this->getLinkedItems('related', ...$products);
     }
 
     /**
-     * @param Product|ProductInterface $product
+     * @param Product|ProductInterface ...$products
      * @return ProductInterface[]
      */
-    public function getUpsellItems(Product $product): array
+    public function getUpsellItems(Product ...$products): array
     {
-        return $this->getLinkedItems($product, 'upsell');
+        return $this->getLinkedItems('upsell', ...$products);
     }
 
     /**
-     * @param Product|ProductInterface $product
      * @param string $linkType
+     * @param Product|ProductInterface|CartItem|CartItemInterface ...$items
      * @return ProductInterface[]
      */
-    public function getLinkedItems(Product $product, string $linkType): array
+    public function getLinkedItems(string $linkType, ...$items): array
     {
-        return $this->addFilter('sku', $this->getLinkedSkus($product, $linkType), 'in')->getItems();
+        // $items can be anything with a getSku() method
+        return $this->addFilter('sku', $this->getLinkedSkus($linkType, ...$items), 'in')->getItems();
     }
 
     /**
-     * @param Product|ProductInterface $product
      * @param string $linkType
+     * @param Product|ProductInterface|CartItem|CartItemInterface ...$items
      * @return ProductInterface[]
      */
-    private function getLinkedSkus(Product $product, string $linkType): array
+    private function getLinkedSkus(string $linkType, ...$items): array
     {
-        $criteria = new ListCriteria($product->getSku(), [$linkType], $product);
+        // $items can be anything with a getSku() method
+        $criterias = map(function ($item) use ($linkType): ListCriteria {
+            return new ListCriteria($item->getSku(), [$linkType], $item instanceof Product ? $item : null);
+        }, $items);
 
-        $links = $this->productLinkQuery->search([$criteria])[0];
+        $links = merge([], ...map(function (ListResultInterface $listResult): array {
+            return (array) $listResult->getResult();
+        }, $this->productLinkQuery->search($criterias)));
 
-        return map(function (ProductLinkInterface $productLink): string {
+        return unique(map(function (ProductLinkInterface $productLink): string {
             return $productLink->getLinkedProductSku();
-        }, (array) $links->getResult());
+        }, $links));
     }
 
     /**
