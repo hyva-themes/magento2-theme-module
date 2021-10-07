@@ -12,7 +12,6 @@ namespace Hyva\Theme;
 
 use Hyva\Theme\ViewModel\ProductList;
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\Data\ProductLinkInterface;
 use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
@@ -21,14 +20,11 @@ use Magento\Catalog\Model\Product\Type as ProductType;
 use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
-use Magento\Framework\App\ResourceConnection;
 use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
 use function array_map as map;
 use function array_values as values;
-
-// dev/tests/integration/testsuite/Magento/Catalog/_files/multiple_related_products.php
 
 class ProductListTest extends TestCase
 {
