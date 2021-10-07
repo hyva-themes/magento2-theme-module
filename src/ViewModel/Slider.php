@@ -29,7 +29,7 @@ class Slider implements ArgumentInterface
 
     public function getSliderForItems(
         string $itemTemplateFile,
-        array $items,
+        iterable $items,
         string $sliderTemplateFile = 'Magento_Theme::elements/slider-php.phtml'
     ): AbstractBlock {
         $id = md5(uniqid($sliderTemplateFile . $itemTemplateFile));
