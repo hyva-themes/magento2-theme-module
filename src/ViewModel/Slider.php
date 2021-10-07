@@ -32,7 +32,7 @@ class Slider implements ArgumentInterface
         array $items,
         string $sliderTemplateFile = 'Magento_Theme::elements/slider-php.phtml'
     ): AbstractBlock {
-        $id = md5($sliderTemplateFile . $itemTemplateFile);
+        $id = md5(uniqid($sliderTemplateFile . $itemTemplateFile));
 
         $sliderBlock = $this->createTemplateBlock("slider.{$id}", [
             'items'    => $items,
