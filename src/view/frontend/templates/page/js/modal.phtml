@@ -55,14 +55,21 @@ use Magento\Framework\View\Element\Template;
                 })
             }
             // Walk down the DOM, toggle inert attribute to opposite of toState.
-            // This is needed if a nested dialog is rendered as a sibling of the opening dialog in the DOM.
-            setChildrenInert(dialogElement.parentElement, ! toState)
+            // This is needed if a nested dialog is rendered as a sibling of the opening dialog.
+            (function setChildrenInert(el, toState) {
+                if (el) {
+                    el.inert = toState;
+                    [...el.children].forEach(child => setChildrenInert(child, toState));
+                }
+            })(findParentWithOverlaySpread(dialogElement), ! toState)
         }
 
-        function setChildrenInert(el, toState) {
-            if (el) {
-                el.inert = toState;
-                [...el.children].forEach(child => setChildrenInert(child, toState));
+        function findParentWithOverlaySpread(el) {
+            while (el && (el = el.parentElement)) {
+                if (el === document.body || el.parentElement === null) continue;
+                if (el.hasAttribute('x-spread') && el.getAttribute('x-spread').indexOf('overlay(') !== -1) {
+                    return el;
+                }
             }
         }
 
