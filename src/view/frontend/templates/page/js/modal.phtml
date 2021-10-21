@@ -73,6 +73,22 @@ use Magento\Framework\View\Element\Template;
             }
         }
 
+        function freeFocusFromModalTrap(modal) {
+            const dialogElement = modal.viewModel.$refs[modal.name];
+            isOverlayDisabled(dialogElement) || modal.viewModel.$nextTick(() => setSiblingsInert(dialogElement, false));
+        }
+
+        function trapFocusInNextModalWithOverlay() {
+            for (let idx = modals.length -1; idx >= 0; idx--) {
+                const nextOnStack = modals[idx];
+                const nextDialogElement = nextOnStack.viewModel.$refs[nextOnStack.name];
+                if (! isOverlayDisabled(nextDialogElement)) {
+                    nextOnStack.viewModel.$nextTick(() => setSiblingsInert(nextDialogElement, true));
+                    break;
+                }
+            }
+        }
+
         function focusables(dialogElement) {
             return [...dialogElement.querySelectorAll('a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])')]
                 .filter(el => !el.hasAttribute('disabled'));
@@ -163,6 +179,12 @@ use Magento\Framework\View\Element\Template;
                     const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
 
                     dialogElement.scrollTop = 0;
+
+                    // Prevent adding the same modal on the stack twice
+                    if (this[isOpenProp(name)]) {
+                        return;
+                    }
+
                     this[isOpenProp(name)] = true;
                     useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
@@ -182,11 +204,12 @@ use Magento\Framework\View\Element\Template;
 
                     const modal = modals.pop() || {};
                     const name = modal.name;
-                    const nextFocusAfterHide = modal.focusTarget;
-                    const dialogElement = this.$refs[name];
-
                     this[isOpenProp(name)] = false;
-                    this.$nextTick(() => setSiblingsInert(dialogElement, false));
+
+                    freeFocusFromModalTrap(modal)
+                    trapFocusInNextModalWithOverlay();
+
+                    const nextFocusAfterHide = modal.focusTarget;
                     nextFocusAfterHide && this.$nextTick(() => nextFocusAfterHide.focus());
 
                     if (modals.length === 0 || areRemainingModalsWithoutOverlay(modals)) {
