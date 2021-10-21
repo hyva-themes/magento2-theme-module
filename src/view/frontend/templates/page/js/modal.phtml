@@ -24,7 +24,7 @@ use Magento\Framework\View\Element\Template;
 
         function loadInertPolyfill(callback) {
             const polyfill = document.createElement('script');
-            polyfill.src = '<?= $escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js')) ?>';
+            polyfill.src = '<?= $escaper->escapeJs($escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js'))) ?>';
             callback && polyfill.addEventListener('load', callback);
             const firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
@@ -48,9 +48,21 @@ use Magento\Framework\View\Element\Template;
             while (el && (el = el.parentElement)) {
                 if (el === document.body || el.parentElement === null) continue;
 
-                [...el.parentElement.children].filter(sibling => sibling !== el).forEach(sibling => {
-                    sibling.inert = toState;
+                [...el.parentElement.children].forEach(sibling => {
+                    if (sibling !== el) {
+                        sibling.inert = toState;
+                    }
                 })
+            }
+            // Walk down the DOM, toggle inert attribute to opposite of toState.
+            // This is needed if a nested dialog is rendered as a sibling of the opening dialog in the DOM.
+            setChildrenInert(dialogElement.parentElement, ! toState)
+        }
+
+        function setChildrenInert(el, toState) {
+            if (el) {
+                el.inert = toState;
+                [...el.children].forEach(child => setChildrenInert(child, toState));
             }
         }
 
