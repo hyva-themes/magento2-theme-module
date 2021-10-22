@@ -123,7 +123,7 @@ class SvgIcons implements ArgumentInterface
      */
     private static function camelCaseToKebabCase(string $in): string
     {
-        return strtolower(preg_replace('/(.)([A-Z])/', "$1-$2", $in));
+        return strtolower(preg_replace('/(.)([A-Z]|[0-9])/', "$1-$2", $in));
     }
 
     /**
