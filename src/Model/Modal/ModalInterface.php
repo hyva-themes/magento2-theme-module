@@ -10,9 +10,13 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Model\Modal;
 
+use Magento\Framework\View\Element\Template as TemplateBlock;
+
 interface ModalInterface
 {
     public function isOverlayDisabled(): bool;
+
+    public function getContentRenderer(): TemplateBlock;
 
     public function getOverlayClasses(): string;
 

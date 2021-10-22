@@ -268,7 +268,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
     /**
      * @return TemplateBlock|BlockInterface
      */
-    private function getContentRenderer(): TemplateBlock
+    public function getContentRenderer(): TemplateBlock
     {
         return $this->data['content-block-name']
             ? $this->layout->getBlock($this->data['content-block-name'])
