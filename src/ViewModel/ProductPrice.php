@@ -76,14 +76,21 @@ class ProductPrice implements ArgumentInterface
     }
 
     /**
+     * @param Product|null $product
+     *
      * @return PriceInfoInterface
      */
     protected function getPriceInfo(Product $product = null): PriceInfoInterface
     {
-        if (!$this->priceInfo) {
-            $product = $product ?? $this->getProduct();
+        $product = $product ?? $this->getProduct();
+
+        if (
+            !$this->priceInfo ||
+            $this->priceInfo !== $product->getPriceInfo()
+        ) {
             $this->priceInfo = $product->getPriceInfo();
         }
+
         return $this->priceInfo;
     }
 
