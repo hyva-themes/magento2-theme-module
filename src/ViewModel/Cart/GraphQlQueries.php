@@ -224,8 +224,8 @@ class GraphQlQueries implements ArgumentInterface
     {
         return 'applyCouponToCart (
                     input: {
-                      cart_id: "${this.cartId}",
-                      coupon_code: "${couponCode}",
+                      cart_id: $cartId,
+                      coupon_code: $couponCode
                     }
                 ){
                     cart {
@@ -238,7 +238,7 @@ class GraphQlQueries implements ArgumentInterface
     {
         return 'removeCouponFromCart(
                     input: {
-                      cart_id: "${this.cartId}"
+                      cart_id: $cartId
                     }
                   ) {
                     cart {
@@ -251,11 +251,11 @@ class GraphQlQueries implements ArgumentInterface
     {
         return 'updateCartItems(
                  input: {
-                  cart_id: "${this.cartId}",
+                  cart_id: $cartId,
                   cart_items: [
                     {
-                      cart_item_id: ${itemId}
-                      quantity: ${qty}
+                      cart_item_id: $itemId
+                      quantity: $qty
                     }
                   ]
                 }
@@ -270,8 +270,8 @@ class GraphQlQueries implements ArgumentInterface
     {
         return 'removeItemFromCart(
                 input: {
-                    cart_id: "${this.cartId}",
-                    cart_item_id: ${itemId}
+                    cart_id: $cartId,
+                    cart_item_id: $itemId
                   }
                 ){
                 cart {
