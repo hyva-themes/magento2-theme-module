@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace Hyva\Theme;
 
+use Magento\Customer\Model\Session;
+use Magento\Framework\App\Cache\Type\Layout as LayoutCacheType;
+use Magento\Framework\App\CacheInterface;
 use Magento\Framework\View\DesignInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\AbstractController;
@@ -62,6 +65,26 @@ class LayoutUpdateHandlesTest extends AbstractController
             ],
             $layout->getUpdate()->getHandles(),
             'All layout handles should be duplicated with hyva prefix'
+        );
+    }
+
+    /**
+     * @test
+     * @magentoDataFixture Magento/Customer/_files/customer.php
+     * @magentoConfigFixture current_store customer/captcha/enable 0
+     */
+    public function loads_layout_handles_added_with_update_xml_directive()
+    {
+        $this->_objectManager->get(CacheInterface::class)->clean([LayoutCacheType::CACHE_TAG]);
+        $this->givenCurrentTheme('Hyva/default');
+        $this->_objectManager->get(Session::class)->loginById(/* fixture customer id */ 1);
+        $this->dispatch('customer/account/index');
+        /** @var Layout $layout */
+        $layout = $this->_objectManager->get(Layout::class);
+        $xml = $layout->getUpdate()->getFileLayoutUpdatesXml()->asXml();
+        $this->assertTrue(
+            strpos($xml, '<update handle="hyva_customer_account"/>') !== false,
+            'Layout handles added with \'<update handle="..."/>\' should be duplicated with hyva prefix'
         );
     }
 
