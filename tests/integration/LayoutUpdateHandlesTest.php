@@ -14,7 +14,9 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\App\Cache\Type\Layout as LayoutCacheType;
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\View\DesignInterface;
+use Magento\PageCache\Model\Cache\Type as PageCacheType;
 use Magento\TestFramework\Helper\Bootstrap;
+use Magento\TestFramework\ObjectManager;
 use Magento\TestFramework\TestCase\AbstractController;
 use Magento\TestFramework\View\Layout;
 use Magento\Theme\Model\Theme\Registration;
@@ -26,6 +28,20 @@ use Magento\Theme\Model\Theme\Registration;
  */
 class LayoutUpdateHandlesTest extends AbstractController
 {
+    /**
+     * @before
+     */
+    public function cleanViewCache()
+    {
+        /**
+         * Ensure the layout update object is populated with layout handles during dispatch
+         */
+        ObjectManager::getInstance()->get(CacheInterface::class)
+                                    ->clean([LayoutCacheType::CACHE_TAG]);
+        ObjectManager::getInstance()->get(PageCacheType::class)
+                                    ->clean(\Zend_Cache::CLEANING_MODE_MATCHING_TAG, [PageCacheType::CACHE_TAG]);
+    }
+
     /** @test */
     public function unchanged_if_not_hyva_theme()
     {
@@ -41,7 +57,7 @@ class LayoutUpdateHandlesTest extends AbstractController
                 'default',
             ],
             $layout->getUpdate()->getHandles(),
-            'Layout handles should be unchanged'
+            'Layout handles should be unchanged if not hyva theme'
         );
     }
 
@@ -75,7 +91,6 @@ class LayoutUpdateHandlesTest extends AbstractController
      */
     public function loads_layout_handles_added_with_update_xml_directive()
     {
-        $this->_objectManager->get(CacheInterface::class)->clean([LayoutCacheType::CACHE_TAG]);
         $this->givenCurrentTheme('Hyva/default');
         $this->_objectManager->get(Session::class)->loginById(/* fixture customer id */ 1);
         $this->dispatch('customer/account/index');
