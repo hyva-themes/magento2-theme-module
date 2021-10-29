@@ -27,6 +27,9 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     /** Recently Viewed lifetime */
     const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
 
+    /** Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
+    const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
+
     /**
      * @var Product
      */
@@ -90,6 +93,12 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     {
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         return $this->scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
+    }
+
+    public function isFetchRecentlyViewedEnabled(): bool
+    {
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return (bool) $this->scopeConfigInterface->getValue(self::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH, $storeScope);
     }
 
     /**
