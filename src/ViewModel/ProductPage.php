@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Catalog\Block\Product\Image;
+use Magento\Catalog\Block\Product\ImageFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Helper\Cart as CartHelper;
 use Magento\Framework\Phrase;
@@ -24,7 +26,7 @@ class ProductPage implements ArgumentInterface, IdentityInterface
 {
     /** Recently Viewed lifetime */
     const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
-    
+
     /**
      * @var Product
      */
@@ -56,24 +58,32 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     protected $scopeConfigInterface;
 
     /**
+     * @var ImageFactory
+     */
+    private $productImageFactory;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      * @param CartHelper $cartHelper
      * @param ProductOutputHelper $productOutputHelper
      * @param ScopeConfigInterface $scopeConfigInterface
+     * @param ImageFactory $productImageFactory
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
         CartHelper $cartHelper,
         ProductOutputHelper $productOutputHelper,
-        ScopeConfigInterface $scopeConfigInterface
+        ScopeConfigInterface $scopeConfigInterface,
+        ImageFactory $productImageFactory
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
         $this->productOutputHelper = $productOutputHelper;
         $this->scopeConfigInterface = $scopeConfigInterface;
+        $this->productImageFactory = $productImageFactory;
     }
 
     public function getRecentlyViewedLifeTime()
@@ -175,6 +185,16 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     public function productAttributeHtml(Product $product, $attributeHtml, $attributeName)
     {
         return $this->productOutputHelper->productAttribute($product, $attributeHtml, $attributeName);
+    }
+
+    /**
+     * @param Product|null $product
+     * @param string|null $imageId
+     * @param string[]|null $attributes
+     */
+    public function getImage(Product $product = null, string $imageId = null, array $attributes = null): Image
+    {
+        return $this->productImageFactory->create($product, $imageId, $attributes);
     }
 
     public function getIdentities()
