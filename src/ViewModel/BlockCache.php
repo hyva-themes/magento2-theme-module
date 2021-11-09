@@ -17,6 +17,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 use function array_map as map;
 use function array_merge as merge;
+use function array_reduce as reduce;
 use function array_unique as unique;
 
 class BlockCache implements ArgumentInterface
@@ -58,7 +59,9 @@ class BlockCache implements ArgumentInterface
     public function collectBlockChildrenCacheTags(AbstractBlock $block): array
     {
         $childBlocks = map([$block->getLayout(), 'getBlock'], $block->getChildNames());
-        return merge([], ...map([$this, 'getCacheTagsFromBlock'], $childBlocks));
+        return reduce($childBlocks, function (array $tags, AbstractBlock $block) {
+            return merge($tags, $this->getCacheTagsFromBlock($block));
+        }, []);
 
     }
 }
