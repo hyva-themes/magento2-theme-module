@@ -15,6 +15,7 @@ use Magento\Framework\App\Cache\Type\Block as BlockCache;
 use Magento\Framework\App\CacheInterface as Cache;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\AbstractBlock;
+use Magento\Framework\View\Element\BlockInterface;
 use Magento\PageCache\Model\Config as PageCacheConfig;
 
 use function array_filter as filter;
@@ -78,9 +79,9 @@ class HtmlBlockCacheTagsStorage
         $this->pageCacheConfig = $pageCacheConfig;
     }
 
-    public function save(AbstractBlock $block): void
+    public function save(BlockInterface $block): void
     {
-        if ($this->isDoubleCachedBlock($block)) {
+        if ($block instanceof AbstractBlock && $this->isDoubleCachedBlock($block)) {
             $this->saveBlockCacheTags($block);
         }
     }
