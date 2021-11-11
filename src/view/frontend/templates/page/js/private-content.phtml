@@ -58,7 +58,7 @@ use Magento\Framework\View\Element\Template;
                  * request again private contents
                 */
 ?>
-                if (hyva.getCookie(last_visited_store_key) != CURRENT_STORE_CODE) {
+                if (hyva.getCookie(last_visited_store_key) !== CURRENT_STORE_CODE) {
                     isInvalid = true;
                 }
                 hyva.setCookie(last_visited_store_key, CURRENT_STORE_CODE, false, false);
@@ -134,9 +134,9 @@ use Magento\Framework\View\Element\Template;
          */
 ?>
         function fetchPrivateContent(sections) {
-            fetch('<?= $escaper->escapeUrl(
+            fetch('<?= $escaper->escapeJs($escaper->escapeUrl(
                 $block->getBaseUrl()
-            ) ?>customer/section/load/?sections=' + encodeURIComponent(
+            )) ?>customer/section/load/?sections=' + encodeURIComponent(
                 sections.join(',')
             ), {
                 method: 'GET',
@@ -145,26 +145,29 @@ use Magento\Framework\View\Element\Template;
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-                .then(function (response) {
-                    return response.json()
-                })
+                .then(response => response.json())
                 .then(
-                    function (data) {
+                    data => {
                         if (data) {
-                            dispatchPrivateContent(data);
-
-                            // don't persist messages, they've been dispatched already
-                            if ( data.messages && data.messages.messages ) {
-                                data.messages.messages = []
-                            }
                             try {
                                 const browserStorage = hyva.getBrowserStorage();
+
+                                // merge new data preserving non-invalidated sections
+                                const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}');
+                                const newSectionData = Object.assign(oldSectionData, data);
+
+                                dispatchPrivateContent(newSectionData);
+
+                                // don't persist messages, they've been dispatched already
+                                if (newSectionData.messages && newSectionData.messages.messages ) {
+                                    newSectionData.messages.messages = [];
+                                }
+
+                                browserStorage.setItem(private_content_key, JSON.stringify(newSectionData));
+
                                 const expiresAt = new Date(Date.now() + (ttl * 1000)).toISOString();
-                                browserStorage.setItem(private_content_key, JSON.stringify(data));
-                                browserStorage.setItem(
-                                    private_content_expire_key,
-                                    expiresAt
-                                );
+                                browserStorage.setItem(private_content_expire_key, expiresAt);
+
                                 const newCookieVersion = hyva.getCookie(private_content_version_key);
                                 browserStorage.setItem(private_content_version_key, newCookieVersion);
 
