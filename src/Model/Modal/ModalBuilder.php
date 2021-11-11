@@ -41,7 +41,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left', 'z-10'],
         'position'            => 'center',
         'dialog-name'         => 'dialog',
-        'dialog-classes'      => ['inline-block', 'bg-white', 'shadow-xl', 'rounded-lg', 'p-10'],
+        'dialog-classes'      => ['inline-block', 'bg-white', 'shadow-xl', 'rounded-lg', 'p-10', 'max-h-screen', 'overflow-auto'],
         'aria-labelledby'     => null,
         'aria-label'          => null,
         'content-template'    => null,
