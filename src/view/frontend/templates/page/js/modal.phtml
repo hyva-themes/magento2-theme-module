@@ -48,7 +48,7 @@ use Magento\Framework\View\Element\Template;
             while (el && (el = el.parentElement)) {
                 if (el === document.body || el.parentElement === null) continue;
 
-                [...el.parentElement.children].forEach(sibling => {
+                Array.from(el.parentElement.children).forEach(sibling => {
                     if (sibling !== el) {
                         sibling.inert = toState;
                     }
@@ -59,7 +59,7 @@ use Magento\Framework\View\Element\Template;
             (function setChildrenInert(el, toState) {
                 if (el) {
                     el.inert = toState;
-                    [...el.children].forEach(child => setChildrenInert(child, toState));
+                    Array.from(el.children).forEach(child => setChildrenInert(child, toState));
                 }
             })(findParentWithOverlaySpread(dialogElement), ! toState)
         }
@@ -90,7 +90,8 @@ use Magento\Framework\View\Element\Template;
         }
 
         function focusables(dialogElement) {
-            return [...dialogElement.querySelectorAll('a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])')]
+            const selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+            return Array.from(dialogElement.querySelectorAll(selector))
                 .filter(el => !el.hasAttribute('disabled'));
         }
 
