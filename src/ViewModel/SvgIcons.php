@@ -131,7 +131,7 @@ class SvgIcons implements ArgumentInterface
      */
     private function getFilePath(string $icon): string
     {
-        $assetFileId = 'Hyva_Theme::svg/' . $this->iconSet . '/' . $icon . '.svg';
+        $assetFileId = 'Hyva_Theme::svg/' . ($this->iconSet === '' ? '' : $this->iconSet . '/') . $icon . '.svg';
         return $this->assetRepository->createAsset($assetFileId)->getSourceFile();
     }
 }
