@@ -67,11 +67,21 @@ use Magento\Framework\View\Element\Template;
             return null;
         }
 
+        function isInViewport(element) {
+            const rect = element && element.getBoundingClientRect();
+            return rect &&
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.right <= window.innerWidth &&
+                rect.bottom <= window.innerHeight;
+        }
+
         function setFocusAfterTransition(dialogElement, duration) {
             window.setTimeout(() => {
                 const focusElement = firstVisible(dialogElement.querySelectorAll('[x-focus-first]')) ||
-                    focusables(dialogElement)[0] || null;
-                focusElement && focusElement.focus();
+                    focusables(dialogElement)[0] ||
+                    null;
+                focusElement && isInViewport(focusElement) && focusElement.focus();
             }, duration + 1);
         }
 
@@ -133,6 +143,7 @@ use Magento\Framework\View\Element\Template;
                     const dialogElement = this.$refs[name];
                     const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
 
+                    dialogElement.scrollTop = 0;
                     this[isOpenProp(name)] = true;
                     useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
