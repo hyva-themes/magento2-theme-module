@@ -30,6 +30,9 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     /** Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
     const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
 
+    /** Flag if product URLs contain the category path */
+    const XML_PRODUCT_URL_USE_CATEGORY_PATH = 'catalog/seo/product_use_categories';
+
     /**
      * @var Product
      */
@@ -99,6 +102,12 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     {
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         return (bool) $this->scopeConfigInterface->getValue(self::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH, $storeScope);
+    }
+
+    public function isProductUrlIncludesCategory(): bool
+    {
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return (bool) $this->scopeConfigInterface->getValue(self::XML_PRODUCT_URL_USE_CATEGORY_PATH, $storeScope);
     }
 
     /**
