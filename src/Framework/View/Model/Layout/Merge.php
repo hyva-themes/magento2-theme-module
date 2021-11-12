@@ -55,7 +55,12 @@ class Merge extends \Magento\Framework\View\Model\Layout\Merge
         SerializerInterface $serializer = null,
         ?int $cacheLifetime = null
     ) {
-        parent::__construct(
+        // Call the parent constructor using the class name instead of the `parent::` keyword
+        // to work around the artificial forward compatibility constraint in
+        // \Magento\Framework\Code\Validator\ConstructorIntegrity triggered during setup:di:compile in
+        // Magento versions <= 2.4.1.
+        // More details can be found in issue https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/85
+        \Magento\Framework\View\Model\Layout\Merge::__construct(
             $design,
             $scopeResolver,
             $fileSource,
