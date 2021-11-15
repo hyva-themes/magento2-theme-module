@@ -24,7 +24,7 @@ use Magento\Framework\View\Element\Template;
 
         function loadInertPolyfill(callback) {
             const polyfill = document.createElement('script');
-            polyfill.src = '<?= $escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js')) ?>';
+            polyfill.src = '<?= $escaper->escapeJs($escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js'))) ?>';
             callback && polyfill.addEventListener('load', callback);
             const firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
@@ -48,14 +48,50 @@ use Magento\Framework\View\Element\Template;
             while (el && (el = el.parentElement)) {
                 if (el === document.body || el.parentElement === null) continue;
 
-                [...el.parentElement.children].filter(sibling => sibling !== el).forEach(sibling => {
-                    sibling.inert = toState;
+                Array.from(el.parentElement.children).forEach(sibling => {
+                    if (sibling !== el) {
+                        sibling.inert = toState;
+                    }
                 })
+            }
+            // Walk down the DOM, toggle inert attribute to opposite of toState.
+            // This is needed if a nested dialog is rendered as a sibling of the opening dialog.
+            (function setChildrenInert(el, toState) {
+                if (el) {
+                    el.inert = toState;
+                    Array.from(el.children).forEach(child => setChildrenInert(child, toState));
+                }
+            })(findParentWithOverlaySpread(dialogElement), ! toState)
+        }
+
+        function findParentWithOverlaySpread(el) {
+            while (el && (el = el.parentElement)) {
+                if (el === document.body || el.parentElement === null) continue;
+                if (el.hasAttribute('x-spread') && el.getAttribute('x-spread').indexOf('overlay(') !== -1) {
+                    return el;
+                }
+            }
+        }
+
+        function freeFocusFromModalTrap(modal) {
+            const dialogElement = modal.viewModel.$refs[modal.name];
+            isOverlayDisabled(dialogElement) || modal.viewModel.$nextTick(() => setSiblingsInert(dialogElement, false));
+        }
+
+        function trapFocusInNextModalWithOverlay() {
+            for (let idx = modals.length -1; idx >= 0; idx--) {
+                const nextOnStack = modals[idx];
+                const nextDialogElement = nextOnStack.viewModel.$refs[nextOnStack.name];
+                if (! isOverlayDisabled(nextDialogElement)) {
+                    nextOnStack.viewModel.$nextTick(() => setSiblingsInert(nextDialogElement, true));
+                    break;
+                }
             }
         }
 
         function focusables(dialogElement) {
-            return [...dialogElement.querySelectorAll('a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])')]
+            const selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+            return Array.from(dialogElement.querySelectorAll(selector))
                 .filter(el => !el.hasAttribute('disabled'));
         }
 
@@ -144,6 +180,12 @@ use Magento\Framework\View\Element\Template;
                     const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
 
                     dialogElement.scrollTop = 0;
+
+                    // Prevent adding the same modal on the stack twice
+                    if (this[isOpenProp(name)]) {
+                        return;
+                    }
+
                     this[isOpenProp(name)] = true;
                     useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
@@ -163,11 +205,12 @@ use Magento\Framework\View\Element\Template;
 
                     const modal = modals.pop() || {};
                     const name = modal.name;
-                    const nextFocusAfterHide = modal.focusTarget;
-                    const dialogElement = this.$refs[name];
-
                     this[isOpenProp(name)] = false;
-                    this.$nextTick(() => setSiblingsInert(dialogElement, false));
+
+                    freeFocusFromModalTrap(modal)
+                    trapFocusInNextModalWithOverlay();
+
+                    const nextFocusAfterHide = modal.focusTarget;
                     nextFocusAfterHide && this.$nextTick(() => nextFocusAfterHide.focus());
 
                     if (modals.length === 0 || areRemainingModalsWithoutOverlay(modals)) {
