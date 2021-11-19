@@ -123,14 +123,18 @@ class ProductList implements ArgumentInterface
      */
     private function getLinkedSkus(string $linkType, ...$items): array
     {
+        if (empty($items)) {
+            return [];
+        }
+
         // $items can be anything with a getSku() method
-        $criterias = map(function ($item) use ($linkType): ListCriteria {
+        $criteriaList = map(function ($item) use ($linkType): ListCriteria {
             return new ListCriteria($item->getSku(), [$linkType], $item instanceof Product ? $item : null);
         }, $items);
 
         $links = merge([], ...map(function (ListResultInterface $listResult): array {
             return (array) $listResult->getResult();
-        }, $this->productLinkQuery->search($criterias)));
+        }, $this->productLinkQuery->search($criteriaList)));
 
         return unique(map(function (ProductLinkInterface $productLink): string {
             return $productLink->getLinkedProductSku();
