@@ -15,7 +15,7 @@ define([
      * @return {Boolean}
      */
     function validateTailwindCssClass(str) {
-        return (/^[a-zA-Z _:[\]#\-\d\/%]+$/i).test(str);
+        return (/^[a-zA-Z0-9 _(),:[\]#\-\d\/%]+$/i).test(str);
     }
 
 
