@@ -11,23 +11,21 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\Data\ProductLinkInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\ProductLink\Data\ListCriteria;
-use Magento\Catalog\Model\ProductLink\Data\ListResultInterface;
-use Magento\Catalog\Model\ProductLink\ProductLinkQuery;
+use Magento\Catalog\Model\Product\LinkFactory as ProductLinkFactory;
+use Magento\Catalog\Model\ResourceModel\Product\Link\Product\CollectionFactory as ProductLinkCollectionFactory;
 use Magento\Framework\Api\Filter;
 use Magento\Framework\Api\FilterBuilder;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-
-use Magento\Quote\Api\Data\CartItemInterface;
 use Magento\Quote\Model\Quote\Item as CartItem;
+
+use function array_filter as filter;
 use function array_map as map;
-use function array_merge as merge;
-use function array_unique as unique;
 
 class ProductList implements ArgumentInterface
 {
@@ -52,22 +50,43 @@ class ProductList implements ArgumentInterface
     private $productRepository;
 
     /**
-     * @var ProductLinkQuery
+     * @var ProductLinkFactory
      */
-    private $productLinkQuery;
+    private $productLinkFactory;
+
+    /**
+     * @var CatalogConfig
+     */
+    private $catalogConfig;
+
+    /**
+     * @var ProductLinkCollectionFactory
+     */
+    private $productLinkCollectionFactory;
+
+    /**
+     * @var CollectionProcessorInterface
+     */
+    private $collectionProcessor;
 
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder,
         SortOrderBuilder $sortOrderBuilder,
         ProductRepositoryInterface $productRepository,
-        ProductLinkQuery $productLinkQuery
+        ProductLinkCollectionFactory $productLinkCollectionFactory,
+        ProductLinkFactory $productLinkFactory,
+        CatalogConfig $catalogConfig,
+        CollectionProcessorInterface $collectionProcessor
     ) {
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->filterBuilder         = $filterBuilder;
-        $this->sortOrderBuilder      = $sortOrderBuilder;
-        $this->productRepository     = $productRepository;
-        $this->productLinkQuery      = $productLinkQuery;
+        $this->searchCriteriaBuilder        = $searchCriteriaBuilder;
+        $this->filterBuilder                = $filterBuilder;
+        $this->sortOrderBuilder             = $sortOrderBuilder;
+        $this->productRepository            = $productRepository;
+        $this->productLinkFactory           = $productLinkFactory;
+        $this->catalogConfig                = $catalogConfig;
+        $this->productLinkCollectionFactory = $productLinkCollectionFactory;
+        $this->collectionProcessor          = $collectionProcessor;
     }
 
     /**
@@ -79,7 +98,7 @@ class ProductList implements ArgumentInterface
     }
 
     /**
-     * @param CartItem|CartItemInterface ...$cartItems
+     * @param CartItem ...$cartItems
      * @return ProductInterface[]
      */
     public function getCrosssellItems(CartItem ...$cartItems): array
@@ -107,38 +126,48 @@ class ProductList implements ArgumentInterface
 
     /**
      * @param string $linkType
-     * @param Product|ProductInterface|CartItem|CartItemInterface ...$items
+     * @param Product|ProductInterface|CartItem ...$items
      * @return ProductInterface[]
      */
     public function getLinkedItems(string $linkType, ...$items): array
     {
-        // $items can be anything with a getSku() method
-        return $this->addFilter('sku', $this->getLinkedSkus($linkType, ...$items), 'in')->getItems();
+        // $items can be anything with a getProductId() or getEntityId() or getId() method
+        $productIds = filter(map(function ($item) {
+            return $item->getProductId()
+                ?? $item->getEntityId()
+                ?? $item->getId();
+        }, $items));
+        $collection = $this->productLinkCollectionFactory->create(['productIds' => $productIds]);
+        $collection->setLinkModel($this->getLinkTypeModel($linkType))
+                   ->setIsStrongMode()
+                   ->setPositionOrder()
+                   ->addStoreFilter()
+                   ->addAttributeToSelect($this->catalogConfig->getProductAttributes());
+
+        $this->collectionProcessor->process($this->searchCriteriaBuilder->create(), $collection);
+
+        $collection->setGroupBy(); // group by product id field - required to avoid duplicate products in collection
+
+        $collection->each('setDoNotUseCategoryId', [true]);
+
+        return $collection->getItems();
     }
 
-    /**
-     * @param string $linkType
-     * @param Product|ProductInterface|CartItem|CartItemInterface ...$items
-     * @return ProductInterface[]
-     */
-    private function getLinkedSkus(string $linkType, ...$items): array
+    private function getLinkTypeModel(string $linkType): Product\Link
     {
-        if (empty($items)) {
-            return [];
+        $linkModel = $this->productLinkFactory->create();
+        switch ($linkType) {
+            case 'crosssell':
+                $linkModel->useCrossSellLinks();
+                break;
+            case 'related':
+                $linkModel->useRelatedLinks();
+                break;
+            case 'upsell':
+                $linkModel->useUpSellLinks();
+                break;
         }
-
-        // $items can be anything with a getSku() method
-        $criteriaList = map(function ($item) use ($linkType): ListCriteria {
-            return new ListCriteria($item->getSku(), [$linkType], $item instanceof Product ? $item : null);
-        }, $items);
-
-        $links = merge([], ...map(function (ListResultInterface $listResult): array {
-            return (array) $listResult->getResult();
-        }, $this->productLinkQuery->search($criteriaList)));
-
-        return unique(map(function (ProductLinkInterface $productLink): string {
-            return $productLink->getLinkedProductSku();
-        }, $links));
+        return $linkModel;
     }
 
     /**
