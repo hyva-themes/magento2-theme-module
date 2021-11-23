@@ -81,8 +81,8 @@ class SvgIcons implements ArgumentInterface
     public function renderHtml(
         string $icon,
         string $classNames = '',
-        ?int $width = null,
-        ?int $height = null,
+        ?int $width = 24,
+        ?int $height = 24,
         array $attributes = []
     ): string {
         $cacheKey = $this->design->getDesignTheme()->getCode() .

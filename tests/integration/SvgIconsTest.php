@@ -81,7 +81,7 @@ class SvgIconsTest extends TestCase
     {
         $this->givenCurrentTheme('Hyva/test');
         $overriddenSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="5" d="M5 13l4 4L19 7"/>
             </svg>
             SVG;
@@ -101,7 +101,7 @@ class SvgIconsTest extends TestCase
     {
         $this->givenCurrentTheme('Hyva/test');
         $svg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
             </svg>
             SVG;
@@ -121,7 +121,7 @@ class SvgIconsTest extends TestCase
     {
         $this->givenCurrentTheme('Hyva/test');
         $svg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
             </svg>
             SVG;
@@ -142,7 +142,7 @@ class SvgIconsTest extends TestCase
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6" width="24" height="24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
             SVG;
@@ -219,7 +219,7 @@ class SvgIconsTest extends TestCase
             </svg>
             SVG;
         $sanitizedSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
             </svg>
             SVG;
@@ -260,7 +260,7 @@ class SvgIconsTest extends TestCase
                 'check',
                 'checkHtml',
                 <<<'SVG'
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
                 SVG,
@@ -269,7 +269,7 @@ class SvgIconsTest extends TestCase
                 'arrow-up',
                 'arrowUpHtml',
                 <<<'SVG'
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
                 </svg>
                 SVG,
