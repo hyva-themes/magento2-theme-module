@@ -69,6 +69,11 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     private $productImageFactory;
 
     /**
+     * @var RecentlyViewedProducts
+     */
+    private $recentlyViewedProducts;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      * @param CartHelper $cartHelper
@@ -82,26 +87,34 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         CartHelper $cartHelper,
         ProductOutputHelper $productOutputHelper,
         ScopeConfigInterface $scopeConfigInterface,
-        ImageFactory $productImageFactory
+        ImageFactory $productImageFactory,
+        RecentlyViewedProducts $recentlyViewedProducts
     ) {
-        $this->coreRegistry = $registry;
-        $this->priceCurrency = $priceCurrency;
-        $this->cartHelper = $cartHelper;
-        $this->productOutputHelper = $productOutputHelper;
-        $this->scopeConfigInterface = $scopeConfigInterface;
-        $this->productImageFactory = $productImageFactory;
+        $this->coreRegistry           = $registry;
+        $this->priceCurrency          = $priceCurrency;
+        $this->cartHelper             = $cartHelper;
+        $this->productOutputHelper    = $productOutputHelper;
+        $this->scopeConfigInterface   = $scopeConfigInterface;
+        $this->productImageFactory    = $productImageFactory;
+        $this->recentlyViewedProducts = $recentlyViewedProducts;
     }
 
+    /**
+     * @deprecated
+     * @see \Hyva\Theme\ViewModel\RecentlyViewedProducts::getRecentlyViewedLifeTime
+     */
     public function getRecentlyViewedLifeTime()
     {
-        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-        return $this->scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
+        return $this->recentlyViewedProducts->getRecentlyViewedLifeTime();
     }
 
+    /**
+     * @deprecated
+     * @see \Hyva\Theme\ViewModel\RecentlyViewedProducts::isFetchRecentlyViewedEnabled
+     */
     public function isFetchRecentlyViewedEnabled(): bool
     {
-        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-        return (bool) $this->scopeConfigInterface->getValue(self::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH, $storeScope);
+        return $this->recentlyViewedProducts->isFetchRecentlyViewedEnabled();
     }
 
     public function isProductUrlIncludesCategory(): bool
