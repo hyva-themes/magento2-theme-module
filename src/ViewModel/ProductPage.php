@@ -69,11 +69,6 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     private $productImageFactory;
 
     /**
-     * @var RecentlyViewedProducts
-     */
-    private $recentlyViewedProducts;
-
-    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      * @param CartHelper $cartHelper
@@ -87,8 +82,7 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         CartHelper $cartHelper,
         ProductOutputHelper $productOutputHelper,
         ScopeConfigInterface $scopeConfigInterface,
-        ImageFactory $productImageFactory,
-        RecentlyViewedProducts $recentlyViewedProducts
+        ImageFactory $productImageFactory
     ) {
         $this->coreRegistry           = $registry;
         $this->priceCurrency          = $priceCurrency;
@@ -96,25 +90,6 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         $this->productOutputHelper    = $productOutputHelper;
         $this->scopeConfigInterface   = $scopeConfigInterface;
         $this->productImageFactory    = $productImageFactory;
-        $this->recentlyViewedProducts = $recentlyViewedProducts;
-    }
-
-    /**
-     * @deprecated
-     * @see \Hyva\Theme\ViewModel\RecentlyViewedProducts::getRecentlyViewedLifeTime
-     */
-    public function getRecentlyViewedLifeTime()
-    {
-        return $this->recentlyViewedProducts->getRecentlyViewedLifeTime();
-    }
-
-    /**
-     * @deprecated
-     * @see \Hyva\Theme\ViewModel\RecentlyViewedProducts::isFetchRecentlyViewedEnabled
-     */
-    public function isFetchRecentlyViewedEnabled(): bool
-    {
-        return $this->recentlyViewedProducts->isFetchRecentlyViewedEnabled();
     }
 
     public function isProductUrlIncludesCategory(): bool
