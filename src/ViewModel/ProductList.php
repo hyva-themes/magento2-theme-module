@@ -183,7 +183,7 @@ class ProductList implements ArgumentInterface
      */
     public function getRelatedItems(Product ...$products): array
     {
-        return $this->getLinkedItems('related', ...$products);
+        return call_user_func_array([$this, 'getLinkedItems'], merge(['related'], $products));
     }
 
     /**
@@ -192,7 +192,7 @@ class ProductList implements ArgumentInterface
      */
     public function getUpsellItems(Product ...$products): array
     {
-        return $this->getLinkedItems('upsell', ...$products);
+        return call_user_func_array([$this, 'getLinkedItems'], merge(['upsell'], $products));
     }
 
     /**
@@ -203,8 +203,8 @@ class ProductList implements ArgumentInterface
     public function getLinkedItems(string $linkType, ...$items): array
     {
         return $linkType === 'crosssell'
-            ? $this->getCrosssellItems(...$items)
-            : $this->loadLinkedItems($linkType, ...$items);
+            ? call_user_func_array([$this, 'getCrosssellItems'], $items)
+            : call_user_func_array([$this, 'loadLinkedItems'], merge([$linkType], $items));
     }
 
     private function loadLinkedItems(string $linkType, ...$items): array
