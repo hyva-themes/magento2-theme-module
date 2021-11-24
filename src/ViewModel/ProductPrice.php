@@ -29,25 +29,20 @@ class ProductPrice implements ArgumentInterface
     protected $product = null;
 
     /**
-     * @var PriceInfoInterface
-     */
-    protected $priceInfo = null;
-    /**
      * @var PriceCurrencyInterface
      */
     protected $priceCurrency;
+
     /**
      * @var Config
      */
     protected $taxConfig;
+
     /**
      * @var CurrentProduct
      */
     private $currentProduct;
 
-    /**
-     * @param PriceCurrencyInterface $priceCurrency
-     */
     public function __construct(
         PriceCurrencyInterface $priceCurrency,
         Config $taxConfig,
@@ -62,11 +57,12 @@ class ProductPrice implements ArgumentInterface
     {
         $priceAmount = $this->getPrice($priceType, $product)->getAmount();
 
-        if ($this->displayPriceIncludingTax()) {
-            return $priceAmount->getValue();
-        } else {
-            return $priceAmount->getBaseAmount();
-        }
+        $amount = $this->displayPriceIncludingTax()
+            ? $priceAmount->getValue()
+            : $priceAmount->getBaseAmount();
+
+        // Cast in case no price is set and $amount is null or a false
+        return (float) $amount;
     }
 
     public function getPrice(string $priceType, Product $product = null): PriceInterface
@@ -74,16 +70,11 @@ class ProductPrice implements ArgumentInterface
         return $this->getPriceInfo($product)->getPrice($priceType);
     }
 
-    /**
-     * @return PriceInfoInterface
-     */
     protected function getPriceInfo(Product $product = null): PriceInfoInterface
     {
-        if (!$this->priceInfo) {
-            $product = $product ?? $this->getProduct();
-            $this->priceInfo = $product->getPriceInfo();
-        }
-        return $this->priceInfo;
+        $product = $product ?? $this->getProduct();
+
+        return $product->getPriceInfo();
     }
 
     /**

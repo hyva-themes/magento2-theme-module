@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Catalog\Block\Product\Image;
+use Magento\Catalog\Block\Product\ImageFactory;
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Helper\Cart as CartHelper;
 use Magento\Framework\Phrase;
@@ -18,9 +20,19 @@ use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Helper\Output as ProductOutputHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class ProductPage implements ArgumentInterface, IdentityInterface
 {
+    /** Recently Viewed lifetime */
+    const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
+
+    /** Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
+    const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
+
+    /** Flag if product URLs contain the category path */
+    const XML_PRODUCT_URL_USE_CATEGORY_PATH = 'catalog/seo/product_use_categories';
+
     /**
      * @var Product
      */
@@ -47,21 +59,55 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     protected $productOutputHelper;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfigInterface;
+
+    /**
+     * @var ImageFactory
+     */
+    private $productImageFactory;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      * @param CartHelper $cartHelper
      * @param ProductOutputHelper $productOutputHelper
+     * @param ScopeConfigInterface $scopeConfigInterface
+     * @param ImageFactory $productImageFactory
      */
     public function __construct(
         Registry $registry,
         PriceCurrencyInterface $priceCurrency,
         CartHelper $cartHelper,
-        ProductOutputHelper $productOutputHelper
+        ProductOutputHelper $productOutputHelper,
+        ScopeConfigInterface $scopeConfigInterface,
+        ImageFactory $productImageFactory
     ) {
         $this->coreRegistry = $registry;
         $this->priceCurrency = $priceCurrency;
         $this->cartHelper = $cartHelper;
         $this->productOutputHelper = $productOutputHelper;
+        $this->scopeConfigInterface = $scopeConfigInterface;
+        $this->productImageFactory = $productImageFactory;
+    }
+
+    public function getRecentlyViewedLifeTime()
+    {
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return $this->scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
+    }
+
+    public function isFetchRecentlyViewedEnabled(): bool
+    {
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return (bool) $this->scopeConfigInterface->getValue(self::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH, $storeScope);
+    }
+
+    public function isProductUrlIncludesCategory(): bool
+    {
+        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        return (bool) $this->scopeConfigInterface->getValue(self::XML_PRODUCT_URL_USE_CATEGORY_PATH, $storeScope);
     }
 
     /**
@@ -75,31 +121,37 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         return $this->_product;
     }
 
-    public function getShortDescription(): string
-    {
+    public function getShortDescription(
+        bool $excerpt = true,
+        bool $stripTags = true
+    ): string {
         $product = $this->getProduct();
+        $result = "";
 
         if ($shortDescription = $product->getShortDescription()) {
-            $excerpt = $this->excerptFromDescription($shortDescription);
-            return $this->productAttributeHtml($product, $excerpt, 'short_description');
+            $shortDescription = $excerpt ? $this->excerptFromDescription($shortDescription) : $shortDescription;
+            $result = $this->productAttributeHtml($product, $shortDescription, 'short_description');
+        } elseif ($description = $product->getDescription()) {
+            $description = $excerpt ? $this->excerptFromDescription($description) : $description;
+            $result = $this->productAttributeHtml($product, $description, 'description');
         }
 
-        if ($description = $product->getDescription()) {
-            $excerpt = $this->excerptFromDescription($description);
-            return $this->productAttributeHtml($product, $excerpt, 'description');
-        }
+        return $stripTags ? strip_tags($this->stripStyles($result)) : $result;
+    }
 
-        return "";
+    protected function stripStyles(string $html): string
+    {
+        return preg_replace('#<style>.+</style>#Usi', '', $html);
     }
 
     protected function excerptFromDescription(string $description): string
     {
         // if we have at least one <p></p>, take the first one as excerpt
         if ($paragraphs = preg_split('#</p><p>|<p>|</p>#i', $description, -1, PREG_SPLIT_NO_EMPTY)) {
-            return strip_tags($paragraphs[0]);
+            return $paragraphs[0];
         }
         // otherwise, take the first sentence
-        return explode('.', strip_tags($description))[0] . '.';
+        return explode('.', $description)[0] . '.';
     }
 
     /**
@@ -151,6 +203,16 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     public function productAttributeHtml(Product $product, $attributeHtml, $attributeName)
     {
         return $this->productOutputHelper->productAttribute($product, $attributeHtml, $attributeName);
+    }
+
+    /**
+     * @param Product|null $product
+     * @param string|null $imageId
+     * @param string[]|null $attributes
+     */
+    public function getImage(Product $product = null, string $imageId = null, array $attributes = null): Image
+    {
+        return $this->productImageFactory->create($product, $imageId, $attributes);
     }
 
     public function getIdentities()

@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Hyvä Themes - https://hyva.io
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
+
+declare(strict_types=1);
 
 namespace Hyva\Theme\Model;
 
@@ -27,7 +29,7 @@ class ViewModelCacheTags
     public function get(): array
     {
         // wait with collecting the identities until they are needed to catch all of them
-        return unique(merge(...map(function (IdentityInterface $viewModel): array {
+        return unique(merge([], ...map(function (IdentityInterface $viewModel): array {
             return $viewModel->getIdentities();
         }, $this->viewModels)));
     }

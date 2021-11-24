@@ -28,11 +28,26 @@ class CartItemsResolverPlugin
     ) {
         foreach ($itemsData as $index => $cartItem) {
             /**
+             * This cartItem is likely an error message
+             */
+            if (!is_array($cartItem)) {
+                continue;
+            }
+
+            /**
+             * Add errors to the quoteItem
+             */
+            $quoteItem = $cartItem['model'];
+            if ($quoteItem->getHasError() && $quoteItem->getMessage()) {
+                $itemsData[$index]['errors'] = $quoteItem->getMessage();
+            }
+
+            /**
              * If `product_type` is set as quote_item_option we're dealing
              * with a Grouped product and want to set the url_key to the
              * grouped product's value
              */
-            $option = $cartItem['model']->getOptionByCode('product_type');
+            $option = $quoteItem->getOptionByCode('product_type');
             if ($option) {
                 $cartProduct = $cartItem['product'];
                 /** @var Product $product */

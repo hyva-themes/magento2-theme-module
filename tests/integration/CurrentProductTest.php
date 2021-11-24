@@ -1,4 +1,11 @@
 <?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
 declare(strict_types=1);
 
 namespace Hyva\Theme;
@@ -71,5 +78,28 @@ class CurrentProductTest extends TestCase
             $this->currentProduct->get()->getSku(),
             'Current product should be unchanged after loop'
         );
+    }
+
+    /**
+     * @test
+     */
+    public function aggregates_cache_identities_for_loop()
+    {
+        $originalProduct = $this->productRepository->get('original');
+        $this->currentProduct->set($originalProduct);
+        $tags[] = $originalProduct->getIdentities();
+        foreach ($this->currentProduct->loop($this->productCollectionFactory->create()) as $product) {
+            $tags[] = $product->getIdentities();
+        }
+        $expected = array_unique(array_merge(...$tags));
+        $actual   = $this->currentProduct->getIdentities();
+        sort($expected);
+        sort($actual);
+        $this->assertGreaterThan(
+            count($originalProduct->getIdentities()),
+            count($actual),
+            'Expected to aggregate more cache tags than only the ones provided by the original product'
+        );
+        $this->assertSame($expected, $actual, 'Cache tags do not match');
     }
 }

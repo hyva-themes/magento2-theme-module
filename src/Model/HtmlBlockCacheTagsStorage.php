@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Hyvä Themes - https://hyva.io
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
+
+declare(strict_types=1);
 
 namespace Hyva\Theme\Model;
 
@@ -13,9 +15,14 @@ use Magento\Framework\App\Cache\Type\Block as BlockCache;
 use Magento\Framework\App\CacheInterface as Cache;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\View\Element\AbstractBlock;
+use Magento\Framework\View\Element\BlockInterface;
 use Magento\PageCache\Model\Config as PageCacheConfig;
 
+use function array_filter as filter;
+use function array_map as map;
 use function array_merge as merge;
+use function array_unique as unique;
+use function array_values as values;
 
 /**
  * Allow html-cached blocks to also be ESI-cached blocks with all their cache tags.
@@ -72,9 +79,9 @@ class HtmlBlockCacheTagsStorage
         $this->pageCacheConfig = $pageCacheConfig;
     }
 
-    public function save(AbstractBlock $block): void
+    public function save(BlockInterface $block): void
     {
-        if ($this->isDoubleCachedBlock($block)) {
+        if ($block instanceof AbstractBlock && $this->isDoubleCachedBlock($block)) {
             $this->saveBlockCacheTags($block);
         }
     }
@@ -89,11 +96,19 @@ class HtmlBlockCacheTagsStorage
 
     private function saveBlockCacheTags(AbstractBlock $block): void
     {
-        $tags = $block->getData('cache_tags');
-        if (is_array($tags) && $tags && $this->isBlockCacheEnabled() && $this->isVarnishEnabled()) {
+        $tags = unique($this->collectCacheTagsFromBlockAndChildren($block));
+        if ($tags && $this->isBlockCacheEnabled() && $this->isVarnishEnabled()) {
             $data = $this->serializer->serialize($tags);
             $this->cache->save($data, $this->getTagsCacheKey($block), merge($tags, [BlockCache::CACHE_TAG]));
         }
+    }
+
+    private function collectCacheTagsFromBlockAndChildren(AbstractBlock $block): array
+    {
+        $tags     = $block->getData('cache_tags');
+        $children = values(filter(map([$block->getLayout(), 'getBlock'], $block->getChildNames() ?? [])));
+
+        return merge(is_array($tags) ? $tags : [], ...map([$this, 'collectCacheTagsFromBlockAndChildren'], $children));
     }
 
     private function getTagsCacheKey(AbstractBlock $block): string

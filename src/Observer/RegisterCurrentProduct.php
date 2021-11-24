@@ -35,14 +35,13 @@ class RegisterCurrentProduct implements ObserverInterface
 
     /**
      * @var CurrentCategory
-    */
+     */
     protected $currentCategory;
 
     public function __construct(
         CurrentProduct $currentProduct,
         CurrentCategory $currentCategory
-    )
-    {
+    ) {
         $this->currentProduct = $currentProduct;
         $this->currentCategory = $currentCategory;
     }

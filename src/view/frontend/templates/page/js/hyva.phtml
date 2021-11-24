@@ -62,14 +62,16 @@ $currencyViewModel = $viewModels->require(Currency::class);
                 let expires,
                     path,
                     domain,
-                    secure;
+                    secure,
+                    samesite;
 
                 const defaultCookieConfig = {
                     expires: null,
                     path: '/',
                     domain: null,
                     secure: false,
-                    lifetime: null
+                    lifetime: null,
+                    samesite: 'lax'
                 };
 
                 const cookieConfig = window.COOKIE_CONFIG || {};
@@ -81,12 +83,14 @@ $currencyViewModel = $viewModels->require(Currency::class);
                 path = cookieConfig.path || defaultCookieConfig.path;
                 domain = !skipSetDomain && (cookieConfig.domain || defaultCookieConfig.domain);
                 secure = cookieConfig.secure || defaultCookieConfig.secure;
+                samesite = cookieConfig.samesite || defaultCookieConfig.samesite;
 
                 document.cookie = name + "=" + encodeURIComponent(value) +
                     (expires ? '; expires=' + expires.toGMTString() : '') +
                     (path ? '; path=' + path : '') +
                     (domain ? '; domain=' + domain : '') +
-                    (secure ? '; secure' : '');
+                    (secure ? '; secure' : '') +
+                    (samesite ? '; samesite=' + samesite : 'lax');
             },
             isWebsiteAllowedToSaveCookie() {
                 const allowedCookies = this.get('<?= /* @noEscape */  Cookie::IS_USER_ALLOWED_SAVE_COOKIE ?>');
@@ -211,7 +215,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
                     signDisplay: showSign ? "always" : "auto"
                 }
             );
-            return (typeof Intl.NumberFormat.prototype.formatToParts) ?
+            return (typeof Intl.NumberFormat.prototype.formatToParts === 'function') ?
                 formatter.formatToParts(value).map(({type, value}) => {
                     switch (type) {
                         case 'currency':

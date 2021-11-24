@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Customer\Model\Registration;
+use Magento\Customer\Model\Url as CustomerUrl;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class CustomerRegistration implements ArgumentInterface
@@ -21,12 +22,16 @@ class CustomerRegistration implements ArgumentInterface
     protected $registration;
 
     /**
-     * @param Registration $registration
+     * @var CustomerUrl
      */
+    protected $customerUrl;
+
     public function __construct(
-        Registration $registration
+        Registration $registration,
+        CustomerUrl $customerUrl
     ) {
         $this->registration = $registration;
+        $this->customerUrl = $customerUrl;
     }
 
     /**
@@ -37,5 +42,15 @@ class CustomerRegistration implements ArgumentInterface
     public function isAllowed(): bool
     {
         return $this->registration->isAllowed();
+    }
+
+    /**
+     * Retrieve the url for creating a new account
+     *
+     * @return string
+     */
+    public function getRegisterUrl(): string
+    {
+        return $this->customerUrl->getRegisterUrl();
     }
 }

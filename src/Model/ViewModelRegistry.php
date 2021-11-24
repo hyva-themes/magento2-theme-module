@@ -40,8 +40,9 @@ class ViewModelRegistry
     /**
      * Returns view model instance for given FQN
      *
-     * @param string $viewModelClass Fully qualified class name (FQN)
-     * @return ArgumentInterface
+     * @template T
+     * @param string-class<T> $viewModelClass Fully qualified class name (FQN)
+     * @return T
      * @throw InvalidViewModelClass if class not found or not a view model
      */
     public function require(string $viewModelClass): ArgumentInterface

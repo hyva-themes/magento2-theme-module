@@ -26,17 +26,36 @@ use function array_values as values;
 class Navigation implements ArgumentInterface, IdentityInterface
 {
     /**
+     * Cache tag to use instead of category tags  if more than 200 categories are rendered in the navigation.
+     */
+    const CACHE_TAG = 'hyva_nav';
+
+    /**
      * @var NavigationService
      */
-    protected $navigationService;
+    private $navigationService;
 
+    /**
+     * @var bool|int
+     */
     private $requestedMaxLevel;
 
+    /**
+     * @var string[]
+     */
     private $cacheIdentities;
 
-    public function __construct(NavigationService $navigationService)
+    /**
+     * The maximum number of category cache identities to return before using a single hyva_nav cache tag instead.
+     *
+     * @var int
+     */
+    private $maxCategoryCacheTags;
+
+    public function __construct(NavigationService $navigationService, int $maxCategoryCacheTags = 200)
     {
-        $this->navigationService = $navigationService;
+        $this->navigationService    = $navigationService;
+        $this->maxCategoryCacheTags = $maxCategoryCacheTags;
     }
 
     /**
@@ -113,7 +132,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
 
     private function processCacheIdentities(array $menuData, $maxLevel): array
     {
-        if ($this->isNewMaxLevel($maxLevel)) {
+        if ($this->isNewMaxLevel($maxLevel) && !empty($menuData)) {
             $this->requestedMaxLevel = $maxLevel;
             $this->cacheIdentities   = unique(merge(...values(map([$this, 'extractCacheIdentities'], $menuData))));
         }
@@ -147,6 +166,9 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     public function getIdentities()
     {
-        return $this->cacheIdentities ?? [];
+
+        return $this->cacheIdentities && count($this->cacheIdentities) > $this->maxCategoryCacheTags
+            ? [self::CACHE_TAG]
+            : $this->cacheIdentities ?? [];
     }
 }

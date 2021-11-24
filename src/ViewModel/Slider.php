@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Hyvä Themes - https://hyva.io
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
+
+declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
@@ -27,10 +29,10 @@ class Slider implements ArgumentInterface
 
     public function getSliderForItems(
         string $itemTemplateFile,
-        array $items,
+        iterable $items,
         string $sliderTemplateFile = 'Magento_Theme::elements/slider-php.phtml'
     ): AbstractBlock {
-        $id = md5($sliderTemplateFile . $itemTemplateFile);
+        $id = md5(uniqid($sliderTemplateFile . $itemTemplateFile));
 
         $sliderBlock = $this->createTemplateBlock("slider.{$id}", [
             'items'    => $items,

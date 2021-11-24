@@ -11,16 +11,18 @@ declare(strict_types=1);
 namespace Hyva\Theme\Service;
 
 use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\Layer\Resolver;
 use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryColleciton;
+use Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory;
 use Magento\Framework\Data\Collection;
 use Magento\Framework\Data\Tree\Node;
 use Magento\Framework\Data\Tree\NodeFactory;
 use Magento\Framework\Data\TreeFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\StoreManagerInterface;
 
 /** @see \Magento\Catalog\Plugin\Block\Topmenu */
-
 class Navigation
 {
     /**
@@ -31,17 +33,17 @@ class Navigation
     protected $catalogCategory;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory
+     * @var StateDependentCollectionFactory
      */
     protected $collectionFactory;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     protected $storeManager;
 
     /**
-     * @var \Magento\Catalog\Model\Layer\Resolver
+     * @var Resolver
      */
     protected $layerResolver;
 
@@ -56,23 +58,24 @@ class Navigation
     protected $treeFactory;
 
     protected $menu;
+
     /**
      * Initialize dependencies.
      *
      * @param \Magento\Catalog\Helper\Category $catalogCategory
-     * @param \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory $categoryCollectionFactory
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param StateDependentCollectionFactory $categoryCollectionFactory
+     * @param StoreManagerInterface $storeManager
      * @param NodeFactory $nodeFactory
      * @param TreeFactory $treeFactory
-     * @param \Magento\Catalog\Model\Layer\Resolver $layerResolver
+     * @param Resolver $layerResolver
      */
     public function __construct(
         \Magento\Catalog\Helper\Category $catalogCategory,
-        \Magento\Catalog\Model\ResourceModel\Category\StateDependentCollectionFactory $categoryCollectionFactory,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        StateDependentCollectionFactory $categoryCollectionFactory,
+        StoreManagerInterface $storeManager,
         NodeFactory $nodeFactory,
         TreeFactory $treeFactory,
-        \Magento\Catalog\Model\Layer\Resolver $layerResolver
+        Resolver $layerResolver
     ) {
         $this->catalogCategory = $catalogCategory;
         $this->collectionFactory = $categoryCollectionFactory;
@@ -80,20 +83,6 @@ class Navigation
         $this->layerResolver = $layerResolver;
         $this->nodeFactory = $nodeFactory;
         $this->treeFactory = $treeFactory;
-    }
-
-    protected function getMenu(): Node
-    {
-        if (!$this->menu) {
-            $this->menu = $this->nodeFactory->create(
-                [
-                    'data'    => [],
-                    'idField' => 'root',
-                    'tree'    => $this->treeFactory->create(),
-                ]
-            );
-        }
-        return $this->menu;
     }
 
     /**
@@ -145,48 +134,6 @@ class Navigation
     }
 
     /**
-     * Get current Category from catalog layer
-     *
-     * @return Category
-     */
-    protected function getCurrentCategory()
-    {
-        $catalogLayer = $this->layerResolver->get();
-
-        if (!$catalogLayer) {
-            return null;
-        }
-
-        return $catalogLayer->getCurrentCategory();
-    }
-
-    /**
-     * Convert category to array
-     *
-     * @param Category $category
-     * @param Category $currentCategory
-     * @param bool $isParentActive
-     * @return array
-     * @throws LocalizedException
-     */
-    protected function getCategoryAsArray($category, $currentCategory, $isParentActive)
-    {
-        $categoryId = $category->getId();
-        return [
-            'name' => $category->getName(),
-            'id' => 'category-node-' . $categoryId,
-            'url' => $this->catalogCategory->getCategoryUrl($category),
-            'image' => $category->getImageUrl(),
-            'has_active' => in_array((string)$categoryId, explode('/', (string)$currentCategory->getPath()), true),
-            'is_active' => $categoryId == $currentCategory->getId(),
-            'is_category' => true,
-            'is_parent_active' => $isParentActive,
-            'position' => $category->getData('position'),
-            'identities' => $category->getIdentities(),
-        ];
-    }
-
-    /**
      * Get Category Tree
      *
      * @param int $storeId
@@ -195,7 +142,7 @@ class Navigation
      * @return CategoryColleciton
      * @throws LocalizedException
      */
-    protected function getCategoryTree($storeId, $rootId, $maxLevel = 0)
+    public function getCategoryTree($storeId, $rootId, $maxLevel = 0)
     {
         /** @var CategoryColleciton $collection */
         $collection = $this->collectionFactory->create();
@@ -216,5 +163,61 @@ class Navigation
         $collection->addOrder('entity_id', Collection::SORT_ORDER_ASC);
 
         return $collection;
+    }
+
+    /**
+     * Get current Category from catalog layer
+     *
+     * @return Category
+     */
+    protected function getCurrentCategory()
+    {
+        $catalogLayer = $this->layerResolver->get();
+
+        if (!$catalogLayer) {
+            return null;
+        }
+
+        return $catalogLayer->getCurrentCategory();
+    }
+
+    protected function getMenu(): Node
+    {
+        if (!$this->menu) {
+            $this->menu = $this->nodeFactory->create(
+                [
+                    'data' => [],
+                    'idField' => 'root',
+                    'tree' => $this->treeFactory->create(),
+                ]
+            );
+        }
+        return $this->menu;
+    }
+
+    /**
+     * Convert category to array
+     *
+     * @param Category $category
+     * @param Category $currentCategory
+     * @param bool $isParentActive
+     * @return array
+     * @throws LocalizedException
+     */
+    public function getCategoryAsArray($category, $currentCategory, $isParentActive)
+    {
+        $categoryId = $category->getId();
+        return [
+            'name' => $category->getName(),
+            'id' => 'category-node-' . $categoryId,
+            'url' => $this->catalogCategory->getCategoryUrl($category),
+            'image' => $category->getImageUrl(),
+            'has_active' => in_array((string)$categoryId, explode('/', (string)$currentCategory->getPath()), true),
+            'is_active' => $categoryId == $currentCategory->getId(),
+            'is_category' => true,
+            'is_parent_active' => $isParentActive,
+            'position' => $category->getData('position'),
+            'identities' => $category->getIdentities(),
+        ];
     }
 }
