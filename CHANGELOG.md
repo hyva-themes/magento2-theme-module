@@ -35,6 +35,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More information an be found in [issue #68](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/68)
 
+  Many thanks to John Hughes (Fisheye) for the contribution!
+
 - **Allow setting additional HTML attributes on SVG icons**
 
   In Hyva a lot of additional attributes are used on element. For example, the Alpine.js `:class` binding is used is
@@ -53,6 +55,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   The new view model is used in the theme when rendering the product add-to-cart form.
 
   More information can be found in the [merge request #130](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/130)
+
+- **Add method to fetch catalog/seo/product_use_categories system config value**
+
+  This change to the ProductPage view model is required to fix a product listing page caching issue in
+  [hyva-themes/magento-default-theme](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/260).
+
+  More information can be found in the [merge request #134](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/134)
+
+- **Add method to retrieve a blocks cache tags from a view model**
+
+  This new method on the BlockCache view model is helpful because Hyvä often uses generic template blocks instead of 
+  specific block classes. For this to work well with the block_html cache group, the cache_tags property has to be set
+  within templates.
+
+  More information can be found in the [merge request #135](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/135)
+
+- **Preserve local only section data for Luma checkout compatibility**
+
+  More information an be found in [issue #99](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/99)
+
+- **Add ViewModelRegistry return type hint based on class argument**
+
+  This change allows using `$viewModels->require($className)` without a PHPDoc type hint for the return value using
+  PHPStorms new generics annotation.
+
+  More information can be found in the [merge request #140](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/140)
+
+  Many thanks to Thijs de Witt (Trinos) for the contribution!
 
 ### Changed
 
@@ -73,7 +103,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   Previously the items had to be an array, now they can be any iterable.
 
-- **Improve Tailwind CSS class name validation regex for PageBuilder**
+- **Improve Tailwind CSS class name validation regex for PageBuilder** (PENDING)
 
   Now `/`, `(`, `)`, `%`, `,` and digits are also allowed enabling classes such as `w-1/2`,  `grid-[repeat(3,33%)]`
 
@@ -115,8 +145,59 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   Many thanks to Timon de Groot (Mooore) for the contribution!
 
+- **Bugfix: Do not render double slash when using SVG icons with no svg iconset**
+
+  More information can be found in [issue #93](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/93)
+
+- **Remove amount of cache tags for large top menus**
+
+  With Varnish, the top menu is requested using ESI. In that case the cache tags for each category in the menu where
+  included in a HTTP response header, which could lead to the header size limit being exceeded.  
+  This change replaces the top menu cache tags with a single `hyva_nav`  cache tag if more than 200 cache tags
+  would be included in the response.
+
+  More information can be found in [issue #63](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/63)
+
+- **Bugfix: Do not assume very block inherits from AbstractBlock**
+
+  This change fixes an issue on Magento Cloud in production mode, where a block instance implement BlockInterface
+  without inheriting from AbstractBlock.
+
+  More information can be found in the [merge request #137](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/137)
+
+- **Bugfix: Handle modal content exceeding screen height**
+
+  More information can be found in [issue #96](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/96)
+
+- **Allow modals to be opened from within modals without nesting in the DOM**
+
+  Also, allows access to values set on the modal block via layout XML by making the modal instance method
+  `getContentRender` public.
+
+  More information can be found in [issue #86](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/86)
+
+- **Set default SVG icon dimensions to 24x24** (PENDING)
+
+  Previously icons rendered without a width and a height did not render those attributes on the SVG image.  
+  With this change, the width and height default to 24. This allows rendering icons  
+  using `<?= $heroicons->heartHtml($cssClasses) ?>`, instead of always  
+  using `<?= $heroicons->heartHtml($cssClasses, 24, 24) ?>`.
+  The previous behavior can still be achieved by explicitly passing `null` as the `$width` and `$height` parameters.
+
+  More information can be found in [issue #81](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/81)
+
+- **Make recently viewed products configurable in the system config** (PENDING)
+
+  A couple of new system config fields have been added to allow configuring recently viewed products without having to
+  manually set up widget instances. The new fields can be found at `Stores > Config > Catalog > Frontend`.  
+  The configured values can be accessed using the new view model `RecentlyViewedProducts`.
+
+  More information can be found in [issue #107](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/107)
+
+
 ### Removed
 
+- Nothing
 
 ## [1.1.8] - 2021-09-24
 
