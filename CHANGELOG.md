@@ -6,7 +6,117 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.8...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.9...main
+
+## [1.1.9] - 2021-11-??
+
+[1.1.9]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.8...1.1.9
+
+### Added
+
+- **Add View Model to fetch lists of products from templates**
+
+  The new view model `Hyva\Theme\ViewModel\ProductList` can be used to fetch any type of product list inside a template,
+  including related, upsell and crosssell products.
+  It is used in hyva-themes/magento2-default-theme when rendering product sliders.
+
+  More information an be found in [issue #84](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/84)
+
+- **Give access to a product image instance via the ProductPage view model**
+
+  The new view model method `getImage` can be used to retrieve a product image instance without relying on the core
+  abstract product block class. It is used for rendering product sliders.
+
+- **Merge PageBuilder compatibility from compat module into theme-module**
+
+  Previously PageBuilder support required using a compatibility module. Now that PageBuilder is included with
+  Magento Open Source, it makes sense to support it out-of-the-box in Hyvä Themes.
+  The PageBuilder compatibility module still is maintained for backward compatibility.
+
+  More information an be found in [issue #68](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/68)
+
+- **Allow setting additional HTML attributes on SVG icons**
+
+  In Hyva a lot of additional attributes are used on element. For example, the Alpine.js `:class` binding is used is
+  very often, but can't be set on an SVG icon at this moment.
+  With this change an optional `array $attributes` argument is added to the method signature.
+
+  More information an be found in [merge request #123](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/123)
+
+  Many thanks to Arjen Miedema (Elgentos) for the contribution!
+
+- **Add ViewModel to provide access to product stock information**
+
+  To render the appropriate product qty form some stock item information is required, for example the minimum order 
+  quantity, or if decimal quantities are allowed or not.
+
+  The new view model is used in the theme when rendering the product add-to-cart form.
+
+  More information can be found in the [merge request #130](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/130)
+
+### Changed
+
+- **Bugfix: Improve LogoPathResolver so it works with Magento 2.4.3 and newer**
+  
+  The LogoPathResolver also continues to work with Magento versions 2.4.0 - 2.4.2.
+
+  More information an be found in [issue #82](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/82)
+
+- **Bugfix: Allow using multiple slider instances with the same template on one page**
+
+  Previously the generated block name was determined by the slider template. Now `uniqid` is used to 
+  generate the block names.
+
+  More information an be found in [issue #78](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/78)
+
+- **Allow items for sliders rendered with PHP to be collections**
+
+  Previously the items had to be an array, now they can be any iterable.
+
+- **Improve Tailwind CSS class name validation regex for PageBuilder**
+
+  Now `/`, `(`, `)`, `%`, `,` and digits are also allowed enabling classes such as `w-1/2`,  `grid-[repeat(3,33%)]`
+
+- **Bugfix: fix converting camelCase to kebab-case for SVG icons with digits** 
+
+  Previously: `menuAlt2 -> menu-alt2`
+  Now (fixed): `menuAlt2 -> menu-alt-2`
+
+  More information an be found in [issue #87](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/87)
+
+  Many thanks to Thijs de Witt (Trinos) for the contribution!
+
+- **Bugfix: resolve ProductPrice being cached if multiple products use ProductPrice**
+
+  More information an be found in [issue #88](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/88)
+
+  Many thanks to Wahid Nory (Elgentos) for the contribution!
+
+- **Bugfix: use GraphQL variables instead ot JS string templates for all queries and mutations**
+
+  This resolves a number of bugs related to escaping and serialization of query parameters, and also allows
+  editing the queries with the GraphQL query editor as described in [the docs](https://docs.hyva.io/doc/customizing-graphql-vtjgCN6FzD).
+
+  More information can be found in the [merge request #127](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/127)
+  and the [related default theme MR](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/301).
+
+- **Bugfix: Fix constructor integrity check for preference in Magento > 2.4.1**
+
+  The error `Extra parameters passed to parent construct` occurred when running `setup:di:compile` on Magento 2.4.2 or
+  newer.
+
+  More information an be found in [issue #85](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/85)
+
+- **Allow product-compare system.xml settings to be set on store scope**
+
+  These compare product system config settings are not part of stock Magento.
+
+  More information can be found in the [merge request #131](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/131)
+
+  Many thanks to Timon de Groot (Mooore) for the contribution!
+
+### Removed
+
 
 ## [1.1.8] - 2021-09-24
 
