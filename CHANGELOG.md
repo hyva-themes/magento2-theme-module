@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- **Add View Model to fetch lists of products from templates**
+- **Add View Model to fetch lists of products from templates** (PENDING)
 
   The new view model `Hyva\Theme\ViewModel\ProductList` can be used to fetch any type of product list inside a template,
   including related, upsell and crosssell products.
@@ -103,7 +103,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   Previously the items had to be an array, now they can be any iterable.
 
-- **Improve Tailwind CSS class name validation regex for PageBuilder** (PENDING)
+- **Improve Tailwind CSS class name validation regex for PageBuilder**
 
   Now `/`, `(`, `)`, `%`, `,` and digits are also allowed enabling classes such as `w-1/2`,  `grid-[repeat(3,33%)]`
 
@@ -176,7 +176,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More information can be found in [issue #86](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/86)
 
-- **Set default SVG icon dimensions to 24x24** (PENDING)
+- **Set default SVG icon dimensions to 24x24**
 
   Previously icons rendered without a width and a height did not render those attributes on the SVG image.  
   With this change, the width and height default to 24. This allows rendering icons  
@@ -186,7 +186,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More information can be found in [issue #81](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/81)
 
-- **Make recently viewed products configurable in the system config** (PENDING)
+- **Make recently viewed products configurable in the system config**
 
   A couple of new system config fields have been added to allow configuring recently viewed products without having to
   manually set up widget instances. The new fields can be found at `Stores > Config > Catalog > Frontend`.  
