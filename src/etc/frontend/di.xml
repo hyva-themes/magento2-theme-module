@@ -18,6 +18,17 @@
         <plugin name="front-controller-hyva-header" type="Hyva\Theme\Plugin\FrontController\HyvaHeaderPlugin"/>
     </type>
 
+    <type name="Hyva\Theme\ViewModel\HeroiconsSolid">
+        <arguments>
+            <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/solid</argument>
+        </arguments>
+    </type>
+    <type name="Hyva\Theme\ViewModel\HeroiconsOutline">
+        <arguments>
+            <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/outline</argument>
+        </arguments>
+    </type>
+
     <type name="\Magento\Customer\Controller\Section\Load">
         <plugin name="customer_controller_section_load" type="Hyva\Theme\Plugin\Customer\SectionLoadPlugin"/>
     </type>

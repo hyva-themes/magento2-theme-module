@@ -31,7 +31,7 @@ class SvgIcons implements ArgumentInterface
     /**
      * @var string Path relative to asset directory Hyva_Theme::svg/
      */
-    private $iconSet;
+    private $iconPathPrefix;
 
     /**
      * @var Asset\Repository
@@ -57,9 +57,9 @@ class SvgIcons implements ArgumentInterface
         Asset\Repository $assetRepository,
         CacheInterface $cache,
         DesignInterface $design,
-        string $iconSet = ''
+        string $iconPathPrefix = 'Hyva_Theme::svg'
     ) {
-        $this->iconSet = $iconSet;
+        $this->iconPathPrefix = $iconPathPrefix;
         $this->assetRepository = $assetRepository;
         $this->cache = $cache;
         $this->design = $design;
@@ -80,7 +80,7 @@ class SvgIcons implements ArgumentInterface
     public function renderHtml(string $icon, string $classNames = '', ?int $width = null, ?int $height = null): string
     {
         $cacheKey = $this->design->getDesignTheme()->getCode() .
-            '/' . $this->iconSet .
+            '/' . $this->iconPathPrefix .
             '/' . $icon .
             '/' . $classNames .
             '#' . $width .
@@ -131,7 +131,7 @@ class SvgIcons implements ArgumentInterface
      */
     private function getFilePath(string $icon): string
     {
-        $assetFileId = 'Hyva_Theme::svg/' . $this->iconSet . '/' . $icon . '.svg';
+        $assetFileId = $this->iconPathPrefix . '/' . $icon . '.svg';
         return $this->assetRepository->createAsset($assetFileId)->getSourceFile();
     }
 }
