@@ -84,24 +84,12 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         ScopeConfigInterface $scopeConfigInterface,
         ImageFactory $productImageFactory
     ) {
-        $this->coreRegistry = $registry;
-        $this->priceCurrency = $priceCurrency;
-        $this->cartHelper = $cartHelper;
-        $this->productOutputHelper = $productOutputHelper;
-        $this->scopeConfigInterface = $scopeConfigInterface;
-        $this->productImageFactory = $productImageFactory;
-    }
-
-    public function getRecentlyViewedLifeTime()
-    {
-        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-        return $this->scopeConfigInterface->getValue(self::XML_LIFETIME_PATH, $storeScope);
-    }
-
-    public function isFetchRecentlyViewedEnabled(): bool
-    {
-        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-        return (bool) $this->scopeConfigInterface->getValue(self::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH, $storeScope);
+        $this->coreRegistry           = $registry;
+        $this->priceCurrency          = $priceCurrency;
+        $this->cartHelper             = $cartHelper;
+        $this->productOutputHelper    = $productOutputHelper;
+        $this->scopeConfigInterface   = $scopeConfigInterface;
+        $this->productImageFactory    = $productImageFactory;
     }
 
     public function isProductUrlIncludesCategory(): bool

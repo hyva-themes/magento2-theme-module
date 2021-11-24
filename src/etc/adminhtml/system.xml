@@ -19,9 +19,39 @@
                     <label>Show Compare Sidebar On Product List</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="115" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Add To Compare On Product Page</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="recently_products">
+                <field id="recently_viewed_enabled" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Recently Viewed Products</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_on_pdp" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Recently Viewed on Product Detail Pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="recently_viewed_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="show_on_plp" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Recently Viewed on Product Listing Pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="recently_viewed_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="viewed_count" sortOrder="130">
+                    <depends>
+                        <field id="recently_viewed_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="recently_viewed_lifetime" sortOrder="140">
+                    <depends>
+                        <field id="recently_viewed_enabled">1</field>
+                    </depends>
                 </field>
             </group>
         </section>
