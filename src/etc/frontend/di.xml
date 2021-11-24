@@ -49,4 +49,10 @@
     <preference for="Hyva\Theme\Model\Modal\ModalInterface" type="Hyva\Theme\Model\Modal\ModalBuilder"/>
 
     <preference for="Magento\Framework\View\Model\Layout\Merge" type="Hyva\Theme\Framework\View\Model\Layout\Merge"/>
+
+    <type name="Hyva\Theme\ViewModel\ProductList">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">Magento\Catalog\Model\Api\SearchCriteria\ProductCollectionProcessor</argument>
+        </arguments>
+    </type>
 </config>
