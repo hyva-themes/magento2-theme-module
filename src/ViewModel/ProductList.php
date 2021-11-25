@@ -11,10 +11,11 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\LinkFactory as ProductLinkFactory;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection as ProductLinkCollection;
 use Magento\Catalog\Model\ResourceModel\Product\Link\Product\CollectionFactory as ProductLinkCollectionFactory;
 use Magento\Framework\Api\Filter;
@@ -25,7 +26,8 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Item as CartItem;
-
+use Magento\Review\Model\ResourceModel\Review\Summary as ReviewSummaryResource;
+use Magento\Review\Model\Review;
 use function array_filter as filter;
 use function array_map as map;
 use function array_merge as merge;
@@ -47,11 +49,6 @@ class ProductList implements ArgumentInterface
      * @var SortOrderBuilder
      */
     private $sortOrderBuilder;
-
-    /**
-     * @var ProductRepositoryInterface
-     */
-    private $productRepository;
 
     /**
      * @var ProductLinkFactory
@@ -78,25 +75,44 @@ class ProductList implements ArgumentInterface
      */
     private $maxCrosssellItemCount;
 
+    /**
+     * @var ReviewSummaryResource
+     */
+    private $reviewSummaryResource;
+
+    /**
+     * @var ProductCollectionFactory
+     */
+    private $productCollectionFactory;
+
+    /**
+     * @var bool
+     */
+    private $isIncludingReviewSummary;
+
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder,
         SortOrderBuilder $sortOrderBuilder,
-        ProductRepositoryInterface $productRepository,
+        ProductCollectionFactory $productCollectionFactory,
         ProductLinkCollectionFactory $productLinkCollectionFactory,
         ProductLinkFactory $productLinkFactory,
         CatalogConfig $catalogConfig,
         CollectionProcessorInterface $collectionProcessor,
+        ReviewSummaryResource $reviewSummaryResource,
+        bool $isIncludingReviewSummary = true,
         int $maxCrosssellItemCount = 4
     ) {
         $this->searchCriteriaBuilder        = $searchCriteriaBuilder;
         $this->filterBuilder                = $filterBuilder;
         $this->sortOrderBuilder             = $sortOrderBuilder;
-        $this->productRepository            = $productRepository;
+        $this->productCollectionFactory     = $productCollectionFactory;
         $this->productLinkFactory           = $productLinkFactory;
         $this->catalogConfig                = $catalogConfig;
         $this->productLinkCollectionFactory = $productLinkCollectionFactory;
         $this->collectionProcessor          = $collectionProcessor;
+        $this->reviewSummaryResource        = $reviewSummaryResource;
+        $this->isIncludingReviewSummary     = $isIncludingReviewSummary;
         $this->maxCrosssellItemCount        = $maxCrosssellItemCount;
     }
 
@@ -105,7 +121,11 @@ class ProductList implements ArgumentInterface
      */
     public function getItems(): array
     {
-        return $this->productRepository->getList($this->searchCriteriaBuilder->create())->getItems();
+        $collection = $this->createProductCollection();
+        $this->collectionProcessor->process($this->searchCriteriaBuilder->create(), $collection);
+        $collection->each('setDoNotUseCategoryId', [true]);
+
+        return $collection->getItems();
     }
 
     /**
@@ -174,7 +194,31 @@ class ProductList implements ArgumentInterface
                    ->addStoreFilter()
                    ->addAttributeToSelect($this->catalogConfig->getProductAttributes());
 
+        $this->loadReviewSummariesIfEnabled($collection);
+
         return $collection;
+    }
+
+    private function createProductCollection(): ProductCollection
+    {
+        $collection = $this->productCollectionFactory->create();
+        $collection->addStoreFilter()
+                   ->addAttributeToSelect($this->catalogConfig->getProductAttributes());
+
+        $this->loadReviewSummariesIfEnabled($collection);
+
+        return $collection;
+    }
+
+    private function loadReviewSummariesIfEnabled(ProductCollection $collection): void
+    {
+        if ($this->isIncludingReviewSummary) {
+            $this->reviewSummaryResource->appendSummaryFieldsToCollection(
+                $collection,
+                $collection->getStoreId(),
+                Review::ENTITY_PRODUCT_CODE
+            );
+        }
     }
 
     /**
@@ -321,6 +365,20 @@ class ProductList implements ArgumentInterface
     public function setCurrentPage($currentPage): self
     {
         $this->searchCriteriaBuilder->setCurrentPage($currentPage);
+
+        return $this;
+    }
+
+    public function includeReviewSummary(): self
+    {
+        $this->isIncludingReviewSummary = true;
+
+        return $this;
+    }
+
+    public function excludeReviewSummary(): self
+    {
+        $this->isIncludingReviewSummary = false;
 
         return $this;
     }
