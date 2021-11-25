@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- **Add View Model to fetch lists of products from templates** (PENDING)
+- **Add View Model to fetch lists of products from templates**
 
   The new view model `Hyva\Theme\ViewModel\ProductList` can be used to fetch any type of product list inside a template,
   including related, upsell and crosssell products.
