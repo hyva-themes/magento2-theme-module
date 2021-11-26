@@ -12,8 +12,11 @@ namespace Hyva\Theme\Model;
 
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
+// phpcs:disable Magento2.Functions.StaticFunction.StaticFunction
+
 class InvalidViewModelClass extends \OutOfBoundsException
 {
+    
     public static function notFound(string $viewModelClass, \Exception $previous = null): self
     {
         return new self("Class $viewModelClass not found.", 0, $previous);

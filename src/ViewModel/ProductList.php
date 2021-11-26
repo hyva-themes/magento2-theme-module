@@ -33,6 +33,14 @@ use function array_map as map;
 use function array_merge as merge;
 use function array_slice as slice;
 
+// phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
+
+/**
+ * @SuppressWarnings(PHPMD.LongVariable)
+ * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ */
 class ProductList implements ArgumentInterface
 {
     /**

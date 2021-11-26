@@ -42,7 +42,6 @@ class ProductStockItem implements ArgumentInterface
             $product->setData('stock_item', $stockItem);
         }
         return $product->getData('stock_item');
-
     }
 
     private function loadStockItem(int $productId): ?StockItemInterface
@@ -161,5 +160,4 @@ class ProductStockItem implements ArgumentInterface
             ? $stockItem->getBackorders()
             : null;
     }
-
 }

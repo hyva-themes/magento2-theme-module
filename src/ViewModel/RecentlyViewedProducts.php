@@ -14,6 +14,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\ScopeInterface as ConfigScope;
 
+// phpcs:disable Generic.Files.LineLength.TooLong
+
 class RecentlyViewedProducts implements ArgumentInterface
 {
     /* Recently Viewed lifetime */

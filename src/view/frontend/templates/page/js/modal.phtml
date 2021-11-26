@@ -12,6 +12,8 @@ use Hyva\Theme\ViewModel\Modal;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
+// phpcs:disable Generic.Files.LineLength.TooLong
+
 /** @var Template $block */
 /** @var Escaper $escaper */
 
@@ -161,7 +163,7 @@ use Magento\Framework\View\Element\Template;
         window.hyva.modal = function(options) {
 
             const config = Object.assign({
-                dialog: '<?= Modal::DEFAULT_NAME ?>', // default dialog ref name
+                dialog: '<?= /* @noEscape */ Modal::DEFAULT_NAME ?>', // default dialog ref name
                 duration: 300, // ms before allowing subsequent hiding of modals for nested modals (see transition duration)
                 transitionEnter: 'transition ease-out duration-300',
                 transitionEnterStart: 'opacity-0',

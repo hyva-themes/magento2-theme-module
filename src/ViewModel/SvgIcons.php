@@ -48,11 +48,6 @@ class SvgIcons implements ArgumentInterface
      */
     private $design;
 
-    /**
-     * @var array<string,string>
-     */
-    private $svgCache = [];
-
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
@@ -94,7 +89,7 @@ class SvgIcons implements ArgumentInterface
         if ($result = $this->cache->load($cacheKey)) {
             return $result;
         }
-        $svg = \file_get_contents($this->getFilePath($icon));
+        $svg = \file_get_contents($this->getFilePath($icon)); // phpcs:disable
         $svgXml = new \SimpleXMLElement($svg);
         if (trim($classNames)) {
             $svgXml['class'] = $classNames;
@@ -135,6 +130,8 @@ class SvgIcons implements ArgumentInterface
      * Convert a CamelCase string into kebab-case
      *
      * For example ArrowUp => arrow-up
+     *
+     * @SuppressWarnings(PHPMD.ShortVariable)
      */
     private static function camelCaseToKebabCase(string $in): string
     {

@@ -34,5 +34,4 @@ class Footer implements ArgumentInterface
     {
         return (string)$this->getStoreConfig('design/footer/copyright');
     }
-
 }
