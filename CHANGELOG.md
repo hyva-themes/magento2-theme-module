@@ -6,7 +6,212 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.8...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.9...main
+
+## [1.1.9] - 2021-11-26
+
+[1.1.9]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.8...1.1.9
+
+### Added
+
+- **Add View Model to fetch lists of products from templates**
+
+  The new view model `Hyva\Theme\ViewModel\ProductList` can be used to fetch any type of product list inside a template,
+  including related, upsell and crosssell products.
+  It is used in hyva-themes/magento2-default-theme when rendering product sliders.
+
+  More information an be found in [issue #84](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/84)
+
+- **Give access to a product image instance via the ProductPage view model**
+
+  The new view model method `getImage` can be used to retrieve a product image instance without relying on the core
+  abstract product block class. It is used for rendering product sliders.
+
+- **Merge PageBuilder compatibility from compat module into theme-module**
+
+  Previously PageBuilder support required using a compatibility module. Now that PageBuilder is included with
+  Magento Open Source, it makes sense to support it out-of-the-box in Hyvä Themes.
+  The PageBuilder compatibility module still is maintained for backward compatibility.
+
+  More information an be found in [issue #68](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/68)
+
+  Many thanks to John Hughes (Fisheye) for the contribution!
+
+- **Allow setting additional HTML attributes on SVG icons**
+
+  In Hyva a lot of additional attributes are used on element. For example, the Alpine.js `:class` binding is used is
+  very often, but can't be set on an SVG icon at this moment.
+  With this change an optional `array $attributes` argument is added to the method signature.
+
+  More information an be found in [merge request #123](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/123)
+
+  Many thanks to Arjen Miedema (Elgentos) for the contribution!
+
+- **Add ViewModel to provide access to product stock information**
+
+  To render the appropriate product qty form some stock item information is required, for example the minimum order 
+  quantity, or if decimal quantities are allowed or not.
+
+  The new view model is used in the theme when rendering the product add-to-cart form.
+
+  More information can be found in the [merge request #130](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/130)
+
+- **Add method to fetch catalog/seo/product_use_categories system config value**
+
+  This change to the ProductPage view model is required to fix a product listing page caching issue in
+  [hyva-themes/magento-default-theme](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/260).
+
+  More information can be found in the [merge request #134](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/134)
+
+- **Add method to retrieve a blocks cache tags from a view model**
+
+  This new method on the BlockCache view model is helpful because Hyvä often uses generic template blocks instead of 
+  specific block classes. For this to work well with the block_html cache group, the cache_tags property has to be set
+  within templates.
+
+  More information can be found in the [merge request #135](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/135)
+
+- **Preserve local only section data for Luma checkout compatibility**
+
+  More information an be found in [issue #99](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/99)
+
+- **Add ViewModelRegistry return type hint based on class argument**
+
+  This change allows using `$viewModels->require($className)` without a PHPDoc type hint for the return value using
+  PHPStorms new generics annotation.
+
+  More information can be found in the [merge request #140](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/140)
+
+  Many thanks to Thijs de Witt (Trinos) for the contribution!
+
+### Changed
+
+- **Bugfix: Improve LogoPathResolver so it works with Magento 2.4.3 and newer**
+  
+  The LogoPathResolver also continues to work with Magento versions 2.4.0 - 2.4.2.
+
+  More information an be found in [issue #82](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/82)
+
+- **Bugfix: Allow using multiple slider instances with the same template on one page**
+
+  Previously the generated block name was determined by the slider template. Now `uniqid` is used to 
+  generate the block names.
+
+  More information an be found in [issue #78](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/78)
+
+- **Allow items for sliders rendered with PHP to be collections**
+
+  Previously the items had to be an array, now they can be any iterable.
+
+- **Improve Tailwind CSS class name validation regex for PageBuilder**
+
+  Now `/`, `(`, `)`, `%`, `,` and digits are also allowed enabling classes such as `w-1/2`,  `grid-[repeat(3,33%)]`
+
+- **Bugfix: fix converting camelCase to kebab-case for SVG icons with digits** 
+
+  Previously: `menuAlt2 -> menu-alt2`
+  Now (fixed): `menuAlt2 -> menu-alt-2`
+
+  More information an be found in [issue #87](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/87)
+
+  Many thanks to Thijs de Witt (Trinos) for the contribution!
+
+- **Bugfix: resolve ProductPrice being cached if multiple products use ProductPrice**
+
+  More information an be found in [issue #88](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/88)
+
+  Many thanks to Wahid Nory (Elgentos) for the contribution!
+
+- **Bugfix: use GraphQL variables instead ot JS string templates for all queries and mutations**
+
+  This resolves a number of bugs related to escaping and serialization of query parameters, and also allows
+  editing the queries with the GraphQL query editor as described in [the docs](https://docs.hyva.io/doc/customizing-graphql-vtjgCN6FzD).
+
+  More information can be found in the [merge request #127](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/127)
+  and the [related default theme MR](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/301).
+
+- **Bugfix: Fix constructor integrity check for preference in Magento > 2.4.1**
+
+  The error `Extra parameters passed to parent construct` occurred when running `setup:di:compile` on Magento 2.4.2 or
+  newer.
+
+  More information an be found in [issue #85](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/85)
+
+- **Allow product-compare system.xml settings to be set on store scope**
+
+  These compare product system config settings are not part of stock Magento.
+
+  More information can be found in the [merge request #131](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/131)
+
+  Many thanks to Timon de Groot (Mooore) for the contribution!
+
+- **Bugfix: Do not render double slash when using SVG icons with no svg iconset**
+
+  More information can be found in [issue #93](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/93)
+
+- **Remove amount of cache tags for large top menus**
+
+  With Varnish, the top menu is requested using ESI. In that case the cache tags for each category in the menu where
+  included in a HTTP response header, which could lead to the header size limit being exceeded.  
+  This change replaces the top menu cache tags with a single `hyva_nav`  cache tag if more than 200 cache tags
+  would be included in the response.
+
+  More information can be found in [issue #63](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/63)
+
+- **Bugfix: Do not assume very block inherits from AbstractBlock**
+
+  This change fixes an issue on Magento Cloud in production mode, where a block instance implement BlockInterface
+  without inheriting from AbstractBlock.
+
+  More information can be found in the [merge request #137](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/137)
+
+- **Bugfix: Handle modal content exceeding screen height**
+
+  More information can be found in [issue #96](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/96)
+
+- **Allow modals to be opened from within modals without nesting in the DOM**
+
+  Also, allows access to values set on the modal block via layout XML by making the modal instance method
+  `getContentRender` public.
+
+  More information can be found in [issue #86](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/86)
+
+- **Set default SVG icon dimensions to 24x24**
+
+  Previously icons rendered without a width and a height did not render those attributes on the SVG image.  
+  With this change, the width and height default to 24. This allows rendering icons  
+  using `<?= $heroicons->heartHtml($cssClasses) ?>`, instead of always  
+  using `<?= $heroicons->heartHtml($cssClasses, 24, 24) ?>`.
+  The previous behavior can still be achieved by explicitly passing `null` as the `$width` and `$height` parameters.
+
+  More information can be found in [issue #81](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/81)
+
+- **Make recently viewed products configurable in the system config**
+
+  A couple of new system config fields have been added to allow configuring recently viewed products without having to
+  manually set up widget instances. The new fields can be found at `Stores > Config > Catalog > Frontend`.  
+  The configured values can be accessed using the new view model `RecentlyViewedProducts`.
+
+  More information can be found in [issue #107](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/107)
+
+- **Magento Coding Standard compliance**
+
+  Many small changes where made to make the code pass the Magento Coding Standards phpcs rules.
+
+  More information can be found in the [merge request #150](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/150)
+
+- **Bugfix: fix return value of ProductCompare::showCompareSidebar
+
+  The method `\Hyva\Theme\ViewModel\ProductCompare::showCompareSidebar` now returns the value from the correct system
+  config setting `catalog/frontend/show_sidebar_in_list`. Previously it returned the value from the system config 
+  setting `frontend/show_add_to_compare_in_list`.  
+  The method isn't used in the default theme, so the bug didn't surface until now. If you used the `showCompareSidebar`
+  method in custom code and need the previous value, you need to refactor your code to use
+  `\Hyva\Theme\ViewModel\ProductCompare::showInProductList` instead.
+
+### Removed
+
+- Nothing
 
 ## [1.1.8] - 2021-09-24
 
