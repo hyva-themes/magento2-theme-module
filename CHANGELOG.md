@@ -194,6 +194,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More information can be found in [issue #107](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/107)
 
+- **Magento Coding Standard compliance**
+
+  Many small changes where made to make the code pass the Magento Coding Standards phpcs rules.
+
+  More information can be found in the [merge request #150](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/150)
 
 ### Removed
 
