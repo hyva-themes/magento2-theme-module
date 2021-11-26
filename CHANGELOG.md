@@ -200,6 +200,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More information can be found in the [merge request #150](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/150)
 
+- **Bugfix: fix return value of ProductCompare::showCompareSidebar
+
+  The method `\Hyva\Theme\ViewModel\ProductCompare::showCompareSidebar` now returns the value from the correct system
+  config setting `catalog/frontend/show_sidebar_in_list`. Previously it returned the value from the system config 
+  setting `frontend/show_add_to_compare_in_list`.  
+  The method isn't used in the default theme, so the bug didn't surface until now. If you used the `showCompareSidebar`
+  method in custom code and need the previous value, you need to refactor your code to use
+  `\Hyva\Theme\ViewModel\ProductCompare::showInProductList` instead.
+
 ### Removed
 
 - Nothing
