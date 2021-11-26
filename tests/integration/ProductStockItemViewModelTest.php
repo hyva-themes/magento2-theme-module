@@ -44,6 +44,5 @@ class ProductStockItemViewModelTest extends TestCase
         $this->assertTrue($sut->isInStock($product));
         $this->assertSame(1, $sut->getMinSaleQty($product));
         $this->assertSame(100, $sut->getMaxSaleQty($product));
-
     }
 }

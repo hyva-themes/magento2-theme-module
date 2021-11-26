@@ -21,10 +21,13 @@ use Magento\TestFramework\TestCase\AbstractController;
 use Magento\TestFramework\View\Layout;
 use Magento\Theme\Model\Theme\Registration;
 
+// phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+
 /**
  * @magentoAppArea frontend
  * @magentoAppIsolation enabled
  * @magentoComponentsDir ../../../../vendor/hyva-themes/magento2-theme-module/tests/integration/_files/design
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  */
 class LayoutUpdateHandlesTest extends AbstractController
 {

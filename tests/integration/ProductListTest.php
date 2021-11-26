@@ -20,6 +20,8 @@ use Magento\Catalog\Model\Product\Type as ProductType;
 use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
+use Magento\Quote\Model\Cart\Data\CartItem;
+use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
@@ -30,16 +32,16 @@ class ProductListTest extends TestCase
 {
     private function assertIds(array $expectedIds, array $products): void
     {
-        $actualIds = values(map(function (ProductInterface $p): int {
-            return (int) $p->getId();
+        $actualIds = values(map(function (ProductInterface $product): int {
+            return (int) $product->getId();
         }, $products));
         $this->assertSame($expectedIds, $actualIds);
     }
 
     private function assertSkus(array $expectedSkus, array $products): void
     {
-        $actualSkus = values(map(function (ProductInterface $p): string {
-            return $p->getSku();
+        $actualSkus = values(map(function (ProductInterface $product): string {
+            return $product->getSku();
         }, $products));
         $this->assertSame($expectedSkus, $actualSkus);
     }
@@ -49,6 +51,7 @@ class ProductListTest extends TestCase
      * Product ID 6 - category 333 (second_product_simple.php, category_with_two_products.php)
      * Product ID 333 - Category ID 333 (category_product.php)
      *
+     * @magentoAppArea frontend
      * @magentoDataFixture Magento/Catalog/_files/product_simple.php
      * @magentoDataFixture Magento/Catalog/_files/category_with_two_products.php
      */
@@ -139,12 +142,18 @@ class ProductListTest extends TestCase
     {
         /** @var ProductRepositoryInterface $productRepository */
         $productRepository = ObjectManager::getInstance()->get(ProductRepositoryInterface::class);
+        /** @var ProductInterface|Product $product */
         $product = $productRepository->get('simple-related-1');
+        /** @var QuoteItem $cartItem */
+        $quoteItem1 = ObjectManager::getInstance()->create(QuoteItem::class);
+        $quoteItem2 = ObjectManager::getInstance()->create(QuoteItem::class);
+        $quoteItem1->setProduct($product);
+        $quoteItem2->setProduct($product);
 
         /** @var ProductList $sut */
         $sut = ObjectManager::getInstance()->create(ProductList::class);
 
-        $crosssell = $sut->addAscendingSortOrder('id')->getLinkedItems('crosssell', $product);
+        $crosssell = $sut->addAscendingSortOrder('id')->getCrosssellItems($quoteItem1, $quoteItem2);
         $this->assertSkus(['related-product-1-0', 'related-product-1-3'], $crosssell);
 
         $related = $sut->addAscendingSortOrder('id')->getRelatedItems($product);

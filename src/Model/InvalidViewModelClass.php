@@ -35,4 +35,3 @@ class InvalidViewModelClass extends \OutOfBoundsException
         );
     }
 }
-
