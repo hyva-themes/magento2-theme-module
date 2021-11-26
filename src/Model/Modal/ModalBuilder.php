@@ -19,6 +19,12 @@ use function array_merge as merge;
 use function array_search as search;
 use function array_splice as splice;
 
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class ModalBuilder implements ModalBuilderInterface, ModalInterface
 {
     /**

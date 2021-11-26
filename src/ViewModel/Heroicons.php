@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+// phpcs:disable Magento2.NamingConvention.InterfaceName.WrongInterfaceName
+
 /**
  * These method signatures were generated with generate-heroicon-signatures.sh
  *

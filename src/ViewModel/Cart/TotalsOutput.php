@@ -50,5 +50,4 @@ class TotalsOutput implements ArgumentInterface
     {
         return !$this->config->shippingPriceIncludesTax() ? __('excl.') . ' ' : '';
     }
-
 }

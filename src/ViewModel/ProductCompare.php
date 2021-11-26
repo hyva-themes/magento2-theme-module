@@ -41,7 +41,7 @@ class ProductCompare implements ArgumentInterface
     public function showCompareSidebar(): bool
     {
         return (bool) $this->scopeConfig->getValue(
-            self::CONFIG_PATH_SHOW_COMPARE_IN_PRODUCT_LIST,
+            self::CONFIG_PATH_SHOW_COMPARE_SIDEBAR_IN_LIST,
             ScopeInterface::SCOPE_STORES
         );
     }
@@ -54,4 +54,3 @@ class ProductCompare implements ArgumentInterface
         );
     }
 }
-

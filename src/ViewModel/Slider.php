@@ -15,6 +15,9 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.ShortVariable)
+ */
 class Slider implements ArgumentInterface
 {
     /**
@@ -32,7 +35,9 @@ class Slider implements ArgumentInterface
         iterable $items,
         string $sliderTemplateFile = 'Magento_Theme::elements/slider-php.phtml'
     ): AbstractBlock {
+        // phpcs:disable Magento2.Security.InsecureFunction.FoundWithAlternative
         $id = md5(uniqid($sliderTemplateFile . $itemTemplateFile));
+        // phpcs:enable
 
         $sliderBlock = $this->createTemplateBlock("slider.{$id}", [
             'items'    => $items,

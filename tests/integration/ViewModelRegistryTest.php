@@ -22,9 +22,12 @@ use PHPUnit\Framework\TestCase;
 
 use function array_merge as merge;
 
+// phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+
 /**
  * @magentoAppIsolation enabled
  * @magentoAppArea frontend
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  */
 class ViewModelRegistryTest extends TestCase
 {

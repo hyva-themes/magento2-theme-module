@@ -62,6 +62,5 @@ class BlockCache implements ArgumentInterface
         return reduce($childBlocks, function (array $tags, AbstractBlock $block) {
             return merge($tags, $this->getCacheTagsFromBlock($block));
         }, []);
-
     }
 }

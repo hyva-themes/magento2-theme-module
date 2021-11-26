@@ -18,9 +18,13 @@ use PHPUnit\Framework\TestCase;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
 use TddWizard\Fixtures\Catalog\ProductFixturePool;
 
+// phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+
 /**
  * @magentoAppIsolation enabled
  * @magentoDbIsolation enabled
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.LongVariable)
  */
 class CurrentProductTest extends TestCase
 {
@@ -28,14 +32,17 @@ class CurrentProductTest extends TestCase
      * @var CurrentProduct
      */
     private $currentProduct;
+    
     /**
      * @var ProductFixturePool
      */
     private $products;
+    
     /**
      * @var CollectionFactory
      */
     private $productCollectionFactory;
+    
     /**
      * @var ProductRepositoryInterface
      */

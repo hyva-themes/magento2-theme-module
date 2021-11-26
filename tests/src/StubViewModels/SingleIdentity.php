@@ -21,5 +21,4 @@ class SingleIdentity implements ArgumentInterface, IdentityInterface
     {
         return self::TAGS;
     }
-
 }

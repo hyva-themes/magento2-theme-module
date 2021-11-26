@@ -19,10 +19,13 @@ use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Theme\Model\Theme\Registration;
 use PHPUnit\Framework\TestCase;
 
+// phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+
 /**
  * @magentoAppIsolation enabled
  * @magentoAppArea frontend
  * @magentoComponentsDir ../../../../vendor/hyva-themes/magento2-theme-module/tests/integration/_files/design
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  */
 class TemplateVariableTest extends TestCase
 {

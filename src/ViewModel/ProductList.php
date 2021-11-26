@@ -25,14 +25,23 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Quote\Model\Quote\Item as CartItem;
+use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\Review\Model\ResourceModel\Review\Summary as ReviewSummaryResource;
 use Magento\Review\Model\Review;
 use function array_filter as filter;
 use function array_map as map;
 use function array_merge as merge;
 use function array_slice as slice;
+use function array_unique as unique;
 
+// phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
+
+/**
+ * @SuppressWarnings(PHPMD.LongVariable)
+ * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ */
 class ProductList implements ArgumentInterface
 {
     /**
@@ -129,10 +138,10 @@ class ProductList implements ArgumentInterface
     }
 
     /**
-     * @param CartItem ...$cartItems
+     * @param QuoteItem ...$cartItems
      * @return ProductInterface[]
      */
-    public function getCrosssellItems(CartItem ...$cartItems): array
+    public function getCrosssellItems(QuoteItem ...$cartItems): array
     {
         if (empty($cartItems)) {
             return [];
@@ -142,20 +151,21 @@ class ProductList implements ArgumentInterface
         $criteria->setPageSize($this->maxCrosssellItemCount);
 
         // return most recently added product crosssell items first
-        usort($cartItems, function (CartItem $a, CartItem $b) {
-            return ($a->getCreatedAt() <=> $b->getCreatedAt()) * -1;
+        usort($cartItems, function (QuoteItem $itemA, QuoteItem $itemB) {
+            return ($itemA->getCreatedAt() <=> $itemB->getCreatedAt()) * -1;
         });
 
-        $items = $this->loadCrosssellItems($criteria, slice($cartItems, 0, 1), $cartItems);
+        $exclude = map(function (QuoteItem $item): Product {
+            return $item->getProduct();
+        }, $cartItems);
+
+        $items = $this->loadCrosssellItems($criteria, slice($cartItems, 0, 1), $exclude);
 
         // if more crosssell items are expected, load crosssells for other products in cart
-        if (
-            count($items) < $this->maxCrosssellItemCount &&
-            count($cartItems) > 1 &&
-            $criteria->getPageSize() >= $this->maxCrosssellItemCount
-        ) {
+        if (count($items) < $this->maxCrosssellItemCount && count($cartItems) > 1 &&
+            $criteria->getPageSize() >= $this->maxCrosssellItemCount) {
             $criteria->setPageSize($this->maxCrosssellItemCount - count($items));
-            $items = merge($items, $this->loadCrosssellItems($criteria, slice($cartItems, 1), $cartItems));
+            $items = merge($items, $this->loadCrosssellItems($criteria, slice($cartItems, 1), merge($exclude, $items)));
         }
 
         return slice($items, 0, $this->maxCrosssellItemCount);
@@ -163,14 +173,16 @@ class ProductList implements ArgumentInterface
 
     /**
      * @param SearchCriteriaInterface $criteria
-     * @param CartItem[] $linkSources
-     * @param CartItem[] $exclude
+     * @param QuoteItem[] $linkSources
+     * @param Product[] $exclude
      * @return ProductInterface[]
      */
     private function loadCrosssellItems(SearchCriteriaInterface $criteria, array $linkSources, array $exclude): array
     {
-        $collection = $this->createProductLinkCollection('crosssell', map([$this, 'getProductId'], $linkSources));
-        $collection->addExcludeProductFilter(filter(map([$this, 'getProductId'], $exclude)));
+        $linkSourceIds = unique(filter(map([$this, 'extractProductId'], $linkSources)));
+        $excludeIds    = unique(filter(map([$this, 'extractProductId'], $exclude)));
+        $collection    = $this->createProductLinkCollection('crosssell', $linkSourceIds);
+        $collection->addExcludeProductFilter($excludeIds);
         $this->collectionProcessor->process($criteria, $collection);
         $collection->setGroupBy(); // group by product id field - required to avoid duplicate products in collection
         $collection->each('setDoNotUseCategoryId', [true]);
@@ -178,7 +190,7 @@ class ProductList implements ArgumentInterface
         return $collection->getItems();
     }
 
-    private function getProductId($item)
+    private function extractProductId($item)
     {
         return $item->getProductId()
             ?? $item->getEntityId()
@@ -241,7 +253,7 @@ class ProductList implements ArgumentInterface
 
     /**
      * @param string $linkType
-     * @param Product|ProductInterface|CartItem ...$items
+     * @param Product|ProductInterface|QuoteItem ...$items
      * @return ProductInterface[]
      */
     public function getLinkedItems(string $linkType, ...$items): array
@@ -254,7 +266,7 @@ class ProductList implements ArgumentInterface
     private function loadLinkedItems(string $linkType, ...$items): array
     {
         // $items can be anything with a getProductId() or getEntityId() or getId() method
-        $productIds = filter(map([$this, 'getProductId'], $items));
+        $productIds = filter(map([$this, 'extractProductId'], $items));
         $collection = $this->createProductLinkCollection($linkType, $productIds);
         $collection->addExcludeProductFilter($productIds);
 

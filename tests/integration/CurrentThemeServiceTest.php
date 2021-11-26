@@ -15,22 +15,21 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\AbstractController;
 
+// phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+
 /**
  * @magentoAppArea frontend
  * @magentoAppIsolation enabled
  * @magentoComponentsDir ../../../../vendor/hyva-themes/magento2-theme-module/tests/integration/_files/design
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  */
 class CurrentThemeServiceTest extends AbstractController
 {
-    /** @var ObjectManagerInterface */
-    private $objectManager;
-
     /** @var CurrentTheme */
     private $themeService;
 
     protected function setUp(): void
     {
-        $this->objectManager = Bootstrap::getObjectManager();
         $this->themeService = Bootstrap::getObjectManager()->get(CurrentTheme::class);
         ThemeFixture::registerTestThemes();
     }
