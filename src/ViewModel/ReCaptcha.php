@@ -40,6 +40,10 @@ class ReCaptcha implements ArgumentInterface
         $this->scopeConfig = $scopeConfig;
     }
 
+    /**
+     * @param string $key
+     * @return string[]|null
+     */
     public function getRecaptchaData(string $key): ?array
     {
         if (!$this->scopeConfig->getValue(self::XML_CONFIG_PATH_RECAPTCHA . $key, 'store')) {
@@ -51,21 +55,33 @@ class ReCaptcha implements ArgumentInterface
         ];
     }
 
+    /**
+     * @return string
+     */
     private function getRecaptchaInputField(): string
     {
         return self::RECAPTCHA_INPUT_FIELD_BLOCK;
     }
 
+    /**
+     * @return string
+     */
     private function getRecaptchaV2Checkbox(): string
     {
         return self::RECAPTCHA_V2_CHECKBOX_BLOCK;
     }
 
+    /**
+     * @return string
+     */
     private function getRecaptchaV2Ivisible(): string
     {
         return self::RECAPTCHA_V2_INVISIBLE_BLOCK;
     }
 
+    /**
+     * @return string
+     */
     private function getLegalNotice(): string
     {
         return self::RECAPTCHA_LEGAL_NOTICE_BLOCK;
