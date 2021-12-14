@@ -25,6 +25,10 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
+    const RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK = 'recaptcha_v2_checkbox_validation';
+
+    const RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK = 'recaptcha_v2_invisible_validation';
+
     const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
 
     const RECAPTCHA_LEGAL_NOTICE= 'recaptcha_legal_notice';
@@ -58,7 +62,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    private function getRecaptchaInputField(): string
+    public function getRecaptchaInputField(): string
     {
         return self::RECAPTCHA_INPUT_FIELD_BLOCK;
     }
@@ -66,7 +70,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    private function getRecaptchaV2Checkbox(): string
+    public function getRecaptchaV2Checkbox(): string
     {
         return self::RECAPTCHA_V2_CHECKBOX_BLOCK;
     }
@@ -74,7 +78,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    private function getRecaptchaV2Ivisible(): string
+    public function getRecaptchaV2Ivisible(): string
     {
         return self::RECAPTCHA_V2_INVISIBLE_BLOCK;
     }
@@ -82,7 +86,22 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    private function getLegalNotice(): string
+    public function getRecaptchaV2CheckboxValidation(): string
+    {
+        return self::RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecaptchaV2IvisibleValidation(): string
+    {
+        return self::RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK;
+    }
+    /**
+     * @return string
+     */
+    public function getLegalNotice(): string
     {
         return self::RECAPTCHA_LEGAL_NOTICE_BLOCK;
     }
