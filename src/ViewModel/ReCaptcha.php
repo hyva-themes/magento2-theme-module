@@ -19,6 +19,10 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
 
+    const RECAPTCHA_V2_CHECKBOX_BLOCK = 'recaptcha_v2_checkbox';
+
+    const RECAPTCHA_V2_INVISIBLE_BLOCK = 'recaptcha_v2_invisible';
+
     const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
     const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
@@ -50,6 +54,16 @@ class ReCaptcha implements ArgumentInterface
     private function getRecaptchaInputField(): string
     {
         return self::RECAPTCHA_INPUT_FIELD_BLOCK;
+    }
+
+    private function getRecaptchaV2Checkbox(): string
+    {
+        return self::RECAPTCHA_V2_CHECKBOX_BLOCK;
+    }
+
+    private function getRecaptchaV2Ivisible(): string
+    {
+        return self::RECAPTCHA_V2_INVISIBLE_BLOCK;
     }
 
     private function getLegalNotice(): string
