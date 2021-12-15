@@ -12,6 +12,7 @@ namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class ReCaptcha implements ArgumentInterface
 {
@@ -19,9 +20,9 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
 
-    const RECAPTCHA_V2_CHECKBOX_BLOCK = 'recaptcha_v2_checkbox';
+    const RECAPTCHA_V2_CHECKBOX_BLOCK = 'recaptcha_input_field_checkbox';
 
-    const RECAPTCHA_V2_INVISIBLE_BLOCK = 'recaptcha_v2_invisible';
+    const RECAPTCHA_V2_INVISIBLE_BLOCK = 'recaptcha_input_field_invisible';
 
     const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
@@ -31,7 +32,13 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
 
-    const RECAPTCHA_LEGAL_NOTICE= 'recaptcha_legal_notice';
+    const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
+
+    const XML_PATH_V2_CHECKBOX_PUBLIC_KEY = 'recaptcha_frontend/type_recaptcha/public_key';
+
+    const XML_PATH_V2_INVISIBLE_PUBLIC_KEY = 'recaptcha_frontend/type_invisible/public_key';
+
+    const XML_PATH_V3_INVISIBLE_PUBLIC_KEY = 'recaptcha_frontend/type_recaptcha_v3/public_key';
 
     /**
      * @var ScopeConfigInterface
@@ -50,7 +57,7 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getRecaptchaData(string $key): ?array
     {
-        if (!$this->scopeConfig->getValue(self::XML_CONFIG_PATH_RECAPTCHA . $key, 'store')) {
+        if (!$this->scopeConfig->getValue(self::XML_CONFIG_PATH_RECAPTCHA . $key, ScopeInterface::SCOPE_STORE)) {
             return null;
         }
         return [
@@ -70,7 +77,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaV2Checkbox(): string
+    public function getRecaptchaV2CheckboxBlock(): string
     {
         return self::RECAPTCHA_V2_CHECKBOX_BLOCK;
     }
@@ -78,7 +85,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaV2Ivisible(): string
+    public function getRecaptchaV2IvisibleBlock(): string
     {
         return self::RECAPTCHA_V2_INVISIBLE_BLOCK;
     }
@@ -86,7 +93,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaV2CheckboxValidation(): string
+    public function getRecaptchaV2CheckboxValidationBlock(): string
     {
         return self::RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK;
     }
@@ -94,7 +101,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaV2IvisibleValidation(): string
+    public function getRecaptchaV2InvisibleValidationBlock(): string
     {
         return self::RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK;
     }
@@ -104,5 +111,29 @@ class ReCaptcha implements ArgumentInterface
     public function getLegalNotice(): string
     {
         return self::RECAPTCHA_LEGAL_NOTICE_BLOCK;
+    }
+
+    public function getV2CheckboxSiteKey(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_V2_CHECKBOX_PUBLIC_KEY,
+            ScopeInterface::SCOPE_WEBSITE
+        );
+    }
+
+    public function getV2InvisibleSiteKey(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_V2_INVISIBLE__PUBLIC_KEY,
+            ScopeInterface::SCOPE_WEBSITE
+        );
+    }
+
+    public function getV3InvisibleSiteKey(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_V3_INVISIBLE__PUBLIC_KEY,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 }
