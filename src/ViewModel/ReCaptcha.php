@@ -30,6 +30,8 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK = 'recaptcha_v2_invisible_validation';
 
+    const RECAPTCHA_V2_VALIDATION_PREFIX = 'recaptcha_v2';
+
     const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
 
     const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
@@ -57,62 +59,65 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getRecaptchaData(string $key): ?array
     {
-        if (!$this->scopeConfig->getValue(self::XML_CONFIG_PATH_RECAPTCHA . $key, ScopeInterface::SCOPE_STORE)) {
+        $config = $this->scopeConfig->getValue(
+            self::XML_CONFIG_PATH_RECAPTCHA . $key,
+            ScopeInterface::SCOPE_STORE
+        );
+
+        if (!$config) {
             return null;
         }
+
         return [
-            self::RECAPTCHA_INPUT_FIELD => $this->getRecaptchaInputField(),
-            self::RECAPTCHA_LEGAL_NOTICE    => $this->getLegalNotice(),
+            self::RECAPTCHA_INPUT_FIELD => $this->getRecaptchaInputField($config),
+            self::RECAPTCHA_LEGAL_NOTICE => $this->getLegalNotice($config),
+            self::RECAPTCHA_V2_VALIDATION_PREFIX => $this->getJavaScriptValidator($config),
         ];
     }
 
     /**
      * @return string
      */
-    public function getRecaptchaInputField(): string
+    public function getRecaptchaInputField(string $config): string
     {
-        return self::RECAPTCHA_INPUT_FIELD_BLOCK;
+        return self::RECAPTCHA_INPUT_FIELD_BLOCK  . "_{$config}";
     }
 
     /**
      * @return string
      */
-    public function getRecaptchaV2CheckboxBlock(): string
+    public function getRecaptchaV2CheckboxBlock(string $config): string
     {
-        return self::RECAPTCHA_V2_CHECKBOX_BLOCK;
+        return self::RECAPTCHA_V2_CHECKBOX_BLOCK . "_{$config}";
     }
 
     /**
      * @return string
      */
-    public function getRecaptchaV2IvisibleBlock(): string
+    public function getRecaptchaV2IvisibleBlock(string $config): string
     {
-        return self::RECAPTCHA_V2_INVISIBLE_BLOCK;
+        return self::RECAPTCHA_V2_INVISIBLE_BLOCK . "_{$config}";
     }
 
     /**
      * @return string
      */
-    public function getRecaptchaV2CheckboxValidationBlock(): string
+    public function getJavaScriptValidator(string $config): string
     {
-        return self::RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK;
+        return self::RECAPTCHA_V2_VALIDATION_PREFIX . "_{$config}";
     }
 
     /**
      * @return string
      */
-    public function getRecaptchaV2InvisibleValidationBlock(): string
+    public function getLegalNotice(string $config): string
     {
-        return self::RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK;
+        return self::RECAPTCHA_LEGAL_NOTICE_BLOCK . "_{$config}";
     }
+
     /**
      * @return string
      */
-    public function getLegalNotice(): string
-    {
-        return self::RECAPTCHA_LEGAL_NOTICE_BLOCK;
-    }
-
     public function getV2CheckboxSiteKey(): string
     {
         return $this->scopeConfig->getValue(
@@ -121,6 +126,9 @@ class ReCaptcha implements ArgumentInterface
         );
     }
 
+    /**
+     * @return string
+     */
     public function getV2InvisibleSiteKey(): string
     {
         return $this->scopeConfig->getValue(
@@ -129,6 +137,9 @@ class ReCaptcha implements ArgumentInterface
         );
     }
 
+    /**
+     * @return string
+     */
     public function getV3InvisibleSiteKey(): string
     {
         return $this->scopeConfig->getValue(
