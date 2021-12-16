@@ -8,13 +8,17 @@
 
 declare(strict_types=1);
 
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
+/** @var Escaper $escaper */
 ?>
 
+<?= $block->getChildHtml() ?>
+
 <script type="module"
-        src="<?= $block->escapeUrl($block->getViewFileUrl('Hyva_Theme::js/alpine-2.3.5.min.js')) ?>"
+        src="<?= $escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme::js/alpine-2.3.5.min.js')) ?>"
         defer
         crossorigin
 ></script>
