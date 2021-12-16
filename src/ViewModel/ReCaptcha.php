@@ -18,19 +18,19 @@ class ReCaptcha implements ArgumentInterface
 {
     const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
 
-    const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
+    const RECAPTCHA_V3_BLOCK = 'recaptcha_input_field_recaptcha_v3';
 
-    const RECAPTCHA_V2_CHECKBOX_BLOCK = 'recaptcha_input_field_checkbox';
+    const RECAPTCHA_V2_CHECKBOX_BLOCK = 'recaptcha_input_field_recaptcha';
 
     const RECAPTCHA_V2_INVISIBLE_BLOCK = 'recaptcha_input_field_invisible';
 
     const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
-    const RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK = 'recaptcha_v2_checkbox_validation';
+    const RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK = 'recaptcha_validation_checkbox';
 
-    const RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK = 'recaptcha_v2_invisible_validation';
+    const RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK = 'recaptcha_validation_invisible';
 
-    const RECAPTCHA_V2_VALIDATION_PREFIX = 'recaptcha_v2';
+    const RECAPTCHA_VALIDATION_PREFIX = 'recaptcha_validation';
 
     const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
 
@@ -71,7 +71,7 @@ class ReCaptcha implements ArgumentInterface
         return [
             self::RECAPTCHA_INPUT_FIELD => $this->getRecaptchaInputField($config),
             self::RECAPTCHA_LEGAL_NOTICE => $this->getLegalNotice($config),
-            self::RECAPTCHA_V2_VALIDATION_PREFIX => $this->getJavaScriptValidator($config),
+            self:: RECAPTCHA_VALIDATION_PREFIX => $this->getJavaScriptValidator($config),
         ];
     }
 
@@ -80,7 +80,15 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getRecaptchaInputField(string $config): string
     {
-        return self::RECAPTCHA_INPUT_FIELD_BLOCK  . "_{$config}";
+        return self::RECAPTCHA_INPUT_FIELD  . "_{$config}";
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecaptchaV3Block(string $config): string
+    {
+        return self::RECAPTCHA_V3_BLOCK  . "_{$config}";
     }
 
     /**
@@ -104,7 +112,7 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getJavaScriptValidator(string $config): string
     {
-        return self::RECAPTCHA_V2_VALIDATION_PREFIX . "_{$config}";
+        return self::RECAPTCHA_VALIDATION_PREFIX. "_{$config}";
     }
 
     /**
