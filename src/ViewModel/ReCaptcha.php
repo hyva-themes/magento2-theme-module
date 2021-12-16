@@ -24,13 +24,13 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_V2_INVISIBLE_BLOCK = 'recaptcha_input_field_invisible';
 
-    const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
+    const RECAPTCHA_V3_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice_recaptcha_v3';
 
     const RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK = 'recaptcha_validation_checkbox';
 
     const RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK = 'recaptcha_validation_invisible';
 
-    const RECAPTCHA_VALIDATION_PREFIX = 'recaptcha_validation';
+    const RECAPTCHA_VALIDATION = 'recaptcha_validation';
 
     const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
 
@@ -71,7 +71,7 @@ class ReCaptcha implements ArgumentInterface
         return [
             self::RECAPTCHA_INPUT_FIELD => $this->getRecaptchaInputField($config),
             self::RECAPTCHA_LEGAL_NOTICE => $this->getLegalNotice($config),
-            self:: RECAPTCHA_VALIDATION_PREFIX => $this->getJavaScriptValidator($config),
+            self:: RECAPTCHA_VALIDATION => $this->getJavaScriptValidator($config),
         ];
     }
 
@@ -112,7 +112,7 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getJavaScriptValidator(string $config): string
     {
-        return self::RECAPTCHA_VALIDATION_PREFIX. "_{$config}";
+        return self::RECAPTCHA_VALIDATION. "_{$config}";
     }
 
     /**
@@ -120,7 +120,7 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getLegalNotice(string $config): string
     {
-        return self::RECAPTCHA_LEGAL_NOTICE_BLOCK . "_{$config}";
+        return self::RECAPTCHA_LEGAL_NOTICE . "_{$config}";
     }
 
     /**
