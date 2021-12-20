@@ -38,9 +38,7 @@ class OverrideTemplatePlugin
     }
 
     /**
-     * Skip transformations to HTML if the template contains
-     * an x-data attribute (meaning it is a Alpine Component)
-     * Otherwise, attributes like `@resize.window=""` are removed.
+     * On Hyvä frontends, replace this plugin to prevent attributes like `@resize.window=""` from being removed.
      *
      * @param TemplatePlugin $subject
      * @param \Closure $proceed
@@ -76,7 +74,7 @@ class OverrideTemplatePlugin
     }
 
     /**
-     * Generate the CSS for any background images on the page
+     * Generate the CSS for any background images on the page.
      *
      * @param string $htmlContent
      * @param array $backgroundMatches
@@ -94,7 +92,6 @@ class OverrideTemplatePlugin
             $backgroundImages = json_decode(stripslashes(html_entity_decode($backgroundMatch[1])), true);
 
             if (!empty($backgroundImages)) {
-
                 $dataAttribute = 'data-image-id="' . uniqid() . '"';
                 $cssDataAttributeSelector = '[' . $dataAttribute . ']';
 
@@ -119,10 +116,10 @@ class OverrideTemplatePlugin
         return $htmlContent . $domDocument->saveHTML();
     }
 
-
     /**
-     * Generate CSS based on the images array from our attribute
-     * Copied from \Magento\PageBuilder\Model\Filter\Template, modified
+     * Generate CSS based on the images array from our attribute.
+     *
+     * Copied from @see \Magento\PageBuilder\Model\Filter\Template::generateCssFromImages and modified.
      *
      * @param string $elementClass
      * @param array $images
@@ -151,8 +148,9 @@ class OverrideTemplatePlugin
     }
 
     /**
-     * Generate a CSS string from an array
-     * Copied from \Magento\PageBuilder\Model\Filter\Template
+     * Generate a CSS string from an array.
+     *
+     * Copied from @see \Magento\PageBuilder\Model\Filter\Template::cssFromArray.
      *
      * @param array $css
      *
@@ -174,8 +172,9 @@ class OverrideTemplatePlugin
     }
 
     /**
-     * Generate the mobile media query from view configuration
-     * Copied from \Magento\PageBuilder\Model\Filter\Template
+     * Generate the mobile media query from view configuration.
+     *
+     * Copied from @see \Magento\PageBuilder\Model\Filter\Template::getMediaQuery.
      *
      * @param string $view
      * @return null|string
@@ -196,4 +195,3 @@ class OverrideTemplatePlugin
         return null;
     }
 }
-
