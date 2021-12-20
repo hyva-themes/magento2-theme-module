@@ -34,6 +34,11 @@
         <plugin name="save_double_cached_block_cache_tags" type="Hyva\Theme\Plugin\PageCache\SaveTagsForCachedBlocks"/>
     </type>
 
+    <!-- replace the convertBackgroundImages plugin with our own implementation, because it breaks AlpineJS attributes -->
+    <type name="Magento\PageBuilder\Plugin\Filter\TemplatePlugin">
+        <plugin name="convertBackgroundImages_override" type="Hyva\Theme\Plugin\PageBuilder\OverrideTemplatePlugin"/>
+    </type>
+
     <!-- Add workaround for baseOldPrice missing in Magento versiony < 2.4.2 -->
     <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
         <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToConfigurableProductOptions"/>
