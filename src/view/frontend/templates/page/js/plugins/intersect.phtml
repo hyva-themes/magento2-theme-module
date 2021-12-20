@@ -9,12 +9,12 @@
     (function () {
         "use strict";
 
-        var DIRECTIVE = "intersect";
-        var X_ATTR_RE = /^x-([a-z-]*)\b/i;
+        const DIRECTIVE = "intersect";
+        const X_ATTR_RE = /^x-([a-z-]*)\b/i;
 
-        function parseHtmlAttribute(_ref) {
-            var name = _ref.name,
-                value = _ref.value;
+        function parseHtmlAttribute(reference) {
+            const name = reference.name;
+            const value = reference.value;
 
             const typeMatch = name.match(X_ATTR_RE);
             const valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
@@ -47,10 +47,10 @@
             return 0;
         };
 
-        var AlpineIntersectionDirective = {
+        const AlpineIntersectionDirective = {
             start: function start() {
                 Alpine.onBeforeComponentInitialized(function (component) {
-                    var legacyResolveBoundAttributes = component.resolveBoundAttributes;
+                    const legacyResolveBoundAttributes = component.resolveBoundAttributes;
 
                     component.resolveBoundAttributes = function (el, initialUpdate, extraVars) {
                         if (initialUpdate === void 0) {
@@ -58,20 +58,20 @@
                         }
 
                         if (initialUpdate) {
-                            var attrs = getXDirectives(el);
-                            attrs.forEach(function (_ref) {
-                                let type = _ref.type,
-                                    expression = _ref.expression,
-                                    value = _ref.value,
-                                    modifiers = _ref.modifiers;
+                            const attrs = getXDirectives(el);
+                            attrs.forEach(function (reference) {
+                                const type = reference.type;
+                                const expression = reference.expression;
+                                const value = reference.value;
+                                const modifiers = reference.modifiers;
 
                                 if (type === DIRECTIVE) {
-                                    let options = {
+                                    const options = {
                                         threshold: getThreshhold(modifiers),
                                     };
 
                                     if ("IntersectionObserver" in window) {
-                                        let observer = new IntersectionObserver((elements) => {
+                                        const observer = new IntersectionObserver((elements) => {
                                             elements.forEach((element) => {
                                                 if (
                                                     (!element.isIntersecting && value === "enter") ||
