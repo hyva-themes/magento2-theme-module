@@ -34,7 +34,7 @@ use Magento\Framework\View\Element\Template;
     x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
     class="<?= /** @noEscape  */ $modal->getOverlayClasses() ?>">
     <div class="<?= /** @noEscape  */ $modal->getContainerClasses() ?>">
-        <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog"
+        <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog" arial-modal="true"
              <?php if ($modal->isOverlayDisabled()): ?>x-no-overlay<?php endif; ?>
             <?php if ($modal->getAriaLabel()): ?>
                 aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"

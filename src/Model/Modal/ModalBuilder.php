@@ -72,6 +72,11 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
      */
     private $layout;
 
+    /**
+     * @var TemplateBlock
+     */
+    private $memoizedRenderer;
+
     public function __construct(LayoutInterface $layout, array $data = null)
     {
         $this->layout = $layout;
@@ -276,9 +281,12 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
      */
     public function getContentRenderer(): TemplateBlock
     {
-        return $this->data['content-block-name']
-            ? $this->layout->getBlock($this->data['content-block-name'])
-            : $this->layout->createBlock(TemplateBlock::class);
+        if (! isset($this->memoizedRenderer)) {
+            $this->memoizedRenderer = $this->data['content-block-name']
+                ? $this->layout->getBlock($this->data['content-block-name'])
+                : $this->layout->createBlock(TemplateBlock::class);
+        }
+        return $this->memoizedRenderer;
     }
 
     private function renderContent(): string
