@@ -44,20 +44,36 @@ class LogoPathResolver extends LogoBlock implements ArgumentInterface
     }
 
     /**
+     * Override the parent block so the $logoFile value can be passed to _getLogoUrl
+     *
+     * @param string|null $logoFile
+     * @return mixed|string
+     */
+    public function getLogoSrc(?string $logoFile = null)
+    {
+        if (empty($this->_data['logo_src'])) {
+            $this->_data['logo_src'] = $this->_getLogoUrl($logoFile);
+        }
+        return $this->_data['logo_src'];
+    }
+
+    /**
      * Override the parent block method to get rid of the code dependency on LogoPathResolverInterface
      *
      * The dependency breaks backward compatibility with Magento < 2.4.3
      *
+     * @param string|null $logoFile
      * @return string
      * @see \Magento\Theme\Block\Html\Header\Logo::_getLogoUrl
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
-    protected function _getLogoUrl()
+    protected function _getLogoUrl(?string $logoFile = null)
     {
         $path = $this->getPath();
         if ($path !== null && $this->_isFile($path)) {
             $url = $this->_urlBuilder->getBaseUrl(['_type' => UrlInterface::URL_TYPE_MEDIA]) . $path;
-        } elseif ($this->getLogoFile()) {
-            $url = $this->getViewFileUrl($this->getLogoFile());
+        } elseif ($logoFile) {
+            $url = $this->getViewFileUrl($logoFile);
         } else {
             $url = $this->getViewFileUrl('images/logo.svg');
         }
