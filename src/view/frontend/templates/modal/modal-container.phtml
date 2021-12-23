@@ -47,3 +47,10 @@ use Magento\Framework\View\Element\Template;
         </div>
     </div>
 </div>
+<?php if ($selectors = $modal->getFocusTrapExcludeSelectors()): ?>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        hyva.modal.excludeSelectorsFromFocusTrap(<?= /** @noEscape */ json_encode($selectors) ?>);
+    });
+</script>
+<?php endif; ?>

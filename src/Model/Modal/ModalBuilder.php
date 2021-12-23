@@ -16,13 +16,14 @@ use Magento\Framework\View\LayoutInterface;
 
 use function array_filter as filter;
 use function array_merge as merge;
-use function array_search as search;
-use function array_splice as splice;
+use function array_unique as unique;
 
 // phpcs:disable Generic.Files.LineLength.TooLong
 
 /**
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class ModalBuilder implements ModalBuilderInterface, ModalInterface
@@ -225,6 +226,13 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->removeClasses($this->data, 'dialog-classes', merge([$class], $moreClasses));
     }
 
+    public function excludeSelectorsFromFocusTrapping(string ...$selectors): ModalBuilderInterface
+    {
+        $current = $this->data['focus-trap-exclude-selectors'] ?? [];
+
+        return $this->withData($this->data, 'focus-trap-exclude-selectors', unique(merge($current, $selectors)));
+    }
+
     public function withAriaLabel(?string $label): ModalBuilderInterface
     {
         return $this->withData($this->data, 'aria-label', $label);
@@ -328,6 +336,11 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
     public function getDialogClasses(): string
     {
         return implode(' ', $this->data['dialog-classes']);
+    }
+
+    public function getFocusTrapExcludeSelectors(): array
+    {
+        return $this->data['focus-trap-exclude-selectors'] ?? [];
     }
 
     public function render(): string

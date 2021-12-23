@@ -23,6 +23,7 @@ use Magento\Framework\View\Element\Template;
 
     (function () {
         const modals = [];
+        const excludedFromFocusTrapping = new Set();
 
         function loadInertPolyfill(callback) {
             // undocumented "feature", should not be used unless inert attribute support is guaranteed
@@ -69,6 +70,10 @@ use Magento\Framework\View\Element\Template;
                     Array.from(el.children).forEach(child => setChildrenInert(child, toState));
                 }
             })(findParentWithOverlaySpread(dialogElement), ! toState)
+
+            excludedFromFocusTrapping.forEach(selector => {
+                Array.from(document.querySelectorAll(selector)).map(el => el.inert = false);
+            })
         }
 
         function findParentWithOverlaySpread(el) {
@@ -247,6 +252,12 @@ use Magento\Framework\View\Element\Template;
                 const modal = modals[modals.length -1];
                 modal.viewModel.hide();
             }
+        }
+
+        window.hyva.modal.excludeSelectorsFromFocusTrap = function (selectors) {
+            typeof selectors === 'string' || selectors instanceof String
+                ? excludedFromFocusTrapping.add(selector)
+                : selectors.map(selector => excludedFromFocusTrapping.add(selector));
         }
 
         document.addEventListener('keydown', function (event) {
