@@ -25,11 +25,16 @@ use Magento\Framework\View\Element\Template;
         const modals = [];
 
         function loadInertPolyfill(callback) {
-            const polyfill = document.createElement('script');
-            polyfill.src = '<?= $escaper->escapeJs($escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js'))) ?>';
-            callback && polyfill.addEventListener('load', callback);
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
+            // undocumented "feature", should not be used unless inert attribute support is guaranteed
+            if (window.hyva.modal.disableInertPolyfill) {
+                callback && callback();
+            } else {
+                const polyfill = document.createElement('script');
+                polyfill.src = '<?= $escaper->escapeJs($escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js'))) ?>';
+                callback && polyfill.addEventListener('load', callback);
+                const firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
+            }
         }
 
         let isInertPolyfillLoaded = 0;
