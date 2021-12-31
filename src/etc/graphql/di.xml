@@ -26,4 +26,8 @@
         <plugin name="graphQlQueries"
                 type="Hyva\Theme\Plugin\QuoteGraphQL\CustomizableOptionPlugin" sortOrder="-1"/>
     </type>
+
+    <type name="\Magento\QuoteGraphQl\Model\Resolver\CartPrices">
+        <plugin name="fix-tax-labels" type="Hyva\Theme\Plugin\QuoteGraphQL\FixCartPricesTaxRateLabelsPlugin"/>
+    </type>
 </config>
