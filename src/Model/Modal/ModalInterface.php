@@ -34,6 +34,11 @@ interface ModalInterface
 
     public function getDialogClasses(): string;
 
+    /**
+     * @return string[]
+     */
+    public function getFocusTrapExcludeSelectors(): array;
+
     public function render(): string;
 
     public function __toString();

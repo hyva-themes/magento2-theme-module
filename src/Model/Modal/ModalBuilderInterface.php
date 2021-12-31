@@ -62,6 +62,8 @@ interface ModalBuilderInterface
 
     public function removeDialogClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
+    public function excludeSelectorsFromFocusTrapping(string ...$selectors): ModalBuilderInterface;
+
     public function withAriaLabel(string $label): ModalBuilderInterface;
 
     public function withAriaLabelledby(string $elementId): ModalBuilderInterface;
