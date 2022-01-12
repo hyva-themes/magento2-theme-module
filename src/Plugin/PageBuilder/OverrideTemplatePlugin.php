@@ -21,6 +21,9 @@ class OverrideTemplatePlugin
     // matches data-background-images=\"(any character except quote)\"
     const BACKGROUND_IMAGE_PATTERN = '/data-background-images=\"([^"]*)\"/si';
 
+    // matches any html element with the attribute data-content-type="html"
+    const HTML_CONTENT_TYPE_PATTERN = '/<(\w+)\s[^>]*data-content-type=\"html\"[^>]*>[\s\S]*\1>/si';
+
     /**
      * @var CurrentTheme
      */
@@ -31,6 +34,10 @@ class OverrideTemplatePlugin
      */
     private $viewConfig;
 
+    /**
+     * @param CurrentTheme $theme
+     * @param ConfigInterface $viewConfig
+     */
     public function __construct(CurrentTheme $theme, ConfigInterface $viewConfig)
     {
         $this->theme = $theme;
@@ -55,12 +62,16 @@ class OverrideTemplatePlugin
         string $result
     ): string {
         if ($this->theme->isHyva()) {
-            return $this->generateBackgroundImageCSS($result);
+            return $this->applyFilters($result);
         }
         return $proceed($interceptor, $result);
     }
 
-    protected function generateBackgroundImageCSS(string $htmlContent): string
+    /**
+     * @param string $htmlContent
+     * @return string
+     */
+    protected function applyFilters(string $htmlContent): string
     {
         // Validate if the filtered result requires background image processing
         if (preg_match_all(self::BACKGROUND_IMAGE_PATTERN, $htmlContent, $matches, PREG_SET_ORDER)) {
@@ -68,6 +79,28 @@ class OverrideTemplatePlugin
             // 0 => the entire matching snippet
             // 1 => the first regex group match, in this case the json object with bg image data
             $htmlContent = $this->generateBackgroundImageStyles($htmlContent, $matches);
+        }
+
+        // Validate if the filtered result requires html decoding
+        if (preg_match_all(self::HTML_CONTENT_TYPE_PATTERN, $htmlContent, $matches, PREG_SET_ORDER)) {
+            $htmlContent = $this->decodeHtmlContent($htmlContent, $matches);
+        }
+
+        return $htmlContent;
+    }
+
+    /**
+     * @param string $htmlContent
+     * @param array $htmlContentMatches
+     * @return void
+     */
+    private function decodeHtmlContent(string $htmlContent, array $htmlContentMatches): string
+    {
+        foreach ($htmlContentMatches as $htmlContentMatch) {
+            //phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
+            $decodedHtml = html_entity_decode($htmlContentMatch[0]);
+
+            $htmlContent = str_replace($htmlContentMatch[0], $decodedHtml, $htmlContent);
         }
 
         return $htmlContent;
@@ -89,6 +122,7 @@ class OverrideTemplatePlugin
 
             // input: {\"desktop_image\":\"imagepath.jpg\", \"mobile_image\": \"imagepath.jpg\"}"
             // output: ["desktop_image" => "imagepath.jpg", "mobile_imag" => "imagepath.jpg"];
+            //phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
             $backgroundImages = json_decode(stripslashes(html_entity_decode($backgroundMatch[1])), true);
 
             if (!empty($backgroundImages)) {
