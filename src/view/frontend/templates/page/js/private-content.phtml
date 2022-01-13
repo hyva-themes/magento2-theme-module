@@ -134,11 +134,7 @@ use Magento\Framework\View\Element\Template;
          */
 ?>
         function fetchPrivateContent(sections) {
-            fetch('<?= $escaper->escapeJs($escaper->escapeUrl(
-                $block->getBaseUrl()
-            )) ?>customer/section/load/?sections=' + encodeURIComponent(
-                sections.join(',')
-            ), {
+            fetch(`${BASE_URL}customer/section/load/?sections=${encodeURIComponent(sections.join(','))}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
