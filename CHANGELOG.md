@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - **Alpine.js x-intersect plugin**
 
-  This is a 'forward-compatible' backport of x-intersect from alpine V4. It will help make the transition to Alpine v3
+  This is a 'forward-compatible' backport of x-intersect from Alpine V3. It will help make the transition to Alpine v3
   smoother. More info about the Alpine.js intersect plugin can be found at https://alpinejs.dev/plugins/intersect
 
 - **Allow excluding elements from the focus trapping in modals**
@@ -31,9 +31,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- **Updated Apline from 2.7.0 to 2.82**
+- **Updated Apline from 2.7.0 to 2.8.2**
 
-  This change is related to the new Alpine.x-intersect plugin backport and will help the future upgrade to Alpine v3
+  This change is related to the new Alpine x-intersect plugin backport and will help the future upgrade to Alpine v3
   will go smoother.
 
 - **Fix PageBuilder breaking Alpine HTML element attributes.**
