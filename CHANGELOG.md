@@ -6,7 +6,71 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.9...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.10...main
+
+
+## [1.1.10] - 2022-01-14
+
+[1.1.10]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.9...1.1.10
+
+### Added
+
+- **Alpine.js x-intersect plugin**
+
+  This is a 'forward-compatible' backport of x-intersect from alpine V4. It will help make the transition to Alpine v3
+  smoother. More info about the Alpine.js intersect plugin can be found at https://alpinejs.dev/plugins/intersect
+
+- **Allow excluding elements from the focus trapping in modals**
+
+  When a modal with a backdrop is shown, the website elements outside the modal dialog can no longer be focused with Tab
+  / Shift-Tab. Setting everything to inert has side effects for some use cases. Cookie consent is one of them. If you
+  manage to open a modal any consent banner can't be used anymore even if it is in the foreground.
+
+  To exclude elements from focus trapping, use the `excludeSelectorsFromFocusTrapping` method with selectors. For
+  example: `$modalViewModel->createModal()->excludeSelectorsFromFocusTrapping('#cookie-consent', '[x-no-trap]')`
+
+### Changed
+
+- **Updated Apline from 2.7.0 to 2.82**
+
+  This change is related to the new Alpine.x-intersect plugin backport and will help the future upgrade to Alpine v3
+  will go smoother.
+
+- **Fix PageBuilder breaking Alpine HTML element attributes.**
+
+  More information can be found in [issue #114](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/114)
+
+- **Allow modal renderer blocks to be mutated**
+
+  This change allows setting data on the block to renders a modal template,  
+  for example `$modal->getContentRenderer()->assign('foo', $foo)`.
+
+  More information can be cound in the [merge request #157](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/157)
+
+- **Bugfix: If set, use logo_file block argument to render logo like in Luma**
+
+  This allows setting the logo in layout XML as documented in the [devdocs](https://devdocs.magento.com/guides/v2.4/frontend-dev-guide/themes/theme-create.html#theme_logo).
+
+  More information can be found in the [hyva-themes/magento2-default-theme issue #309](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/309).
+
+- **Bugfix: fix tax rate labels in GraphQL response to make cart totals consistent**
+
+  This is a bug fix for an inconsistency in the Magento core behavior.
+
+  More information can be found in [issue #120](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/120). 
+
+- **Allow exclamation mark in PageBuilder CSS classes**
+
+  More information can be found in [issue #121](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/121)
+
+- **Bugfix: fix fetchPrivateContent failure when using BrowserSync proxy**
+
+  More information can be found in [issue #122](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/122)
+
+### Removed
+
+- Nothing
+
 
 ## [1.1.9] - 2021-11-29
 
