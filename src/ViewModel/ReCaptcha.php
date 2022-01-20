@@ -26,13 +26,11 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_V3_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice_recaptcha_v3';
 
-    const RECAPTCHA_V2_CHECKBOX_VALIDATION_BLOCK = 'recaptcha_validation_checkbox';
-
-    const RECAPTCHA_V2_INVISIBLE_VALIDATION_BLOCK = 'recaptcha_validation_invisible';
-
     const RECAPTCHA_VALIDATION = 'recaptcha_validation';
 
     const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
+
+    const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
 
     const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
@@ -70,6 +68,7 @@ class ReCaptcha implements ArgumentInterface
 
         return [
             self::RECAPTCHA_INPUT_FIELD => $this->getRecaptchaInputField($config),
+            self::RECAPTCHA_SCRIPT_TOKEN => $this->getRecaptchaScriptToken($config),
             self::RECAPTCHA_LEGAL_NOTICE_BLOCK => $this->getLegalNotice($config),
             self:: RECAPTCHA_VALIDATION => $this->getJavaScriptValidator($config),
         ];
@@ -80,7 +79,15 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getRecaptchaInputField(string $config): string
     {
-        return self::RECAPTCHA_INPUT_FIELD  . "_{$config}";
+        return self::RECAPTCHA_INPUT_FIELD . "_{$config}";
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecaptchaScriptToken(string $config): string
+    {
+        return self::RECAPTCHA_SCRIPT_TOKEN . "_{$config}";
     }
 
     /**
@@ -88,7 +95,7 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getRecaptchaV3Block(string $config): string
     {
-        return self::RECAPTCHA_V3_BLOCK  . "_{$config}";
+        return self::RECAPTCHA_V3_BLOCK . "_{$config}";
     }
 
     /**
@@ -140,7 +147,7 @@ class ReCaptcha implements ArgumentInterface
     public function getV2InvisibleSiteKey(): string
     {
         return $this->scopeConfig->getValue(
-            self::XML_PATH_V2_INVISIBLE__PUBLIC_KEY,
+            self::XML_PATH_V2_INVISIBLE_PUBLIC_KEY,
             ScopeInterface::SCOPE_WEBSITE
         );
     }
@@ -151,7 +158,7 @@ class ReCaptcha implements ArgumentInterface
     public function getV3InvisibleSiteKey(): string
     {
         return $this->scopeConfig->getValue(
-            self::XML_PATH_V3_INVISIBLE__PUBLIC_KEY,
+            self::XML_PATH_V3_INVISIBLE_PUBLIC_KEY,
             ScopeInterface::SCOPE_WEBSITE
         );
     }
