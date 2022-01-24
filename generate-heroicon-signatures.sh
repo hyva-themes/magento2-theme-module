@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# This script is compatible with sed on Mac OS or BSD, as they do not support \U in extended regular expressions.
+
 for FILE in src/view/frontend/web/svg/heroicons/outline/*.svg
 do
     echo -n " * @method string "
