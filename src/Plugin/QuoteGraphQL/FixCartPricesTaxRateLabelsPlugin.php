@@ -14,7 +14,7 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\Quote\Model\Quote;
 use Magento\QuoteGraphQl\Model\Resolver\CartPrices;
-use function array_values as values;
+use function array_values as vals;
 
 // phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
 
@@ -51,7 +51,7 @@ class FixCartPricesTaxRateLabelsPlugin
         $address = $quote->isVirtual() ? $quote->getBillingAddress() : $quote->getShippingAddress();
 
         // The items applied taxes contains the store specific labels
-        $itemsAppliedTaxes = call_user_func_array('array_merge', values($address->getData('items_applied_taxes')));
+        $itemsAppliedTaxes = call_user_func_array('array_merge', vals($address->getData('items_applied_taxes') ?: []));
         foreach (($result['applied_taxes'] ?? []) as $i => $rate) {
             $result['applied_taxes'][$i]['label'] = $this->findStoreTaxLabelByCode($rate['label'], $itemsAppliedTaxes);
         }
