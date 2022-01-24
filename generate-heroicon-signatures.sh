@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-# This script is compatible with sed on Mac OS or BSD, as they do not support \U in extended regular expressions.
+if [ "$(echo x | sed -E 's/(.)/\U\1/')" != 'X' ]; then
+    # This script is incompatible with sed on Mac OS or BSD, as they do not support \U in extended regular expressions.
+    echo "Incompatible version of sed found: $(which sed)" >&2
+    echo "GNU sed with full extended regex support is required" >&2
+    exit 1
+fi
 
 for FILE in src/view/frontend/web/svg/heroicons/outline/*.svg
 do
