@@ -15,6 +15,9 @@ use Magento\Framework\View\Asset;
 use Magento\Framework\View\DesignInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
+// phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
+// phpcs:disable Magento2.Functions.StaticFunction.StaticFunction
+
 /**
  * This generic SvgIcons view model can be used to render any icon set (i.e. subdirectory in web/svg).
  *
@@ -48,18 +51,13 @@ class SvgIcons implements ArgumentInterface
      */
     private $design;
 
-    /**
-     * @var array<string,string>
-     */
-    private $svgCache = [];
-
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
         DesignInterface $design,
         string $iconPathPrefix = 'Hyva_Theme::svg'
     ) {
-        $this->iconPathPrefix = $iconPathPrefix;
+        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
         $this->assetRepository = $assetRepository;
         $this->cache = $cache;
         $this->design = $design;
@@ -121,7 +119,7 @@ class SvgIcons implements ArgumentInterface
 
     /**
      * Magic method to allow iconNameHtml() instead of renderHtml('icon-name'). Subclasses may
-     * use @method doc blocks to provide autocompletion for available icons.
+     * use `@method` doc blocks to provide autocompletion for available icons.
      */
     public function __call($method, $args)
     {
@@ -136,9 +134,9 @@ class SvgIcons implements ArgumentInterface
      *
      * For example ArrowUp => arrow-up
      */
-    private static function camelCaseToKebabCase(string $in): string
+    private static function camelCaseToKebabCase(string $str): string
     {
-        return strtolower(preg_replace('/(.|[0-9])([A-Z]|[0-9])/', "$1-$2", $in));
+        return strtolower(preg_replace('/(.|[0-9])([A-Z]|[0-9])/', "$1-$2", $str));
     }
 
     /**
