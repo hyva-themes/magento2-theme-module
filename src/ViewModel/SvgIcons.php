@@ -15,6 +15,9 @@ use Magento\Framework\View\Asset;
 use Magento\Framework\View\DesignInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
+// phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
+// phpcs:disable Magento2.Functions.StaticFunction.StaticFunction
+
 /**
  * This generic SvgIcons view model can be used to render any icon set (i.e. subdirectory in web/svg).
  *
@@ -31,7 +34,7 @@ class SvgIcons implements ArgumentInterface
     /**
      * @var string Path relative to asset directory Hyva_Theme::svg/
      */
-    private $iconSet;
+    private $iconPathPrefix;
 
     /**
      * @var Asset\Repository
@@ -52,9 +55,9 @@ class SvgIcons implements ArgumentInterface
         Asset\Repository $assetRepository,
         CacheInterface $cache,
         DesignInterface $design,
-        string $iconSet = ''
+        string $iconPathPrefix = 'Hyva_Theme::svg'
     ) {
-        $this->iconSet = $iconSet;
+        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
         $this->assetRepository = $assetRepository;
         $this->cache = $cache;
         $this->design = $design;
@@ -81,7 +84,7 @@ class SvgIcons implements ArgumentInterface
         array $attributes = []
     ): string {
         $cacheKey = $this->design->getDesignTheme()->getCode() .
-            '/' . $this->iconSet .
+            '/' . $this->iconPathPrefix .
             '/' . $icon .
             '/' . $classNames .
             '#' . $width .
@@ -116,7 +119,7 @@ class SvgIcons implements ArgumentInterface
 
     /**
      * Magic method to allow iconNameHtml() instead of renderHtml('icon-name'). Subclasses may
-     * use @method doc blocks to provide autocompletion for available icons.
+     * use `@method` doc blocks to provide autocompletion for available icons.
      */
     public function __call($method, $args)
     {
@@ -133,9 +136,9 @@ class SvgIcons implements ArgumentInterface
      *
      * @SuppressWarnings(PHPMD.ShortVariable)
      */
-    private static function camelCaseToKebabCase(string $in): string
+    private static function camelCaseToKebabCase(string $str): string
     {
-        return strtolower(preg_replace('/(.|[0-9])([A-Z]|[0-9])/', "$1-$2", $in));
+        return strtolower(preg_replace('/(.|[0-9])([A-Z]|[0-9])/', "$1-$2", $str));
     }
 
     /**
@@ -143,7 +146,7 @@ class SvgIcons implements ArgumentInterface
      */
     private function getFilePath(string $icon): string
     {
-        $assetFileId = 'Hyva_Theme::svg/' . ($this->iconSet === '' ? '' : $this->iconSet . '/') . $icon . '.svg';
+        $assetFileId = $this->iconPathPrefix . '/' . $icon . '.svg';
         return $this->assetRepository->createAsset($assetFileId)->getSourceFile();
     }
 }
