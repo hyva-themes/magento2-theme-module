@@ -6,7 +6,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.10...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.11...main
+
+## [1.1.11] - 2022-01-28
+
+[1.1.11]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.10...1.1.11
+
+### Added
+
+### Changed
+
+- **Bugfix: error after removing last product from cart**
+
+  After deleting the last product from the shopping cart, a red warning message "Internal server error" was shown.
+
+  More information can be found in [issue #129](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/129) 
+
+- **Allow non-Hyvä SVG icon sets to be used with SvgIcons view model**
+
+  Previously the entire SvgIcons class needed to be overridden because of a hardcoded value. Now the value can be set
+  in di.xml through virtual types.
+
+  Many thanks to Timon de Groot (Mooore) for the contribution!
+
+  More information can be found in [Merge Request #147](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/147)
+
+- **Update HeroIcons method annotations**
+
+  The `@method` annotations on the interface no longer matched the backing implementation in `SvgIcons::renderHtml`.
+
+  More information can be found in [issue #128](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/128)
+
+### Removed
+
+- Nothing
 
 
 ## [1.1.10] - 2022-01-14
