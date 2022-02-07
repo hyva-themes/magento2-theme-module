@@ -51,7 +51,8 @@ class FixCartPricesTaxRateLabelsPlugin
         $address = $quote->isVirtual() ? $quote->getBillingAddress() : $quote->getShippingAddress();
 
         // The items applied taxes contains the store specific labels
-        $itemsAppliedTaxes = call_user_func_array('array_merge', vals($address->getData('items_applied_taxes') ?: []));
+        $taxRows           = $address->getData('items_applied_taxes') ?: [];
+        $itemsAppliedTaxes = $taxRows ? call_user_func_array('array_merge', vals($taxRows)) : [];
         foreach (($result['applied_taxes'] ?? []) as $i => $rate) {
             $result['applied_taxes'][$i]['label'] = $this->findStoreTaxLabelByCode($rate['label'], $itemsAppliedTaxes);
         }
