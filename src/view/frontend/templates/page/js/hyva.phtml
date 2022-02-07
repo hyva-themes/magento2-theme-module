@@ -231,6 +231,16 @@ $currencyViewModel = $viewModels->require(Currency::class);
                 formatter.format(value);
         }
 
+        /**
+         * @title - Equivalent to default Magento translate method
+         * @description - Allows replacing parameters like "%1" with parameters provided in JS.
+         * Input value can't be encoded.
+         */
+        hyva.__ = (string, ...args) => {
+            let index = 0;
+            return string.replaceAll(/"%+[0-9]*\.?[0-9]"/g, () => args[index++]);
+        }
+
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
 
     }( window.hyva = window.hyva || {} ));

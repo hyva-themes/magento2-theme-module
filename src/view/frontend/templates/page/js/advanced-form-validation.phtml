@@ -1,0 +1,301 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+?>
+
+<script>
+    'use strict';
+    (function(hyva) {
+        const formValidationRules = {
+            required: {
+                message: '<?= /* @noEscape  */ __('This is a required field.') ?>',
+                validator(val, options) {
+                    if (val === false) {
+                        return false;
+                    }
+                    return !!String(val).trim().length;
+                }
+            },
+            maxLength: {
+                message: '<?= /* @noEscape  */ __('Please enter no more than "%0" characters.') ?>',
+                validator(val, options) {
+                    const minLength = Array.isArray(options) ? options[0] : options;
+                    return val.length <= minLength;
+                }
+            },
+            minLength: {
+                message: '<?= /* @noEscape  */ __('Please enter at least "%0" characters.') ?>',
+                validator(val, options) {
+                    const minLength = Array.isArray(options) ? options[0] : options;
+                    return val.length >= minLength;
+                }
+            },
+            range: {
+                message: '<?= /* @noEscape  */ __('Please enter a value between "%0" and "%1".') ?>',
+                validator(val, options) {
+                    if (Array.isArray(options) && options[0] && options[1]) {
+                        const min = options[0];
+                        const max = options[1];
+                        return val.length >= min && val.length <= max;
+                    } else {
+                        console.error('Validator options not provided');
+                        return false;
+                    }
+
+                }
+            },
+            maxValue: {
+                message: '<?= /* @noEscape  */ __('Please enter a value less than or equal to "%0".') ?>',
+                validator(val, options) {
+                    const maxValue = Array.isArray(options) ? options[0] : options;
+                    return val <= maxValue;
+                }
+            },
+            minValue: {
+                message: '<?= /* @noEscape  */ __('Please enter a value greater than or equal to "%0".') ?>',
+                validator(val, options) {
+                    const minValue = Array.isArray(options) ? options[0] : options;
+                    return val >= minValue;
+                }
+            },
+            email: {
+                message: '<?= /* @noEscape  */ __('Please enter a valid email address.') ?>',
+                validator(val, options) {
+                    const re = /^([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*@([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*\.(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]){2,})$/i;
+
+                    return re.test(String(val));
+                }
+            },
+            number: {
+                message: '<?= /* @noEscape  */ __('Please enter numbers only') ?>',
+                validator(val, options) {
+                    if (val.length) {
+                        const re = /^([0-9])+$/;
+                        return re.test(val);
+                    } else {
+                        return true;
+                    }
+                }
+            },
+            password: {
+                message: '<?= $escaper->escapeHtmlAttr(__('Please provide at least one upper case, one lower case, one digit and one special character (#?!@$%^&*-)')); ?>',
+                validator(value) {
+                    const rule = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+                    return rule.test(value);
+                }
+            }
+        };
+
+        function addFormValidationRule(name, validator) {
+            formValidationRules[name] = validator;
+        }
+
+        function formValidation(el, options) {
+            // disable browser default validation
+            if (el.tagName === 'FORM') {
+                el.setAttribute('novalidate', '');
+            }
+
+            console.log(options)
+            let fieldWrapperClassName = options.fieldWrapperClassName || 'field';
+            let messagesWrapperClassName = options.messagesWrapperClassName || 'messages';
+            let validClassName = options.validClassName || 'field--success';
+            let invalidClassName = options.invalidClassName || 'field--error';
+
+            return {
+                touched: false,
+                state: {
+                    valid: false,
+                    touched: false
+                },
+                fields: {},
+                setupFields(elements) {
+                    Array.from(elements).forEach((element) => {
+                        this.setupField(element);
+                    });
+                },
+                setupField(element) {
+                    const rules = this.getRules(element);
+                    const name = element.name;
+                    this.fields[name] = {
+                        element,
+                        rules,
+                        state: {
+                            valid: null,
+                            touched: null,
+                            rules: {}
+                        }
+                    }
+                },
+                onSubmit($event) {
+                    if (el.tagName === 'FORM') {
+                        this.state.touched = true;
+                        this.validate().catch(() => {
+                            $event.preventDefault();
+                        });
+                    }
+                },
+                onChange(event) {
+                    if (!Object.keys(this.fields).length) {
+                        this.setupFields(this.$el.elements);
+                    }
+                    if (!Object.keys(this.fields).includes(event.target.name)) {
+                        this.setupField(event.target);
+                    }
+                    const field = this.fields[event.target.name]
+                    field.state.touched = true;
+                    this.validateField(field);
+                },
+                validate() {
+                    if (!Object.keys(this.fields).length || !Object.keys(this.fields).length !== this.$el.elements.length) {
+                        this.setupFields(this.$el.elements);
+                    }
+                    return new Promise((resolve, reject) => {
+                        if (this.$el.elements) {
+                            this.validateFields();
+                            if (Object.values(this.fields).some((field) => !field.state.valid)) {
+                                this.state.valid = false;
+                                const invalidFields = Object.values(this.fields).filter((field) => {
+                                    if (!field.state.valid) {
+                                        return field;
+                                    }
+                                }).map((field) => field.element);
+                                reject(invalidFields);
+                            } else {
+                                this.state.valid = true;
+                                resolve();
+                            }
+                        }
+                    });
+                },
+                validateFields() {
+                    Object.values(this.fields).forEach(async field => {
+                        await this.validateField(field);
+                    });
+                },
+                validateField(field) {
+                    const value = field.element.type === 'checkbox' ? field.element.checked : field.element.value;
+                    const rules = field.rules;
+                    if (rules) {
+                        Object.keys(rules).forEach(rule => {
+                            if (formValidationRules[rule]) {
+                                field.state.rules[rule] = this.runValidateFn(rule, rules[rule], value, field);
+                            }
+                        });
+                        field.state.valid = !Object.values(field.state.rules).some(valid => !valid);
+                    } else {
+                        field.state.valid = true;
+                    }
+                    this.setFieldStates(field);
+                    return field.state.valid;
+                },
+                runValidateFn(rule, options, value, field) {
+                    if (formValidationRules[rule]) {
+                        return formValidationRules[rule].validator(value, options, field);
+                    }
+                },
+                getRules(field) {
+                    let rules = {};
+                    if (field.required) {
+                        rules.required = true;
+                    }
+                    if (field.getAttribute('min')) {
+                        rules.minValue = field.getAttribute('min');
+                    }
+                    if (field.getAttribute('max')) {
+                        rules.maxValue = field.getAttribute('max');
+                    }
+                    if (field.getAttribute('minlength')) {
+                        rules.minLength = field.getAttribute('minlength');
+                    }
+                    if (field.getAttribute('maxlength')) {
+                        rules.maxLength = field.getAttribute('maxlength');
+                    }
+
+                    if (field.dataset.validate) {
+                        try {
+                            rules = Object.assign(rules, JSON.parse(field.dataset.validate));
+                        } catch(error) {
+                            console.warn('Validator error. Cannot parse data-validate attribute of element:\n', field);
+                            console.error(error);
+                        }
+                    }
+
+                    return rules;
+                },
+                getMessagesByField(field) {
+                    let messages = [];
+                    let invalidRules = Object.keys(field.state.rules).filter((rule) => !field.state.rules[rule]);
+                    field.rules && Object.keys(field.rules).forEach((rule) => {
+                        if (invalidRules.includes(rule)) {
+                            const customMessage = field.element.getAttribute('data-msg-' + rule);
+                            const message = customMessage ? customMessage : formValidationRules[rule].message;
+                            const ruleOptions = JSON.parse(JSON.stringify(field.rules[rule]));
+
+                            if (Array.isArray(ruleOptions)) {
+                                ruleOptions.unshift(message);
+                                messages.push(hyva.__.apply(null, ruleOptions));
+                            } else {
+                                messages.push(hyva.__(message, ruleOptions));
+                            }
+                        }
+                    });
+                    return messages;
+                },
+                setFieldStates(field) {
+                    const parent = field.element.closest('.' + fieldWrapperClassName);
+                    if (parent) {
+                        this.setCss(field, parent);
+                        this.createMessage(field, parent);
+                    }
+                },
+                setCss(field, container) {
+                    container.classList.toggle(validClassName, field.state.valid);
+                    container.classList.toggle(invalidClassName, !field.state.valid);
+                },
+                createMessage(field, container) {
+                    const msg = container.querySelector('.' + messagesWrapperClassName);
+                    if (msg) {
+                        container.removeChild(msg);
+                    }
+
+                    if (!field.state.valid) {
+                        const messages = this.getMessagesByField(field);
+                        const list = document.createElement('ul');
+                        list.classList.add(messagesWrapperClassName);
+                        messages.forEach((message) => {
+                            const li = document.createElement('li');
+                            li.innerText = message;
+                            list.appendChild(li);
+                        });
+                        container.appendChild(list);
+                    }
+                },
+                setField(name, value) {
+                    this.fields[name].element.value = value;
+                    this.fields[name].state.touched = true;
+                    this.fields[name].element.dispatchEvent((new Event('input')));
+                    this.validateField(this.fields[name]);
+                }
+            }
+        }
+
+        hyva.formValidation = formValidation;
+        hyva.formValidationRules = formValidationRules;
+        hyva.addFormValidationRule = addFormValidationRule;
+    }(window.hyva = window.hyva || {}));
+</script>
