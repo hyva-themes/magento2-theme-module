@@ -252,7 +252,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Bugfix: use GraphQL variables instead ot JS string templates for all queries and mutations**
 
   This resolves a number of bugs related to escaping and serialization of query parameters, and also allows
-  editing the queries with the GraphQL query editor as described in [the docs](https://docs.hyva.io/doc/customizing-graphql-vtjgCN6FzD).
+  editing the queries with the GraphQL query editor as described in [the docs](https://docs.hyva.io/hyva-themes/writing-code/customizing-graphql.html).
 
   More information can be found in the [merge request #127](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/127)
   and the [related default theme MR](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/301).
