@@ -88,7 +88,8 @@ class SvgIcons implements ArgumentInterface
             '/' . $icon .
             '/' . $classNames .
             '#' . $width .
-            '#' . $height;
+            '#' . $height .
+            '#' . hash('md5', json_encode($attributes));
         if ($result = $this->cache->load($cacheKey)) {
             return $result;
         }
