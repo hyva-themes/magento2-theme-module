@@ -1,4 +1,5 @@
-# Changelog
+# Changelog - Theme Module
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
@@ -6,13 +7,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.11...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.12...main
+
+## [1.1.12] - 2022-02-07
+
+[1.1.12]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.11...1.1.12
+
+### Added
+
+- Nothing
+
+### Changed
+
+- **Bugfix: error after removing last product from cart**
+
+  After deleting the last product from the shopping cart, a red warning message "Internal server error" was shown.
+  This bug was reported as fixed in the previous release, but in fact was not fixed in all cases.
+
+  More information can be found in [issue #129](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/129)
+
+- **Bugfix: include attributes argument in SvgIcons cache key**
+
+  Previously, when the `$arguments` parameter value was changed, the previously rendered SVG was returned.
+
+  More information can be found in [Merge Request #172](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/172)
+
+### Removed
+
+- Nothing
 
 ## [1.1.11] - 2022-01-28
 
 [1.1.11]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.10...1.1.11
 
 ### Added
+
+- Nothing
 
 ### Changed
 
@@ -222,7 +252,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Bugfix: use GraphQL variables instead ot JS string templates for all queries and mutations**
 
   This resolves a number of bugs related to escaping and serialization of query parameters, and also allows
-  editing the queries with the GraphQL query editor as described in [the docs](https://docs.hyva.io/doc/customizing-graphql-vtjgCN6FzD).
+  editing the queries with the GraphQL query editor as described in [the docs](https://docs.hyva.io/hyva-themes/writing-code/customizing-graphql.html).
 
   More information can be found in the [merge request #127](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/127)
   and the [related default theme MR](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/301).
