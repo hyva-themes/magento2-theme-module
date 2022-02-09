@@ -343,24 +343,31 @@ class SvgIconsTest extends TestCase
         $this->assertNotEquals($first, $second, 'Different iconPathPrefix for the same icon should result in different SVGs');
     }
 
+    /**
+     * @test
+     */
     public function applies_icon_path_prefix_di_config()
     {
         $this->givenCurrentTheme('Hyva/test');
-        $svg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
+        $idealSvg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="blue" class="" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
             </svg>
-SVG;
-        $this->createViewFile('Hyva_PaymentIcons/web/svg/dark/ideal.svg', $svg);
-        $this->createViewFile('web/svg/cart.svg', $svg);
+            SVG;
+        $cartSvg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black" class="" width="24" height="24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+            </svg>
+            SVG;
+        $this->createViewFile('Hyva_PaymentIcons/web/svg/dark/ideal.svg', $idealSvg);
+        $this->createViewFile('web/svg/cart.svg', $cartSvg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
         $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['pathPrefixMapping' => [
-            'heroicons' => 'Hyva_Theme::svg',
             'payment-icons' => 'Hyva_PaymentIcons::svg'
         ]]);
 
         $this->assertNotEmpty($icons->renderHtml('heroicons/solid/shopping-cart'));
-        $this->assertNotEmpty($icons->renderHtml('payment-icons/dark/ideal'));
-        $this->assertNotEmpty($icons->renderHtml('cart'));
+        $this->assertSame($idealSvg, trim($icons->renderHtml('payment-icons/dark/ideal')));
+        $this->assertSame($cartSvg, trim($icons->renderHtml('cart')));
     }
 }
