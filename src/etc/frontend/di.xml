@@ -29,6 +29,15 @@
         </arguments>
     </type>
 
+    <!-- Hyva Theme SVG icon mapping -->
+    <type name="Hyva\Theme\ViewModel\SvgIcons">
+        <arguments>
+            <argument name="pathPrefixMapping" xsi:type="array">
+                <item name="heroicons" xsi:type="string">Hyva_Theme::svg</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="\Magento\Customer\Controller\Section\Load">
         <plugin name="customer_controller_section_load" type="Hyva\Theme\Plugin\Customer\SectionLoadPlugin"/>
     </type>
@@ -69,15 +78,6 @@
     <type name="Hyva\Theme\ViewModel\ProductList">
         <arguments>
             <argument name="collectionProcessor" xsi:type="object">Magento\Catalog\Model\Api\SearchCriteria\ProductCollectionProcessor</argument>
-        </arguments>
-    </type>
-
-    <!-- Core SVG icon mapping -->
-    <type name="Hyva\Theme\ViewModel\SvgIcons">
-        <arguments>
-            <argument name="pathPrefixMapping" xsi:type="array">
-                <item name="heroicons" xsi:type="string">Hyva_Theme::svg</item>
-            </argument>
         </arguments>
     </type>
 </config>

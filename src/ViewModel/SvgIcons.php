@@ -32,9 +32,16 @@ class SvgIcons implements ArgumentInterface
     private const CACHE_TAG = 'HYVA_ICONS';
 
     /**
-     * @var string Path relative to asset directory Hyva_Theme::svg/
+     * @var string Module name prefix for icon asset, e.g. Hyva_Theme::svg
      */
     private $iconPathPrefix;
+
+    /**
+     * Optional folder name, will be appended to $iconPathPrefix.
+     *
+     * @var string
+     */
+    private $iconSet = '';
 
     /**
      * @var Asset\Repository
@@ -61,12 +68,14 @@ class SvgIcons implements ArgumentInterface
         CacheInterface $cache,
         DesignInterface $design,
         string $iconPathPrefix = 'Hyva_Theme::svg',
+        string $iconSet = '',
         array $pathPrefixMapping = []
     ) {
-        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
         $this->assetRepository = $assetRepository;
         $this->cache = $cache;
         $this->design = $design;
+        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
+        $this->iconSet = $iconSet;
         $this->pathPrefixMapping = $pathPrefixMapping;
     }
 
@@ -163,6 +172,8 @@ class SvgIcons implements ArgumentInterface
     private function getFilePathPrefix(string $icon): string
     {
         $length = strpos($icon, '/');
-        return $length ? $this->pathPrefixMapping[substr($icon, 0, $length)] : $this->iconPathPrefix;
+        $prefix = $length ? $this->pathPrefixMapping[substr($icon, 0, $length)] : $this->iconPathPrefix;
+        $path    = $this->iconSet ? $prefix . '/' . $this->iconSet : $prefix;
+        return $path;
     }
 }
