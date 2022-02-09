@@ -32,9 +32,16 @@ class SvgIcons implements ArgumentInterface
     private const CACHE_TAG = 'HYVA_ICONS';
 
     /**
-     * @var string Path relative to asset directory Hyva_Theme::svg/
+     * @var string Module name prefix for icon asset, e.g. Hyva_Theme::svg
      */
     private $iconPathPrefix;
+
+    /**
+     * Optional folder name, will be appended to $iconPathPrefix.
+     *
+     * @var string
+     */
+    private $iconSet = '';
 
     /**
      * @var Asset\Repository
@@ -51,16 +58,25 @@ class SvgIcons implements ArgumentInterface
      */
     private $design;
 
+    /**
+     * @var string[]
+     */
+    private $pathPrefixMapping;
+
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
         DesignInterface $design,
-        string $iconPathPrefix = 'Hyva_Theme::svg'
+        string $iconPathPrefix = 'Hyva_Theme::svg',
+        string $iconSet = '',
+        array $pathPrefixMapping = []
     ) {
-        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
         $this->assetRepository = $assetRepository;
         $this->cache = $cache;
         $this->design = $design;
+        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
+        $this->iconSet = $iconSet;
+        $this->pathPrefixMapping = $pathPrefixMapping;
     }
 
     /**
@@ -84,7 +100,7 @@ class SvgIcons implements ArgumentInterface
         array $attributes = []
     ): string {
         $cacheKey = $this->design->getDesignTheme()->getCode() .
-            '/' . $this->iconPathPrefix .
+            '/' . $this->getFilePathPrefix($icon) .
             '/' . $icon .
             '/' . $classNames .
             '#' . $width .
@@ -147,7 +163,17 @@ class SvgIcons implements ArgumentInterface
      */
     private function getFilePath(string $icon): string
     {
-        $assetFileId = $this->iconPathPrefix . '/' . $icon . '.svg';
-        return $this->assetRepository->createAsset($assetFileId)->getSourceFile();
+        return $this->assetRepository->createAsset($this->getFilePathPrefix($icon) . '/' . $icon . '.svg')->getSourceFile();
+    }
+
+    /**
+     * Return full path prefix based on optional prefix mapping
+     */
+    private function getFilePathPrefix(string $icon): string
+    {
+        $length = strpos($icon, '/');
+        $prefix = $length ? $this->pathPrefixMapping[substr($icon, 0, $length)] : $this->iconPathPrefix;
+        $path    = $this->iconSet ? $prefix . '/' . $this->iconSet : $prefix;
+        return $path;
     }
 }

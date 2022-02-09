@@ -54,6 +54,52 @@ class SvgIconsTest extends TestCase
         }
     }
 
+
+    private function givenCurrentTheme(string $themePath): void
+    {
+        /** @var Registration $registration */
+        $registration = $this->objectManager->get(Registration::class);
+        $registration->register();
+
+        /** @var DesignInterface $design */
+        $design = $this->objectManager->get(DesignInterface::class);
+        $design->setDesignTheme($themePath);
+    }
+
+    private function createViewFile(string $viewFile, string $viewFileContents): void
+    {
+        $viewFilePath = __DIR__ . '/_files/design/frontend/Hyva/test/' . $viewFile . '';
+        \file_put_contents(
+            $viewFilePath,
+            $viewFileContents
+        );
+        $this->testViewFiles[] = $viewFilePath;
+    }
+
+    public function dataSvg()
+    {
+        return [
+            'check'    => [
+                'check',
+                'checkHtml',
+                <<<'SVG'
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                SVG,
+            ],
+            'arrow-up' => [
+                'arrow-up',
+                'arrowUpHtml',
+                <<<'SVG'
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                </svg>
+                SVG,
+            ],
+        ];
+    }
+
     /**
      * @test
      * @dataProvider dataSvg
@@ -137,6 +183,10 @@ class SvgIconsTest extends TestCase
             $svg,
             trim($svgIcons->renderHtml('custom-icon'))
         );
+        $this->assertEquals(
+            $svg,
+            trim($svgIcons->customIconHtml())
+        );
     }
 
     /**
@@ -209,51 +259,6 @@ class SvgIconsTest extends TestCase
         $this->assertEquals($expectedSvg, trim($svgIcons->checkHtml('text-red', 16, 12)));
     }
 
-    private function givenCurrentTheme(string $themePath): void
-    {
-        /** @var Registration $registration */
-        $registration = $this->objectManager->get(Registration::class);
-        $registration->register();
-
-        /** @var DesignInterface $design */
-        $design = $this->objectManager->get(DesignInterface::class);
-        $design->setDesignTheme($themePath);
-    }
-
-    private function createViewFile(string $viewFile, string $viewFileContents): void
-    {
-        $viewFilePath = __DIR__ . '/_files/design/frontend/Hyva/test/' . $viewFile . '';
-        \file_put_contents(
-            $viewFilePath,
-            $viewFileContents
-        );
-        $this->testViewFiles[] = $viewFilePath;
-    }
-
-    public function dataSvg()
-    {
-        return [
-            'check'    => [
-                'check',
-                'checkHtml',
-                <<<'SVG'
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                SVG,
-            ],
-            'arrow-up' => [
-                'arrow-up',
-                'arrowUpHtml',
-                <<<'SVG'
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                </svg>
-                SVG,
-            ],
-        ];
-    }
-
     /**
      * @test
      */
@@ -284,6 +289,18 @@ class SvgIconsTest extends TestCase
     /**
      * @test
      */
+    public function caches_icons_based_on_attributes()
+    {
+        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
+        $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+        $first = $svgIcons->renderHtml('cake', 'w-6 h-6', 16, 16, ['title' => 'Test A']);
+        $second = $svgIcons->renderHtml('cake', 'w-6 h-6', 16, 16, ['title' => 'Test B']);
+        $this->assertNotEquals($first, $second, 'Different attribute parameters should result in different SVGs');
+    }
+
+    /**
+     * @test
+     */
     public function caches_icons_based_on_class_names()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -298,11 +315,52 @@ class SvgIconsTest extends TestCase
      */
     public function caches_icons_based_on_icon_set()
     {
-        /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $outlineIcons */
-        $outlineIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
-        $solidIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsSolid::class);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $outlineIcons */
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $solidIcons */
+        $outlineIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['iconSet' => 'heroicons/outline']);
+        $solidIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['iconSet' => 'heroicons/solid']);
         $first = $outlineIcons->renderHtml('eye', 'w-6 h-6');
         $second = $solidIcons->renderHtml('eye', 'w-6 h-6');
         $this->assertNotEquals($first, $second, 'Different icon sets for the same icon should result in different SVGs');
+    }
+
+    /**
+     * @test
+     */
+    public function caches_icons_based_on_icon_path_prefix()
+    {
+        $this->givenCurrentTheme('Hyva/test');
+        $this->createViewFile('Hyva_PaymentIcons/web/svg/dark/eye.svg', <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+            </svg>
+            SVG
+        );
+        $iconsA = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['iconPathPrefix' => 'Hyva_Theme::svg/heroicons/outline']);
+        $iconsB = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['iconPathPrefix' => 'Hyva_PaymentIcons::svg/dark']);
+        $first = $iconsA->renderHtml('eye', 'w-6 h-6');
+        $second = $iconsB->renderHtml('eye', 'w-6 h-6');
+        $this->assertNotEquals($first, $second, 'Different iconPathPrefix for the same icon should result in different SVGs');
+    }
+
+    public function applies_icon_path_prefix_di_config()
+    {
+        $this->givenCurrentTheme('Hyva/test');
+        $svg = <<<'SVG'
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+            </svg>
+SVG;
+        $this->createViewFile('Hyva_PaymentIcons/web/svg/dark/ideal.svg', $svg);
+        $this->createViewFile('web/svg/cart.svg', $svg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['pathPrefixMapping' => [
+            'heroicons' => 'Hyva_Theme::svg',
+            'payment-icons' => 'Hyva_PaymentIcons::svg'
+        ]]);
+
+        $this->assertNotEmpty($icons->renderHtml('heroicons/solid/shopping-cart'));
+        $this->assertNotEmpty($icons->renderHtml('payment-icons/dark/ideal'));
+        $this->assertNotEmpty($icons->renderHtml('cart'));
     }
 }
