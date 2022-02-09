@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Framework\App\Cache\Type\Block;
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\View\Asset;
 use Magento\Framework\View\DesignInterface;
@@ -21,23 +22,77 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 /**
  * This generic SvgIcons view model can be used to render any icon set (i.e. subdirectory in web/svg).
  *
- * The icon set can be configured with di.xml or by extending the class. The module ships with Heroicons
- * and two preconfigured view models:
+ * It is used as part of the Hyva_Theme module to provide the Heroicon view models, and to provide access to
+ * custom SVG icons inside Hyvä themes.
+ * This class is also intended to be used as a base class for other modules providing icon sets to Hyvä themes.
+ *
+ * Possible di.xml customization points:
+ *
+ * iconPathPrefix (default: Hyva_Theme::svg)
+ *
+ * The iconPathPrefix will be prepended before the specified icon.
+ * For example, given an iconPrefix of `My_Module::svg`, a call to `renderHtml('my-icon') renders the first existing of
+ *
+ * 1. <current-theme>/My_Module/web/svg/my-icon.svg
+ * 2. My_Module/view/frontend/web/svg/my-icon.svg
+ * 2. My_Module/view/base/web/svg/my-icon.svg
+ * 3. <current-theme>/web/svg/my-icon.svg
+ *
+ * It is possible to specify subdirectories as part of the iconPathPrefix, as in `My_Module::svg/light`.
+ *
+ * For an example, please refer to the constructor arguments configured for Hyva\Theme\ViewModel\HeroiconsSolid in
+ * the file hyva-themes/magento2-theme-module/etc/frontend/di.xml
+ *
+ * The Icon View Models included within the hyva_Theme module use the following iconPathPrefixes:
+ * - SvgIcons: Hyva_Theme::svg
+ * - HeroiconsSolid: Hyva_Theme::svg/heroicons/solid
+ * - HeroiconsOutline: Hyva_Theme::svg/heroicons/outline
+ *
+ * pathPrefixMapping (optional)
+ *
+ * The pathPrefixMapping allows modules to register an alias for their "iconPathPrefix".
+ * This is useful for providing more readable icon names to the CMS content template processor.
+ * For example, the icon {{icon "sport-icons/outline/darts"}} can be mapped to the icon
+ * asset path "Hyva_SportIcons::svg/outline/darts".
+ *
+ * The pathPrefixMapping is applied by using the first part of the icon path ("sport-icons" in the example above)
+ * as the map lookup key. If a value is present, it will be used. If no value is present in the map,
+ * the iconPathPrefix is used (see above).
+ *
+ *
+ * iconSet (optional)
+ *
+ * If set, the iconSet is injected between the path prefix and the remainder of the icon path.
+ * For example, assuming the iconPathPrefix is `My_Module::svg/awesome` and the iconSet is 'outline', then
+ * calling $icon->renderHtml('box') would render `My_Module::svg/awwesome/outline/box`.
+ *
+ * Note: there is some duplication in functionality between the iconPathPrefix and the iconSet.
+ * In the previous example an iconPathPrefix of `My_Module::svg/awesome/outline` could also be used.
+ * The reason this overlap of functionality is present is to preserve backward compatibility.
+ *
+ * The hyva-themes/magento2-theme-module ships with two Heroicon iconsets and matching view models:
  *
  * @see HeroiconsSolid
  * @see HeroiconsOutline
  */
 class SvgIcons implements ArgumentInterface
 {
-    private const CACHE_TAG = 'HYVA_ICONS';
-
     /**
-     * @var string Module name prefix for icon asset, e.g. Hyva_Theme::svg
+     * Module name prefix for icon asset, e.g. Hyva_Theme::svg
+     *
+     * @var string
      */
     private $iconPathPrefix;
 
     /**
-     * Optional folder name, will be appended to $iconPathPrefix.
+     * Human friendly alias for iconPathPrefixes
+     *
+     * @var string[]
+     */
+    private $pathPrefixMapping;
+
+    /**
+     * Optional folder name to be appended to the $iconPathPrefix
      *
      * @var string
      */
@@ -58,11 +113,6 @@ class SvgIcons implements ArgumentInterface
      */
     private $design;
 
-    /**
-     * @var string[]
-     */
-    private $pathPrefixMapping;
-
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
@@ -71,11 +121,11 @@ class SvgIcons implements ArgumentInterface
         string $iconSet = '',
         array $pathPrefixMapping = []
     ) {
-        $this->assetRepository = $assetRepository;
-        $this->cache = $cache;
-        $this->design = $design;
-        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
-        $this->iconSet = $iconSet;
+        $this->assetRepository   = $assetRepository;
+        $this->cache             = $cache;
+        $this->design            = $design;
+        $this->iconPathPrefix    = rtrim($iconPathPrefix, '/');
+        $this->iconSet           = $iconSet;
         $this->pathPrefixMapping = $pathPrefixMapping;
     }
 
@@ -99,39 +149,30 @@ class SvgIcons implements ArgumentInterface
         ?int $height = 24,
         array $attributes = []
     ): string {
+        $iconPath = $this->applyPathPrefixAndIconSet($icon);
+
         $cacheKey = $this->design->getDesignTheme()->getCode() .
-            '/' . $this->getFilePathPrefix($icon) .
-            '/' . $icon .
+            '/' . $iconPath .
             '/' . $classNames .
             '#' . $width .
             '#' . $height .
             '#' . hash('md5', json_encode($attributes));
+
         if ($result = $this->cache->load($cacheKey)) {
             return $result;
         }
-        $svg = \file_get_contents($this->getFilePath($icon)); // phpcs:disable
-        $svgXml = new \SimpleXMLElement($svg);
-        if (trim($classNames)) {
-            $svgXml['class'] = $classNames;
-        }
-        if ($width) {
-            $svgXml['width'] = (string) $width;
-        }
-        if ($height) {
-            $svgXml['height'] = (string) $height;
-        }
 
-        if (!empty($attributes)) {
-            foreach ($attributes as $key => $value) {
-                if (!empty($key) && !isset($svgXml[strtolower($key)])) {
-                    $svgXml[strtolower($key)] = (string)$value;
-                }
-            }
-        }
+        try {
+            $rawIconSvg = \file_get_contents($this->getFilePath($iconPath)); // phpcs:disable
+            $result     = $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes);
 
-        $result = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
-        $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
-        return $result;
+            $this->cache->save($result, $cacheKey, [Block::CACHE_TAG]);
+
+            return $result;
+        } catch (Asset\File\NotFoundException $exception) {
+            $error = (string) __('Unable to find the SVG icon "%1', $icon);
+            throw new Asset\File\NotFoundException($error, 0, $exception);
+        }
     }
 
     /**
@@ -159,21 +200,59 @@ class SvgIcons implements ArgumentInterface
     }
 
     /**
-     * Return full path to icon file, respecting theme fallback
+     * Return absolute path to icon file, respecting theme fallback.
+     *
+     * If no matching icon within the given iconPathPrefix module is found, it will fall back to the theme web folder.
      */
-    private function getFilePath(string $icon): string
+    private function getFilePath(string $iconPath): string
     {
-        return $this->assetRepository->createAsset($this->getFilePathPrefix($icon) . '/' . $icon . '.svg')->getSourceFile();
+        $asset = $this->assetRepository->createAsset($iconPath);
+        try {
+            // try to locate asset with iconPathPrefix (e.g. Hyva_Theme::svg)
+            $path = $asset->getSourceFile();
+        } catch (Asset\File\NotFoundException $exception) {
+            // fallback to web/ folder in current theme if not found
+            $path = $this->assetRepository->createAsset($asset->getFilePath())->getSourceFile();
+        }
+        return $path;
     }
 
-    /**
-     * Return full path prefix based on optional prefix mapping
-     */
-    private function getFilePathPrefix(string $icon): string
+    private function applyPathPrefixAndIconSet(string $icon): string
     {
-        $length = strpos($icon, '/');
-        $prefix = $length ? $this->pathPrefixMapping[substr($icon, 0, $length)] : $this->iconPathPrefix;
-        $path    = $this->iconSet ? $prefix . '/' . $this->iconSet : $prefix;
-        return $path;
+        $iconSet       = $this->iconSet ? $this->iconSet . '/' : '';
+        $iconPathParts = explode('/', $icon, 2);
+
+        return count($iconPathParts) === 2 && isset($this->pathPrefixMapping[$iconPathParts[0]])
+            ? $this->pathPrefixMapping[$iconPathParts[0]] . '/' . $iconSet . $iconPathParts[1] . '.svg'
+            : $this->iconPathPrefix . '/' . $iconSet . $icon . '.svg';
+    }
+
+    private function applySvgArguments(
+        string $origSvg,
+        string $classNames,
+        ?int $width,
+        ?int $height,
+        array $attributes
+    ): string {
+        $svgXml = new \SimpleXMLElement($origSvg);
+        if (trim($classNames)) {
+            $svgXml['class'] = $classNames;
+        }
+        if ($width) {
+            $svgXml['width'] = (string) $width;
+        }
+        if ($height) {
+            $svgXml['height'] = (string) $height;
+        }
+
+        if (!empty($attributes)) {
+            foreach ($attributes as $key => $value) {
+                if (!empty($key) && !isset($svgXml[strtolower($key)])) {
+                    $svgXml[strtolower($key)] = (string) $value;
+                }
+            }
+        }
+
+        return \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
     }
 }
