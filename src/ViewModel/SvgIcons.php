@@ -162,12 +162,17 @@ class SvgIcons implements ArgumentInterface
             return $result;
         }
 
-        $rawIconSvg = \file_get_contents($this->getFilePath($iconPath)); // phpcs:disable
-        $result     = $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes);
+        try {
+            $rawIconSvg = \file_get_contents($this->getFilePath($iconPath)); // phpcs:disable
+            $result     = $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes);
 
-        $this->cache->save($result, $cacheKey, [Block::CACHE_TAG]);
+            $this->cache->save($result, $cacheKey, [Block::CACHE_TAG]);
 
-        return $result;
+            return $result;
+        } catch (Asset\File\NotFoundException $exception) {
+            $error = (string) __('Unable to find the SVG icon "%1', $icon);
+            throw new Asset\File\NotFoundException($error, 0, $exception);
+        }
     }
 
     /**

@@ -14,6 +14,7 @@ use Hyva\Theme\Service\CurrentTheme;
 use Hyva\Theme\ViewModel\Heroicons;
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\View\Asset\File\NotFoundException;
 use Magento\Framework\View\DesignInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Theme\Model\Theme\Registration;
@@ -53,7 +54,6 @@ class SvgIconsTest extends TestCase
             \unlink($testViewFile);
         }
     }
-
 
     private function givenCurrentTheme(string $themePath): void
     {
@@ -369,5 +369,17 @@ class SvgIconsTest extends TestCase
         $this->assertNotEmpty($icons->renderHtml('heroicons/solid/shopping-cart'));
         $this->assertSame($idealSvg, trim($icons->renderHtml('payment-icons/dark/ideal')));
         $this->assertSame($cartSvg, trim($icons->renderHtml('cart')));
+    }
+
+    /**
+     * @test
+     */
+    public function throws_beginner_friendly_error()
+    {
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Unable to find the SVG icon "non-existent-icon');
+        $icons->renderHtml('non-existent-icon');
     }
 }
