@@ -71,4 +71,13 @@
             <argument name="collectionProcessor" xsi:type="object">Magento\Catalog\Model\Api\SearchCriteria\ProductCollectionProcessor</argument>
         </arguments>
     </type>
+
+    <!-- Core SVG icon mapping -->
+    <type name="Hyva\Theme\ViewModel\SvgIcons">
+        <arguments>
+            <argument name="pathPrefixMapping" xsi:type="array">
+                <item name="heroicons" xsi:type="string">Hyva_Theme::svg</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
