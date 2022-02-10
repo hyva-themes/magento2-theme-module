@@ -10,8 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme;
 
-use Hyva\Theme\Service\CurrentTheme;
-use Hyva\Theme\ViewModel\Heroicons;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Asset\File\NotFoundException;
@@ -44,7 +43,7 @@ class SvgIconsTest extends TestCase
         $this->objectManager = Bootstrap::getObjectManager();
         /** @var CacheInterface $cache */
         $cache = $this->objectManager->get(CacheInterface::class);
-        $cache->clean(['HYVA_ICONS']);
+        $cache->clean([SvgIcons::CACHE_TAG]);
         ThemeFixture::registerTestThemes();
     }
 
@@ -362,9 +361,11 @@ class SvgIconsTest extends TestCase
         $this->createViewFile('Hyva_PaymentIcons/web/svg/dark/ideal.svg', $idealSvg);
         $this->createViewFile('web/svg/cart.svg', $cartSvg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
-        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, ['pathPrefixMapping' => [
-            'payment-icons' => 'Hyva_PaymentIcons::svg'
-        ]]);
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class, [
+            'pathPrefixMapping' => [
+                'payment-icons' => 'Hyva_PaymentIcons::svg',
+            ],
+        ]);
 
         $this->assertNotEmpty($icons->renderHtml('heroicons/solid/shopping-cart'));
         $this->assertSame($idealSvg, trim($icons->renderHtml('payment-icons/dark/ideal')));
