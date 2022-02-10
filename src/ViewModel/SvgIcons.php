@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Framework\App\Cache\Type\Block;
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\View\Asset;
 use Magento\Framework\View\DesignInterface;
@@ -77,6 +76,9 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
  */
 class SvgIcons implements ArgumentInterface
 {
+
+    public const CACHE_TAG = 'HYVA_ICONS';
+
     /**
      * Module name prefix for icon asset, e.g. Hyva_Theme::svg
      *
@@ -166,7 +168,7 @@ class SvgIcons implements ArgumentInterface
             $rawIconSvg = \file_get_contents($this->getFilePath($iconPath)); // phpcs:disable
             $result     = $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes);
 
-            $this->cache->save($result, $cacheKey, [Block::CACHE_TAG]);
+            $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
 
             return $result;
         } catch (Asset\File\NotFoundException $exception) {
