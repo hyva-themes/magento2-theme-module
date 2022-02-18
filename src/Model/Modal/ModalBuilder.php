@@ -86,176 +86,176 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
 
     // --- modal builder interface methods ---
 
-    private function withData(array $data, string $key, $value): ModalBuilderInterface
+    private function withData(string $key, $value): ModalBuilderInterface
     {
-        $data[$key] = $value;
-        return new self($this->layout, $data);
+        $this->data[$key] = $value;
+        return $this;
     }
 
-    private function addClasses(array $data, string $key, array $toAdd): ModalBuilderInterface
+    private function addClasses(string $key, array $toAdd): ModalBuilderInterface
     {
         $classes = merge($this->data[$key], $toAdd);
-        return $this->withData($data, $key, $classes);
+        return $this->withData($key, $classes);
     }
 
-    private function removeClasses(array $data, string $key, array $toRemove): ModalBuilderInterface
+    private function removeClasses(string $key, array $toRemove): ModalBuilderInterface
     {
         $classes = filter($this->data[$key], function (string $class) use ($toRemove): bool {
             return ! in_array($class, $toRemove, true);
         });
-        return $this->withData($data, $key, $classes);
+        return $this->withData($key, $classes);
     }
 
     public function overlayEnabled(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'overlay', true);
+        return $this->withData('overlay', true);
     }
 
     public function overlayDisabled(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'overlay', false);
+        return $this->withData('overlay', false);
     }
 
     public function initiallyHidden(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'is-initially-hidden', true);
+        return $this->withData('is-initially-hidden', true);
     }
 
     public function initiallyVisible(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'is-initially-hidden', false);
+        return $this->withData('is-initially-hidden', false);
     }
 
     public function withOverlayClasses(string ...$classes): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'overlay-classes', $classes);
+        return $this->withData('overlay-classes', $classes);
     }
 
     public function addOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->addClasses($this->data, 'overlay-classes', merge([$class], $moreClasses));
+        return $this->addClasses('overlay-classes', merge([$class], $moreClasses));
     }
 
     public function removeOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->removeClasses($this->data, 'overlay-classes', merge([$class], $moreClasses));
+        return $this->removeClasses('overlay-classes', merge([$class], $moreClasses));
     }
 
     public function withContainerTemplate(string $template): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'container-template', $template);
+        return $this->withData('container-template', $template);
     }
 
     public function withContainerClasses(string ...$classes): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'container-classes', $classes);
+        return $this->withData('container-classes', $classes);
     }
 
     public function addContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->addClasses($this->data, 'container-classes', merge([$class], $moreClasses));
+        return $this->addClasses('container-classes', merge([$class], $moreClasses));
     }
 
     public function removeContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->removeClasses($this->data, 'container-classes', merge([$class], $moreClasses));
+        return $this->removeClasses('container-classes', merge([$class], $moreClasses));
     }
 
     public function positionTop(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'top');
+        return $this->withData('position', 'top');
     }
 
     public function positionRight(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'right');
+        return $this->withData('position', 'right');
     }
 
     public function positionBottom(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'bottom');
+        return $this->withData('position', 'bottom');
     }
 
     public function positionLeft(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'left');
+        return $this->withData('position', 'left');
     }
 
     public function positionCenter(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'center');
+        return $this->withData('position', 'center');
     }
 
     public function positionTopLeft(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'top-left');
+        return $this->withData('position', 'top-left');
     }
 
     public function positionTopRight(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'top-right');
+        return $this->withData('position', 'top-right');
     }
 
     public function positionBottomRight(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'bottom-right');
+        return $this->withData('position', 'bottom-right');
     }
 
     public function positionBottomLeft(): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'position', 'bottom-left');
+        return $this->withData('position', 'bottom-left');
     }
 
     public function withDialogRefName(string $refName): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'dialog-name', $refName);
+        return $this->withData('dialog-name', $refName);
     }
 
     public function withDialogClasses(string ...$classes): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'dialog-classes', $classes);
+        return $this->withData('dialog-classes', $classes);
     }
 
     public function addDialogClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->addClasses($this->data, 'dialog-classes', merge([$class], $moreClasses));
+        return $this->addClasses('dialog-classes', merge([$class], $moreClasses));
     }
 
     public function removeDialogClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
-        return $this->removeClasses($this->data, 'dialog-classes', merge([$class], $moreClasses));
+        return $this->removeClasses('dialog-classes', merge([$class], $moreClasses));
     }
 
     public function excludeSelectorsFromFocusTrapping(string ...$selectors): ModalBuilderInterface
     {
         $current = $this->data['focus-trap-exclude-selectors'] ?? [];
 
-        return $this->withData($this->data, 'focus-trap-exclude-selectors', unique(merge($current, $selectors)));
+        return $this->withData('focus-trap-exclude-selectors', unique(merge($current, $selectors)));
     }
 
     public function withAriaLabel(?string $label): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'aria-label', $label);
+        return $this->withData('aria-label', $label);
     }
 
     public function withAriaLabelledby(?string $elementId): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'aria-labelledby', $elementId);
+        return $this->withData('aria-labelledby', $elementId);
     }
 
     public function withTemplate(?string $template): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'content-template', $template);
+        return $this->withData('content-template', $template);
     }
 
     public function withBlockName(?string $blockName): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'content-block-name', $blockName);
+        return $this->withData('content-block-name', $blockName);
     }
 
     public function withContent(?string $content): ModalBuilderInterface
     {
-        return $this->withData($this->data, 'content', $content);
+        return $this->withData('content', $content);
     }
 
     public function getShowJs(): string
