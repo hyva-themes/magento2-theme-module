@@ -71,7 +71,7 @@ class Modal implements ArgumentInterface
         $confirmation->withTemplate('Hyva_Theme::modal/confirmation.phtml');
 
         if ($message) {
-            $confirmation->withMessage((string) $message);
+            $confirmation->withTitle($message);
         }
 
         return $confirmation;

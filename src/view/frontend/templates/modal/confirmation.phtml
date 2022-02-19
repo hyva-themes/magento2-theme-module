@@ -25,13 +25,13 @@ use Magento\Framework\View\Element\Template;
 <?php if ($block->hasData('title')): ?>
     <div class="font-bold text-xl"><?= $escaper->escapeHtml($block->getData('title')) ?></div>
 <?php endif; ?>
-<?php if ($block->hasData('message')): ?>
+<?php if ($block->hasData('details')): ?>
     <div class="">
-        <?= $escaper->escapeHtml($block->getData('message')) ?>
+        <?= $escaper->escapeHtml($block->getData('details')) ?>
     </div>
 <?php endif; ?>
 <div class="<?php
-if ($block->hasData('message') || $block->hasData('title')) {
+if ($block->hasData('details') || $block->hasData('title')) {
     echo 'mt-10 ';
 }
 ?>flex justify-between gap-2">

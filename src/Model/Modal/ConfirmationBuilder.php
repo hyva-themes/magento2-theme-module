@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Model\Modal;
 
-use Magento\Framework\Phrase;
-
 class ConfirmationBuilder extends ModalBuilder implements ConfirmationBuilderInterface
 {
     public function withTitle($title): ConfirmationBuilderInterface
@@ -22,9 +20,9 @@ class ConfirmationBuilder extends ModalBuilder implements ConfirmationBuilderInt
         return $this;
     }
 
-    public function withMessage($message): ConfirmationBuilderInterface
+    public function withDetails($details): ConfirmationBuilderInterface
     {
-        $this->getContentRenderer()->setData('message', $message);
+        $this->getContentRenderer()->setData('details', $details);
 
         return $this;
     }

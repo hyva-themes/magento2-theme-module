@@ -21,10 +21,10 @@ interface ConfirmationBuilderInterface extends ModalBuilderInterface
     public function withTitle($title): ConfirmationBuilderInterface;
 
     /**
-     * @param string|Phrase|null $message
+     * @param string|Phrase|null $details
      * @return ConfirmationBuilderInterface
      */
-    public function withMessage($message): ConfirmationBuilderInterface;
+    public function withDetails($details): ConfirmationBuilderInterface;
 
     /**
      * @param string|Phrase|null $okLabel
