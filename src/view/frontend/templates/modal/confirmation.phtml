@@ -35,10 +35,10 @@ if ($block->hasData('message') || $block->hasData('title')) {
     echo 'mt-10 ';
 }
 ?>flex justify-between gap-2">
-    <button @click="dismiss" type="button" class="btn">
+    <button @click="cancel" type="button" class="btn">
         <?= $escaper->escapeHtml($block->getData('cancel') ?: __('Cancel')) ?>
     </button>
-    <button x-focus-first @click="confirm" type="button" class="btn btn-primary">
+    <button x-focus-first @click="ok" type="button" class="btn btn-primary">
         <?= $escaper->escapeHtml($block->getData('ok') ?: __('OK')) ?>
     </button>
 </div>

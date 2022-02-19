@@ -210,10 +210,10 @@ use Magento\Framework\View\Element\Template;
                     }
                     return new Promise(resolve => frame.resolve = resolve);
                 },
-                dismiss() {
+                cancel() {
                     this.hide(false);
                 },
-                confirm() {
+                ok() {
                     this.hide(true);
                 },
                 hide(value) {
