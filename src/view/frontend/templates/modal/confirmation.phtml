@@ -26,8 +26,8 @@ use Magento\Framework\View\Element\Template;
     <div class="font-bold text-xl"><?= $escaper->escapeHtml($block->getData('title')) ?></div>
 <?php endif; ?>
 <?php if ($block->hasData('details')): ?>
-    <div class="">
-        <?= $escaper->escapeHtml($block->getData('details')) ?>
+    <div>
+        <?= /** @noEscape */ $block->getData('details') ?>
     </div>
 <?php endif; ?>
 <div class="<?php
