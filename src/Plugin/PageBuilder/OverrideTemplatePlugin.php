@@ -59,9 +59,9 @@ class OverrideTemplatePlugin
         TemplatePlugin $subject,
         \Closure $proceed,
         FrameworkTemplateFilter $interceptor,
-        string $result
+        $result
     ): string {
-        if ($this->theme->isHyva()) {
+        if ($this->theme->isHyva() && is_string($result)) {
             return $this->applyFilters($result);
         }
         return $proceed($interceptor, $result);
