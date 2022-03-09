@@ -10,14 +10,17 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
+use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Cookie\Helper\Cookie;
 use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
 /** @var Currency $currencyViewModel */
 $currencyViewModel = $viewModels->require(Currency::class);
+$storeConfig = $viewModels->require(StoreConfig::class);
+$jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/code'));
+
 ?>
 <script>
     'use strict';
@@ -208,7 +211,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
 
         hyva.formatPrice = (value, showSign) => {
             var formatter = new Intl.NumberFormat(
-                document.documentElement.lang,
+                '<?= $escaper->escapeJs($jsLocale) ?>',
                 {
                     style: 'currency',
                     currency: '<?= $escaper->escapeHtml($currencyViewModel->getCurrentCurrencyCode()) ?>',
