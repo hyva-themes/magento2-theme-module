@@ -20,6 +20,9 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_V3_BLOCK = 'recaptcha_input_field_recaptcha_v3';
 
+    // For backward compatibility:
+    const RECAPTCHA_INPUT_FIELD_BLOCK = self::RECAPTCHA_V3_BLOCK;
+
     const RECAPTCHA_V2_CHECKBOX_BLOCK = 'recaptcha_input_field_recaptcha';
 
     const RECAPTCHA_V2_INVISIBLE_BLOCK = 'recaptcha_input_field_invisible';
@@ -32,7 +35,10 @@ class ReCaptcha implements ArgumentInterface
 
     const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
 
-    const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
+    const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
+
+    // For backward compatibility:
+    const RECAPTCHA_LEGAL_NOTICE_BLOCK = self::RECAPTCHA_V3_LEGAL_NOTICE_BLOCK;
 
     const XML_PATH_V2_CHECKBOX_PUBLIC_KEY = 'recaptcha_frontend/type_recaptcha/public_key';
 
@@ -58,7 +64,7 @@ class ReCaptcha implements ArgumentInterface
     public function getRecaptchaData(string $key): ?array
     {
         $config = $this->scopeConfig->getValue(
-            self::XML_CONFIG_PATH_RECAPTCHA . $key,
+            self::XML_CONFIG_PATH_RECAPTCHA . ($key = '_v3' ? '' : $key),
             ScopeInterface::SCOPE_STORE
         );
 
@@ -69,7 +75,7 @@ class ReCaptcha implements ArgumentInterface
         return [
             self::RECAPTCHA_INPUT_FIELD => $this->getRecaptchaInputField($config),
             self::RECAPTCHA_SCRIPT_TOKEN => $this->getRecaptchaScriptToken($config),
-            self::RECAPTCHA_LEGAL_NOTICE_BLOCK => $this->getLegalNotice($config),
+            self::RECAPTCHA_LEGAL_NOTICE => $this->getLegalNotice($config),
             self:: RECAPTCHA_VALIDATION => $this->getJavaScriptValidator($config),
         ];
     }
@@ -127,7 +133,7 @@ class ReCaptcha implements ArgumentInterface
      */
     public function getLegalNotice(string $config): string
     {
-        return self::RECAPTCHA_LEGAL_NOTICE_BLOCK . "_{$config}";
+        return self::RECAPTCHA_LEGAL_NOTICE . "_{$config}";
     }
 
     /**
