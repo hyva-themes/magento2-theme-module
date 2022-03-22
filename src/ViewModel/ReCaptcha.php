@@ -64,7 +64,7 @@ class ReCaptcha implements ArgumentInterface
     public function getRecaptchaData(string $key): ?array
     {
         $config = $this->scopeConfig->getValue(
-            self::XML_CONFIG_PATH_RECAPTCHA . ($key === 'recaptcha_v3' ? '' : $key),
+            self::XML_CONFIG_PATH_RECAPTCHA . ($key === '_recaptcha_v3' ? '' : $key),
             ScopeInterface::SCOPE_STORE
         );
 
@@ -83,7 +83,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaInputField(string $config): string
+    private function getRecaptchaInputField(string $config): string
     {
         return self::RECAPTCHA_INPUT_FIELD . "_{$config}";
     }
@@ -91,7 +91,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaScriptToken(string $config): string
+    private function getRecaptchaScriptToken(string $config): string
     {
         return self::RECAPTCHA_SCRIPT_TOKEN . "_{$config}";
     }
@@ -99,7 +99,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaV3Block(string $config): string
+    private function getRecaptchaV3Block(string $config): string
     {
         return self::RECAPTCHA_V3_BLOCK . "_{$config}";
     }
@@ -107,7 +107,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaV2CheckboxBlock(string $config): string
+    private function getRecaptchaV2CheckboxBlock(string $config): string
     {
         return self::RECAPTCHA_V2_CHECKBOX_BLOCK . "_{$config}";
     }
@@ -115,7 +115,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getRecaptchaV2IvisibleBlock(string $config): string
+    private function getRecaptchaV2IvisibleBlock(string $config): string
     {
         return self::RECAPTCHA_V2_INVISIBLE_BLOCK . "_{$config}";
     }
@@ -123,7 +123,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getJavaScriptValidator(string $config): string
+    private function getJavaScriptValidator(string $config): string
     {
         return self::RECAPTCHA_VALIDATION. "_{$config}";
     }
@@ -131,7 +131,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getLegalNotice(string $config): string
+    private function getLegalNotice(string $config): string
     {
         return self::RECAPTCHA_LEGAL_NOTICE . "_{$config}";
     }
@@ -139,7 +139,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getV2CheckboxSiteKey(): string
+    private function getV2CheckboxSiteKey(): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_V2_CHECKBOX_PUBLIC_KEY,
@@ -150,7 +150,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getV2InvisibleSiteKey(): string
+    private function getV2InvisibleSiteKey(): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_V2_INVISIBLE_PUBLIC_KEY,
@@ -161,7 +161,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    public function getV3InvisibleSiteKey(): string
+    private function getV3InvisibleSiteKey(): string
     {
         return $this->scopeConfig->getValue(
             self::XML_PATH_V3_INVISIBLE_PUBLIC_KEY,
