@@ -64,7 +64,7 @@ class ReCaptcha implements ArgumentInterface
     public function getRecaptchaData(string $key): ?array
     {
         $config = $this->scopeConfig->getValue(
-            self::XML_CONFIG_PATH_RECAPTCHA . $key,
+            self::XML_CONFIG_PATH_RECAPTCHA . ($key === 'recaptcha_v3' ? '' : $key),
             ScopeInterface::SCOPE_STORE
         );
 
