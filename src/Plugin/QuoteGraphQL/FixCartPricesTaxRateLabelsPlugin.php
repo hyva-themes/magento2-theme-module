@@ -60,7 +60,17 @@ class FixCartPricesTaxRateLabelsPlugin
         return $result;
     }
 
-    private function findStoreTaxLabelByCode(string $rateCode, array $itemsAppliedTaxes): string
+    /**
+     * Return the given rate title if present in applied taxes array
+     *
+     * The method has no retur type and no type on $rateCode on purpose for taxjar/module-taxjar compatibility.
+     * See https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/146 for details.
+     *
+     * @param string $rateCode
+     * @param array $itemsAppliedTaxes
+     * @return string
+     */
+    private function findStoreTaxLabelByCode($rateCode, array $itemsAppliedTaxes)
     {
         foreach ($itemsAppliedTaxes as $appliedTax) {
             if ($appliedTax['id'] === $rateCode) {
