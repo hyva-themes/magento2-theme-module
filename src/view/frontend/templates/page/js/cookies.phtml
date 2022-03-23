@@ -13,7 +13,7 @@ declare(strict_types=1);
 <script>
     'use strict';
     function dispatchMessages(messages, hideAfter) {
-        var messagesEvent = new CustomEvent("messages-loaded", {
+        const messagesEvent = new CustomEvent("messages-loaded", {
             detail: {
                 messages: messages,
                 hideAfter: hideAfter
@@ -45,32 +45,30 @@ declare(strict_types=1);
 
         hyva.initMessages = () => {
             try {
-                var messages = hyva.getCookie('mage-messages');
-                messages = messages ? JSON.parse(decodeURIComponent(messages).replace(/\+/g, ' ')) : [];
-                window.mageMessages = messages;
+                const messages = hyva.getCookie('mage-messages');
+                window.mageMessages = messages ? JSON.parse(decodeURIComponent(messages).replace(/\+/g, ' ')) : [];
+
+                dispatchMessages(window.mageMessages);
+
+                <?php
+                /**
+                 * In \Magento\Theme\Controller\Result\MessagePlugin::setCookie
+                 * the cookie-domain is not set. Therefore, we need to skip it
+                 * here as well.
+                 */
+                ?>
+                // empty `mage-messages` cookie
+                const skipSetDomain = true;
+                hyva.setCookie('mage-messages','', -1, skipSetDomain);
+
             } catch (error) {
                 console.warn('Error parsing Cookie Messages:', error);
-                return;
             }
-
-            dispatchMessages(messages);
-
-            <?php
-            /**
-             * In \Magento\Theme\Controller\Result\MessagePlugin::setCookie
-             * the cookie-domain is not set. Therefore, we need to skip it
-             * here as well.
-             */
-            ?>
-            // empty `mage-messages` cookie
-            const skipSetDomain = true;
-            hyva.setCookie('mage-messages','', -1, skipSetDomain);
         }
 
-        window.addEventListener('load', function () {
-            hyva.initFormKey();
-            hyva.initMessages();
-        })
+        window.addEventListener('DOMContentLoaded', hyva.initFormKey);
+        window.addEventListener('load', hyva.initMessages);
+
 
     }( window.hyva = window.hyva || {} ));
 </script>
