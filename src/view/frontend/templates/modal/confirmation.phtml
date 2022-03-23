@@ -1,0 +1,44 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/**
+ * This is the default modal confirmation dialog template
+ * @see \Hyva\Theme\Model\Modal\ConfirmationBuilderInterface
+ */
+
+?>
+<?php if ($block->hasData('title')): ?>
+    <div class="font-bold text-xl"><?= $escaper->escapeHtml($block->getData('title')) ?></div>
+<?php endif; ?>
+<?php if ($block->hasData('details')): ?>
+    <div>
+        <?= /** @noEscape */ $block->getData('details') ?>
+    </div>
+<?php endif; ?>
+<div class="<?php
+if ($block->hasData('details') || $block->hasData('title')) {
+    echo 'mt-10 ';
+}
+?>flex justify-between gap-2">
+    <button @click="cancel" type="button" class="btn">
+        <?= $escaper->escapeHtml($block->getData('cancel') ?: __('Cancel')) ?>
+    </button>
+    <button x-focus-first @click="ok" type="button" class="btn btn-primary">
+        <?= $escaper->escapeHtml($block->getData('ok') ?: __('OK')) ?>
+    </button>
+</div>

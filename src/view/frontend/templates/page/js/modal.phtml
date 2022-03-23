@@ -202,12 +202,21 @@ use Magento\Framework\View\Element\Template;
                     useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
 
-                    modals.push({name, viewModel: this, focusTarget: focusTargetAfterHide, time: Date.now()});
+                    const frame = {name, viewModel: this, focusTarget: focusTargetAfterHide, time: Date.now()};
+
+                    modals.push(frame);
                     if (useOverlay) {
                         document.body.classList.add('overflow-hidden');
                     }
+                    return new Promise(resolve => frame.resolve = resolve);
                 },
-                hide() {
+                cancel() {
+                    this.hide(false);
+                },
+                ok() {
+                    this.hide(true);
+                },
+                hide(value) {
                     // Guard against Escape being pressed multiple times before a transition is finished, otherwise
                     // this function will pop further dialogs from the stack but the display will not update.
                     if (Date.now() - lastHide < config.duration) {
@@ -228,6 +237,8 @@ use Magento\Framework\View\Element\Template;
                     if (modals.length === 0 || areRemainingModalsWithoutOverlay(modals)) {
                         document.body.classList.remove('overflow-hidden');
                     }
+
+                    modal.resolve(value);
                 },
                 [isOpenProp(config.dialog)]: false,
                 overlay(dialog) {
