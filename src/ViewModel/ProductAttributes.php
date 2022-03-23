@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Phrase;
@@ -36,15 +37,22 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
     protected $priceCurrency;
 
     /**
+     * @var ProductResource
+     */
+    private $productResource;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      */
     public function __construct(
         Registry $registry,
+        ProductResource $productResource,
         PriceCurrencyInterface $priceCurrency
     ) {
-        $this->coreRegistry  = $registry;
-        $this->priceCurrency = $priceCurrency;
+        $this->coreRegistry    = $registry;
+        $this->priceCurrency   = $priceCurrency;
+        $this->productResource = $productResource;
     }
 
     /**
@@ -62,21 +70,21 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
     {
         $product   = $this->getProduct();
         $code      = $config['code'];
-        $attribute = $product->getResource()->getAttribute($code);
+        $attribute = $this->productResource->getAttribute($code);
 
         if (!$attribute) {
             return [];
         }
 
-        $call     = $config['call'] ?: 'default';
-        $label    = $config['label'] ?: 'default';
-        $cssClass = $config['css_class'] ?: 'attribute';
+        $call     = $config['call'] ?? 'default';
+        $label    = $config['label'] ?? 'default';
+        $cssClass = $config['css_class'] ?? 'attribute';
 
         $defaultData = $this->getAttributeData($attribute, $product);
 
         return [
-            'label'     => ($label === 'default') ? $defaultData['label'] : $label,
-            'value'     => ($call !== 'default') ? $product->{$call}() : $defaultData['value'],
+            'label'     => ($label && $label === 'default') ? $defaultData['label'] : $label,
+            'value'     => ($call && $call !== 'default') ? $product->{$call}() : $defaultData['value'],
             'code'      => $code,
             'css_class' => $cssClass,
         ];
