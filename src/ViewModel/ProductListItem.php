@@ -12,6 +12,7 @@ namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Pricing\Price\FinalPrice;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -41,18 +42,22 @@ class ProductListItem implements ArgumentInterface
     private $blockCache;
 
     /**
-     * @param LayoutInterface $layout
+     * @var CustomerSession
      */
+    private $customerSession;
+
     public function __construct(
         LayoutInterface $layout,
         ProductPage $productViewModel,
         CurrentCategory $currentCategory,
-        BlockCache $blockCache
+        BlockCache $blockCache,
+        CustomerSession $customerSession
     ) {
         $this->layout           = $layout;
         $this->productViewModel = $productViewModel;
         $this->currentCategory  = $currentCategory;
         $this->blockCache       = $blockCache;
+        $this->customerSession = $customerSession;
     }
 
     public function getProductPriceHtml(
@@ -105,6 +110,7 @@ class ProductListItem implements ArgumentInterface
             $this->isCategoryInProductUrl()
                 ? $this->currentCategory->get()->getId()
                 : '0',
+            (int) $this->customerSession->getCustomerGroupId()
         ];
     }
 
