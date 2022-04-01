@@ -11,36 +11,36 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel\Cart;
 
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Tax\Model\Config;
+use Magento\Tax\Model\Config as TaxConfig;
 
 class TotalsOutput implements ArgumentInterface
 {
     /**
-     * @var Config
+     * @var TaxConfig
      */
-    protected $config;
+    protected $taxConfig;
 
-    public function __construct(Config $config)
+    public function __construct(TaxConfig $config)
     {
-        $this->config = $config;
+        $this->taxConfig = $config;
     }
 
     public function getSubtotalField()
     {
-        return $this->config->displayCartSubtotalExclTax() ? 'subtotal_excluding_tax' : 'subtotal_including_tax';
+        return $this->taxConfig->displayCartSubtotalExclTax() ? 'subtotal_excluding_tax' : 'subtotal_including_tax';
     }
 
     public function getSubtotalFieldDisplayBoth()
     {
-        return $this->config->displayCartSubtotalBoth() ? 'subtotal_excluding_tax' : false;
+        return $this->taxConfig->displayCartSubtotalBoth() ? 'subtotal_excluding_tax' : false;
     }
 
     public function getTaxLabelAddition()
     {
-        return $this->config->displayCartSubtotalExclTax() ?
+        return $this->taxConfig->displayCartSubtotalExclTax() ?
             __('excl.') :
             (
-            $this->config->displayCartSubtotalBoth() ?
+            $this->taxConfig->displayCartSubtotalBoth() ?
                 '' :
                 __('incl.')
             );
@@ -48,6 +48,11 @@ class TotalsOutput implements ArgumentInterface
 
     public function getShippingLabelAddition()
     {
-        return !$this->config->shippingPriceIncludesTax() ? __('excl.') . ' ' : '';
+        return !$this->taxConfig->shippingPriceIncludesTax() ? __('excl.') . ' ' : '';
+    }
+
+    public function displayCartTaxWithGrandTotal(): bool
+    {
+        return $this->taxConfig->displayCartTaxWithGrandTotal();
     }
 }
