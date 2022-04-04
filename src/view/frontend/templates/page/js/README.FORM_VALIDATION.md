@@ -85,7 +85,7 @@ You can also use some browser native input attributes (list of supported in tabl
 <div class="field">
     <input name="last-name" 
            data-validate='{"maxlength": 20}' 
-           data-msg-maxlength="<?= /* @noEscape  */  __('Max length of this field is %1') ?>" 
+           data-msg-maxlength='<?= /* @noEscape  */  __("Max length of this field is "%0"") ?>'
     />
 </div>
 

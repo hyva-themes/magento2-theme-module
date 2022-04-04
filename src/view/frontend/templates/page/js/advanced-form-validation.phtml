@@ -226,7 +226,7 @@ use Magento\Framework\View\Element\Template;
                         }
                     })
 
-                    const validation = element.dataset.validation;
+                    const validation = element.dataset.validate;
                     if (validation) {
                         try {
                             rules = Object.assign(rules, JSON.parse(validation));
