@@ -138,7 +138,7 @@ Function name is validator name.
  * @param {Object} - Alpine.js object which contains element, validators and validation state
  * @param {Object} - Alpine.js object with all form validators and methods used for validation
  */
-hyva.addFormValidationRule(function phone(value, options, field, context) {
+hyva.addFormValidationRule('phone', function(value, options, field, context) {
     const phoneNumber = value.trim().replace(' ', '');
     if (phoneNumber.length !== 9) {
         // return message if validation fails;
@@ -201,7 +201,7 @@ Sometimes field validation is dependent on another field. For example purposes, 
 ```
 
 ```js
-hyva.addFormValidationRule(['zip', function(value, options, field, context) {
+hyva.addFormValidationRule('zip', function(value, options, field, context) {
     const rules = {
         ch: ['^(CH-)?\\d{4}$', '<?= /* @noEscape */ __("Switzerland ZIPs must have exactly 4 digits: e.g. CH-1950 or 1950") ?>'],
         fr: ['^(F-)?\\d{5}$', '<?= /* @noEscape */ __("France ZIPs must have exactly 5 digits: e.g. F-75012 or 75012") ?>'],
@@ -224,7 +224,6 @@ hyva.addFormValidationRule(['zip', function(value, options, field, context) {
     } else {
         return '<?= /* @noEscape */ __("Select country first") ?>'
     }
-}
-])
+})
 
 ```

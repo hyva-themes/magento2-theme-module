@@ -94,9 +94,8 @@ use Magento\Framework\View\Element\Template;
             }
         };
 
-        function addFormValidationRule(validator) {
-            formValidationRules[validator[0]] = validator[1];
-            console.log(formValidationRules, validator)
+        function addFormValidationRule(name, validator) {
+            formValidationRules[name] = validator;
         }
 
         function formValidation(el, options = {
@@ -231,7 +230,6 @@ use Magento\Framework\View\Element\Template;
                     if (validation) {
                         try {
                             rules = Object.assign(rules, JSON.parse(validation));
-                            console.log(validation)
                         } catch(error) {
                             console.warn('Validator error. Cannot parse data-validate attribute of element:\n', element);
                             console.error(error);
