@@ -36,4 +36,15 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Hyva\Theme\ViewModel\HeroiconsSolid">
+        <arguments>
+            <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/solid</argument>
+        </arguments>
+    </type>
+    <type name="Hyva\Theme\ViewModel\HeroiconsOutline">
+        <arguments>
+            <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/outline</argument>
+        </arguments>
+    </type>
 </config>
