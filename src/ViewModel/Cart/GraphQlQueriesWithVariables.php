@@ -10,17 +10,38 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel\Cart;
 
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class GraphQlQueriesWithVariables implements ArgumentInterface
 {
     /**
+     * @var ProductMetadataInterface
+     */
+    private $magento;
+
+    public function __construct(ProductMetadataInterface $magento)
+    {
+        $this->magento = $magento;
+    }
+
+    /**
      * @return string
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function getCartGraphQlQuery()
     {
-        return '
+        $configuredVariantImageQuery = version_compare($this->magento->getVersion(), '2.4.3', '>=')
+            ? 'configured_variant {
+                    small_image {
+                      label
+                      url
+                    }
+                  }'
+            : '';
+
+        return "
               total_quantity
               is_virtual
               items {
@@ -111,6 +132,7 @@ class GraphQlQueriesWithVariables implements ArgumentInterface
                     option_label
                     value_label
                   }
+                  ${configuredVariantImageQuery}
                 }
                 ... on BundleCartItem {
                   bundle_options {
@@ -217,7 +239,7 @@ class GraphQlQueriesWithVariables implements ArgumentInterface
                   label
                 }
               }
-          ';
+          ";
     }
 
     public function getCouponAddQuery(): string
