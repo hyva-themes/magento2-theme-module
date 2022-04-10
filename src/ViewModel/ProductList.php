@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\CategoryFactory;
 use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\LinkFactory as ProductLinkFactory;
@@ -24,6 +25,7 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\Review\Model\ResourceModel\Review\Summary as ReviewSummaryResource;
@@ -48,6 +50,11 @@ class ProductList implements ArgumentInterface
      * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
+
+    /**
+     * @var ?int
+     */
+    private $categoryIdFilter;
 
     /**
      * @var FilterBuilder
@@ -99,6 +106,11 @@ class ProductList implements ArgumentInterface
      */
     private $isIncludingReviewSummary;
 
+    /**
+     * @var CategoryFactory
+     */
+    private $categoryFactory;
+
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder,
@@ -108,6 +120,7 @@ class ProductList implements ArgumentInterface
         ProductLinkFactory $productLinkFactory,
         CatalogConfig $catalogConfig,
         CollectionProcessorInterface $collectionProcessor,
+        CategoryFactory $categoryFactory,
         ReviewSummaryResource $reviewSummaryResource,
         bool $isIncludingReviewSummary = true,
         int $maxCrosssellItemCount = 4
@@ -123,6 +136,7 @@ class ProductList implements ArgumentInterface
         $this->reviewSummaryResource        = $reviewSummaryResource;
         $this->isIncludingReviewSummary     = $isIncludingReviewSummary;
         $this->maxCrosssellItemCount        = $maxCrosssellItemCount;
+        $this->categoryFactory              = $categoryFactory;
     }
 
     /**
@@ -131,7 +145,7 @@ class ProductList implements ArgumentInterface
     public function getItems(): array
     {
         $collection = $this->createProductCollection();
-        $this->collectionProcessor->process($this->searchCriteriaBuilder->create(), $collection);
+        $this->applyCriteria($this->searchCriteriaBuilder->create(), $collection);
         $collection->each('setDoNotUseCategoryId', [true]);
 
         return $collection->getItems();
@@ -183,11 +197,22 @@ class ProductList implements ArgumentInterface
         $excludeIds    = unique(filter(map([$this, 'extractProductId'], $exclude)));
         $collection    = $this->createProductLinkCollection('crosssell', $linkSourceIds);
         $collection->addExcludeProductFilter($excludeIds);
-        $this->collectionProcessor->process($criteria, $collection);
+        $this->applyCriteria($criteria, $collection);
         $collection->setGroupBy(); // group by product id field - required to avoid duplicate products in collection
         $collection->each('setDoNotUseCategoryId', [true]);
 
         return $collection->getItems();
+    }
+
+    private function applyCriteria(SearchCriteriaInterface $criteria, AbstractDb $collection): void
+    {
+        $this->collectionProcessor->process($criteria, $collection);
+        if ($this->categoryIdFilter && $collection instanceof ProductCollection) {
+            $category = $this->categoryFactory->create();
+            $category->setData($category->getIdFieldName(), $this->categoryIdFilter);
+            $collection->addCategoryFilter($category);
+        }
+        $this->categoryIdFilter = null;
     }
 
     private function extractProductId($item)
@@ -270,7 +295,7 @@ class ProductList implements ArgumentInterface
         $collection = $this->createProductLinkCollection($linkType, $productIds);
         $collection->addExcludeProductFilter($productIds);
 
-        $this->collectionProcessor->process($this->searchCriteriaBuilder->create(), $collection);
+        $this->applyCriteria($this->searchCriteriaBuilder->create(), $collection);
 
         $collection->setGroupBy(); // group by product id field - required to avoid duplicate products in collection
 
@@ -308,7 +333,12 @@ class ProductList implements ArgumentInterface
      */
     public function addFilter($field, $value, $conditionType = 'eq'): self
     {
-        $this->searchCriteriaBuilder->addFilter($field, $value, $conditionType);
+        // Handle single categories as a special case to allow sorting by category position
+        if ($field === 'category_id' && preg_match('/^\d+$/', $value)) {
+            $this->categoryIdFilter = $value;
+        } else {
+            $this->searchCriteriaBuilder->addFilter($field, $value, $conditionType);
+        }
 
         return $this;
     }
