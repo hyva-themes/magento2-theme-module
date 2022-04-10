@@ -205,8 +205,10 @@ class GraphQlQueriesWithVariables implements ArgumentInterface
                     value
                     currency
                   }
+                  available
                   carrier_title
                   carrier_code
+                  error_message
                   method_title
                   method_code
                 }
