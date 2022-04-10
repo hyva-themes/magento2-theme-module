@@ -13,7 +13,6 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\SendFriend\Model\SendFriend;
 
 class EmailToFriend implements ArgumentInterface
 {
@@ -26,23 +25,20 @@ class EmailToFriend implements ArgumentInterface
      * @var UrlInterface
      */
     protected $urlBuilder;
-    /**
-     * @var SendFriend
-     */
-    private $sendFriend;
 
     /**
-     * @param CurrentCategory $currentCategory
-     * @param UrlInterface $urlBuilder
+     * @var StoreConfig
      */
+    private $storeConfig;
+
     public function __construct(
         CurrentCategory $currentCategory,
         UrlInterface $urlBuilder,
-        SendFriend $sendFriend
+        StoreConfig $storeConfig
     ) {
         $this->currentCategory = $currentCategory;
         $this->urlBuilder = $urlBuilder;
-        $this->sendFriend = $sendFriend;
+        $this->storeConfig = $storeConfig;
     }
 
     /**
@@ -52,7 +48,7 @@ class EmailToFriend implements ArgumentInterface
      */
     public function canEmailToFriend(): bool
     {
-        return $this->sendFriend->canEmailToFriend();
+        return (bool) $this->storeConfig->getStoreConfig('sendfriend/email/enabled');
     }
 
     /**
