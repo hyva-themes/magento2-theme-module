@@ -109,11 +109,16 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         return $this->_product;
     }
 
-    public function getShortDescription(
+    public function getShortDescription(bool $excerpt = true, bool $stripTags = true): string
+    {
+        return $this->getShortDescriptionForProduct($this->getProduct(), $excerpt, $stripTags);
+    }
+
+    public function getShortDescriptionForProduct(
+        Product $product,
         bool $excerpt = true,
         bool $stripTags = true
     ): string {
-        $product = $this->getProduct();
         $result = "";
 
         if ($shortDescription = $product->getShortDescription()) {
