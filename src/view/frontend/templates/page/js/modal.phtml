@@ -271,23 +271,28 @@ use Magento\Framework\View\Element\Template;
                 : selectors.map(selector => excludedFromFocusTrapping.add(selector));
         }
 
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                window.hyva.modal.pop();
-            }
-        });
-
-        // add generic modal @click.away handler
-        document.addEventListener('click', function(e) {
-            if (modals.length > 0) {
-                const modal = modals[modals.length -1];
-                const dialog = modal.viewModel.$refs[modal.name];
-                if (modal.time + 10 < Date.now() && // if last click processing is more than 10ms ago
-                    ! isOverlayDisabled(dialog) && // if dialog has overlay
-                    ! dialog.contains(e.target)) { // if click is outside of dialog
-                    modal.viewModel.hide();
+        window.hyva.modal.eventListeners = {
+            keydown: event => {
+                if (event.key === 'Escape') {
+                    window.hyva.modal.pop();
+                }
+            },
+            // generic modal @click.away handler
+            click: event => {
+                if (modals.length > 0) {
+                    const modal = modals[modals.length -1];
+                    const dialog = modal.viewModel.$refs[modal.name];
+                    if (modal.time + 10 < Date.now() && // if last click processing is more than 10ms ago
+                        ! isOverlayDisabled(dialog) && // if dialog has overlay
+                        ! dialog.contains(event.target)) { // if click is outside of dialog
+                        modal.viewModel.hide();
+                    }
                 }
             }
-        });
+        };
+
+        document.addEventListener('keydown', window.hyva.modal.eventListeners.keydown);
+
+        document.addEventListener('click', window.hyva.modal.eventListeners.click);
     })();
 </script>
