@@ -7,7 +7,116 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.12...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.13...main
+
+## [1.1.13] - 2022-04-12
+
+[1.1.13]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.12...1.1.13
+
+### Added
+
+- **Add Confirmation Modal Dialog**
+
+  This is an extension of the modal dialogs. 
+
+  More details can be found in [merge request #178](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/178)
+
+- **Add method displayCartTaxWithGrandTotal to get tax config to cart totals view model**
+
+  More details can be found in [issue #156](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/156)
+
+- **Show unavailable shipping methods with error code on estimate shipping**
+
+  This replicates the behavior on Luma more closely.
+
+  More details can be found in the default theme [issue #292](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/292)
+
+- **Add method to render description excerpt for any product**
+
+  Previously the method was only available for the current product on a PDP. The new method accepts any product instance.
+
+  More details can be found in [issue #159](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/159)
+
+### Changed
+
+- **Fix incompatibility with type changes introduced in Magento Core**
+
+  Fixed an inconsistency where types that were not present in the original method are introduced by this [PR](https://github.com/magento/magento2-page-builder/pull/528) from Magento.
+
+  More details can be found in [merge request #179](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/179)
+
+  Big thanks to Mohamed Kaid (mokadev) for the contribution!
+ 
+- **Remove argument types for compatibility with TaxJar**
+
+  The TaxJar module does not follow the same typing as core Magento. By relaxing the type constraints this change allows the code to work with the TaxJar module.
+
+  More details can be found in [issue #146](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/146)
+
+- **Fix form_key race condition on slow internet connections**
+
+  On slow internet connections there was an issue where when the page is submitted before everything has loaded, then it returned “Invalid Form Key. Please refresh the page.”.  
+
+  More details can be found in [issue #140](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/140)
+
+  Big thanks to Luke Collymore (Develo Design) for finding the bug and providing the solution!
+
+- **Use full locale to determine currency format**
+
+  So far only the language was used to determine how to format the currency, but in some cases that is not enough, for example `de_CH` (Switzerland German) vs `de_DE` (Germany German). 
+
+  More details can be found in the default theme [issue #345](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/345)
+  
+- **Product Sliders: allow filtering by category and sorting by position**
+
+  This scenario is treated by Magento as a special case, so it needs to be handled as such in the slider container, too.
+
+  More details can be found in the default theme [issue #354](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/354)
+
+- **Centralize product list item block rendering**
+
+  Previously the logic to render a product list item was repeated in several templates. This requried updating multiple
+  files with the same change, and caused inconsistencies in regards to caching.
+
+  More details can be found in [issue #154](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/154)
+
+- **Fix product list price for wrong group ID**
+  
+  This fix is related to the previous item. Previously tax setting depending on the customer group ID where cached
+  using the wrong cache ID, so the price for the customer group that happened to visit a list page first got shown
+  to every group.
+
+  More details can be found in [issue #155](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/155)
+  
+
+- **PageBuilder: fix unable to findSVG icon "X" in admin preview**
+
+  More details can be found in [issue #157](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/157)
+
+  Many thanks to Oli Jaufmann and Nguyen Miha (both from JaJuMa) for the contribution!
+
+- **Configurable Product cart image not using Product Image Itself as per admin settings**
+
+  Previously the setting *Stores -> Configuration -> Sales -> Checkout -> Shopping Cart -> Configurable Product Image -> Product Image Itself* had no effect.  
+  This was originally due to the Magneto GraphQL API not providing the parent product image. This data has been added to the GraphQL API in release 2.4.3, so now Hyvä supports showing the configurable product image, too if newer Magento versions.
+
+  More details can be found in the default theme [issue #326](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/326)
+
+  Big thank you to Lucas van Staden (ProxyBlue) for the contribution! 
+
+- **Allow manipulating modal event subscriber functions**
+
+  More information can be found in the [issue #160](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/160)
+
+### Removed
+
+- **Remove Magento_SendFriend dependency, so it can be removed if not needed**
+
+  Without this change static-content:deploy failed if Magento_SendFriend was removed.
+
+  More details can be found in the default theme [merge request #287](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/287)
+
+  Many thanks to Peter Jaap Blaakmeer (Elgentos) for the contribution!
 
 ## [1.1.12] - 2022-02-07
 
