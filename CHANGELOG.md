@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.13...main
 
-## [1.1.13] - 2022-04-11
+## [1.1.13] - 2022-04-12
 
 [1.1.13]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.12...1.1.13
 
@@ -73,12 +73,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More details can be found in the default theme [issue #354](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/354)
 
-- **Remove Magento_SendFriend dependency, so it can be removed if not needed**
-
-  Without this change static-content:deploy failed if Magento_SendFriend was removed.
-
-  More details can be found in the default theme [merge request #287](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/287)
-
 - **Centralize product list item block rendering**
 
   Previously the logic to render a product list item was repeated in several templates. This requried updating multiple
@@ -99,7 +93,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More details can be found in [issue #157](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/157)
 
-  Many thanks to Oli Jaufmann and Nguyen Miha (both from JaJuMa)!
+  Many thanks to Oli Jaufmann and Nguyen Miha (both from JaJuMa) for the contribution!
 
 - **Configurable Product cart image not using Product Image Itself as per admin settings**
 
@@ -108,11 +102,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More details can be found in the default theme [issue #326](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/326)
 
-  Big thank you to Lucas van Staden (ProxyBlue) for the fix! 
+  Big thank you to Lucas van Staden (ProxyBlue) for the contribution! 
+
+- **Allow manipulating modal event subscriber functions**
+
+  More information can be found in the [issue #160](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/160)
 
 ### Removed
 
-- Nothing
+- **Remove Magento_SendFriend dependency, so it can be removed if not needed**
+
+  Without this change static-content:deploy failed if Magento_SendFriend was removed.
+
+  More details can be found in the default theme [merge request #287](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/287)
+
+  Many thanks to Peter Jaap Blaakmeer (Elgentos) for the contribution!
 
 ## [1.1.12] - 2022-02-07
 
