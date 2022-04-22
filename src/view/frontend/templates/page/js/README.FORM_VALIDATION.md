@@ -123,13 +123,24 @@ Custom validators can be added using the method `hyva.formValidation.addRule` (s
 The `data-msg-VALIDATOR_NAME` attribute allows overriding the default validator message.  
 The `%0` placeholder will be replaced with the validation rule argument.
 
+
+
+### Validating a single field during user interaction
+
+Use the `onChange` callback with the `input` event to trigger field validation during user interaction.
+
+```html
+<input @input="onChange" .../>
+
+```
+
 ### Custom submit function
 
-Custom form handling can be merged with `hyva.formValidation`:
+Custom form submission can be accomplished with `hyva.formValidation`:
 
 ```html
 <form x-data="{...hyva.formValidation($el), ...initMyForm()}" 
-      @submit="myFormSubmit($event)"
+      @submit="myFormSubmit"
 >
 ```
 
@@ -137,15 +148,18 @@ Custom form handling can be merged with `hyva.formValidation`:
 function initMyForm() {
     return {
         myFormSubmit(event) {
-            this.validate().then(() => {
-                this.$el.submit();
-            }).catch((elements) => {
-                /*
-                 * Invalid elements are provided as an argument,
-                 * for example to scroll to problematic field.
-                 */
-                event.preventDefault;
-            });
+            event.preventDefault();
+
+            this.validate()
+                .then(() => {
+                    // all fields validated
+                    event.target.submit()
+                })
+                .catch((invalid) => {
+                    if (invalid.length > 0) {
+                        invalid[0].focus();
+                    }
+                });
         }
     }
 }
@@ -153,7 +167,7 @@ function initMyForm() {
 
 ### Adding new validation rules
 
-To add new validaton rule, use the `hyva.formValidation.addRule` method and pass new validation function.  
+To add new validation rule, use the `hyva.formValidation.addRule` method and pass new validation function.  
 The first argument is the validator name and the second argument is the validator rule callback.
 
 A validator rule callback is a function that will receive four arguments:
@@ -170,7 +184,7 @@ hyva.formValidation.addRule('phone', function(value, options, field, context) {
     const phoneNumber = value.trim().replace(' ', '');
     if (phoneNumber.length !== 9) {
         // return message if validation fails;
-        return '<?= /* @noEscape */ __("Enter correct phone number, like XXX XXX XXX") ?>';
+        return '<?= $escaper->escapeJs(__("Enter correct phone number, like XXX XXX XXX")) ?>';
     } else {
         // return true if validation passed
         return true;
@@ -178,14 +192,50 @@ hyva.formValidation.addRule('phone', function(value, options, field, context) {
 });
 ```
 
-Asynchronous validation functions (for example a validation that involves a Web API call) are currently not supported.
+Validation rule functions should return one of the following values:
 
-### Validating a single field during user interaction
+* The boolean `true` if the rule is valid.
+* A string message if the rule is invalid. The string should describe the failure in a helpful way
+* A Promise that resolves to `true` or a message string when the validation completes.  
+  See below for more information on asynchronous validation rules.
 
-Use the `onChange` callback with the `input` event to trigger field validation during user interaction.
+### Asynchronous validation
 
-```html
-<input @input="onChange" .../>
+Sometimes validation of form values requires asynchronous actions, such as sending a query to a web API and waiting for the response.
+
+This can be accomplished by returning a promise from the validation function.
+
+The form submission is prevented by the onSubmit function until either all validation rules pass or the one of the fields has an invalid value.
+For fields with async validators, error messages will be displayed as soon as all field rules have completed.
+
+
+#### Example async validator rule:
+
+```js
+hyva.formValidation.addRule('username', (value, options, field, context) => {
+    return new Promise(resolve => {
+        // show the user form validation is ongoing, maybe show a spinner
+        field.element.disabled = true;
+
+        fetch(this.url + '?form_key=' + hyva.getFormKey(), {
+            method: 'post',
+            body: JSON.stringify({username: value}),
+            headers: {contentType: 'application/json'}
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.ok) {
+                    resolve(true);
+                } else {
+                    resolve(hyva.strf('The username "%0" is already taken.', value));
+                })
+            })
+            .finally(() => {
+                // indicate validation has finished, remove spinner if shown
+                field.element.disabled = false;
+            }):
+    });
+});
 ```
 
 ---

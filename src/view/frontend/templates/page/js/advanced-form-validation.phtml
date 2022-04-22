@@ -23,6 +23,40 @@ use Magento\Framework\View\Element\Template;
 <script>
     'use strict';
     (function(hyva) {
+
+        /**
+         * Return a promise resolving when the first of the passed promises resolves to a value for which the predicate function is truthy.
+         *
+         * If any of promises is rejected before the return promise is resolved, the return promise is also rejected.
+         *
+         * @param {Promise[]} promises - Array of promises
+         * @param {Function} pred - Predicate callback function
+         * @returns {Promise<unknown>}
+         */
+        function raceSome(promises, pred) {
+            return new Promise((resolve, reject) => {
+
+                let settled = false;
+                let nDone = 0;
+
+                const resolveIf = v => {
+                    if (!settled && (pred(v) || ++nDone === promises.length)) {
+                        settled = true;
+                        resolve(v);
+                    }
+                    return v;
+                }
+
+                promises.map(promise => {
+                    promise.then(resolveIf).catch(reason => {
+                        settled = true;
+                        reject(reason)
+                    });
+                    return promise;
+                });
+            });
+        }
+
         const formValidationRules = {
             required(value, options, field, context) {
                 field.element.setAttribute('required', '');
@@ -122,7 +156,6 @@ use Magento\Framework\View\Element\Template;
             return {
                 state: {
                     valid: false,
-                    touched: false
                 },
                 fields: {},
                 idSeq: 0,
@@ -144,7 +177,6 @@ use Magento\Framework\View\Element\Template;
                             rules: this.getRules(element),
                             state: {
                                 valid: null,
-                                touched: null,
                                 rules: {}
                             }
                         }
@@ -154,12 +186,14 @@ use Magento\Framework\View\Element\Template;
                 },
                 onSubmit(event) {
                     if (event.target.tagName === 'FORM') {
-                        this.state.touched = true;
-                        this.validate().catch((invalid) => {
-                            if (invalid.length > 0) {
-                                invalid[0].focus();
-                            }
-                            event.preventDefault();
+                        event.preventDefault();
+
+                        this.validate()
+                            .then(() => event.target.submit())
+                            .catch((invalid) => {
+                                if (invalid.length > 0) {
+                                    invalid[0].focus();
+                                }
                         });
                     }
                 },
@@ -172,16 +206,15 @@ use Magento\Framework\View\Element\Template;
                     }
                     const field = this.fields[event.target.name];
 
-                    field.state.touched = true;
                     this.validateField(field);
                 },
                 validate() {
                     if (!Object.keys(this.fields).length || !Object.keys(this.fields).length !== formElement.elements.length) {
                         this.setupFields(formElement.elements);
                     }
-                    return new Promise((resolve, reject) => {
+                    return new Promise(async (resolve, reject) => {
                         if (formElement.elements) {
-                            this.validateFields();
+                            await raceSome(this.validateFields(), result => result !== true)
                             const invalidFields = Object.values(this.fields).filter(field => !field.state.valid);
                             this.state.valid = invalidFields.length === 0;
                             if (this.state.valid) {
@@ -192,30 +225,41 @@ use Magento\Framework\View\Element\Template;
                         }
                     });
                 },
+                <?php // return array of promises ?>
                 validateFields() {
-                    Object.values(this.fields).forEach(field => this.validateField(field));
+                    return Object.values(this.fields).map(field => this.validateField(field))
                 },
+                <?php // Return Promise that is resolved to field.state.valid when all validators are resolved ?>
+                <?php // Note: set the field state before resolving the promise ?>
                 validateField(field) {
                     const value = field.element.type === 'checkbox' ? field.element.checked : field.element.value;
-                    const rules = field.rules;
-                    if (rules) {
-                        Object.keys(rules).forEach(rule => {
-                            if (formValidationRules[rule]) {
-                                field.state.rules[rule] = this.runValidateFn(rule, rules[rule], value, field);
-                            } <?php if ($viewModels->require(StoreConfig::class)->isDeveloperMode()): ?>
-                            else {
-                                console.error(hyva.strf('Unknown validation rule "%0" found on field', rule), field.element);
-                            }
-                            <?php endif; ?>
-                        });
-                        field.state.valid = !Object.values(field.state.rules).some(this.isInvalidRule);
-                    } else {
-                        field.state.valid = true;
-                    }
+                    const rules = field.rules || [];
+                    // reset messages before validation in case async operations take a while
+                    field.state.valid = true;
+                    this.showFieldState(field);
 
-                    this.setFieldStates(field);
+                    <?php if ($viewModels->require(StoreConfig::class)->isDeveloperMode()): ?>
+                    Object.keys(rules).filter(rule => !formValidationRules[rule]).forEach(unknown => {
+                        console.error(hyva.strf('Unknown validation rule "%0" found on field', unknown), field.element);
+                    });
+                    <?php endif; ?>
+
+                    const fieldValidations = Object.keys(rules).filter(rule => formValidationRules[rule]).map(async rule => {
+                        return this.runValidateFn(rule, rules[rule], value, field).then(result => {
+                            field.state.rules[rule] = result;
+                            return result;
+                        })
+                    });
+
+                    return new Promise(resolve => {
+                        Promise.all(fieldValidations).then(results => {
+                            field.state.valid = rules.length === 0 || !results.some(this.isInvalidRuleResult)
+                            this.showFieldState(field);
+                            resolve(field.state.valid);
+                        })
+                    });
                 },
-                runValidateFn(rule, options, value, field) {
+                async runValidateFn(rule, options, value, field) {
                     return formValidationRules[rule](value, options, field, this);
                 },
                 getRules(element) {
@@ -244,12 +288,12 @@ use Magento\Framework\View\Element\Template;
 
                     return rules;
                 },
-                isInvalidRule(ruleState) {
+                isInvalidRuleResult(ruleState) {
                     return typeof ruleState === 'string' || !ruleState;
                 },
                 getMessagesByField(field) {
                     const messages = [];
-                    const invalidRules = Object.keys(field.state.rules).filter(rule => this.isInvalidRule(field.state.rules[rule]));
+                    const invalidRules = Object.keys(field.state.rules).filter(rule => this.isInvalidRuleResult(field.state.rules[rule]));
 
                     field.rules && Object.keys(field.rules).forEach((rule) => {
                         if (invalidRules.includes(rule)) {
@@ -269,7 +313,7 @@ use Magento\Framework\View\Element\Template;
                     });
                     return messages;
                 },
-                setFieldStates(field) {
+                showFieldState(field) {
 
                     function createFieldParent(el) {
                         if (el.parentElement) {
@@ -326,7 +370,6 @@ use Magento\Framework\View\Element\Template;
                 },
                 setField(name, value) {
                     this.fields[name].element.value = value;
-                    this.fields[name].state.touched = true;
                     this.fields[name].element.dispatchEvent((new Event('input')));
                     this.validateField(this.fields[name]);
                 },
