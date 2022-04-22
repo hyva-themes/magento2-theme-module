@@ -248,15 +248,18 @@ use Magento\Framework\View\Element\Template;
                     return typeof ruleState === 'string' || !ruleState;
                 },
                 getMessagesByField(field) {
-                    let messages = [];
-                    let invalidRules = Object.keys(field.state.rules).filter(rule => this.isInvalidRule(field.state.rules[rule]));
+                    const messages = [];
+                    const invalidRules = Object.keys(field.state.rules).filter(rule => this.isInvalidRule(field.state.rules[rule]));
+
                     field.rules && Object.keys(field.rules).forEach((rule) => {
                         if (invalidRules.includes(rule)) {
                             const customMessage = field.element.getAttribute('data-msg-' + rule);
                             const message = customMessage ? customMessage : field.state.rules[rule];
                             const ruleOptions = JSON.parse(JSON.stringify(field.rules[rule]));
 
-                            if (Array.isArray(ruleOptions)) {
+                            if (typeof message !== 'string') {
+                                messages.push(hyva.strf('Validation rule "%0" failed.', rule));
+                            } else if (Array.isArray(ruleOptions)) {
                                 ruleOptions.unshift(message);
                                 messages.push(hyva.strf.apply(null, ruleOptions));
                             } else {
