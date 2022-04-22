@@ -232,13 +232,24 @@ $currencyViewModel = $viewModels->require(Currency::class);
         }
 
         /**
-         * @title - Equivalent to default Magento translate method
-         * @description - Allows replacing parameters like "%1" with parameters provided in JS.
-         * Input value can't be encoded.
+         * Replace positional parameters like %0 with the additional argument in the matching position.
+         * The first additional argument replaces %0, the second %1 and so on.
+         *
+         * Example: hyva.srtf('%1 %0 %2', 'a', 'b', 'c') => "b a c"
+         *
+         * To insert a literal % symbol followed by a number, duplicate the %, for example %%2 is returned as %2.
+         *
+         * Input string can't be URL encoded in order for the replacement to work.
          */
-        hyva.__ = (string, ...args) => {
-            let index = 0;
-            return string.replaceAll(/"%+[0-9]*\.?[0-9]"/g, () => args[index++]);
+        hyva.strf = function (string) {
+            // According to caniuse.com rest arguments support isn't at 97% yet at the time of writing
+            const args = Array.from(arguments).slice(1);
+
+            return string.replaceAll(/(%?%)[0-9]+/g, (m, p) => {
+                return '%%' === p
+                    ? m.substr(1)
+                    : args[m.substr(1)] ?? m;
+            })
         }
 
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())

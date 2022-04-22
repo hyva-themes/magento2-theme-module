@@ -1,40 +1,60 @@
 # Advanced JavaScript validation
 
-By default, _hyva_ uses built-in browser form validation. In most cases that's enough, but you may need something more advanced (eg. for custom validation messages in chosen place). That's why there is an optional advanced JavaScript validator, which you enable in you project in case of need.
+By default, _hyva_ uses built-in browser form validation. In most cases that's enough, but you may need something more 
+advanced (for example, to display custom validation messages in a specific location). 
+That's why there is an optional advanced JavaScript validator, which can be used as needed.
 
 ## Getting started
 
 ### 1. Enable advanced JS validation
 
-Load the advanced form validation on the pages your want to use it (for example `default_hyva.xml` for all pages).
+Load the advanced form validation on the pages your want to use it using layout XML by applying the layout handle `hyva_form_validation`.
 
 ```xml
-<?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceContainer name="after.body.start">
-            <!-- ... default hyva scripts ... -->
-            <block name="advanced-form-validation" template="Hyva_Theme::page/js/advanced-form-validation.phtml" after="-"/>
-        </referenceContainer>
-    </body>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="hyva_form_validation"/>
 </page>
+
 ```
 
-### 2. Init form validation
+### 2. Initialize the form validation Alpine.js component
 
-You can bind form with `hyva.formValidation($el)` function.  
-You can perform validation on `@submit` event or on `@change`.
+If you only need the form validation on frontend logic, use `x-data="hyva.formValidation($el)"` to initialize the component.
 
 ```html
 <form x-data="hyva.formValidation($el)">
 ```
 
-Default submit action is preventing form submit event until all fields are correct.  
-`novalidate` attribute will be added to _FORM_ element automatically to disable browser default validation. 
+If additional logic is needed, merge the form validation component with your custom component properties:
 
-### 3. Set custom validators or use browser default
+```html
+<form x-data="{...initMyCustomComponent(), ...hyva.formValidation($el)}">
+```
 
-To add custom validator, use this syntax:  
+You can trigger the validation of the whole form using the Alpine.js `@submit` event with the `onSubmit` method.
+
+```html
+<form x-data="hyva.formValidation($el)" @submit="onSubmit">
+```
+
+Validation of individual fields can be triggered using the `@change` event with the `onChange` method.
+
+```html
+<div class="field">
+    <input name="example" data-validate='{"required": true}' @change="onChange" />
+</div>
+```
+
+Note: the default submit action is prevented to stop the form from submitting until all fields are correct.  
+For this purpose the `novalidate` attribute is added to the _FORM_ element automatically.
+
+
+### 3. Define the validation rules
+
+Validation rules can be added using `data-validate` or using HTML5 browser constraints API.
+
+To add a custom validator, use this syntax:  
 
 ```html
 <div class="field">
@@ -42,32 +62,37 @@ To add custom validator, use this syntax:
 </div>
 ```
 
-> It should look like regular JSON object, because we parse data-validate by `JSON.parse`.
+Use regular JSON object notation (not plain JavaScript), because the content of the `data-validate` attribute is parsed with `JSON.parse()`.
 
-You can also use some browser native input attributes (list of supported in table below):  
+You can also use some browser HTML5 constraint attributes (see below for a list of supported native validation rules):  
+
 ```html
 <div class="field">
     <input type="number" min="2" required />
 </div>
 ```
 
-> Input elements should be wrapper with `.field` container by default - error messages will be placed there.
-> It is possible to use custom class name (check out _Advanced settings_ section of this document).
+Input elements should be wrapped by a container element with a `.field` class.
+It is also possible to use a custom class name instead of `class="field"` (check out the _Advanced settings_ section below).
+
+Should the container element be missing, it will be generated automatically if error messages need to be displayed.
 
 
 ### Available validators
 
-| Name      | Usage examples                                             | Note                                           |
-|-----------|------------------------------------------------------------|------------------------------------------------|
-| required  | `required`<br/>`data-validate='{"required": true}'`        | Uses browser native validation                 |
-| minlength | `minlength="2"`<br/>`data-validate='{"minlength": 2}'`     | Uses browser native validation of text input   |
-| maxlength | `maxlength="3"`<br/>`data-validate='{"maxlength": 3}'`     | Uses browser native validation of text input   |
-| min       | `min="2"`<br/>`data-validate='{"min": 2}'`                 | Uses browser native validation of number input |
-| max       | `max="4"`<br/>`data-validate='{"max": 3}'`                 | Uses browser native validation of number input |
-| step      | `step="1"`<br/>`data-validate='{"step": 1}'`               | Uses browser native validation of number input |
-| email     | `type="email"`<br/>`data-validate='{"email": true}'`       | Uses Magento email requirements                |
-| password  | `type="password"`<br/>`data-validate='{"password": true}'` | Uses Magento password requirements             |
-| equalTo   | `data-validate='{"equalTo": "password"}'`                  | Compares field value with other field          |
+| Name      | Usage examples                                             | Note                                             |
+|-----------|------------------------------------------------------------|--------------------------------------------------|
+| required  | `required`<br/>`data-validate='{"required": true}'`        | Uses the browser constraint API validation       |
+| minlength | `minlength="2"`<br/>`data-validate='{"minlength": 2}'`     | Uses the browser constraint API on text input    |
+| maxlength | `maxlength="3"`<br/>`data-validate='{"maxlength": 3}'`     | Uses the browser constraint API on text input    |
+| min       | `min="2"`<br/>`data-validate='{"min": 2}'`                 | Uses the browser constraint API on number inputs |
+| max       | `max="4"`<br/>`data-validate='{"max": 3}'`                 | Uses the browser constraint API on number inputs |
+| step      | `step="1"`<br/>`data-validate='{"step": 1}'`               | Uses the browser constraint API on number inputs |
+| email     | `type="email"`<br/>`data-validate='{"email": true}'`       | Uses the Magento email validation regex          |
+| password  | `type="password"`<br/>`data-validate='{"password": true}'` | Uses the Magento password validation regex       |
+| equalTo   | `data-validate='{"equalTo": "password"}'`                  | Compares a field value with other field value    |
+
+Custom validators can be added using the method `hyva.formValidation.addRule` (see below).
 
 ---
 
@@ -95,50 +120,53 @@ You can also use some browser native input attributes (list of supported in tabl
 
 ```
 
-> `data-msg-VALIDATOR_NAME` attribute allows overwriting default validator message.
+The `data-msg-VALIDATOR_NAME` attribute allows overriding the default validator message.  
+The `%0` placeholder will be replaced with the validation rule argument.
 
 ### Custom submit function
 
-There is a possibility to merge custom form handling with `hyva.formValidation`:
+Custom form handling can be merged with `hyva.formValidation`:
 
 ```html
-<form x-data="{...hyva.formValidation($el), ...myForm()}" 
+<form x-data="{...hyva.formValidation($el), ...initMyForm()}" 
       @submit="myFormSubmit($event)"
 >
 ```
 
 ```js
-function myForm() {
+function initMyForm() {
     return {
-        myFormSubmit($event) {
+        myFormSubmit(event) {
             this.validate().then(() => {
                 this.$el.submit();
             }).catch((elements) => {
-                /**
-                 * not valid elements are provided as an argument
-                 * eg. to scroll to problematic field
+                /*
+                 * Invalid elements are provided as an argument,
+                 * for example to scroll to problematic field.
                  */
-                $event.preventDefault;
+                event.preventDefault;
             });
         }
     }
 }
 ```
 
-### Add new validation rules
+### Adding new validation rules
 
-To add new validator, use `hyva.addFormValidationRule` method and pass new validation function.  
-Function name is validator name.
+To add new validaton rule, use the `hyva.formValidation.addRule` method and pass new validation function.  
+The first argument is the validator name and the second argument is the validator rule callback.
+
+A validator rule callback is a function that will receive four arguments:
 
 ```js
 /**
  * Validator arguments
  * @param {string} value - input value
  * @param {*} options - additional options passed by data-validator='{"validatorName": {"option": 1}}'
- * @param {Object} - Alpine.js object which contains element, validators and validation state
- * @param {Object} - Alpine.js object with all form validators and methods used for validation
+ * @param {Object} field - Alpine.js object which contains element, validators and validation state // TODO MAKE CLEARER
+ * @param {Object} context - The Alpine.js component instance
  */
-hyva.addFormValidationRule('phone', function(value, options, field, context) {
+hyva.formValidation.addRule('phone', function(value, options, field, context) {
     const phoneNumber = value.trim().replace(' ', '');
     if (phoneNumber.length !== 9) {
         // return message if validation fails;
@@ -150,12 +178,14 @@ hyva.addFormValidationRule('phone', function(value, options, field, context) {
 });
 ```
 
-### Validate single field
+Asynchronous validation functions (for example a validation that involves a Web API call) are currently not supported.
 
-`validateField`
+### Validating a single field during user interaction
+
+Use the `onChange` callback with the `input` event to trigger field validation during user interaction.
 
 ```html
-@input="validateField"
+<input @input="onChange" .../>
 ```
 
 ---
@@ -164,7 +194,7 @@ hyva.addFormValidationRule('phone', function(value, options, field, context) {
 
 ### Initialization options
 
-There is a possibility to customize class names used by validator, by passing object with options as a second argument of `hyva.formValidation`.
+To customize the class names used by validator rules, passing an object with options as a second argument to `hyva.formValidation`.
 
 ```html
 <form x-data="hyva.formValidation($el, {fieldWrapperClassName: 'fld', messagesWrapperClassName: 'msg'})"></form>
@@ -181,9 +211,9 @@ Default values:
 }
 ```
 
-### Validation with dependency field
+### Validation rules with a dependency on another field
 
-Sometimes field validation is dependent on another field. For example purposes, let's create conditional validation for ZIP code:
+Sometimes field validation is dependent on another field. For example purposes, let's create conditional validation for ZIP codes:
 
 ```html
 <div class="field">
