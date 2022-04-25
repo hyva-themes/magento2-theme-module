@@ -23,40 +23,6 @@ use Magento\Framework\View\Element\Template;
 <script>
     'use strict';
     (function(hyva) {
-
-        /**
-         * Return a promise resolving when the first of the passed promises resolves to a value for which the predicate function is truthy.
-         *
-         * If any of promises is rejected before the return promise is resolved, the return promise is also rejected.
-         *
-         * @param {Promise[]} promises - Array of promises
-         * @param {Function} pred - Predicate callback function
-         * @returns {Promise<unknown>}
-         */
-        function raceSome(promises, pred) {
-            return new Promise((resolve, reject) => {
-
-                let settled = false;
-                let nDone = 0;
-
-                const resolveIf = v => {
-                    if (!settled && (pred(v) || ++nDone === promises.length)) {
-                        settled = true;
-                        resolve(v);
-                    }
-                    return v;
-                }
-
-                promises.map(promise => {
-                    promise.then(resolveIf).catch(reason => {
-                        settled = true;
-                        reject(reason)
-                    });
-                    return promise;
-                });
-            });
-        }
-
         const formValidationRules = {
             required(value, options, field, context) {
                 field.element.setAttribute('required', '');
@@ -132,9 +98,100 @@ use Magento\Framework\View\Element\Template;
             }
         };
 
-        function addFormValidationRule(name, validator) {
-            formValidationRules[name] = validator;
+        <?php // private methods start ?>
+
+        /**
+         * Return a promise resolving when the first of the passed promises resolves to a value for which the predicate function is truthy.
+         *
+         * If any of promises is rejected before the return promise is resolved, the return promise is also rejected.
+         *
+         * @param {Promise[]} promises - Array of promises
+         * @param {Function} pred - Predicate callback function
+         * @returns {Promise<unknown>}
+         */
+        function raceSome(promises, pred) {
+            return new Promise((resolve, reject) => {
+
+                let settled = false;
+                let nDone = 0;
+
+                const resolveIf = v => {
+                    if (!settled && (pred(v) || ++nDone === promises.length)) {
+                        settled = true;
+                        resolve(v);
+                    }
+                    return v;
+                }
+
+                promises.map(promise => {
+                    promise.then(resolveIf).catch(reason => {
+                        settled = true;
+                        reject(reason)
+                    });
+                    return promise;
+                });
+            });
         }
+
+        function getRules(element) {
+            let rules = {};
+            const BROWSER_ATTRS = ['min', 'max', 'required', 'minlength', 'maxlength', 'step'];
+            const DEFAULT_TYPES = ['email', 'password'];
+            BROWSER_ATTRS.forEach(attrName => {
+                if (element.hasAttribute(attrName)) {
+                    rules[attrName] = element.getAttribute(attrName);
+                }
+            })
+            DEFAULT_TYPES.forEach(typeName => {
+                if (element.type === typeName) {
+                    rules[typeName] = true;
+                }
+            })
+
+            const validation = element.dataset.validate;
+            if (validation) {
+                try {
+                    rules = Object.assign(rules, JSON.parse(validation));
+                } catch (error) {
+                    console.error('Validator error. Cannot parse data-validate attribute of element:\n', element);
+                }
+            }
+
+            return rules;
+        }
+
+        function isInvalidRuleResult(ruleState) {
+            return typeof ruleState === 'string' || !ruleState;
+        }
+
+        async function runValidateFn(rule, options, value, field) {
+            return formValidationRules[rule](value, options, field, this);
+        }
+
+        function generateId() {
+            let id;
+            do {
+                id = `${this.idPrefix}-${++this.idSeq}`;
+            } while (document.getElementById(id));
+            return id;
+        }
+
+        function elementWillValidate(element) {
+            return element.willValidate && element.tagName !== 'BUTTON' && element.disabled === false && !(element.tagName === 'INPUT' && element.type === 'submit')
+        }
+
+        function createFieldParent(el, fieldWrapperClassName) {
+            if (el.parentElement) {
+                const wrapper = document.createElement('div');
+                wrapper.classList.add(fieldWrapperClassName);
+                wrapper.classList.add('generated-wrapper');
+                el.parentElement.insertBefore(wrapper, el);
+                wrapper.appendChild(el);
+                return wrapper;
+            }
+        }
+
+        <?php // private methods end ?>
 
         function formValidation(formElement, options) {
             // disable browser default validation
@@ -160,21 +217,18 @@ use Magento\Framework\View\Element\Template;
                 fields: {},
                 idSeq: 0,
                 idPrefix: formElement.id || 'vld-msg',
-                elementWillValidate(element) {
-                    return element.willValidate && element.tagName !== 'BUTTON' && element.disabled === false && !(element.tagName === 'INPUT' && element.type === 'submit')
-                },
                 setupFields(elements) {
                     Array.from(elements).forEach((element) => {
-                        if (this.elementWillValidate(element)) {
+                        if (elementWillValidate(element)) {
                             this.setupField(element);
                         }
                     });
                 },
                 setupField(element) {
-                    if (this.elementWillValidate(element)) {
+                    if (elementWillValidate(element)) {
                         this.fields[element.name] = {
                             element,
-                            rules: this.getRules(element),
+                            rules: getRules(element),
                             state: {
                                 valid: null,
                                 rules: {}
@@ -245,7 +299,7 @@ use Magento\Framework\View\Element\Template;
                     <?php endif; ?>
 
                     const fieldValidations = Object.keys(rules).filter(rule => formValidationRules[rule]).map(async rule => {
-                        return this.runValidateFn(rule, rules[rule], value, field).then(result => {
+                        return runValidateFn.call(this, rule, rules[rule], value, field).then(result => {
                             field.state.rules[rule] = result;
                             return result;
                         })
@@ -253,47 +307,15 @@ use Magento\Framework\View\Element\Template;
 
                     return new Promise(resolve => {
                         Promise.all(fieldValidations).then(results => {
-                            field.state.valid = rules.length === 0 || !results.some(this.isInvalidRuleResult)
+                            field.state.valid = rules.length === 0 || !results.some(isInvalidRuleResult)
                             this.showFieldState(field);
                             resolve(field.state.valid);
                         })
                     });
                 },
-                async runValidateFn(rule, options, value, field) {
-                    return formValidationRules[rule](value, options, field, this);
-                },
-                getRules(element) {
-                    let rules = {};
-                    const BROWSER_ATTRS = ['min', 'max', 'required', 'minlength', 'maxlength', 'step'];
-                    const DEFAULT_TYPES = ['email', 'password'];
-                    BROWSER_ATTRS.forEach(attrName => {
-                        if (element.hasAttribute(attrName)) {
-                            rules[attrName] = element.getAttribute(attrName);
-                        }
-                    })
-                    DEFAULT_TYPES.forEach(typeName => {
-                        if (element.type === typeName) {
-                            rules[typeName] = true;
-                        }
-                    })
-
-                    const validation = element.dataset.validate;
-                    if (validation) {
-                        try {
-                            rules = Object.assign(rules, JSON.parse(validation));
-                        } catch (error) {
-                            console.error('Validator error. Cannot parse data-validate attribute of element:\n', element);
-                        }
-                    }
-
-                    return rules;
-                },
-                isInvalidRuleResult(ruleState) {
-                    return typeof ruleState === 'string' || !ruleState;
-                },
                 getMessagesByField(field) {
                     const messages = [];
-                    const invalidRules = Object.keys(field.state.rules).filter(rule => this.isInvalidRuleResult(field.state.rules[rule]));
+                    const invalidRules = Object.keys(field.state.rules).filter(rule => isInvalidRuleResult(field.state.rules[rule]));
 
                     field.rules && Object.keys(field.rules).forEach((rule) => {
                         if (invalidRules.includes(rule)) {
@@ -313,30 +335,23 @@ use Magento\Framework\View\Element\Template;
                     });
                     return messages;
                 },
-                showFieldState(field) {
-
-                    function createFieldParent(el) {
-                        if (el.parentElement) {
-                            const wrapper = document.createElement('div');
-                            wrapper.classList.add(options.fieldWrapperClassName);
-                            wrapper.classList.add('generated-wrapper');
-                            el.parentElement.insertBefore(wrapper, el);
-                            wrapper.appendChild(el);
-                            return wrapper;
-                        }
-                    }
-
+                getFieldWrapper(field) {
                     const parentClass = `.${options.fieldWrapperClassName}`;
-                    const parent = field.element.closest(parentClass) || createFieldParent(field.element);
-                    if (parent) {
-                        parent.classList.toggle(options.validClassName, field.state.valid);
-                        parent.classList.toggle(options.invalidClassName, !field.state.valid);
-                        this.createMessage(field, parent)
-                    } <?php if ($viewModels->require(StoreConfig::class)->isDeveloperMode()): ?>
-                    else {
+                    const container = field.element.closest(parentClass) || createFieldParent(field.element, options.fieldWrapperClassName);
+                    <?php if ($viewModels->require(StoreConfig::class)->isDeveloperMode()): ?>
+                    if (! container) {
                         console.error(`Cannot find parent element ${parentClass} of ${field.element.name}`, field.element);
                     }
                     <?php endif; ?>
+                    return container;
+                },
+                showFieldState(field) {
+                    const container = this.getFieldWrapper(field);
+                    if (container) {
+                        container.classList.toggle(options.validClassName, field.state.valid);
+                        container.classList.toggle(options.invalidClassName, !field.state.valid);
+                        this.createErrorMessage(field, this.getMessagesByField(field));
+                    }
 
                     if (field.state.valid) {
                         field.element.removeAttribute('aria-invalid');
@@ -347,44 +362,44 @@ use Magento\Framework\View\Element\Template;
                         }
                     }
                 },
-                createMessage(field, container) {
-                    const msg = container.querySelector(`.${options.messagesWrapperClassName}`);
+                createErrorMessage(field, messages) {
+                    const container = this.getFieldWrapper(field);
+                    const msg = container && container.querySelector(`.${options.messagesWrapperClassName}`);
                     if (msg) {
                         field.element.removeAttribute('aria-errormessage');
                         msg.remove();
                     }
 
                     if (!field.state.valid) {
-                        const messages = this.getMessagesByField(field);
-                        const list = document.createElement('ul');
-                        list.id = this.generateId();
+                        const list = this.createMessage(field, messages)
                         list.classList.add(options.messagesWrapperClassName);
-                        messages.forEach((message) => {
-                            const li = document.createElement('li');
-                            li.innerText = message;
-                            list.appendChild(li);
-                        });
-                        field.element.insertAdjacentHTML('afterend', list.outerHTML);
                         field.element.setAttribute('aria-errormessage', list.id);
                     }
+                },
+                createMessage(field, messages) {
+                    const list = document.createElement('ul');
+                    list.id = generateId.call(this);
+                    (Array.isArray(messages) ? messages : [messages]).forEach((message) => {
+                        const li = document.createElement('li');
+                        li.innerText = message;
+                        list.appendChild(li);
+                    });
+                    field.element.insertAdjacentElement('afterend', list);
+
+                    return list;
                 },
                 setField(name, value) {
                     this.fields[name].element.value = value;
                     this.fields[name].element.dispatchEvent((new Event('input')));
                     this.validateField(this.fields[name]);
-                },
-                generateId() {
-                    let id;
-                    do {
-                        id = `${this.idPrefix}-${++this.idSeq}`;
-                    } while (document.getElementById(id));
-                    return id;
                 }
             }
         }
 
         hyva.formValidation = formValidation;
         hyva.formValidation.rules = formValidationRules;
-        hyva.formValidation.addRule = addFormValidationRule;
+        hyva.formValidation.addRule = (name, validator) => {
+            formValidationRules[name] = validator;
+        }
     }(window.hyva = window.hyva || {}));
 </script>

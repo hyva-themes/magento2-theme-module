@@ -228,12 +228,12 @@ hyva.formValidation.addRule('username', (value, options, field, context) => {
                     resolve(true);
                 } else {
                     resolve(hyva.strf('The username "%0" is already taken.', value));
-                })
+                }
             })
             .finally(() => {
                 // indicate validation has finished, remove spinner if shown
                 field.element.disabled = false;
-            }):
+            });
     });
 });
 ```
@@ -305,5 +305,43 @@ hyva.addFormValidationRule('zip', function(value, options, field, context) {
         return '<?= /* @noEscape */ __("Select country first") ?>'
     }
 })
+```
 
+### Custom non-error messages
+
+Sometimes it is necessary to display additional messages besides validation failures.  
+This can be accomplished using the `context.createMessage(field, messages)` method.  
+
+The `createMessage` method can take a single message string or an array of messages.
+
+The following example shows the number of characters remaining.  
+If more characters are added, the validation fails.
+
+
+```php
+<script>
+hyva.formValidation.addRule('remaining', (value, options, field, context) => {
+    // Remove old message if present
+    const container = context.getFieldWrapper(field);
+    const oldMsg = container && container.querySelector('.remaining-msg');
+    if (oldMsg) oldMsg.remove();
+    
+    const remaining = parseInt(options) - value.length;
+    if (remaining < 0) {
+        // Fail validation
+        return hyva.strf('%0 character(s) too many', Math.abs(remaining));
+    }
+    // Add message without failing validation
+    const message = hyva.strf('<?= $escaper->escapeJs(__('%0 remaining')) ?>', remaining);
+    const newMsg = context.createMessage(field, message);
+    newMsg.classList.add('remaining-msg');
+    return true;
+})
+</script>
+<form x-data="hyva.formValidation($el)">
+<div class="field">
+    <label for="example">Example</label>
+    <textarea id="example" name="example" data-validate='{"remaining": 10}' @input="onChange"></textarea>
+</div>
+</form>
 ```
