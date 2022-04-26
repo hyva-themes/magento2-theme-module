@@ -27,12 +27,22 @@
             </argument>
         </arguments>
     </type>
+
     <type name="Magento\QuoteGraphQl\Model\CartItem\DataProvider\CustomizableOptionValue\Composite">
         <arguments>
             <argument name="customizableOptionValues" xsi:type="array">
                 <item name="file"
                       xsi:type="string">Hyva\Theme\Model\CartItem\DataProvider\CustomizableOptionValue\File
                 </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Add the hyva:config:generate CLI command -->
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="HyvaConfigGenerate" xsi:type="object">Hyva\Theme\Console\Command\HyvaConfigGenerate</item>
             </argument>
         </arguments>
     </type>
@@ -47,4 +57,5 @@
             <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/outline</argument>
         </arguments>
     </type>
+
 </config>
