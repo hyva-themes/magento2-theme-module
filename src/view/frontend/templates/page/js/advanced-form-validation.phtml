@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\StoreConfig;
+use Hyva\Theme\ViewModel\DeployMode;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -292,7 +292,7 @@ use Magento\Framework\View\Element\Template;
                     field.state.valid = true;
                     this.showFieldState(field);
 
-                    <?php if ($viewModels->require(StoreConfig::class)->isDeveloperMode()): ?>
+                    <?php if ($viewModels->require(DeployMode::class)->isDeveloperMode()): ?>
                     Object.keys(rules).filter(rule => !formValidationRules[rule]).forEach(unknown => {
                         console.error(hyva.strf('Unknown validation rule "%0" found on field', unknown), field.element);
                     });
@@ -338,7 +338,7 @@ use Magento\Framework\View\Element\Template;
                 getFieldWrapper(field) {
                     const parentClass = `.${options.fieldWrapperClassName}`;
                     const container = field.element.closest(parentClass) || createFieldParent(field.element, options.fieldWrapperClassName);
-                    <?php if ($viewModels->require(StoreConfig::class)->isDeveloperMode()): ?>
+                    <?php if ($viewModels->require(DeployMode::class)->isDeveloperMode()): ?>
                     if (! container) {
                         console.error(`Cannot find parent element ${parentClass} of ${field.element.name}`, field.element);
                     }

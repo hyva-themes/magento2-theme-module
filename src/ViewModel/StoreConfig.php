@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\State as AppState;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class StoreConfig implements ArgumentInterface
@@ -21,24 +20,13 @@ class StoreConfig implements ArgumentInterface
      */
     protected $scopeConfig;
 
-    /**
-     * @var AppState
-     */
-    private $appState;
-
-    public function __construct(ScopeConfigInterface $scopeConfig, AppState $appState)
+    public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
-        $this->appState = $appState;
     }
 
     public function getStoreConfig($value)
     {
         return $this->scopeConfig->getValue($value, 'store');
-    }
-
-    public function isDeveloperMode(): bool
-    {
-        return $this->appState->getMode() === AppState::MODE_DEVELOPER;
     }
 }
