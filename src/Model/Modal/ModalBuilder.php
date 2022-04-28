@@ -44,7 +44,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         'overlay'             => true, // mask background when dialog is visible
         'is-initially-hidden' => true,
         'container-template'  => 'Hyva_Theme::modal/modal-container.phtml',
-        'overlay-classes'     => ['fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'z-10'],
+        'overlay-classes'     => ['fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'z-50'],
         'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left', 'z-10'],
         'position'            => 'center',
         'dialog-name'         => 'dialog',
