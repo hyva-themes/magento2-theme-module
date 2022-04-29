@@ -7,7 +7,52 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.13...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.14...main
+
+## [1.1.14] - 2022-04-29
+
+[1.1.14]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.13...1.1.14
+
+### Added
+
+- **Add JavaScript form validation library**
+
+  This much requested feature adds an Alpine.js component for advanced form validation. 
+  It contains only a few validation rules out of the box, so it is lightweight, but it is simple to add custom rules.
+  Many thanks to Michal Gałężewski (macopedia) for the contribution!
+
+  More information on [how to use the form validation library](https://docs.hyva.io/hyva-themes/writing-code/form-validation/javascript-form-validation.html) can be found in the documentation.
+
+- **Add CLI command to generate app/etc/hyva-themes.json**
+
+  The new configuration file `app/etc/hyva-themes.json` contains a list of modules with tailwind config or tailwind css that should be merged when running `npm run build-prod` or one of the other build commands.  
+  This feature allows compatibility modules to be register their templates and layout files in the Tailwind purge configuration, without requiring users to adjust a theme include path manually.
+
+  The command to generate the file is `bin/magento hyva:config:generate`.
+  More information can be found in [merge request #180](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/180).  
+  Documentation will be published shortly, too.
+
+- **Add view model to determine developer deploy mode**
+
+  This new view model allows conditional logic to be written in templates based on if developer mode is enabled or not.
+  `<?php if ($viewModels->require(\Hyva\Theme\ViewModel\DeployMode::class)->isDeveloperMode()): ?>`
+
+### Changed
+
+- **Change modal backdrop default z-index to 50 to work with hyva-ui menus**
+
+  Previously the hyva-ui menus where rendered above the modal overlay backdrop. This change now properly renders the overlay above the top menu.
+
+- **Improve x-intersect Alpine.js v2 plugin**
+
+  The upstream Apline.js plugin received some improvements with regard to reliability and a new `margin` option.  
+  These changes are now included in the Alpine.js v2 backport bundled with Hyvä.
+
+  For more information see [merge request #197](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/197).
+
+
+### Removed
+
 
 ## [1.1.13] - 2022-04-12
 
