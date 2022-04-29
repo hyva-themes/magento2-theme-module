@@ -189,7 +189,7 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
 
             const form_key = document.createElement("input");
             form_key.type = 'hidden';
-            form_key.value = document.querySelector('input[name=form_key]').value;
+            form_key.value = hyva.getFormKey();
             form_key.name="form_key";
             form.appendChild(form_key);
 
@@ -253,6 +253,59 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
                     ? m.substr(1)
                     : args[m.substr(1)] ?? m;
             })
+        }
+
+
+        /**
+         * takes a html string as `content` parameter and
+         * extracts an element from the DOM to replace in
+         * the current page under the same selector,
+         * defined by `targetSelector`
+         */
+        hyva.replaceDomElement = (targetSelector, content) => {
+
+            // parse the content and extract the DOM node using the `targetSelector`
+            const parser = new DOMParser();
+            const doc = parser.parseFromString( content, 'text/html' );
+            const contentNode = doc.querySelector(targetSelector);
+
+            // bail if content can't be found
+            if (!contentNode) {
+                return;
+            }
+
+            // extract all the script tags from the new content
+            // script tags won't execute when inserted into a dom-element directly
+            // therefore we need to inject them to the head of the document
+            const tmpScripts = contentNode.getElementsByTagName('script');
+
+            if (tmpScripts.length > 0) {
+                // push all script tags into an array
+                // (to prevent dom manipulation while iterating over dom nodes)
+                const scripts = [];
+                for (let i = 0; i < tmpScripts.length; i++) {
+                    scripts.push(tmpScripts[i]);
+                }
+
+                // iterate over all script tags and duplicate+inject each into the head
+                for (let i = 0; i < scripts.length; i++) {
+                    let script = document.createElement('script');
+                    script.innerHTML = scripts[i].innerHTML;
+
+                    document.head.appendChild(script);
+
+                    // remove the original (non-executing) node from the page
+                    scripts[i].parentNode.removeChild(scripts[i]);
+                }
+            }
+
+            // replace the old DOM node with the new content
+            document.querySelector(targetSelector).replaceWith(contentNode);
+
+            // reload customerSectionData and display cookie-messages if present
+            window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+            hyva.initMessages();
+
         }
 
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
