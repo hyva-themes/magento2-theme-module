@@ -37,6 +37,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   This new view model allows conditional logic to be written in templates based on if developer mode is enabled or not.
   `<?php if ($viewModels->require(\Hyva\Theme\ViewModel\DeployMode::class)->isDeveloperMode()): ?>`
 
+- **Add view model to fetch the checkout configuration**
+
+  This new view model allows building checkout related functionality in server side templates.
+  `$viewModels->require(\Hyva\Theme\ViewModel\Cart\CheckoutConfig::class)->getSerializedCheckoutConfig()`
+
+- **Add JS helper hyva.replaceDomElement for Ajax page updates**
+
+  The function takes a html string as uses it to replace a section of the current page specified by a `targetSelector`.
+  This is useful for injecting Ajax responses containing rendered HTML into the current page.
+
 ### Changed
 
 - **Change modal backdrop default z-index to 50 to work with hyva-ui menus**
@@ -53,6 +63,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
+- Nothing
 
 ## [1.1.13] - 2022-04-12
 
