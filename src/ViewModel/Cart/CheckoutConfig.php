@@ -36,9 +36,8 @@ class CheckoutConfig implements ArgumentInterface
      * Retrieve checkout configuration
      *
      * @return array
-     * @codeCoverageIgnore
      */
-    public function getCheckoutConfig()
+    public function getCheckoutConfig(): array
     {
         return $this->configProvider->getConfig();
     }
