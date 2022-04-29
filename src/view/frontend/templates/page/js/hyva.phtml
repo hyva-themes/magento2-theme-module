@@ -189,7 +189,7 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
 
             const form_key = document.createElement("input");
             form_key.type = 'hidden';
-            form_key.value = document.querySelector('input[name=form_key]').value;
+            form_key.value = hyva.getFormKey();
             form_key.name="form_key";
             form.appendChild(form_key);
 
@@ -241,8 +241,6 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
          * Example: hyva.srtf('%1 %0 %2', 'a', 'b', 'c') => "b a c"
          *
          * To insert a literal % symbol followed by a number, duplicate the %, for example %%2 is returned as %2.
-         *
-         * Input string can't be URL encoded in order for the replacement to work.
          */
         hyva.strf = function (string) {
             // According to caniuse.com rest arguments support isn't at 97% yet at the time of writing
@@ -253,6 +251,58 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
                     ? m.substr(1)
                     : args[m.substr(1)] ?? m;
             })
+        }
+
+
+        /**
+         * Take a html string as `content` parameter and
+         * extract an element from the DOM to replace in
+         * the current page under the same selector,
+         * defined by `targetSelector`
+         */
+        hyva.replaceDomElement = (targetSelector, content) => {
+
+            // Parse the content and extract the DOM node using the `targetSelector`
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const contentNode = doc.querySelector(targetSelector);
+
+            // Bail if content can't be found
+            if (!contentNode) {
+                return;
+            }
+
+            // Extract all the script tags from the new content.
+            // Script tags won't execute when inserted into a dom-element directly,
+            // therefore we need to inject them to the head of the document.
+            const tmpScripts = contentNode.getElementsByTagName('script');
+
+            if (tmpScripts.length > 0) {
+                // Push all script tags into an array
+                // (to prevent dom manipulation while iterating over dom nodes)
+                const scripts = [];
+                for (let i = 0; i < tmpScripts.length; i++) {
+                    scripts.push(tmpScripts[i]);
+                }
+
+                // Iterate over all script tags and duplicate+inject each into the head
+                for (let i = 0; i < scripts.length; i++) {
+                    let script = document.createElement('script');
+                    script.innerHTML = scripts[i].innerHTML;
+
+                    document.head.appendChild(script);
+
+                    // Remove the original (non-executing) node from the page
+                    scripts[i].parentNode.removeChild(scripts[i]);
+                }
+            }
+
+            // Replace the old DOM node with the new content
+            document.querySelector(targetSelector).replaceWith(contentNode);
+
+            // Reload customerSectionData and display cookie-messages if present
+            window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+            hyva.initMessages();
         }
 
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
