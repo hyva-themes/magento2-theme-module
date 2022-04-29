@@ -183,12 +183,18 @@ use Magento\Framework\View\Element\Template;
         function createFieldParent(el, fieldWrapperClassName) {
             if (el.parentElement) {
                 const wrapper = document.createElement('div');
-                wrapper.classList.add(fieldWrapperClassName);
-                wrapper.classList.add('generated-wrapper');
+                wrapper.classList.add.apply(wrapper.classList, fieldWrapperClassName.split(' '));
                 el.parentElement.insertBefore(wrapper, el);
                 wrapper.appendChild(el);
                 return wrapper;
             }
+        }
+
+        function classNamesToSelector(classNames) {
+            return classNames.split(' ')
+                .filter(className => className.length > 0)
+                .map(className => `.${className}`)
+                .join('')
         }
 
         <?php // private methods end ?>
@@ -203,7 +209,7 @@ use Magento\Framework\View\Element\Template;
             }
 
             options = Object.assign({
-                fieldWrapperClassName: 'field',
+                fieldWrapperClassName: 'field field-reserved',
                 fieldWrapperAdditionalClasses: '',
                 messagesWrapperClassName: 'messages',
                 validClassName: 'field-success',
@@ -336,11 +342,11 @@ use Magento\Framework\View\Element\Template;
                     return messages;
                 },
                 getFieldWrapper(field) {
-                    const parentClass = `.${options.fieldWrapperClassName}`;
-                    const container = field.element.closest(parentClass) || createFieldParent(field.element, options.fieldWrapperClassName);
+                    const parentSelector = classNamesToSelector(options.fieldWrapperClassName);
+                    const container = field.element.closest(parentSelector) || createFieldParent(field.element, options.fieldWrapperClassName);
                     <?php if ($viewModels->require(DeployMode::class)->isDeveloperMode()): ?>
                     if (! container) {
-                        console.error(`Cannot find parent element ${parentClass} of ${field.element.name}`, field.element);
+                        console.error(`Cannot find parent element ${parentSelector} of ${field.element.name}`, field.element);
                     }
                     <?php endif; ?>
                     return container;
@@ -364,7 +370,7 @@ use Magento\Framework\View\Element\Template;
                 },
                 createErrorMessage(field, messages) {
                     const container = this.getFieldWrapper(field);
-                    const msg = container && container.querySelector(`.${options.messagesWrapperClassName}`);
+                    const msg = container && container.querySelector(classNamesToSelector(options.messagesWrapperClassName));
                     if (msg) {
                         field.element.removeAttribute('aria-errormessage');
                         msg.remove();
@@ -372,7 +378,7 @@ use Magento\Framework\View\Element\Template;
 
                     if (!field.state.valid) {
                         const list = this.createMessage(field, messages)
-                        list.classList.add(options.messagesWrapperClassName);
+                        list.classList.add.apply(list.classList, options.messagesWrapperClassName.split(' '));
                         field.element.setAttribute('aria-errormessage', list.id);
                     }
                 },
@@ -384,7 +390,10 @@ use Magento\Framework\View\Element\Template;
                         li.innerText = message;
                         list.appendChild(li);
                     });
-                    field.element.insertAdjacentElement('afterend', list);
+                    const container = this.getFieldWrapper(field);
+                    if (container) {
+                        container.append(list);
+                    }
 
                     return list;
                 },
