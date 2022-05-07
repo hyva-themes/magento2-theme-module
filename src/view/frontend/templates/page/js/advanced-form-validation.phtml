@@ -176,8 +176,16 @@ use Magento\Framework\View\Element\Template;
             return id;
         }
 
+        function isVisible(element) {
+            return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length)
+        }
+
         function elementWillValidate(element) {
-            return element.willValidate && element.tagName !== 'BUTTON' && element.disabled === false && !(element.tagName === 'INPUT' && element.type === 'submit')
+            return element.willValidate
+                && element.tagName !== 'BUTTON'
+                && element.disabled === false
+                && !(element.tagName === 'INPUT' && element.type === 'submit')
+                && (element.hasAttribute('x-validate-hidden') || isVisible(element))
         }
 
         function createFieldParent(el, fieldWrapperClassName) {
