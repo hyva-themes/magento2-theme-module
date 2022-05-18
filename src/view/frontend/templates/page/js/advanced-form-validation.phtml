@@ -25,20 +25,16 @@ use Magento\Framework\View\Element\Template;
     (function(hyva) {
         const formValidationRules = {
             required(value, options, field, context) {
-                let isInvalid;
-                const el = field.element;
+                const el = field.element, msg = '<?= $escaper->escapeJs(__('This field is required.')) ?>';
+
                 if (el.tagName === 'INPUT' && (el.type === 'radio' || el.type === 'checkbox')) {
-                    isInvalid = value === undefined || value.length === 0;
-                } else {
-                    el.setAttribute('required', '');
-                    el.checkValidity();
-                    isInvalid = el.validity.valueMissing;
+                    return (value === undefined || value.length === 0) ? msg : true;
                 }
 
-                if (isInvalid) {
-                    return '<?= $escaper->escapeJs(__('This field is required.')) ?>';
-                }
-                return true;
+                el.setAttribute('required', '');
+                el.checkValidity();
+
+                return el.validity.valueMissing ? msg : true;
             },
             maxlength(value, options, field, context) {
                 field.element.setAttribute('maxlength', options);
@@ -106,8 +102,9 @@ use Magento\Framework\View\Element\Template;
             }
         };
 
-        <?php // private methods start ?>
-
+        <?php // Private methods start ?>
+        <?php // The private methods expect `this` to be the component instance (via call() or apply()) ?>
+        <?php
         /**
          * Return a promise resolving when the first of the passed promises resolves to a value for which the predicate function is truthy.
          *
@@ -117,11 +114,11 @@ use Magento\Framework\View\Element\Template;
          * @param {Function} pred - Predicate callback function
          * @returns {Promise<unknown>}
          */
+        ?>
         function raceSome(promises, pred) {
             return new Promise((resolve, reject) => {
 
-                let settled = false;
-                let nDone = 0;
+                let settled = false, nDone = 0;
 
                 const resolveIf = v => {
                     if (!settled && (pred(v) || ++nDone === promises.length)) {
@@ -150,16 +147,13 @@ use Magento\Framework\View\Element\Template;
                     rules[attrName] = element.getAttribute(attrName);
                 }
             })
-            DEFAULT_TYPES.forEach(typeName => {
-                if (element.type === typeName) {
-                    rules[typeName] = true;
-                }
-            })
+            if (DEFAULT_TYPES.includes(element.type)) {
+                rules[element.type] = true;
+            }
 
-            const validation = element.dataset.validate;
-            if (validation) {
+            if (element.dataset.validate) {
                 try {
-                    rules = Object.assign(rules, JSON.parse(validation));
+                    Object.assign(rules, JSON.parse(element.dataset.validate));
                 } catch (error) {
                     console.error('Validator error. Cannot parse data-validate attribute of element:\n', element);
                 }
@@ -197,15 +191,16 @@ use Magento\Framework\View\Element\Template;
         }
 
         function createMessageContainer(el, fieldWrapperClassName) {
-            if (el.parentElement) {
-                const refocus = document.activeElement === el;
-                const wrapper = document.createElement('div');
-                wrapper.classList.add.apply(wrapper.classList, fieldWrapperClassName.split(' '));
-                el.parentElement.insertBefore(wrapper, el);
-                wrapper.appendChild(el);
-                refocus && document.activeElement !== el && el.focus();
-                return wrapper;
+            if (! el.parentElement) {
+                return;
             }
+            const refocus = document.activeElement === el;
+            const wrapper = document.createElement('div');
+            wrapper.classList.add.apply(wrapper.classList, fieldWrapperClassName.split(' '));
+            el.parentElement.insertBefore(wrapper, el);
+            wrapper.appendChild(el);
+            refocus && document.activeElement !== el && el.focus();
+            return wrapper;
         }
 
         function containerNotFound(selector, el) {
@@ -244,10 +239,10 @@ use Magento\Framework\View\Element\Template;
             return Array.from(elements).map(el => el.value);
         }
 
-        <?php // private methods end ?>
+        <?php // Private methods end ?>
 
         function formValidation(formElement, options) {
-            // disable browser default validation
+            // Disable browser default validation
             if (formElement.tagName === 'FORM') {
                 formElement.setAttribute('novalidate', '');
             } else {
@@ -256,11 +251,12 @@ use Magento\Framework\View\Element\Template;
             }
 
             options = Object.assign({
-                pageMessagesContainerSelector: null,
                 fieldWrapperClassName: 'field field-reserved',
                 messagesWrapperClassName: 'messages',
                 validClassName: 'field-success',
                 invalidClassName: 'field-error',
+                pageMessagesWrapperSelector: null,
+                scrollToFirstError: true,
             }, options || {});
 
             return {
@@ -271,7 +267,8 @@ use Magento\Framework\View\Element\Template;
                 idSeq: 0,
                 idPrefix: formElement.id || 'vld-msg',
                 setupFields(elements) {
-                    Array.from(elements).forEach((element) => {
+                    this.fields = {};
+                    Array.from(elements).forEach(element => {
                         if (elementWillValidate(element)) {
                             this.setupField(element);
                         }
@@ -304,11 +301,7 @@ use Magento\Framework\View\Element\Template;
 
                         this.validate()
                             .then(() => event.target.submit())
-                            .catch((invalid) => {
-                                if (invalid.length > 0) {
-                                    invalid[0].focus();
-                                }
-                        });
+                            .catch(invalidElements => {<?php // No default behavior ?>});
                     }
                 },
                 onChange(event) {
@@ -335,6 +328,7 @@ use Magento\Framework\View\Element\Template;
                             if (this.state.valid) {
                                 resolve();
                             } else {
+                                options.scrollToFirstError && invalidFields.length > 0 && invalidFields[0].element.focus();
                                 reject(invalidFields.map(field => field.element));
                             }
                         }
@@ -344,7 +338,7 @@ use Magento\Framework\View\Element\Template;
                 validateFields() {
                     return Object.values(this.fields).map(field => this.validateField(field))
                 },
-                <?php // Return Promise that is resolved to field.state.valid when all validators are resolved ?>
+                <?php // Return Promise that is resolved to field.state.valid when all validators of the field are resolved ?>
                 validateField(field) {
                     let value;
                     if (field.element.type === 'checkbox') {
@@ -356,7 +350,7 @@ use Magento\Framework\View\Element\Template;
                     } else {
                         value = field.element.value;
                     }
-                    field.element.name === 'multi' && console.log(field.element.name, value);
+
                     const rules = field.rules || [];
 
                     <?php // Reset messages before validation in case async operations take a while ?>
@@ -374,7 +368,7 @@ use Magento\Framework\View\Element\Template;
                     });
                 <?php endif; ?>
 
-                    <?php // Run all rules for the field and collect returned promises ?>
+                    <?php // Validate all rules for the field and collect returned promises ?>
                     const fieldValidations = Object.keys(rules).filter(rule => formValidationRules[rule]).map(async rule => {
                         return runValidateFn.call(this, rule, rules[rule], value, field).then(result => {
                             field.state.rules[rule] = result;
@@ -385,7 +379,7 @@ use Magento\Framework\View\Element\Template;
                     return new Promise(resolve => {
                         <?php // Require all validations to finish processing before setting the final field state ?>
                         Promise.all(fieldValidations).then(results => {
-                            <?php // Set the state for the field after all rules complete before resolving the promise ?>
+                            <?php // Set the state for the field after all rules complete before resolving the Promise ?>
                             <?php // Check elementWillValidate again in case the field visibility was changed by a validator ?>
                             field.state.valid = !elementWillValidate(field.element) || rules.length === 0 || !results.some(isInvalidRuleResult)
                             this.showFieldState(field);
