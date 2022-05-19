@@ -104,7 +104,7 @@ use Magento\Framework\View\Element\Template;
         // Built in validation rules end
 
         // Private methods start
-        
+
         // The private methods expect `this` to be the component instance (via call() or apply())
 
         /**
@@ -255,7 +255,7 @@ use Magento\Framework\View\Element\Template;
 
         <?php
         // Private methods end
-        
+
         // Alpine component start
         ?>
 
@@ -455,9 +455,10 @@ use Magento\Framework\View\Element\Template;
                     return container;
                 },
                 showFieldState(field) {
-                    const container = this.getMessageContainer(field), hasInvalidClassName = container.classList.contains(options.invalidClassName);
-                    container.classList.toggle(options.validClassName, field.state.valid && ! hasInvalidClassName);
-                    container.classList.toggle(options.invalidClassName, !field.state.valid || hasInvalidClassName);
+                    const container = this.getMessageContainer(field),
+                        hasErrorMessages = hasMessagesWrapper.call(this, field, options.messagesWrapperClassName);
+                    container.classList.toggle(options.validClassName, field.state.valid && ! hasErrorMessages);
+                    container.classList.toggle(options.invalidClassName, !field.state.valid || hasErrorMessages);
                     this.createErrorMessage(field, this.getMessagesByField(field));
 
                     if (field.state.valid) {
