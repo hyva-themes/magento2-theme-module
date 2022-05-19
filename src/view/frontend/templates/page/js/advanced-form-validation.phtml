@@ -23,11 +23,13 @@ use Magento\Framework\View\Element\Template;
 <script>
     'use strict';
     (function(hyva) {
+        <?php // Built in validation rules start ?>
         const formValidationRules = {
             required(value, options, field, context) {
-                const el = field.element, msg = '<?= $escaper->escapeJs(__('This field is required.')) ?>';
+                const el = field.element.type === 'hidden' ? createTextInputFrom(field.element) : field.element,
+                    msg = '<?= $escaper->escapeJs(__('This field is required.')) ?>';
 
-                if (el.tagName === 'INPUT' && (el.type === 'radio' || el.type === 'checkbox')) {
+                if (el.type === 'radio' || el.type === 'checkbox') {
                     return (value === undefined || value.length === 0) ? msg : true;
                 }
 
@@ -37,17 +39,13 @@ use Magento\Framework\View\Element\Template;
                 return el.validity.valueMissing ? msg : true;
             },
             maxlength(value, options, field, context) {
-                field.element.setAttribute('maxlength', options);
-                field.element.checkValidity();
-                if (field.element.validity.tooLong) {
+                if (value.length > Number(options)) {
                     return hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than "%0" characters.')) ?>', options);
                 }
                 return true;
             },
             minlength(value, options, field, context) {
-                field.element.setAttribute('minlength', options);
-                field.element.checkValidity();
-                if (field.element.validity.tooShort) {
+                if (value.length > 0 && value.length < Number(options)) {
                     return hyva.strf('<?= $escaper->escapeJs(__('Please enter at least "%0" characters.')) ?>', options);
                 }
                 return true;
@@ -102,9 +100,13 @@ use Magento\Framework\View\Element\Template;
             }
         };
 
-        <?php // Private methods start ?>
-        <?php // The private methods expect `this` to be the component instance (via call() or apply()) ?>
         <?php
+        // Built in validation rules end
+
+        // Private methods start
+        
+        // The private methods expect `this` to be the component instance (via call() or apply())
+
         /**
          * Return a promise resolving when the first of the passed promises resolves to a value for which the predicate function is truthy.
          *
@@ -117,6 +119,10 @@ use Magento\Framework\View\Element\Template;
         ?>
         function raceSome(promises, pred) {
             return new Promise((resolve, reject) => {
+
+                if (promises.length === 0) {
+                    return resolve();
+                }
 
                 let settled = false, nDone = 0;
 
@@ -179,11 +185,12 @@ use Magento\Framework\View\Element\Template;
         }
 
         function isVisible(element) {
-            return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length)
+            const el = element.type !== 'hidden' ? element : (element.parentElement || {});
+            return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)
         }
 
         function elementWillValidate(element) {
-            return element.willValidate
+            return (element.willValidate || element.type === 'hidden')
                 && element.tagName !== 'BUTTON'
                 && element.disabled === false
                 && !(element.tagName === 'INPUT' && element.type === 'submit')
@@ -207,6 +214,13 @@ use Magento\Framework\View\Element\Template;
             const msg = `Cannot find message container element ${selector} of ${el.name}`;
             console.error(msg, el);
             throw msg;
+        }
+
+        function createTextInputFrom(el) {
+            const text = document.createElement('INPUT');
+            text.type = 'text';
+            text.value = el.value;
+            return text;
         }
 
         function classNamesToSelector(classNames) {
@@ -239,7 +253,11 @@ use Magento\Framework\View\Element\Template;
             return Array.from(elements).map(el => el.value);
         }
 
-        <?php // Private methods end ?>
+        <?php
+        // Private methods end
+        
+        // Alpine component start
+        ?>
 
         function formValidation(formElement, options) {
             // Disable browser default validation
@@ -336,7 +354,14 @@ use Magento\Framework\View\Element\Template;
                 },
                 <?php // Return array of promises ?>
                 validateFields() {
-                    return Object.values(this.fields).map(field => this.validateField(field))
+                    const fields = Object.values(this.fields);
+
+                    <?php // First clear all container state classes ?>
+                    fields.forEach(field => {
+                        this.getMessageContainer(field).classList.remove(options.validClassName, options.invalidClassName)
+                    });
+                    <?php // Then start validation and return ppromises ?>
+                    return fields.map(field => this.validateField(field))
                 },
                 <?php // Return Promise that is resolved to field.state.valid when all validators of the field are resolved ?>
                 validateField(field) {
@@ -430,9 +455,9 @@ use Magento\Framework\View\Element\Template;
                     return container;
                 },
                 showFieldState(field) {
-                    const container = this.getMessageContainer(field);
-                    container.classList.toggle(options.validClassName, field.state.valid);
-                    container.classList.toggle(options.invalidClassName, !field.state.valid);
+                    const container = this.getMessageContainer(field), hasInvalidClassName = container.classList.contains(options.invalidClassName);
+                    container.classList.toggle(options.validClassName, field.state.valid && ! hasInvalidClassName);
+                    container.classList.toggle(options.invalidClassName, !field.state.valid || hasInvalidClassName);
                     this.createErrorMessage(field, this.getMessagesByField(field));
 
                     if (field.state.valid) {
