@@ -376,7 +376,7 @@ use Magento\Framework\View\Element\Template;
                         value = field.element.value;
                     }
 
-                    const rules = field.rules || [];
+                    const rules = field.rules || {};
 
                     <?php // Reset messages before validation in case async operations take a while ?>
                     field.state.valid = true;
