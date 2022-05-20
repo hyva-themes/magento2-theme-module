@@ -73,10 +73,10 @@ class ReCaptcha implements ArgumentInterface
         }
 
         return [
-            self::RECAPTCHA_INPUT_FIELD => $this->getRecaptchaInputField($config),
+            self::RECAPTCHA_INPUT_FIELD  => $this->getRecaptchaInputField($config),
             self::RECAPTCHA_SCRIPT_TOKEN => $this->getRecaptchaScriptToken($config),
             self::RECAPTCHA_LEGAL_NOTICE => $this->getLegalNotice($config),
-            self:: RECAPTCHA_VALIDATION => $this->getJavaScriptValidator($config),
+            self::RECAPTCHA_VALIDATION   => $this->getJavaScriptValidator($config),
         ];
     }
 
@@ -115,7 +115,7 @@ class ReCaptcha implements ArgumentInterface
     /**
      * @return string
      */
-    private function getRecaptchaV2IvisibleBlock(string $config): string
+    private function getRecaptchaV2InvisibleBlock(string $config): string
     {
         return self::RECAPTCHA_V2_INVISIBLE_BLOCK . "_{$config}";
     }
@@ -125,7 +125,7 @@ class ReCaptcha implements ArgumentInterface
      */
     private function getJavaScriptValidator(string $config): string
     {
-        return self::RECAPTCHA_VALIDATION. "_{$config}";
+        return self::RECAPTCHA_VALIDATION . "_{$config}";
     }
 
     /**
