@@ -4,4 +4,7 @@
     <type name="Magento\Catalog\Model\Category">
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\PageCache\AddCategoryNavigationCacheTag"/>
     </type>
+    <type name="Magento\Theme\Model\Theme\Registration">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\CheckVirtualThemes"/>
+    </type>
 </config>
