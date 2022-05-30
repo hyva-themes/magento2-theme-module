@@ -63,6 +63,13 @@ class CheckVirtualThemes
      */
     public function afterCheckPhysicalThemes(ThemeRegistration $subject, ThemeRegistration $result)
     {
+        $this->checkVirtualThemes();
+
+        return $result;
+    }
+
+    private function checkVirtualThemes(): void
+    {
         $themes = $this->dbThemesFactory->create()->addTypeFilter(ThemeInterface::TYPE_VIRTUAL);
         /** @var $theme ThemeModel|ThemeInterface */
         foreach ($themes as $theme) {
@@ -71,7 +78,5 @@ class CheckVirtualThemes
                 $this->themeResource->save($theme);
             }
         }
-
-        return $result;
     }
 }
