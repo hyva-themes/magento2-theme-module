@@ -33,4 +33,23 @@ class ExcludeTailwindPlugin
         }
         return $result;
     }
+
+    /**
+     * @param Package $subject
+     * @param array[] $result
+     * @return array[]
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function afterGetMap(
+        Package $subject,
+        array $result
+    ): array {
+        foreach (array_keys($result) as $key) {
+            if (strpos($key, 'tailwind/') === 0) {
+                unset($result[$key]);
+            }
+        }
+        return $result;
+    }
 }
