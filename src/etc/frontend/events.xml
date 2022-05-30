@@ -10,19 +10,18 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="layout_load_before">
-        <observer name="hyva_theme_add_layout_handles"
-                  instance="Hyva\Theme\Observer\AddLayoutHandles"/>
+        <observer name="hyva_theme_add_layout_handles" instance="Hyva\Theme\Observer\AddLayoutHandles"/>
     </event>
     <event name="load_file_layout_updates_xml_after">
-        <observer name="hyva_theme_add_layout_handles_updates"
-                  instance="Hyva\Theme\Observer\AddLayoutHandlesUpdates"/>
+        <observer name="hyva_theme_add_layout_handles_updates" instance="Hyva\Theme\Observer\AddLayoutHandlesUpdates"/>
     </event>
     <event name="catalog_controller_product_init_after">
-        <observer name="hyva_theme_register_current_product"
-                  instance="Hyva\Theme\Observer\RegisterCurrentProduct"/>
+        <observer name="hyva_theme_register_current_product" instance="Hyva\Theme\Observer\RegisterCurrentProduct"/>
     </event>
     <event name="catalog_controller_category_init_after">
-        <observer name="hyva_theme_register_current_category"
-                  instance="Hyva\Theme\Observer\RegisterCurrentCategory"/>
+        <observer name="hyva_theme_register_current_category" instance="Hyva\Theme\Observer\RegisterCurrentCategory"/>
+    </event>
+    <event name="hyva_config_generate_before">
+        <observer name="hyva_theme" instance="Hyva\Theme\Observer\RegisterModuleForHyvaConfig"/>
     </event>
 </config>
