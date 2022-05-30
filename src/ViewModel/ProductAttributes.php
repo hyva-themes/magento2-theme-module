@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Catalog\Helper\Output as ProductOutputHelper;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
@@ -42,17 +43,24 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
     private $productResource;
 
     /**
+     * @var ProductOutputHelper
+     */
+    private $productOutputHelper;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      */
     public function __construct(
         Registry $registry,
         ProductResource $productResource,
-        PriceCurrencyInterface $priceCurrency
+        PriceCurrencyInterface $priceCurrency,
+        ProductOutputHelper $productOutputHelper
     ) {
-        $this->coreRegistry    = $registry;
-        $this->priceCurrency   = $priceCurrency;
-        $this->productResource = $productResource;
+        $this->coreRegistry        = $registry;
+        $this->priceCurrency       = $priceCurrency;
+        $this->productResource     = $productResource;
+        $this->productOutputHelper = $productOutputHelper;
     }
 
     /**
@@ -113,20 +121,26 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
         return $data;
     }
 
+    /**
+     * @param AbstractAttribute $attribute
+     * @param Product $product
+     * @return string[]
+     */
     public function getAttributeData($attribute, $product)
     {
-        $value = $attribute->getFrontend()->getValue($product);
+        $code  = $attribute->getAttributeCode();
+        $rawValue = $attribute->getFrontend()->getValue($product);
 
-        if ($value instanceof Phrase) {
-            $value = (string) $value;
-        } elseif ($attribute->getFrontendInput() == 'price' && is_string($value)) {
-            $value = $this->priceCurrency->convertAndFormat($value);
+        if ($attribute->getFrontendInput() == 'price' && is_string($rawValue)) {
+            $value = $this->priceCurrency->convertAndFormat($rawValue);
+        } else {
+            $value = $this->productOutputHelper->productAttribute($product, $rawValue, $code);
         }
 
         return [
             'label' => $attribute->getStoreLabel(),
-            'value' => $value,
-            'code'  => $attribute->getAttributeCode(),
+            'value' => (string) $value,
+            'code'  => $code,
         ];
     }
 
