@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Console\Command;
 
-use Exception;
 use Hyva\Theme\Model\HyvaModulesConfig;
 use Magento\Framework\Console\Cli;
 use Symfony\Component\Console\Command\Command;
