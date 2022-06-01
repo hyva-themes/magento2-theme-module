@@ -37,6 +37,7 @@ class HyvaConfigGenerate extends Command
         $this->setDescription('Generate Hyvä Themes app/etc/hyva-themes.json configuration file');
         $this->addOption('info', null, InputOption::VALUE_NONE, 'More information');
         $this->addOption('dump', 'd', InputOption::VALUE_NONE, 'Dump to STDOUT instead of writing to the file');
+        $this->addOption('force', 'f', InputOption::VALUE_NONE, 'No effect, exists for backward compatibility');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): ?int
