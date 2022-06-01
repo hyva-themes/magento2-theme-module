@@ -47,6 +47,10 @@
         </arguments>
     </type>
 
+    <type name="Magento\Framework\App\DeploymentConfig\Writer">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\HyvaModulesConfig\UpdateOnModuleStatusChange"/>
+    </type>
+
     <type name="Hyva\Theme\ViewModel\HeroiconsSolid">
         <arguments>
             <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/solid</argument>
