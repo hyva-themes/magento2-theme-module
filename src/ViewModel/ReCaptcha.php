@@ -45,12 +45,19 @@ class ReCaptcha implements ArgumentInterface
      */
     private $layout;
 
+    /**
+     * @var string[]
+     */
+    private $resultFieldNames;
+
     public function __construct(
         ScopeConfigInterface $scopeConfig,
-        LayoutInterface $layout
+        LayoutInterface $layout,
+        array $resultFieldNames = []
     ) {
-        $this->scopeConfig               = $scopeConfig;
-        $this->layout                    = $layout;
+        $this->scopeConfig      = $scopeConfig;
+        $this->layout           = $layout;
+        $this->resultFieldNames = $resultFieldNames;
     }
 
     public function getInputHtml(string $formId, string $recaptchaInputId = ''): string
@@ -81,6 +88,21 @@ class ReCaptcha implements ArgumentInterface
                            ->setData('input_element_id', $recaptchaInputId)
                            ->toHtml()
             : '';
+    }
+
+    /**
+     * Return the field name containing the validation success token.
+     *
+     * This method exists to be able to implement third party captcha solutions more easily by adding
+     * the field name via di.xml in the resultFieldNames array for this ViewModel class.
+     *
+     * @param string $formId
+     * @return string
+     */
+    public function getResultTokenFieldName(string $formId): string
+    {
+        $type = $this->getSelectedTypeForForm($formId);
+        return $this->resultFieldNames[$type] ?? 'g-recaptcha-response';
     }
 
     public function calcJsInstanceSuffix(string $formId): string

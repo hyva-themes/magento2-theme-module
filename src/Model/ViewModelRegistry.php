@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Model;
 
-use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
