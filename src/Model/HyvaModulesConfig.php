@@ -1,0 +1,107 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+namespace Hyva\Theme\Model;
+
+use Magento\Framework\App\Area as AppArea;
+use Magento\Framework\App\Bootstrap as AppBootstrap;
+use Magento\Framework\App\State as AppState;
+use Magento\Framework\DataObject;
+use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
+use Magento\Framework\Filesystem\Io\File;
+use Magento\Framework\ObjectManager\ConfigLoaderInterface;
+use Magento\Framework\ObjectManagerInterface;
+
+class HyvaModulesConfig
+{
+    const FILE = 'hyva-themes.json';
+    const PATH = 'app/etc';
+
+    /**
+     * @var File
+     */
+    private $file;
+
+    public function __construct(File $file)
+    {
+        $this->file = $file;
+    }
+
+    public function generateFile(string $outputFile = self::FILE, string $targetPath = self::PATH): string
+    {
+        $path     = trim($targetPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $fullPath = BP . DIRECTORY_SEPARATOR . $path . strtolower($outputFile);
+        $this->validatePath($fullPath);
+
+        $this->file->write($fullPath, $this->getJson());
+
+        return $fullPath;
+    }
+
+    public function getJson(): string
+    {
+        return json_encode($this->gatherConfigData(), \JSON_PRETTY_PRINT);
+    }
+
+    private function validatePath(string $fullPath): void
+    {
+        $pathinfo = $this->file->getPathInfo($fullPath);
+
+        if (!isset($pathinfo['extension']) || strtolower($pathinfo['extension']) !== 'json') {
+            throw new \InvalidArgumentException('Only .json configuration is supported.');
+        }
+    }
+
+    /**
+     * Gather the data for and write the app/etc/hyva-themes.json config file
+     *
+     * The config structure is an array of all modules that want to hook into the tailwind styles build process.
+     *
+     * [
+     *   "extensions": [
+     *     ["src" => "vendor/vendor-name/magento2-module-name/src"],
+     *     ...
+     *   ]
+     * ]
+     *
+     * Modules can add themselves to the list using the event "hyva_config_generate_before".
+     *
+     * Note: more records besides "src" might be added in the future.
+     *
+     * @param string $fullpath
+     * @see \Hyva\CompatModuleFallback\Observer\HyvaThemeHyvaConfigGenerateBefore::execute()
+     */
+    public function gatherConfigData(): array
+    {
+        $newObjectManager = $this->createObjectManagerWithCurrentModulesList();
+        $eventManager     = $newObjectManager->create(EventManagerInterface::class);
+
+        $configContainer = new DataObject();
+        $eventManager->dispatch('hyva_config_generate_before', ['config' => $configContainer]);
+
+        return $configContainer->getData();
+    }
+
+    private function createObjectManagerWithCurrentModulesList(): ObjectManagerInterface
+    {
+        $objectManagerFactory = AppBootstrap::createObjectManagerFactory(BP, []);
+        $objectManager        = $objectManagerFactory->create([]);
+        $this->initFrontendArea($objectManager);
+
+        return $objectManager;
+    }
+
+    private function initFrontendArea(ObjectManagerInterface $objectManager): void
+    {
+        $objectManager->get(AppState::class)->setAreaCode(AppArea::AREA_FRONTEND);
+        $configLoader = $objectManager->get(ConfigLoaderInterface::class);
+        $objectManager->configure($configLoader->load(AppArea::AREA_FRONTEND));
+    }
+}
