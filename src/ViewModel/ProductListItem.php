@@ -16,7 +16,6 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 
 class ProductListItem implements ArgumentInterface
@@ -57,7 +56,7 @@ class ProductListItem implements ArgumentInterface
         $this->productViewModel = $productViewModel;
         $this->currentCategory  = $currentCategory;
         $this->blockCache       = $blockCache;
-        $this->customerSession = $customerSession;
+        $this->customerSession  = $customerSession;
     }
 
     public function getProductPriceHtml(
@@ -94,7 +93,7 @@ class ProductListItem implements ArgumentInterface
 
     public function getItemCacheKeyInfo(
         Product $product,
-        Template $block,
+        AbstractBlock $block,
         string $viewMode,
         string $templateType
     ): array {
@@ -110,14 +109,15 @@ class ProductListItem implements ArgumentInterface
             $this->isCategoryInProductUrl()
                 ? $this->currentCategory->get()->getId()
                 : '0',
-            (int) $this->customerSession->getCustomerGroupId()
+            (int) $this->customerSession->getCustomerGroupId(),
+            (string) $block->getData('image_display_area')
         ];
     }
 
     public function getItemHtmlWithRenderer(
         AbstractBlock $itemRendererBlock,
         Product $product,
-        Template $parentBlock,
+        AbstractBlock $parentBlock,
         string $viewMode,
         string $templateType,
         string $imageDisplayArea,
@@ -139,18 +139,25 @@ class ProductListItem implements ArgumentInterface
         $itemCacheKeyInfo = $this->getItemCacheKeyInfo($product, $parentBlock, $viewMode, $templateType);
         $itemRendererBlock->setData('cache_key', $this->blockCache->hashCacheKeyInfo($itemCacheKeyInfo));
 
+        foreach (($itemRendererBlock->getData('additional_item_renderer_processors') ?? []) as $processor) {
+            if (method_exists($processor, 'beforeListItemToHtml')) {
+                //phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
+                call_user_func([$processor, 'beforeListItemToHtml'], $itemRendererBlock, $product);
+            }
+        }
+
         return $itemRendererBlock->toHtml();
     }
 
     public function getItemHtml(
         Product $product,
-        Template $parentBlock,
+        AbstractBlock $parentBlock,
         string $viewMode,
         string $templateType,
         string $imageDisplayArea,
         bool $showDescription
     ): string {
-        /** @var Template $itemRendererBlock */
+        /** @var AbstractBlock $itemRendererBlock */
         $itemRendererBlock = $this->layout->getBlock('product_list_item');
         return $this->getItemHtmlWithRenderer(
             $itemRendererBlock,
