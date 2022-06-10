@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.15...main
 
-
 ## [1.1.15] - 2022-06-10
 
 [1.1.15]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.14...1.1.15
@@ -41,6 +40,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   This is used to modify the product list item cache key depending on the selected swatch attributes.
   Other uses like adding custom block data are possible, too.
+  To use it, add a view model to the `additional_item_renderer_processors` block argument:
+  ```
+  <referenceBlock name="product_list_item">
+      <arguments>
+          <argument name="additional_item_renderer_processors" xsi:type="array">
+              <item name="my_processor_name" xsi:type="object">My\Module\ViewModel\ClassName</item>
+          </argument>
+      </arguments>
+  </referenceBlock>
+  ```
+  The view model then can implement a method that will be called for each item before it is rendered    
+  `public function beforeListItemToHtml(AbstractBlock $itemRendererBlock, Product $product): void`
 
   More details can be found in the [Merge Request #211](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/211).
 
