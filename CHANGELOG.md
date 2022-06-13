@@ -7,7 +7,93 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.14...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.15...main
+
+## [1.1.15] - 2022-06-13
+
+[1.1.15]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.14...1.1.15
+
+### Added
+
+- **Automatically change the theme type for virtual themes to "physical" if it is found in the filesystem**
+
+  This is a workaround for a core bug.  
+  More details can be found in the [Issue #175](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/175).
+
+- **Automatically update app/etc/hyva-config.json when a module is enabled/disabled**
+
+  This happens when running `bin/magento module:enable` (or `disable`) and also when new modules are enabled while running `bin/magento setup:upgrade`.
+  Now - in general - no more manual steps are required after installing a compatibility module.
+
+  More details can be found in the [Merge Request #210](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/210).
+
+- **Support for reCaptcha v2 "I'm not a robot" and v2 invisible**
+
+  To support this, the ReCaptcha view model has received some new methods.  
+  This now provides feature parity with Luma. The implementation was also improved to make it easier to implement custom captcha integrations.
+
+  More details can be found in the [Merge Request #122](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/202) and in the [default theme Merge Request #340](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/340).
+
+  Many thanks to Amanda Bradley (Youwe - formerly Fisheye) for the contribution!
+
+- **Add feature to configure product list item processor view models in layout XML**
+
+  This is used to modify the product list item cache key depending on the selected swatch attributes.
+  Other uses like adding custom block data are possible, too.
+  To use it, add a view model to the `additional_item_renderer_processors` block argument:
+  ```
+  <referenceBlock name="product_list_item">
+      <arguments>
+          <argument name="additional_item_renderer_processors" xsi:type="array">
+              <item name="my_processor_name" xsi:type="object">My\Module\ViewModel\ClassName</item>
+          </argument>
+      </arguments>
+  </referenceBlock>
+  ```
+  The view model then can implement a method that will be called for each item before it is rendered    
+  `public function beforeListItemToHtml(AbstractBlock $itemRendererBlock, Product $product): void`
+
+  More details can be found in the [Merge Request #211](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/211).
+
+### Changed
+
+- **The ProductPage::format method now accepts a optional `$includeContainer` boolean parameter**
+
+  This makes the method consistent with `Hyva\Theme\ViewModel\ProductPrice::format`.
+
+  Many thanks to Simon Sprankel (CustomGento) for the contribution!
+
+- **Fixed "compact" mode static content deploy**
+
+  More details can be found in the [Merge Request #122](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/202)
+
+  Many thanks for Jeroen Boersma (Elgentos) for the contribution!
+
+- **Improved advanced JS form validation**
+
+  There were a number of cases the form validation library that was introduced in the previous release did not handle, like hidden fields, checkboxes and grouped fields.
+  The library now is a lot more mature.
+
+- **Fix PageBuilder attribute rendering in compare list**
+
+  Product attributes edited with PageBuilder (like description) were rendered as escaped HTML. This is now corrected.
+
+  More details can be found in the [Issue #174](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/174).
+
+- **Register the Hyva_Theme module to be included in the tailwind purge config**
+
+  Now the path to the theme module no longer needs to be manually specified in a modules `tailwind.config.js` purge path.
+
+  More information can be found in [Issue #170](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/170).
+
+- **The -f flag is no longer required when updating the hyva-config.json file**
+
+  Now running the command `bin/magento hyva:config:generate` will overwrite an existing config file even without the `-f` or `--force` flag.
+  The flag still is allowed for backward compatibility, but it has no effect.
+
+### Removed
+
+- Nothing
 
 ## [1.1.14] - 2022-04-29
 
