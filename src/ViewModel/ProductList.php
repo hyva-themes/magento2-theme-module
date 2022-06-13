@@ -334,7 +334,7 @@ class ProductList implements ArgumentInterface
     public function addFilter($field, $value, $conditionType = 'eq'): self
     {
         // Handle single categories as a special case to allow sorting by category position
-        if ($field === 'category_id' && preg_match('/^\d+$/', $value)) {
+        if ($field === 'category_id' && ! is_array($value) && preg_match('/^\d+$/', (string) $value)) {
             $this->categoryIdFilter = $value;
         } else {
             $this->searchCriteriaBuilder->addFilter($field, $value, $conditionType);
