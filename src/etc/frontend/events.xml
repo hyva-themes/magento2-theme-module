@@ -18,6 +18,9 @@
     <event name="catalog_controller_product_init_after">
         <observer name="hyva_theme_register_current_product" instance="Hyva\Theme\Observer\RegisterCurrentProduct"/>
     </event>
+    <event name="review_controller_product_init_after">
+        <observer name="hyva_theme_register_current_product" instance="Hyva\Theme\Observer\RegisterCurrentProduct"/>
+    </event>
     <event name="catalog_controller_category_init_after">
         <observer name="hyva_theme_register_current_category" instance="Hyva\Theme\Observer\RegisterCurrentCategory"/>
     </event>
