@@ -28,7 +28,19 @@ class ReCaptcha implements ArgumentInterface
     const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
     const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
 
-    public const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
+    const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
+    const RECAPTCHA_FORM_ID_CONTACT = 'contact';
+    const RECAPTCHA_FORM_ID_COUPON_CODE = 'coupon_code';
+    const RECAPTCHA_FORM_ID_CUSTOMER_CREATE = 'customer_create';
+    const RECAPTCHA_FORM_ID_CUSTOMER_EDIT = 'customer_edit';
+    const RECAPTCHA_FORM_ID_CUSTOMER_FORGOT_PASSWORD = 'customer_forgot_password';
+    const RECAPTCHA_FORM_ID_CUSTOMER_LOGIN = 'customer_login';
+    const RECAPTCHA_FORM_ID_NEWSLETTER = 'newsletter';
+    const RECAPTCHA_FORM_ID_PLACE_ORDER = 'place_order';
+    const RECAPTCHA_FORM_ID_PRODUCT_REVIEW = 'product_review';
+    const RECAPTCHA_FORM_ID_SEND_FRIEND = 'sendfriend';
+    const RECAPTCHA_FORM_ID_BRAINTREE = 'braintree';
+    const RECAPTCHA_FORM_ID_PAYPAL_PAYFLOWPRO = 'paypal_payflowpro';
 
     /** @var ScopeConfigInterface */
     private ScopeConfigInterface $scopeConfig;
