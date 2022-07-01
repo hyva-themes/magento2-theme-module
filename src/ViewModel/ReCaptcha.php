@@ -17,39 +17,33 @@ use Magento\Store\Model\ScopeInterface;
 
 class ReCaptcha implements ArgumentInterface
 {
-    public const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
+    const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
+    const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
+    const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
+    const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
-    public const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
+    const RECAPTCHA_LOADER = 'recaptcha_loader';
+    const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
 
-    public const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
-
-    public const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
-
-    public const RECAPTCHA_LOADER = 'recaptcha_loader';
-
-    public const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
-
-    public const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
-
-    public const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
+    const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
+    const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
 
     public const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
 
-    /**
-     * @var ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    /** @var ScopeConfigInterface */
+    private ScopeConfigInterface $scopeConfig;
+
+    /** @var LayoutInterface */
+    private LayoutInterface $layout;
+
+    /** @var string[] */
+    private array $resultFieldNames;
 
     /**
-     * @var LayoutInterface
+     * @param ScopeConfigInterface $scopeConfig
+     * @param LayoutInterface $layout
+     * @param array $resultFieldNames
      */
-    private $layout;
-
-    /**
-     * @var string[]
-     */
-    private $resultFieldNames;
-
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         LayoutInterface $layout,
@@ -60,9 +54,15 @@ class ReCaptcha implements ArgumentInterface
         $this->resultFieldNames = $resultFieldNames;
     }
 
+    /**
+     * @param string $formId
+     * @param string $recaptchaInputId
+     * @return string
+     */
     public function getInputHtml(string $formId, string $recaptchaInputId = ''): string
     {
         $data = $this->getRecaptchaData($formId);
+
         return $data && $this->layout->hasElement($data[self::RECAPTCHA_INPUT_FIELD])
             ? $this->layout->getBlock($data[self::RECAPTCHA_INPUT_FIELD])
                            ->setData('form_id', $formId)
@@ -71,17 +71,28 @@ class ReCaptcha implements ArgumentInterface
             : '';
     }
 
+    /**
+     * @param string $formId
+     * @return string
+     */
     public function getLegalNoticeHtml(string $formId): string
     {
         $data = $this->getRecaptchaData($formId);
+
         return $data && $this->layout->hasElement($data[self::RECAPTCHA_LEGAL_NOTICE])
             ? $this->layout->getBlock($data[self::RECAPTCHA_LEGAL_NOTICE])->setData('form_id', $formId)->toHtml()
             : '';
     }
 
+    /**
+     * @param string $formId
+     * @param string $recaptchaInputId
+     * @return string
+     */
     public function getValidationJsHtml(string $formId, string $recaptchaInputId = ''): string
     {
         $data = $this->getRecaptchaData($formId);
+
         return $data && $this->layout->hasElement($data[self::RECAPTCHA_SCRIPT_TOKEN])
             ? $this->layout->getBlock($data[self::RECAPTCHA_SCRIPT_TOKEN])
                            ->setData('form_id', $formId)
@@ -102,9 +113,14 @@ class ReCaptcha implements ArgumentInterface
     public function getResultTokenFieldName(string $formId): string
     {
         $type = $this->getSelectedTypeForForm($formId);
+
         return $this->resultFieldNames[$type] ?? 'g-recaptcha-response';
     }
 
+    /**
+     * @param string $formId
+     * @return string
+     */
     public function calcJsInstanceSuffix(string $formId): string
     {
         return ucfirst(str_replace(['-', '_', ' ', '.'], '', $formId));
@@ -145,14 +161,21 @@ class ReCaptcha implements ArgumentInterface
         ];
     }
 
+    /**
+     * @param string $type
+     * @return string
+     */
     private function getInputFieldBockName(string $type): string
     {
-
         return $type === 'recaptcha_v3'
             ? self::RECAPTCHA_INPUT_FIELD_BLOCK
             : self::RECAPTCHA_INPUT_FIELD_BLOCK . "_{$type}";
     }
 
+    /**
+     * @param string $type
+     * @return string
+     */
     private function getLegalNoticeBlockName(string $type): string
     {
         return $type === 'recaptcha_v3'
@@ -160,11 +183,17 @@ class ReCaptcha implements ArgumentInterface
             : '';
     }
 
+    /**
+     * @param string $type
+     * @param string $formId
+     * @return string
+     */
     private function getScriptTokenBlockName(string $type, string $formId): string
     {
         if ($type !== 'recaptcha_v3') {
             return self::RECAPTCHA_SCRIPT_TOKEN_BLOCK . "_{$type}";
         }
+
         // For backward compatibility:
         // Honor the special case block names for customer_edit, customer_login and newsletter,
         // in case they are declared in child themes
