@@ -12,6 +12,7 @@ namespace Hyva\Theme\Model;
 
 use Magento\Framework\App\Area as AppArea;
 use Magento\Framework\App\Bootstrap as AppBootstrap;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\State as AppState;
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
@@ -72,19 +73,24 @@ class HyvaModulesConfig
      * ]
      *
      * Modules can add themselves to the list using the event "hyva_config_generate_before".
+     * Any module registered with the \Hyva\CompatModuleFallback\Model\CompatModuleRegistry is added automatically.
      *
      * Note: more records besides "src" might be added in the future.
      *
-     * @param string $fullpath
      * @see \Hyva\CompatModuleFallback\Observer\HyvaThemeHyvaConfigGenerateBefore::execute()
      */
     public function gatherConfigData(): array
     {
+        // Keep reference to current ObjectManager instance so it can be reset later
+        $currentObjectManager = ObjectManager::getInstance();
+
         $newObjectManager = $this->createObjectManagerWithCurrentModulesList();
         $eventManager     = $newObjectManager->create(EventManagerInterface::class);
-
-        $configContainer = new DataObject();
+        $configContainer  = new DataObject();
         $eventManager->dispatch('hyva_config_generate_before', ['config' => $configContainer]);
+
+        // Revert ObjectManager to reset app state
+        ObjectManager::setInstance($currentObjectManager);
 
         return $configContainer->getData();
     }
