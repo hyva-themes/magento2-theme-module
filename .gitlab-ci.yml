@@ -1,0 +1,28 @@
+variables:
+  PHP_CS_DIR: './src'
+
+static:phpcs:
+  image: php:${PHPVERSION}
+  tags:
+    - build
+  before_script:
+    - curl https://getcomposer.org/composer-stable.phar -o /usr/local/bin/composer
+    - chmod +x /usr/local/bin/composer
+    - apt-get update
+    - apt-get install -y unzip
+  allow_failure: true
+  script:
+    - composer create-project --no-dev --no-plugins hyva-themes/hyva-coding-standard /tmp/hyva
+    - mkdir reports
+    - php /tmp/hyva/vendor/bin/phpcs --config-set ignore_errors_on_exit 1
+    - php /tmp/hyva/vendor/bin/phpcs --config-set ignore_warnings_on_exit 1
+    - php /tmp/hyva/vendor/bin/phpcs $PHP_CS_DIR --standard=HyvaThemes --severity=5 --extensions=xml,php,phtml --report=full -s --report-file=reports/phpcs-report.log
+    - cat reports/phpcs-report.log
+  parallel:
+    matrix:
+      - PHPVERSION: ['8.1', '7.4']
+  artifacts:
+    paths:
+      - reports
+    expire_in: 1d
+
