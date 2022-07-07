@@ -43,19 +43,14 @@ class ReCaptcha implements ArgumentInterface
     const RECAPTCHA_FORM_ID_PAYPAL_PAYFLOWPRO = 'paypal_payflowpro';
 
     /** @var ScopeConfigInterface */
-    private ScopeConfigInterface $scopeConfig;
+    private $scopeConfig;
 
     /** @var LayoutInterface */
-    private LayoutInterface $layout;
+    private $layout;
 
     /** @var string[] */
-    private array $resultFieldNames;
+    private $resultFieldNames;
 
-    /**
-     * @param ScopeConfigInterface $scopeConfig
-     * @param LayoutInterface $layout
-     * @param array $resultFieldNames
-     */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         LayoutInterface $layout,
@@ -66,11 +61,6 @@ class ReCaptcha implements ArgumentInterface
         $this->resultFieldNames = $resultFieldNames;
     }
 
-    /**
-     * @param string $formId
-     * @param string $recaptchaInputId
-     * @return string
-     */
     public function getInputHtml(string $formId, string $recaptchaInputId = ''): string
     {
         $data = $this->getRecaptchaData($formId);
@@ -83,10 +73,6 @@ class ReCaptcha implements ArgumentInterface
             : '';
     }
 
-    /**
-     * @param string $formId
-     * @return string
-     */
     public function getLegalNoticeHtml(string $formId): string
     {
         $data = $this->getRecaptchaData($formId);
@@ -96,11 +82,6 @@ class ReCaptcha implements ArgumentInterface
             : '';
     }
 
-    /**
-     * @param string $formId
-     * @param string $recaptchaInputId
-     * @return string
-     */
     public function getValidationJsHtml(string $formId, string $recaptchaInputId = ''): string
     {
         $data = $this->getRecaptchaData($formId);
@@ -129,10 +110,6 @@ class ReCaptcha implements ArgumentInterface
         return $this->resultFieldNames[$type] ?? 'g-recaptcha-response';
     }
 
-    /**
-     * @param string $formId
-     * @return string
-     */
     public function calcJsInstanceSuffix(string $formId): string
     {
         return ucfirst(str_replace(['-', '_', ' ', '.'], '', $formId));
@@ -173,10 +150,6 @@ class ReCaptcha implements ArgumentInterface
         ];
     }
 
-    /**
-     * @param string $type
-     * @return string
-     */
     private function getInputFieldBockName(string $type): string
     {
         return $type === 'recaptcha_v3'
@@ -184,10 +157,6 @@ class ReCaptcha implements ArgumentInterface
             : self::RECAPTCHA_INPUT_FIELD_BLOCK . "_{$type}";
     }
 
-    /**
-     * @param string $type
-     * @return string
-     */
     private function getLegalNoticeBlockName(string $type): string
     {
         return $type === 'recaptcha_v3'
@@ -195,11 +164,6 @@ class ReCaptcha implements ArgumentInterface
             : '';
     }
 
-    /**
-     * @param string $type
-     * @param string $formId
-     * @return string
-     */
     private function getScriptTokenBlockName(string $type, string $formId): string
     {
         if ($type !== 'recaptcha_v3') {
