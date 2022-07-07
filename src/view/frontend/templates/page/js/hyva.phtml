@@ -249,7 +249,7 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
             return string.replaceAll(/(%?%)[0-9]+/g, (m, p) => {
                 return '%%' === p
                     ? m.substr(1)
-                    : args[m.substr(1)] ?? m;
+                    : (args[m.substr(1)]) !== null && args[m.substr(1)] !== void 0 ? args[m.substr(1)] : m
             })
         }
 
