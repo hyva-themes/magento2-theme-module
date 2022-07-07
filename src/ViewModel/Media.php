@@ -17,20 +17,14 @@ use Magento\Store\Model\StoreManagerInterface;
 class Media implements ArgumentInterface
 {
     /** @var StoreManagerInterface */
-    private StoreManagerInterface $storeManager;
+    private $storeManager;
 
-    /**
-     * @param StoreManagerInterface $storeManager
-     */
     public function __construct(
         StoreManagerInterface $storeManager
     ) {
         $this->storeManager = $storeManager;
     }
 
-    /**
-     * @return string
-     */
     public function getMediaUrl(): string
     {
         try {
