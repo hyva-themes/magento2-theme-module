@@ -101,12 +101,14 @@ class CurrentProduct implements ArgumentInterface, IdentityInterface
                 $this->currentProduct = $currentProduct;
             }
 
+            #[\ReturnTypeWillChange]
             public function rewind()
             {
                 $this->originalCurrentProduct = $this->currentProduct->get();
                 parent::rewind();
             }
 
+            #[\ReturnTypeWillChange]
             public function current()
             {
                 $current = parent::current();
@@ -114,6 +116,7 @@ class CurrentProduct implements ArgumentInterface, IdentityInterface
                 return $current;
             }
 
+            #[\ReturnTypeWillChange]
             public function valid()
             {
                 $valid = parent::valid();
