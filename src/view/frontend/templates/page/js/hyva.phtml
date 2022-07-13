@@ -234,25 +234,57 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
                 formatter.format(value);
         }
 
+        <?php
         /**
-         * Replace positional parameters like %0 with the additional argument in the matching position.
-         * The first additional argument replaces %0, the second %1 and so on.
+         * Internal string replacement function implementation, see hyva.str() for usage details.
          *
-         * Example: hyva.srtf('%1 %0 %2', 'a', 'b', 'c') => "b a c"
+         * According to caniuse.com rest arguments support isn't at 97% yet at the time of writing,
+         * so Array.from(arguments).slice() is used instead.
+         */
+        ?>
+        const formatStr = function (string, nStart) {
+            const args = Array.from(arguments).slice(2);
+            return string.replace(/(%+)[0-9]+/g, (m, p) => {
+                const n = m.substring(p.length),
+                    idx = parseInt(n) - nStart,
+                    pOut = p.replace(/%%/g, '%');
+
+                return p.length % 2 === 0
+                    ? pOut + n
+                    : (args[idx] !== null && args[idx] !== void 0 ? pOut + args[idx] : pOut + n)
+            })
+        }
+<?php
+        /**
+         * Zero based version of hyva.str().
+         *
+         * If in doubt whether to use hyva.str() or hyva.strf(), choose hyva.str() because it is more similar to __().
+         *
+         * Example: hyva.strf('%3 %2 %1 %0 %3', 'a', 'b', 'c') => "c b a"
+         */
+?>
+        hyva.strf = function (string) {
+            const args = [string, 0];
+            args.push.apply(args, Array.from(arguments).slice(1));
+
+            return formatStr.apply(undefined, args);
+        }
+<?php
+        /**
+         * Replace positional parameters like %1 with the additional argument in the matching position.
+         * The first additional argument replaces %1, the second %2 and so on.
+         *
+         * Example: hyva.str('%3 %2 %1', 'a', 'b', 'c') => "c b a"
          *
          * To insert a literal % symbol followed by a number, duplicate the %, for example %%2 is returned as %2.
          */
-        hyva.strf = function (string) {
-            // According to caniuse.com rest arguments support isn't at 97% yet at the time of writing
-            const args = Array.from(arguments).slice(1);
+?>
+        hyva.str = function (string) {
+            const args = [string, 1];
+            args.push.apply(args, Array.from(arguments).slice(1));
 
-            return string.replaceAll(/(%?%)[0-9]+/g, (m, p) => {
-                return '%%' === p
-                    ? m.substr(1)
-                    : (args[m.substr(1)]) !== null && args[m.substr(1)] !== void 0 ? args[m.substr(1)] : m
-            })
+            return formatStr.apply(undefined, args);
         }
-
 
         /**
          * Take a html string as `content` parameter and
