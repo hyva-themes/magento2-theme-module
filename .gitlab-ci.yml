@@ -1,28 +1,167 @@
 variables:
-  PHP_CS_DIR: './src'
+  SRC_DIR: './src'
+  PHPVERSION: '8.1'
+  MAGEVERSION: '2.4.4'
 
 static:phpcs:
-  image: php:${PHPVERSION}
+  image: hyvathemes/php-fpm:${PHPVERSION}
   tags:
     - build
   before_script:
-    - curl https://getcomposer.org/composer-stable.phar -o /usr/local/bin/composer
+    - curl -sS https://getcomposer.org/composer-stable.phar -o /usr/local/bin/composer
     - chmod +x /usr/local/bin/composer
     - apt-get update
     - apt-get install -y unzip
   allow_failure: true
+  environment:
+    name: development
   script:
     - composer create-project --no-dev --no-plugins hyva-themes/hyva-coding-standard /tmp/hyva
     - mkdir reports
     - php /tmp/hyva/vendor/bin/phpcs --config-set ignore_errors_on_exit 1
     - php /tmp/hyva/vendor/bin/phpcs --config-set ignore_warnings_on_exit 1
-    - php /tmp/hyva/vendor/bin/phpcs $PHP_CS_DIR --standard=HyvaThemes --severity=5 --extensions=xml,php,phtml --report=full -s --report-file=reports/phpcs-report.log
+    - php /tmp/hyva/vendor/bin/phpcs $SRC_DIR --standard=HyvaThemes --severity=5 --extensions=xml,php,phtml --report=full -s --report-file=reports/phpcs-report.log
     - cat reports/phpcs-report.log
   parallel:
     matrix:
-      - PHPVERSION: ['8.1', '7.4']
+      - PHPVERSION: ['8.1']
   artifacts:
     paths:
       - reports
     expire_in: 1d
 
+
+.build:magento:
+  tags:
+    - build
+  variables:
+    NODEVERSION: '16'
+    MYSQLVERSION: '8.0'
+    ESVERSION: '7.16.3'
+    NGINXVERSION: 'stable'
+    RABBITMQVERSION: '9'
+    COMPOSERVERSION: '2'
+    MYSQL_ROOT_PASSWORD: 'root'
+    MYSQL_USER: 'magento'
+    MYSQL_PASSWORD: 'magento'
+    MYSQL_DATABASE: 'magento'
+    HYVA_COMPOSER_KEY: $HYVA_COMPOSER_KEY
+  image: hyvathemes/php-fpm:${PHPVERSION}
+  allow_failure: true
+  services:
+    - name: mysql:${MYSQLVERSION}
+      alias: db
+    - name: elasticsearch:${ESVERSION}
+      alias: elasticsearch
+      command: [ "bin/elasticsearch", "-Expack.security.enabled=false", "-Expack.security.http.ssl.enabled=false", "-Expack.security.transport.ssl.enabled=false", "-Eaction.destructive_requires_name=false", "-Ediscovery.type=single-node" ]
+    #- name: nginx:${NGINXVERSION}
+    #  alias: httpd
+    #- name: rabbitmq:${RABBITMQVERSION}
+    #  alias: rabbitmq
+    #  command: [ "bin/elasticsearch", "-Expack.security.enabled=false", "-Ediscovery.type=single-node" ]
+  before_script:
+    - apt-get update
+    # install dependencies:
+    #   to fetch composer and the nodesource install script:  curl
+    #   for composer:  unzip git
+    #   for nodesource install script:  dirmngr apt-transport-https lsb-release ca-certificates
+    #   to determine the vendor destination folder of the build:  jq
+    #   for setting the theme config and to create a db dump as an artifact: mysql-client
+    #   for ps command used by   memory limit integration tests: procps
+    - apt-get install -y curl unzip git dirmngr apt-transport-https lsb-release ca-certificates jq default-mysql-client procps
+    # needed to build tailwind styles.css:  nodejs
+    - curl -sSLf https://deb.nodesource.com/setup_${NODEVERSION}.x | bash -
+    - apt -y install nodejs
+    # install composer
+    - "[ $COMPOSERVERSION = '1' ] && curl -sSLf https://getcomposer.org/download/latest-1.x/composer.phar -o /usr/local/bin/composer"
+    - "[ $COMPOSERVERSION = '2' ] && curl -sSLf https://getcomposer.org/download/latest-2.x/composer.phar -o /usr/local/bin/composer"
+    - "[ ! -e /usr/local/bin/composer ] && curl -sSLf https://getcomposer.org/download/latest-stable/composer.phar -o /usr/local/bin/composer"
+    - chmod +x /usr/local/bin/composer
+    - composer --version
+    # set git checkout dir, so it can be linked into the magento install vendor/ folder
+    - export BUILD_DIR=$( pwd )
+    - export BUILD_PACKAGE=$( jq -r .name composer.json )
+    - export BUILD_LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+    - export COMPOSER_AUTH=$( ( [ "$HYVA_COMPOSER_KEY" != "\$HYVA_COMPOSER_KEY" ] && echo "$HYVA_COMPOSER_KEY" || echo "$TEST_COMPOSER_KEY" ) | base64 -d   -i -)
+    - sed -e's/memory_limit = 128M/memory_limit = 1G/' /usr/local/etc/php/php.ini-development > /usr/local/etc/php/php.ini
+    # install Magento
+    - composer create-project --no-install --repository-url=https://mirror.mage-os.org/ magento/project-community-edition /tmp/magento $MAGEVERSION
+    - cd /tmp/magento
+    - composer config --no-interaction allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+    - composer config --no-interaction allow-plugins.laminas/laminas-dependency-plugin true
+    - composer config --no-interaction allow-plugins.magento/* true
+    # Install as dev dependency for tests
+    - composer require --no-install --dev tddwizard/magento2-fixtures:^1.1
+    # workaround upstream dependency bug https://github.com/magento/magento2/issues/35604
+    - "[ $MAGEVERSION = '2.4.4' ] && composer require --no-install \"monolog/monolog:2.6.0\""
+    #- composer install
+    # install the dev-main branch of all required hyva modules aliased as the latest release version
+    - composer config repositories.private-packagist composer https://hyva-themes.repo.packagist.com/hyva-ci/
+    - composer config repositories.ci-branch "{ \"type\":\"path\", \"url\":\"$BUILD_DIR/\", \"options\":{ \"symlink\":false } }"
+    - composer require --no-update "hyva-themes/magento2-theme-module:dev-main as $( composer show --available --format=json hyva-themes/magento2-theme-module | jq -r '.versions[]' | grep -v dev | sort -V | tail -1 )"
+    - composer require --no-update "hyva-themes/magento2-default-theme:dev-main as $( composer show --available --format=json hyva-themes/magento2-default-theme | jq -r '.versions[]' | grep -v dev | sort -V | tail -1 )"
+    - composer require --no-update "hyva-themes/magento2-reset-theme:dev-main as $( composer show --available --format=json hyva-themes/magento2-reset-theme | jq -r '.versions[]' | grep -v dev | sort -V | tail -1 )"
+    - composer require --no-update "hyva-themes/magento2-email-module:dev-main as $( composer show --available --format=json hyva-themes/magento2-email-module | jq -r '.versions[]' | grep -v dev | sort -V | tail -1 )"
+    - composer require --no-update "hyva-themes/magento2-graphql-view-model:dev-main as $( composer show --available --format=json hyva-themes/magento2-graphql-view-model | jq -r '.versions[]' | grep -v dev | sort -V | tail -1 )"
+    - composer require --no-update "hyva-themes/magento2-luma-checkout:dev-main as $( composer show --available --format=json hyva-themes/magento2-luma-checkout | jq -r '.versions[]' | grep -v dev | sort -V | tail -1 )"
+    - composer require --no-update "hyva-themes/magento2-theme-fallback:dev-main as $( composer show --available --format=json hyva-themes/magento2-theme-fallback | jq -r '.versions[]' | grep -v dev | sort -V | tail -1 )"
+    # require package being built
+    - composer require --no-update "$BUILD_PACKAGE:dev-$CI_COMMIT_SHA as $BUILD_LATEST_TAG"
+    - composer install
+    - "php bin/magento setup:install
+        --backend-frontname=backend
+        --db-host=db
+        --db-name=$MYSQL_DATABASE
+        --db-user=$MYSQL_USER
+        --db-password=$MYSQL_PASSWORD
+        --search-engine=elasticsearch7
+        --elasticsearch-host=elasticsearch
+        --elasticsearch-port=9200
+        --elasticsearch-index-prefix=magento2
+        --elasticsearch-enable-auth=0
+        --elasticsearch-timeout=15"
+    - THEME_ID=$(mysql -hdb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" --silent --skip-column-names -e "SELECT theme_id FROM theme WHERE code = 'Hyva/default'")
+    - mysql -hdb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" -e "INSERT INTO core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'design/theme/theme_id', '$THEME_ID')"
+    #- php bin/magento sampledata:deploy
+    #- bin/magento setup:upgrade
+    #- php bin/magento config:set --lock-env web/unsecure/base_url "https://${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}/"
+    #- php bin/magento config:set --lock-env web/secure/base_url "https://${TRAEFIK_SUBDOMAIN}.${TRAEFIK_DOMAIN}/"
+    #- php bin/magento config:set --lock-env system/full_page_cache/caching_application 2
+    #- php bin/magento config:set --lock-env system/full_page_cache/ttl 604800
+    #- php bin/magento config:set --lock-env catalog/search/enable_eav_indexer 1
+    #- php bin/magento config:set --lock-env dev/static/sign 0
+    #- php bin/magento setup:upgrade
+    #- php bin/magento index:reindex
+    #- npm --prefix vendor/hyva-themes/magento2-default-theme/web/tailwind install
+    #- npm --prefix vendor/hyva-themes/magento2-default-theme/web/tailwind run build-prod
+    #- php bin/magento deploy:mode:set --skip-compilation production
+
+
+test:integration:
+  extends: .build:magento
+  script:
+    # configure and run integration tests from dev/tests/integration
+    - cd dev/tests/integration
+    - INSTALL_CONFIG_FILE="etc/install-config-mysql.php"
+    - INSTALL_CONFIG_PHP="['db-host' => 'db', 'db-user' => '$MYSQL_USER', 'db-password' => '$MYSQL_PASSWORD', 'db-name' => '$MYSQL_DATABASE', 'elasticsearch-host' => 'elasticsearch', 'elasticsearch-port' => '9200', 'elasticsearch-index-prefix' => 'magento2', 'elasticsearch-enable-auth' => '0', 'elasticsearch-timeout' => '15' ]";
+    - echo "<?php return " > $INSTALL_CONFIG_FILE
+    - php -r "require('framework/Magento/TestFramework/Bootstrap.php'); var_export(array_merge(require('$INSTALL_CONFIG_FILE.dist'), $INSTALL_CONFIG_PHP));" | grep -v amqp >> $INSTALL_CONFIG_FILE
+    - echo ";" >> $INSTALL_CONFIG_FILE
+    - sed -e 's/const name="TESTS_CLEANUP" value="enabled"/const name="TESTS_CLEANUP" value="disabled"/' phpunit.xml.dist > phpunit.xml
+    # Create DB dump so the integration test framework does not run through the installation a second time
+    - SANDBOX_UNIQUE_ID=$(echo -n $(shasum -a1 "$INSTALL_CONFIG_FILE" | cut -d' ' -f1) | shasum -a256 | cut -d' ' -f1)
+    - TEST_TMP_DIR="tmp/sandbox-0-${SANDBOX_UNIQUE_ID}"
+    - mkdir -vp "$TEST_TMP_DIR"
+    - mysqldump -hdb -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" --no-tablespaces "$MYSQL_DATABASE" > "${TEST_TMP_DIR}/setup_dump_${MYSQL_DATABASE}.sql"
+    - ../../../vendor/bin/phpunit -c phpunit.xml ../../../vendor/hyva-themes/magento2-theme-module/tests/integration
+    - cd -
+  parallel:
+    matrix:
+      - PHPVERSION: ['8.1']
+        MAGEVERSION: ['2.4.4']
+      - PHPVERSION: ['7.4']
+        COMPOSERVERSION: ['2']
+        MAGEVERSION: ['2.4.3-p2']
+      #- PHPVERSION: ['7.4']
+      #  COMPOSERVERSION: ['1']
+      #  MAGEVERSION: ['2.4.2-p2', '2.4.1-p1', '2.4.0-p1']
