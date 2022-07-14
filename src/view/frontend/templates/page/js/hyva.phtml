@@ -234,45 +234,34 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
                 formatter.format(value);
         }
 
-        <?php
+<?php
         /**
          * Internal string replacement function implementation, see hyva.str() for usage details.
          *
-         * According to caniuse.com rest arguments support isn't at 97% yet at the time of writing,
-         * so Array.from(arguments).slice() is used instead.
-         */
-        ?>
-        const formatStr = function (string, nStart) {
-            const args = Array.from(arguments).slice(2);
-            return string.replace(/(%+)[0-9]+/g, (m, p) => {
-                const n = m.substring(p.length),
-                    idx = parseInt(n) - nStart,
-                    pOut = p.replace(/%%/g, '%');
-
-                return p.length % 2 === 0
-                    ? pOut + n
-                    : (args[idx] !== null && args[idx] !== void 0 ? pOut + args[idx] : pOut + n)
-            })
-        }
-<?php
-        /**
-         * Zero based version of hyva.str().
-         *
-         * If in doubt whether to use hyva.str() or hyva.strf(), choose hyva.str() because it is more similar to __().
-         *
-         * Example: hyva.strf('%3 %2 %1 %0 %3', 'a', 'b', 'c') => "c b a"
+         * @param string str Template string with optional placeholders
+         * @param int nStart Offset for placeholders, 0 means %0 is replaced with args[0], 1 means %1 is replaced with args[0]
+         * @param array ...args Positional replacement arguments. Rest arguments support isn't at 97% yet, so Array.from(arguments).slice() is used instead.
          */
 ?>
-        hyva.strf = function (string) {
-            const args = [string, 0];
-            args.push.apply(args, Array.from(arguments).slice(1));
+        const formatStr = function (str, nStart) {
+            const args = Array.from(arguments).slice(2);
 
-            return formatStr.apply(undefined, args);
+            return str.replace(/(%+)([0-9]+)/g, (m, p, n) => {
+                const idx = parseInt(n) - nStart;
+
+                if (args[idx] === null || args[idx] === void 0) {
+                    return m;
+                }
+                return p.length % 2
+                    ? p.slice(0, -1).replace('%%', '%') + args[idx]
+                    : p.replace('%%', '%') + n;
+            })
         }
+
 <?php
         /**
-         * Replace positional parameters like %1 with the additional argument in the matching position.
-         * The first additional argument replaces %1, the second %2 and so on.
+         * Replace positional parameters like %1 in string with the rest argument in the matching position.
+         * The first rest argument replaces %1, the second %2 and so on.
          *
          * Example: hyva.str('%3 %2 %1', 'a', 'b', 'c') => "c b a"
          *
@@ -280,8 +269,25 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
          */
 ?>
         hyva.str = function (string) {
-            const args = [string, 1];
-            args.push.apply(args, Array.from(arguments).slice(1));
+            const args = Array.from(arguments);
+            args.splice(1, 0, 1);
+
+            return formatStr.apply(undefined, args);
+        }
+
+<?php
+        /**
+         * Zero based version of hyva.str(): the first rest argument replaces %0, the second %1 and so on.
+         *
+         * Example: hyva.strf('%2 %1 %0', 'a', 'b', 'c') => "c b a"
+         *
+         * If in doubt whether to use hyva.str() or hyva.strf(), prefer hyva.str() because it is more similar to __()
+         * and it might be possible to reuse existing phrase translations with placeholders.
+         */
+?>
+        hyva.strf = function () {
+            const args = Array.from(arguments);
+            args.splice(1, 0, 0);
 
             return formatStr.apply(undefined, args);
         }
