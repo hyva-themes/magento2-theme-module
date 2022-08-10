@@ -20,6 +20,7 @@ use Magento\TestFramework\ObjectManager;
 use Magento\TestFramework\TestCase\AbstractController;
 use Magento\TestFramework\View\Layout;
 use Magento\Theme\Model\Theme\Registration;
+use Psr\Log\LoggerInterface;
 
 // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
 
@@ -69,6 +70,7 @@ class LayoutUpdateHandlesTest extends AbstractController
     {
         $this->givenCurrentTheme('Hyva/default');
         $this->dispatch('/');
+
         /** @var Layout $layout */
         $layout = $this->_objectManager->get(Layout::class);
         $this->assertEqualsCanonicalizing(
