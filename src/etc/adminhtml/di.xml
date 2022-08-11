@@ -7,4 +7,11 @@
     <type name="Magento\Theme\Model\Theme\Registration">
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\CheckVirtualThemes"/>
     </type>
+
+    <!-- The shortcut button needs to be defined for the admin area also because of PageBuilder block previews -->
+    <virtualType name="Magento\Catalog\Block\ShortcutButtons\InCatalog" type="Magento\Catalog\Block\ShortcutButtons">
+        <arguments>
+            <argument name="isCatalogProduct" xsi:type="boolean">true</argument>
+        </arguments>
+    </virtualType>
 </config>
