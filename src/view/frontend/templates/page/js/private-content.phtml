@@ -76,10 +76,6 @@ use Magento\Framework\View\Element\Template;
                     const skipSetDomain = true;
                     const days = false;
                     hyva.setCookie(mage_cache_session_id_key, true, days, skipSetDomain);
-<?php
-                    /** Ensure no data remains in local storage after logout (e.g. checkout-data from Luma checkout) */
-?>
-                    browserStorage.removeItem(private_content_key);
                 }
 
                 const cookieVersion = hyva.getCookie(private_content_version_key);
@@ -154,6 +150,13 @@ use Magento\Framework\View\Element\Template;
 
                                 // merge new data preserving non-invalidated sections
                                 const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}');
+
+<?php
+                                /** Ensure no checkout data remains after logout (from Luma checkout) */
+?>
+                                if ((data.cart && ! data.cart.cartId) && oldSectionData['checkout-data']) {
+                                    delete oldSectionData['checkout-data'];
+                                }
                                 const newSectionData = Object.assign(oldSectionData, data);
 
                                 dispatchPrivateContent(newSectionData);
