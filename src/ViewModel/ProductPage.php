@@ -25,13 +25,13 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 class ProductPage implements ArgumentInterface, IdentityInterface
 {
     /** Recently Viewed lifetime */
-    const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
+    public const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
 
     /** Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
-    const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
+    public const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
 
     /** Flag if product URLs contain the category path */
-    const XML_PRODUCT_URL_USE_CATEGORY_PATH = 'catalog/seo/product_use_categories';
+    public const XML_PRODUCT_URL_USE_CATEGORY_PATH = 'catalog/seo/product_use_categories';
 
     /**
      * @var Product

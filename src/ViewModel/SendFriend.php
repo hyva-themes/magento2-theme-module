@@ -21,7 +21,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class SendFriend implements ArgumentInterface
 {
-    const SMALL_IMAGE = 'product_small_image';
+    public const SMALL_IMAGE = 'product_small_image';
 
     private $productRepository;
 

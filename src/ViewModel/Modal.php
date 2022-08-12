@@ -22,7 +22,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
  */
 class Modal implements ArgumentInterface
 {
-    const DEFAULT_NAME = 'dialog';
+    public const DEFAULT_NAME = 'dialog';
 
     /**
      * @var ModalBuilderFactory

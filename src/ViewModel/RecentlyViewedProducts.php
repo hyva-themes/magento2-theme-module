@@ -19,20 +19,20 @@ use Magento\Store\Model\ScopeInterface as ConfigScope;
 class RecentlyViewedProducts implements ArgumentInterface
 {
     /* Recently Viewed lifetime */
-    const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
+    public const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
 
     /* Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
-    const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
+    public const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
 
     /* Flag if recently viewed product data should be collected */
-    const XML_VIEWED_PRODUCTS_ENABLED = 'catalog/recently_products/recently_viewed_enabled';
+    public const XML_VIEWED_PRODUCTS_ENABLED = 'catalog/recently_products/recently_viewed_enabled';
 
     /* Flag if the recently viewed product widget should be displayed on product detail pages */
-    const XML_VIEWED_PRODUCTS_SHOW_ON_PDP = 'catalog/recently_products/show_on_pdp';
+    public const XML_VIEWED_PRODUCTS_SHOW_ON_PDP = 'catalog/recently_products/show_on_pdp';
 
     /* Flag if the recently viewed product widget should be displayed on product list pages */
-    const XML_VIEWED_PRODUCTS_SHOW_ON_PLP = 'catalog/recently_products/show_on_plp';
-    
+    public const XML_VIEWED_PRODUCTS_SHOW_ON_PLP = 'catalog/recently_products/show_on_plp';
+
     /**
      * @var ScopeConfigInterface
      */

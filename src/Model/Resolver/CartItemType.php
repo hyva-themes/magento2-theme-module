@@ -18,9 +18,6 @@ use Magento\Quote\Model\Quote\Item;
 
 class CartItemType implements ResolverInterface
 {
-    /**
-     * @inheritdoc
-     */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
         if (!isset($value['model'])) {

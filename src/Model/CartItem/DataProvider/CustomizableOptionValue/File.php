@@ -40,9 +40,6 @@ class File implements CustomizableOptionValueInterface
         $this->serializer = $serializer;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getData(
         QuoteItem $cartItem,
         Option $option,
