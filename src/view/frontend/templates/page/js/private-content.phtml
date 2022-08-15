@@ -150,6 +150,13 @@ use Magento\Framework\View\Element\Template;
 
                                 // merge new data preserving non-invalidated sections
                                 const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}');
+
+<?php
+                                /** Ensure no checkout data remains after logout (from Luma checkout) */
+?>
+                                if ((! data.cart || ! data.cart.cartId) && oldSectionData['checkout-data']) {
+                                    delete oldSectionData['checkout-data'];
+                                }
                                 const newSectionData = Object.assign(oldSectionData, data);
 
                                 dispatchPrivateContent(newSectionData);
