@@ -17,23 +17,23 @@ use Magento\Store\Model\ScopeInterface;
 
 class ReCaptcha implements ArgumentInterface
 {
-    const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
+    public const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
 
-    const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
+    public const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
 
-    const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
+    public const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
 
-    const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
+    public const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
-    const RECAPTCHA_LOADER = 'recaptcha_loader';
+    public const RECAPTCHA_LOADER = 'recaptcha_loader';
 
-    const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
+    public const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
 
-    const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
+    public const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
 
-    const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
+    public const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
 
-    const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
+    public const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
 
     /**
      * @var ScopeConfigInterface

@@ -10,6 +10,10 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use function array_map as map;
+use function array_merge as merge;
+use function array_unique as unique;
+use function array_values as values;
 use Hyva\Theme\Service\Navigation as NavigationService;
 use Magento\Framework\Data\Tree\Node;
 use Magento\Framework\Data\Tree\Node\Collection;
@@ -18,17 +22,12 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
-use function array_map as map;
-use function array_merge as merge;
-use function array_unique as unique;
-use function array_values as values;
-
 class Navigation implements ArgumentInterface, IdentityInterface
 {
     /**
      * Cache tag to use instead of category tags  if more than 200 categories are rendered in the navigation.
      */
-    const CACHE_TAG = 'hyva_nav';
+    public const CACHE_TAG = 'hyva_nav';
 
     /**
      * @var NavigationService

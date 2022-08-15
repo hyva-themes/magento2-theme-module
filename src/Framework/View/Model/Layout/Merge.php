@@ -79,9 +79,6 @@ class Merge extends \Magento\Framework\View\Model\Layout\Merge
         $this->eventManager = $eventManager;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function _loadFileLayoutUpdatesXml()
     {
         $layoutXml = parent::_loadFileLayoutUpdatesXml();

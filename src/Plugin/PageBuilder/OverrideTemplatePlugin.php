@@ -19,10 +19,10 @@ use Magento\PageBuilder\Plugin\Filter\TemplatePlugin;
 class OverrideTemplatePlugin
 {
     // matches data-background-images=\"(any character except quote)\"
-    const BACKGROUND_IMAGE_PATTERN = '/data-background-images=\"([^"]*)\"/si';
+    public const BACKGROUND_IMAGE_PATTERN = '/data-background-images=\"([^"]*)\"/si';
 
     // matches any html element with the attribute data-content-type="html"
-    const HTML_CONTENT_TYPE_PATTERN = '/<(\w+)\s[^>]*data-content-type=\"html\"[^>]*>[\s\S]*\1>/si';
+    public const HTML_CONTENT_TYPE_PATTERN = '/<(\w+)\s[^>]*data-content-type=\"html\"[^>]*>[\s\S]*\1>/si';
 
     /**
      * @var CurrentTheme

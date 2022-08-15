@@ -22,8 +22,8 @@ use Magento\Framework\ObjectManagerInterface;
 
 class HyvaModulesConfig
 {
-    const FILE = 'hyva-themes.json';
-    const PATH = 'app/etc';
+    public const FILE = 'hyva-themes.json';
+    public const PATH = 'app/etc';
 
     /**
      * @var File
