@@ -1,6 +1,6 @@
 <script>
     (() => {
-        const r = {['+']: '-', ['/']: '_', ['=']: ','}, uenc = btoa(window.location.href).replace(/[+/=]/g, m => r[m]);
-        document.addEventListener('submit', e => e.target.action = e.target.action.replace('%25uenc%25', uenc));
+<?php /** replace %uenc% placeholders in action urls when submitting forms */ ?>
+        document.addEventListener('submit', event => event.target.action = event.target.action.replace('%25uenc%25', hyva.getUenc()));
     })()
 </script>
