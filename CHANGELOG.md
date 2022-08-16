@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.17...main
 
-## [1.1.17] - 2022-08-11
+## [1.1.17] - 2022-08-16
 
 [1.1.17]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.16...1.1.17
 
@@ -32,6 +32,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   This alternative function was introduced because it matches the replacement behavior of the Magento PHP `__()` function and thus allows for better reuse of existing translation phrases.
 
   For more information please refer to [merge request #225](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/225).
+
+- **Add form submit event listener to document to replace the uenc url placeholder**
+
+  In 1.1.17, the add-to-cart form of product list items uses a placeholder in the form action for the uenc value.  
+  The uenc value is used to hold an encoded version of the current URL, so the visitor can be redirected back after  
+  adding a product to the cart. This is now done client side with JS to avoid a block caching issue.
+
+  For more information please refer to [issue #199](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/199).
 
 ### Changed
 
