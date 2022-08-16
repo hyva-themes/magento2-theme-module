@@ -1,0 +1,6 @@
+<script>
+    (() => {
+        const r = {['+']: '-', ['/']: '_', ['=']: ','}, uenc = btoa(window.location.href).replace(/[+/=]/g, m => r[m]);
+        document.addEventListener('submit', e => e.target.action = e.target.action.replace('%25uenc%25', uenc));
+    })()
+</script>
