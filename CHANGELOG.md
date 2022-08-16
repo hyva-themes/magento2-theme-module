@@ -7,7 +7,79 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.16...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.17...main
+
+## [1.1.17] - 2022-08-16
+
+[1.1.17]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.16...1.1.17
+
+### Added
+
+- **Add Hyva\Theme\ViewModel\Media view model**
+
+  This class provides a method `getMediaUrl()` which returns the base URL to the media assets for the active store view.
+
+  Many thanks to Kiel Pykett (Fisheye) for the contribution!
+
+- **Add .gitlab-ci file**
+
+  Some tests and checks are now automatically executed in GitLab pipelines for new merge requests.  
+  Currently some do not have to succeed (for example the code style check), but this will change at some point in the future. 
+
+- **Add JS string formatting function `hyva.str()`**
+
+  The function is very similar to the already existing function `hyva.strf`, the only difference being that first positional argument to be replaced is `%1` instead of `%0`.  
+  This alternative function was introduced because it matches the replacement behavior of the Magento PHP `__()` function and thus allows for better reuse of existing translation phrases.
+
+  For more information please refer to [merge request #225](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/225).
+
+- **Add `hyva.getUenc()` method and form submit event listener to document to replace the uenc url placeholder**
+
+  In 1.1.17, the add-to-cart form of product list items uses a placeholder in the form action for the uenc value.  
+  The uenc value is used to hold an encoded version of the current URL, so the visitor can be redirected back after  
+  adding a product to the cart. This is now done client side with JS to avoid a block caching issue.
+
+  A new method `hyva.getUenc` was added to provide the properly encoded window location.
+
+  For more information please refer to [issue #199](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/199).
+
+### Changed
+
+- **Bugfix: Register the current product on the product review list page**
+
+  For more information please refer to [issue #183](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/183).
+
+- **Bugfix: Avoid iOS 13 incompatible use of JS nullish assignment operator**
+
+  For more information please refer to [merge request #221](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/221).
+
+  Many thanks to Wahid Nory (Elgentos) for the contribution!
+
+- **Bugfix: Error during installation with Sample Data with Hyvä**
+
+  The error happened when `bin/magento setup:install` was executed while the Hyvä and the Sample Data composer packages where present:
+  `Base table or view not found: 1146 Table 'db.catalog_category_product_index_store1_tmp' doesn't exist,`  
+
+  For more information please refer to [issue #186](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/186).
+
+- **Bugfix: Block PageBuilder previews in adminhtml**
+
+  This fixes a bug introduced in 1.1.16 where the following error was shown as the preview:  
+  `Error filtering template: Invalid block type: Magento\Catalog\Block\ShortcutButtons\InCatalog`.
+
+  For more information please refer to [issue #190](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/190).
+
+- **Bugfix: Removed cached data from localstorage after logout**
+
+  Previously if a logged in customer entered a new address using the Luma checkout, this address would still be stored in the browser local storage after logout.
+
+  For more information please refer to [issue #192](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/192).
+
+  Many thanks to Zach Nanninga (DEG Digital) for the detailed problem report and the suggested solution!
+
+### Removed
+
+- Nothing removed
 
 ## [1.1.16] - 2022-06-16
 
