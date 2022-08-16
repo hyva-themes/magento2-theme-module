@@ -343,6 +343,15 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
             hyva.initMessages();
         }
 
+<?php
+        /**
+         * Return base64 encoded current URL that can be used by Magento to redirect the visitor back to the current page.
+         * The func hyva.getUenc handles additional encoding of +, / and = like \Magento\Framework\Url\Encoder::encode().
+         */
+?>
+        const replace = {['+']: '-', ['/']: '_', ['=']: ','};
+        hyva.getUenc = () => btoa(window.location.href).replace(/[+/=]/g, match => replace[match]);
+
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
 
     }( window.hyva = window.hyva || {} ));

@@ -1,0 +1,6 @@
+<script>
+    (() => {
+<?php /** replace %uenc% placeholders in action urls when submitting forms */ ?>
+        document.addEventListener('submit', event => event.target.action = event.target.action.replace('%25uenc%25', hyva.getUenc()));
+    })()
+</script>
