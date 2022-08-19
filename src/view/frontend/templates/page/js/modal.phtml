@@ -291,7 +291,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     window.hyva.modal.pop();
                 }
             },
-            // generic modal @click.away handler
+            // generic modal @click.outside handler
             click: event => {
                 if (modals.length > 0) {
                     const modal = modals[modals.length -1];
