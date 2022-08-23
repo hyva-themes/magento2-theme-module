@@ -69,7 +69,7 @@ class ViewPlugin
             $assets = $pageConfig->getAssetCollection()->getGroups();
 
             foreach ($assets as $asset) {
-                if($asset->getProperty('content_type') == 'canonical') {
+                if ($asset->getProperty('content_type') == 'canonical') {
                     $url = $product->getUrlModel()->getUrl($product, ['_ignore_category' => true]);
                     $pageConfig->getAssetCollection()->remove($url);
                     $queryParams = [
