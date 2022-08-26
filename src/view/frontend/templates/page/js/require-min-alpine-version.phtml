@@ -1,0 +1,46 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\DeployMode;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+if (! $viewModels->require(DeployMode::class)->isDeveloperMode()) {
+    return;
+}
+
+if (! preg_match('/-v(?<requiredVersion>[0-9.]+)$/', $block->getNameInLayout(), $m)) {
+    ?>
+<script>
+    console.error("Unable to parse required Alpine.js version from block name \"<?= $escaper->escapeJs($block->getNameInLayout()) ?>\"");
+</script>
+    <?php
+    return;
+}
+
+$names = $block->getChildNames();
+if (! $names) {
+    return;
+}
+?>
+<script>
+    window.addEventListener('load', () => {
+        const required = '<?= $escaper->escapeJs($m['requiredVersion']) ?>';
+        if (Alpine && Alpine.version.localeCompare(required, 'en-GB', {numeric: true}) < 0) {
+            console.error(`The current Alpine.js version is ${Alpine.version}, but version >= ${required} is required by the following extensions:`)
+            console.log(<?= /** @noEscape */ json_encode(array_values($names)) ?>)
+        }
+    }, {once: true})
+</script>
