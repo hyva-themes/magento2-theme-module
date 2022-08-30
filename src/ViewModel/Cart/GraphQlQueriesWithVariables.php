@@ -46,7 +46,10 @@ class GraphQlQueriesWithVariables implements ArgumentInterface
               is_virtual
               items {
                 id
-                errors
+                errors {
+                  code
+                  message
+                }
                 prices {
                   price {
                     value
