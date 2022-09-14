@@ -28,7 +28,7 @@ class PageConfig implements ArgumentInterface
 
     public function getPageLayout(): string
     {
-        return $this->getPageConfig()->getPageLayout();
+        return $this->getPageConfig()->getPageLayout() ?? '';
     }
 
     public function getPageConfig(): Config
