@@ -23,7 +23,7 @@ use Magento\Framework\View\Element\Template;
 <script>
     'use strict';
     (function(hyva) {
-        <?php // Built in validation rules start ?>
+        <?php /* Built in validation rules start */ ?>
         const formValidationRules = {
             required(value, options, field, context) {
                 const el = field.element.type === 'hidden' ? createTextInputFrom(field.element) : field.element,
@@ -76,7 +76,7 @@ use Magento\Framework\View\Element\Template;
                 return true;
             },
             email(value, options, field, context) {
-                <?php // The same email validation regex is also used in the Magento backend ?>
+                <?php /* The same email validation regex is also used in the Magento backend */ ?>
                 const rule = /^([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*@([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*\.(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]){2,})$/i;
                 if (value.length > 0 && !rule.test(value)) {
                     return '<?= $escaper->escapeJs(__('Please enter a valid email address.')) ?>';
@@ -319,7 +319,7 @@ use Magento\Framework\View\Element\Template;
 
                         this.validate()
                             .then(() => event.target.submit())
-                            .catch(invalidElements => {<?php // No default behavior ?>});
+                            .catch(invalidElements => {<?php /* No default behavior */ ?>});
                     }
                 },
                 onChange(event) {
@@ -339,31 +339,34 @@ use Magento\Framework\View\Element\Template;
                     }
                     return new Promise(async (resolve, reject) => {
                         if (formElement.elements) {
-                            <?php // Wait until the first invalid field or until all rules have completed  ?>
+                            <?php /* Wait until the first invalid field or until all rules have completed */ ?>
                             await raceSome(this.validateFields(), result => result !== true)
                             const invalidFields = Object.values(this.fields).filter(field => !field.state.valid);
                             this.state.valid = invalidFields.length === 0;
                             if (this.state.valid) {
                                 resolve();
                             } else {
-                                options.scrollToFirstError && invalidFields.length > 0 && invalidFields[0].element.focus();
+                                if (options.scrollToFirstError && invalidFields.length > 0) {
+                                    invalidFields[0].element.focus()
+                                    invalidFields[0].element.select && invalidFields[0].element.select();
+                                }
                                 reject(invalidFields.map(field => field.element));
                             }
                         }
                     });
                 },
-                <?php // Return array of promises ?>
+                <?php /* Return array of promises */ ?>
                 validateFields() {
                     const fields = Object.values(this.fields);
 
-                    <?php // First clear all container state classes ?>
+                    <?php /* First clear all container state classes */ ?>
                     fields.forEach(field => {
                         this.getMessageContainer(field).classList.remove(options.validClassName, options.invalidClassName)
                     });
-                    <?php // Then start validation and return ppromises ?>
+                    <?php /* Then start validation and return promises */ ?>
                     return fields.map(field => this.validateField(field))
                 },
-                <?php // Return Promise that is resolved to field.state.valid when all validators of the field are resolved ?>
+                <?php /* Return Promise that is resolved to field.state.valid when all validators of the field are resolved */ ?>
                 validateField(field) {
                     let value;
                     if (field.element.type === 'checkbox') {
@@ -378,11 +381,11 @@ use Magento\Framework\View\Element\Template;
 
                     const rules = field.rules || {};
 
-                    <?php // Reset messages before validation in case async operations take a while ?>
+                    <?php /* Reset messages before validation in case async operations take a while */ ?>
                     field.state.valid = true;
                     this.showFieldState(field);
 
-                    <?php // Early return for fields that won't validate ?>
+                    <?php /* Early return for fields that won't validate */ ?>
                     if (!elementWillValidate(field.element)) {
                         return new Promise(resolve => resolve(true));
                     }
@@ -393,7 +396,7 @@ use Magento\Framework\View\Element\Template;
                     });
                 <?php endif; ?>
 
-                    <?php // Validate all rules for the field and collect returned promises ?>
+                    <?php /* Validate all rules for the field and collect returned promises */ ?>
                     const fieldValidations = Object.keys(rules).filter(rule => formValidationRules[rule]).map(async rule => {
                         return runValidateFn.call(this, rule, rules[rule], value, field).then(result => {
                             field.state.rules[rule] = result;
@@ -402,10 +405,10 @@ use Magento\Framework\View\Element\Template;
                     });
 
                     return new Promise(resolve => {
-                        <?php // Require all validations to finish processing before setting the final field state ?>
+                        <?php /* Require all validations to finish processing before setting the final field state */ ?>
                         Promise.all(fieldValidations).then(results => {
-                            <?php // Set the state for the field after all rules complete before resolving the Promise ?>
-                            <?php // Check elementWillValidate again in case the field visibility was changed by a validator ?>
+                            <?php /* Set the state for the field after all rules complete before resolving the Promise */ ?>
+                            <?php /* Check elementWillValidate again in case the field visibility was changed by a validator */ ?>
                             field.state.valid = !elementWillValidate(field.element) || rules.length === 0 || !results.some(isInvalidRuleResult)
                             this.showFieldState(field);
                             resolve(field.state.valid);
@@ -436,7 +439,7 @@ use Magento\Framework\View\Element\Template;
                 },
                 /** @deprecated */
                 getFieldWrapper(field) {
-                    <?php // Use getMessageContainer() instead ?>
+                    <?php /* Use getMessageContainer() instead */ ?>
                     return this.getMessageContainer(field)
                 },
                 getMessageContainer(field) {
@@ -493,7 +496,7 @@ use Magento\Framework\View\Element\Template;
                 },
                 /** @deprecated */
                 createMessage(field, message) {
-                    <?php // Use addMessages instead ?>
+                    <?php /* Use addMessages() instead */ ?>
                     return this.addMessages(field, options.messagesWrapperClassName, message);
                 },
                 addMessages(field, messagesClass, messages) {
