@@ -41,12 +41,19 @@ class GraphQlQueriesWithVariables implements ArgumentInterface
                   }'
             : '';
 
+        $errors = version_compare($this->magento->getVersion(), '2.4.5', '>=')
+            ? 'errors {
+                  code
+                  message
+                }'
+            : 'errors';
+
         return "
               total_quantity
               is_virtual
               items {
                 id
-                errors
+                ${errors}
                 prices {
                   price {
                     value
