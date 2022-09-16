@@ -62,6 +62,6 @@
         </arguments>
     </type>
     <type name="Magento\Catalog\Helper\Product\View">
-        <plugin name="update_canonical_page_param_product_reivew" type="Hyva\Theme\Plugin\Catalog\Helper\Product\ViewPlugin" />
+        <plugin name="update_canonical_page_param_product_review" type="Hyva\Theme\Plugin\Catalog\Helper\Product\ProductReviewPaginationCanonicalUrlFixPlugin" />
     </type>
 </config>
