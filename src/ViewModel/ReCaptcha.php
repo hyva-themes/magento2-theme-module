@@ -17,37 +17,38 @@ use Magento\Store\Model\ScopeInterface;
 
 class ReCaptcha implements ArgumentInterface
 {
-    public const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
+    const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
+    const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
+    const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
+    const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
-    public const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
+    const RECAPTCHA_LOADER = 'recaptcha_loader';
+    const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
 
-    public const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
+    const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
+    const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
 
-    public const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
+    const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
+    const RECAPTCHA_FORM_ID_CONTACT = 'contact';
+    const RECAPTCHA_FORM_ID_COUPON_CODE = 'coupon_code';
+    const RECAPTCHA_FORM_ID_CUSTOMER_CREATE = 'customer_create';
+    const RECAPTCHA_FORM_ID_CUSTOMER_EDIT = 'customer_edit';
+    const RECAPTCHA_FORM_ID_CUSTOMER_FORGOT_PASSWORD = 'customer_forgot_password';
+    const RECAPTCHA_FORM_ID_CUSTOMER_LOGIN = 'customer_login';
+    const RECAPTCHA_FORM_ID_NEWSLETTER = 'newsletter';
+    const RECAPTCHA_FORM_ID_PLACE_ORDER = 'place_order';
+    const RECAPTCHA_FORM_ID_PRODUCT_REVIEW = 'product_review';
+    const RECAPTCHA_FORM_ID_SEND_FRIEND = 'sendfriend';
+    const RECAPTCHA_FORM_ID_BRAINTREE = 'braintree';
+    const RECAPTCHA_FORM_ID_PAYPAL_PAYFLOWPRO = 'paypal_payflowpro';
 
-    public const RECAPTCHA_LOADER = 'recaptcha_loader';
+    /** @var ScopeConfigInterface */
+    private $scopeConfig;
 
-    public const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
-
-    public const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
-
-    public const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
-
-    public const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
-     * @var LayoutInterface
-     */
+    /** @var LayoutInterface */
     private $layout;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $resultFieldNames;
 
     public function __construct(
@@ -63,6 +64,7 @@ class ReCaptcha implements ArgumentInterface
     public function getInputHtml(string $formId, string $recaptchaInputId = ''): string
     {
         $data = $this->getRecaptchaData($formId);
+
         return $data && $this->layout->hasElement($data[self::RECAPTCHA_INPUT_FIELD])
             ? $this->layout->getBlock($data[self::RECAPTCHA_INPUT_FIELD])
                            ->setData('form_id', $formId)
@@ -74,6 +76,7 @@ class ReCaptcha implements ArgumentInterface
     public function getLegalNoticeHtml(string $formId): string
     {
         $data = $this->getRecaptchaData($formId);
+
         return $data && $this->layout->hasElement($data[self::RECAPTCHA_LEGAL_NOTICE])
             ? $this->layout->getBlock($data[self::RECAPTCHA_LEGAL_NOTICE])->setData('form_id', $formId)->toHtml()
             : '';
@@ -82,6 +85,7 @@ class ReCaptcha implements ArgumentInterface
     public function getValidationJsHtml(string $formId, string $recaptchaInputId = ''): string
     {
         $data = $this->getRecaptchaData($formId);
+
         return $data && $this->layout->hasElement($data[self::RECAPTCHA_SCRIPT_TOKEN])
             ? $this->layout->getBlock($data[self::RECAPTCHA_SCRIPT_TOKEN])
                            ->setData('form_id', $formId)
@@ -102,6 +106,7 @@ class ReCaptcha implements ArgumentInterface
     public function getResultTokenFieldName(string $formId): string
     {
         $type = $this->getSelectedTypeForForm($formId);
+
         return $this->resultFieldNames[$type] ?? 'g-recaptcha-response';
     }
 
@@ -147,7 +152,6 @@ class ReCaptcha implements ArgumentInterface
 
     private function getInputFieldBockName(string $type): string
     {
-
         return $type === 'recaptcha_v3'
             ? self::RECAPTCHA_INPUT_FIELD_BLOCK
             : self::RECAPTCHA_INPUT_FIELD_BLOCK . "_{$type}";
@@ -165,6 +169,7 @@ class ReCaptcha implements ArgumentInterface
         if ($type !== 'recaptcha_v3') {
             return self::RECAPTCHA_SCRIPT_TOKEN_BLOCK . "_{$type}";
         }
+
         // For backward compatibility:
         // Honor the special case block names for customer_edit, customer_login and newsletter,
         // in case they are declared in child themes
