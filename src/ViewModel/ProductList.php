@@ -441,19 +441,38 @@ class ProductList implements ArgumentInterface
         return $this;
     }
 
+    /**
+     * This method only has an effect if a single category ID filter is set, and that category is an anchor category
+     */
+    public function includeChildCategoryProducts(): self
+    {
+        $this->useAnchorAttribute = true;
+
+        return $this;
+    }
+
+    public function excludeChildCategoryProducts(): self
+    {
+        $this->useAnchorAttribute = false;
+
+        return $this;
+    }
+
     private function getCategory(): Category
     {
         if ($this->useAnchorAttribute) {
             try {
+                // Return a loaded category, which will cause child category products to be displayed for anchor categories
                 $category = $this->categoryRepository->get($this->categoryIdFilter);
                 if ($category instanceof Category) {
-
                     return $category;
                 }
             } catch (NoSuchEntityException $e) {
+                // If the category does not exist, there will be no child category products anyway, so we can ignore this error
             }
         }
 
+        // Return unloaded category, which will cause only the products directly associated with the category to be displayed
         $category = $this->categoryFactory->create();
         $category->setData($category->getIdFieldName(), $this->categoryIdFilter);
 
