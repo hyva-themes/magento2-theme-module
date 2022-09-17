@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\DeployMode;
 use Hyva\Theme\ViewModel\Modal;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
@@ -16,6 +18,9 @@ use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$deployMode = $viewModels->require(DeployMode::class);
 
 ?>
 <script>
@@ -189,6 +194,12 @@ use Magento\Framework\View\Element\Template;
                     const focusTargetAfterHide = determineTrigger(this.$refs, dialog, trigger);
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
                     const dialogElement = this.$refs[name];
+                    if (! dialogElement) {
+                        <?php if ($deployMode->isDeveloperMode()): ?>
+                        console.error(`Use $modal->getShowJs() in the open trigger, or specify a custom name with\n$modal->withDialogRefName("my-name") and use show("my-name", $event).`);
+                        <?php endif; ?>
+                        return;
+                    }
                     const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
 
                     dialogElement.scrollTop = 0;
@@ -253,6 +264,9 @@ use Magento\Framework\View\Element\Template;
                         ['x-transition:leave']: config.transitionLeave,
                         ['x-transition:leave-start']: config.transitionLeaveStart,
                         ['x-transition:leave-end']: config.transitionLeaveEnd,
+                        ['@hyva-modal-show'](event) {
+                            event.detail && event.detail.dialog === name && this.show(name)
+                        }
                     };
                 }
             };
