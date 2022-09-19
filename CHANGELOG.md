@@ -7,7 +7,96 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.17...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.18...main
+
+## [1.1.18] - 2022-09-20
+
+[1.1.18]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.17...1.1.18
+
+
+### Added
+
+- **Add class constants for ReCaptcha form field identifiers**
+
+  For more information, please refer to [merge request #219](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/219).
+
+  Many thanks to Kiel Pykett (Youwe - formerly Fisheye) for the contribution!
+
+- **Allow opening modal dialogs via event**
+
+  Modal dialogs can now be opened by dispatching a JS event `$dispatch('hyva-modal-show', {dialog: modalName})`
+
+  For more information, please refer to [merge request #241](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/242).
+
+- **Add CurrentCategory::fetch() method to return either the current category if present or null**
+
+  The existing method `get()` throws an exception if the current category is not set, forcing a check with `exists()` to be used.
+  The new `fetch()` method makes it more convenient to do things like `if ($cat = $currentCategory->fetch():`.
+
+  For more information, please refer to [issue #194](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/194).
+
+- **Add useAnchorAttribute property to ProductList view model.**
+
+  If set to `true` via `includeChildCategoryProducts()` and a single category ID filter of a anchor category is set, the
+  return value will include all products assigned to child categories.
+
+  For more information please refer to [merge request #237](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/237).
+
+  Many thanks to Daniel Galla (IMI) for the contribution!
+
+### Changed
+
+- **Fix GraphQL schema incompatibility with 2.4.5 and GraphQL Cart**
+
+  The issue occured only in combination with the Hyvä GraphQL cart. Because of a backward
+  incompatible change in the GraphQL schema in Magento 2.4.5 visiting the cart page only displayed the error
+  `Field "errors" of type "[CartItemError]" must have a sub selection.`, which is fixed now.
+
+  For more information, please refer to [issue #204](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/204).
+
+  Many thanks to Wilfried Wolf (sandstein.de) for the contribution!
+
+- **Automatically select text in first input field failing validation**
+
+  This is an imporovement to the advanced form validation library.
+
+  For more information, please refer to [issue #207](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/207).
+
+- **Improve canonical URL for review pagination**
+
+  This is a great improvement for merchants who use customer reviews a lot.
+
+  For more information, please refer to [issue #201](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/201).
+
+  Many Thanks to Dung La (JaJuMa) for the contribution!  
+
+- **Fix modal feature initiallyVisible**
+
+  When `$modal->initiallyVisible()` is called on a modal view model instance, this now causes the modal to correctly be
+  visible when the page loads.
+
+  For more information, please refer to [merge request #241](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/242).
+
+- **Avoid type error if no page layout is set on a category**
+
+  On category pages, when the layout is not set, `getPageLayout()` will return `null`, which is incompatible with the return type string in strict mode.
+
+  For more information, please refer to [merge request #238](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/238).
+
+  Many thanks to Paul Savlovschi (Novicell) for the contribution!
+
+- **Fix ESI cache key generation for the menu block on product and category pages** 
+
+  This is an important performance improvement.
+
+  For more information, please refer to [issue #206](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/206).
+
+  Many thanks to Lukas Jankauskas (Novicell) for the contribution!
+
+### Removed
+
+- Nothing removed
+
 
 ## [1.1.17] - 2022-08-16
 
