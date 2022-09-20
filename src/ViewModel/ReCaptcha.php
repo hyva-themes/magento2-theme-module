@@ -17,30 +17,30 @@ use Magento\Store\Model\ScopeInterface;
 
 class ReCaptcha implements ArgumentInterface
 {
-    const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
-    const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
-    const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
-    const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
+    public const RECAPTCHA_INPUT_FIELD = 'recaptcha_input_field';
+    public const RECAPTCHA_INPUT_FIELD_BLOCK = 'recaptcha_input_field';
+    public const RECAPTCHA_LEGAL_NOTICE = 'recaptcha_legal_notice';
+    public const RECAPTCHA_LEGAL_NOTICE_BLOCK = 'recaptcha_legal_notice';
 
-    const RECAPTCHA_LOADER = 'recaptcha_loader';
-    const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
+    public const RECAPTCHA_LOADER = 'recaptcha_loader';
+    public const RECAPTCHA_LOADER_BLOCK = 'recaptcha_loader';
 
-    const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
-    const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
+    public const RECAPTCHA_SCRIPT_TOKEN = 'recaptcha_script_token';
+    public const RECAPTCHA_SCRIPT_TOKEN_BLOCK = 'recaptcha_validation';
 
-    const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
-    const RECAPTCHA_FORM_ID_CONTACT = 'contact';
-    const RECAPTCHA_FORM_ID_COUPON_CODE = 'coupon_code';
-    const RECAPTCHA_FORM_ID_CUSTOMER_CREATE = 'customer_create';
-    const RECAPTCHA_FORM_ID_CUSTOMER_EDIT = 'customer_edit';
-    const RECAPTCHA_FORM_ID_CUSTOMER_FORGOT_PASSWORD = 'customer_forgot_password';
-    const RECAPTCHA_FORM_ID_CUSTOMER_LOGIN = 'customer_login';
-    const RECAPTCHA_FORM_ID_NEWSLETTER = 'newsletter';
-    const RECAPTCHA_FORM_ID_PLACE_ORDER = 'place_order';
-    const RECAPTCHA_FORM_ID_PRODUCT_REVIEW = 'product_review';
-    const RECAPTCHA_FORM_ID_SEND_FRIEND = 'sendfriend';
-    const RECAPTCHA_FORM_ID_BRAINTREE = 'braintree';
-    const RECAPTCHA_FORM_ID_PAYPAL_PAYFLOWPRO = 'paypal_payflowpro';
+    public const XML_CONFIG_PATH_RECAPTCHA = 'recaptcha_frontend/type_for/';
+    public const RECAPTCHA_FORM_ID_CONTACT = 'contact';
+    public const RECAPTCHA_FORM_ID_COUPON_CODE = 'coupon_code';
+    public const RECAPTCHA_FORM_ID_CUSTOMER_CREATE = 'customer_create';
+    public const RECAPTCHA_FORM_ID_CUSTOMER_EDIT = 'customer_edit';
+    public const RECAPTCHA_FORM_ID_CUSTOMER_FORGOT_PASSWORD = 'customer_forgot_password';
+    public const RECAPTCHA_FORM_ID_CUSTOMER_LOGIN = 'customer_login';
+    public const RECAPTCHA_FORM_ID_NEWSLETTER = 'newsletter';
+    public const RECAPTCHA_FORM_ID_PLACE_ORDER = 'place_order';
+    public const RECAPTCHA_FORM_ID_PRODUCT_REVIEW = 'product_review';
+    public const RECAPTCHA_FORM_ID_SEND_FRIEND = 'sendfriend';
+    public const RECAPTCHA_FORM_ID_BRAINTREE = 'braintree';
+    public const RECAPTCHA_FORM_ID_PAYPAL_PAYFLOWPRO = 'paypal_payflowpro';
 
     /** @var ScopeConfigInterface */
     private $scopeConfig;
