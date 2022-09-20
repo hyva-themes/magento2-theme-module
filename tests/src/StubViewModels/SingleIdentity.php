@@ -15,7 +15,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class SingleIdentity implements ArgumentInterface, IdentityInterface
 {
-    const TAGS = ['single_identity'];
+    public const TAGS = ['single_identity'];
 
     public function getIdentities()
     {
