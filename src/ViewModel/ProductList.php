@@ -461,6 +461,7 @@ class ProductList implements ArgumentInterface
     private function getCategory(): Category
     {
         if ($this->useAnchorAttribute) {
+            // phpcs:disable Magento2.CodeAnalysis.EmptyBlock.DetectedCatch
             try {
                 // Return a loaded category, which will cause child category products to be displayed for anchor categories
                 $category = $this->categoryRepository->get($this->categoryIdFilter);
