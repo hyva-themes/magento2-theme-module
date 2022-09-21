@@ -69,6 +69,7 @@ class ProductReviewPaginationCanonicalUrlFixPlugin
 
     private function updateCanonicalUrlToIncludePagination(ResultPage $resultPage, int $productId, int $pageNumber): void
     {
+        // phpcs:disable Magento2.CodeAnalysis.EmptyBlock.DetectedCatch
         try {
             $product = $this->getProduct($productId);
 
