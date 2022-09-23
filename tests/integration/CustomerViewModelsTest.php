@@ -37,4 +37,13 @@ class CustomerViewModelsTest extends TestCase
         $sut = ObjectManager::getInstance()->create(\Hyva\Theme\ViewModel\Customer\LoginButton::class);
         $this->assertFalse($sut->disabled());
     }
+
+    public function testAddressRegionProviderReturnsRegionJson(): void
+    {
+        $sut = ObjectManager::getInstance()->create(\Hyva\Theme\ViewModel\Customer\Address\RegionProvider::class);
+        $regionJson = $sut->getRegionJson();
+        $regionData = json_decode($regionJson, true);
+        $this->assertNotSame('', $regionJson);
+        $this->assertNotEmpty($regionData);
+    }
 }
