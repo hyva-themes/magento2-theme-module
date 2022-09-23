@@ -106,14 +106,14 @@ class ProductBreadcrumbs extends \Magento\Theme\Block\Html\Breadcrumbs
         $dataNagigation = $this->getViewModelNavigation()->getNavigation();
         $cleanDataNagigation = $this->updateData($dataNagigation);
         $data = $this->serializer->serialize($cleanDataNagigation);
-        $data = str_replace("'", "\'",$data);
+        $data = str_replace("'", "\'", $data);
         $this->_cache->save($data, $this->cacheId, [self::CACHE__CATEGORY_TREE_TAG]);
         return $data;
     }
     
     /**
      * Get data menu tree
-     * 
+     *
      * @param array $dataNagigation
      * @return array
      */
@@ -130,7 +130,7 @@ class ProductBreadcrumbs extends \Magento\Theme\Block\Html\Breadcrumbs
 
     /**
      * Remove some value which not use in array menu data
-     * 
+     *
      * @param array $menuItem
      */
     private function removeUnUsedValue(&$menuItem) 
@@ -145,7 +145,7 @@ class ProductBreadcrumbs extends \Magento\Theme\Block\Html\Breadcrumbs
 
     /**
      * Retrieve current Product object
-     * 
+     *
      * @return \Magento\Catalog\Model\Product|null
      */
     public function getProduct()
@@ -168,7 +168,7 @@ class ProductBreadcrumbs extends \Magento\Theme\Block\Html\Breadcrumbs
 
     /**
      * Retrieve product rewrite suffix for store
-     * 
+     *
      * @return string
      */
     public function getProductUrlSuffix()
