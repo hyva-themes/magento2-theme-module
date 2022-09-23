@@ -23,7 +23,9 @@ class LocaleFormatterTest extends TestCase
     private function getPublicMethods(string $class): array
     {
         $reflectionMethods = (new \ReflectionClass($class))->getMethods(\ReflectionMethod::IS_PUBLIC);
-        return filter(pick($reflectionMethods, 'name'), function (string $method): bool { return $method !== '__construct'; });
+        return filter(pick($reflectionMethods, 'name'), function (string $method): bool {
+            return $method !== '__construct';
+        });
     }
 
     private function getMagentoVersion(): string
@@ -54,6 +56,5 @@ class LocaleFormatterTest extends TestCase
 
         $this->assertSame($original->getLocaleJs(), $sut->getLocaleJs());
         $this->assertSame($original->formatNumber(null), $sut->formatNumber(null));
-
     }
 }
