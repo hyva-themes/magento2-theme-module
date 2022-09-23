@@ -13,6 +13,7 @@ namespace Hyva\Theme\Plugin\TemplateEngine;
 use Hyva\Theme\Model\LocaleFormatterFactory;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\App\ProductMetadata;
+use Magento\Framework\Locale\LocaleFormatter as MagentoLocaleFormatter;
 use Magento\Framework\View\Element\BlockInterface;
 
 use Magento\Framework\View\TemplateEngine\Php;
@@ -59,7 +60,7 @@ class PhpPlugin
     public function beforeRender(Php $subject, BlockInterface $block, $filename, array $dictionary = [])
     {
         $dictionary['viewModels'] = $this->viewModelRegistry;
-        if (! isset($dictionary['localeFormatter']) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
+        if (! class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
             $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
         }
         return [$block, $filename, $dictionary];
