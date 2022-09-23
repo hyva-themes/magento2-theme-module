@@ -10,13 +10,14 @@ declare(strict_types=1);
 
 namespace Hyva\Theme;
 
-use Magento\Framework\App\State;
+use Hyva\Theme\Model\LocaleFormatter as HyvaLocaleFormatter;
+use Magento\Framework\App\ProductMetadata;
+use Magento\Framework\Locale\LocaleFormatter as MagentoLocaleFormatter;
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\View\DesignInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\Theme\Model\Theme\Registration;
+use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
 // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
@@ -38,6 +39,27 @@ class TemplateVariableTest extends TestCase
     /** @var string[] */
     private ?array $testTemplates;
 
+    /**
+     * @var ?string */
+    private static $realProductVersion;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$realProductVersion = ObjectManager::getInstance()->get(ProductMetadata::class)->getVersion();
+        parent::setUpBeforeClass();
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        $magentoVersion = self::$realProductVersion;
+        $productMetadata = ObjectManager::getInstance()->get(ProductMetadata::class);
+        (function () use ($magentoVersion) {
+            $this->version = $magentoVersion;
+        })->call($productMetadata);
+
+        parent::tearDownAfterClass();
+    }
+
     protected function setUp(): void
     {
         $this->testTemplates = [];
@@ -51,63 +73,6 @@ class TemplateVariableTest extends TestCase
         foreach ($this->testTemplates as $template) {
             \unlink($template);
         }
-    }
-
-    /**
-     * @test
-     */
-    public function view_model_container_is_available_as_template_variable()
-    {
-        $this->createTemplate(
-            'Hyva_Theme/templates/test.phtml',
-            <<<'PHTML'
-            <?php
-            \PHPUnit\Framework\Assert::assertTrue(isset($viewModels), '$viewModels variable should be set in template');
-            \PHPUnit\Framework\Assert::assertInstanceOf(
-                \Hyva\Theme\Model\ViewModelRegistry::class,
-                $viewModels,
-                '$viewModels variable should be instance of ViewModelRegistry'
-            );
-            echo "RENDERED";
-            PHTML
-        );
-        $block = $this->createBlockWithTemplate('Hyva_Theme::test.phtml');
-        $this->assertEquals(
-            'RENDERED',
-            $block->toHtml(),
-            "The test block should be rendered\n\nThis is to make sure the assertions in the template were executed"
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function global_view_models_are_accessible_through_container_in_template()
-    {
-        $this->createTemplate(
-            'Hyva_Theme/templates/test.phtml',
-            <<<'PHTML'
-            <?php
-            \PHPUnit\Framework\Assert::assertTrue(isset($viewModels), '$viewModels variable should be set in template');
-            \PHPUnit\Framework\Assert::assertInstanceOf(
-                \Hyva\Theme\Model\ViewModelRegistry::class,
-                $viewModels,
-                '$viewModels variable should be instance of ViewModelRegistry'
-            );
-            \PHPUnit\Framework\Assert::assertInstanceOf(
-                \Hyva\Theme\ViewModel\StoreConfig::class,
-                $viewModels->require(\Hyva\Theme\ViewModel\StoreConfig::class),
-                'StoreConfig view model should be found in view model registry'
-            );
-            echo "RENDERED";
-            PHTML
-        );
-        $block = $this->createBlockWithTemplate('Hyva_Theme::test.phtml');
-        $this->assertEquals(
-            'RENDERED',
-            $block->toHtml(),
-            "The test block should be rendered\n\nThis is to make sure the assertions in the template were executed"
-        );
     }
 
     /**
@@ -140,5 +105,102 @@ class TemplateVariableTest extends TestCase
         );
         $block->setTemplate($template);
         return $block;
+    }
+
+    /**
+     * @test
+     */
+    public function view_model_container_is_available_as_template_variable(): void
+    {
+        $this->createTemplate(
+            'Hyva_Theme/templates/test.phtml',
+            <<<'PHTML'
+            <?php
+            \PHPUnit\Framework\Assert::assertTrue(isset($viewModels), '$viewModels variable should be set in template');
+            \PHPUnit\Framework\Assert::assertInstanceOf(
+                \Hyva\Theme\Model\ViewModelRegistry::class,
+                $viewModels,
+                '$viewModels variable should be instance of ViewModelRegistry'
+            );
+            echo "RENDERED";
+            PHTML
+        );
+        $block = $this->createBlockWithTemplate('Hyva_Theme::test.phtml');
+        $this->assertEquals(
+            'RENDERED',
+            $block->toHtml(),
+            "The test block should be rendered\n\nThis is to make sure the assertions in the template were executed"
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function global_view_models_are_accessible_through_container_in_template(): void
+    {
+        $this->createTemplate(
+            'Hyva_Theme/templates/test.phtml',
+            <<<'PHTML'
+            <?php
+            \PHPUnit\Framework\Assert::assertTrue(isset($viewModels), '$viewModels variable should be set in template');
+            \PHPUnit\Framework\Assert::assertInstanceOf(
+                \Hyva\Theme\Model\ViewModelRegistry::class,
+                $viewModels,
+                '$viewModels variable should be instance of ViewModelRegistry'
+            );
+            \PHPUnit\Framework\Assert::assertInstanceOf(
+                \Hyva\Theme\ViewModel\StoreConfig::class,
+                $viewModels->require(\Hyva\Theme\ViewModel\StoreConfig::class),
+                'StoreConfig view model should be found in view model registry'
+            );
+            echo "RENDERED";
+            PHTML
+        );
+        $block = $this->createBlockWithTemplate('Hyva_Theme::test.phtml');
+        $this->assertEquals(
+            'RENDERED',
+            $block->toHtml(),
+            "The test block should be rendered\n\nThis is to make sure the assertions in the template were executed"
+        );
+    }
+
+    public static function magentoVersionProvider(): array
+    {
+        return [
+            '2.4.5' => ['2.4.5', class_exists(MagentoLocaleFormatter::class) ? MagentoLocaleFormatter::class : HyvaLocaleFormatter::class],
+            '2.4.4' => ['2.4.4', HyvaLocaleFormatter::class]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider magentoVersionProvider
+     */
+    public function locale_formatter_is_available_as_template_variable(string $targetMagentoVersion, string $expectedClass): void
+    {
+        $productMetadata = ObjectManager::getInstance()->get(ProductMetadata::class);
+        (function () use ($targetMagentoVersion) {
+            $this->version = $targetMagentoVersion;
+        })->call($productMetadata);
+
+        $this->createTemplate(
+            'Hyva_Theme/templates/test.phtml',
+            <<<PHTML
+            <?php
+            \PHPUnit\Framework\Assert::assertTrue(isset(\$localeFormatter), 'The \$localeFormatter variable should be set in template');
+            \PHPUnit\Framework\Assert::assertInstanceOf(
+                $expectedClass::class,
+                \$localeFormatter,
+                'In Magento $targetMagentoVersion the \$localeFormatter variable should be instance of $expectedClass'
+            );
+            echo "RENDERED";
+            PHTML
+        );
+        $block = $this->createBlockWithTemplate('Hyva_Theme::test.phtml');
+        $this->assertEquals(
+            'RENDERED',
+            $block->toHtml(),
+            "The test block should be rendered\n\nThis is to make sure the assertions in the template were executed"
+        );
     }
 }
