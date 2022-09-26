@@ -20,11 +20,11 @@ use Magento\Framework\Serialize\Serializer\Json;
 
 class ProductBreadcrumbs extends \Magento\Theme\Block\Html\Breadcrumbs
 {
-    const XML_PATH_PRODUCT_URL_SUFFIX = 'catalog/seo/product_url_suffix';
+    public const XML_PATH_PRODUCT_URL_SUFFIX = 'catalog/seo/product_url_suffix';
 
-    const CACHE__CATEGORY_TREE_TAG = 'HYVA_CACHE_CATEGORY_TREE';
+    public const CACHE__CATEGORY_TREE_TAG = 'HYVA_CACHE_CATEGORY_TREE';
 
-    const XML_PATH_CLIENT_SIDE_BREADCRUMB = 'catalog/hyva_breadcrumbs/client_side_enable';
+    public const XML_PATH_CLIENT_SIDE_BREADCRUMB = 'catalog/hyva_breadcrumbs/client_side_enable';
 
     private $cacheId = 'cacheCategoryTree';
  
@@ -133,7 +133,7 @@ class ProductBreadcrumbs extends \Magento\Theme\Block\Html\Breadcrumbs
      *
      * @param array $menuItem
      */
-    private function removeUnUsedValue(&$menuItem) 
+    private function removeUnUsedValue(&$menuItem)
     {
         unset($menuItem['has_active']);
         unset($menuItem['image']);
