@@ -20,7 +20,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class ThemeLibrariesConfig implements ArgumentInterface
 {
-    const CONFIG_FILE_PATH = 'etc/hyva-libraries.json';
+    public const CONFIG_FILE_PATH = 'etc/hyva-libraries.json';
 
     /**
      * @var DesignInterface
