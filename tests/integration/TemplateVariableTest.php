@@ -35,8 +35,8 @@ class TemplateVariableTest extends TestCase
     /** @var PageFactory */
     private $pageFactory;
 
-    /** @var string[] */
-    private ?array $testTemplates;
+    /** @var null|string[] */
+    private $testTemplates;
 
     protected function setUp(): void
     {
