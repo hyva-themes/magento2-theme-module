@@ -13,6 +13,7 @@ namespace Hyva\Theme\Observer;
 use Hyva\Theme\Service\CurrentTheme;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\View\EntitySpecificHandlesList;
 use Magento\Framework\View\Layout;
 
 /**
@@ -42,9 +43,15 @@ class AddLayoutHandles implements ObserverInterface
      */
     protected $theme;
 
-    public function __construct(CurrentTheme $theme)
+    /**
+     * @var EntitySpecificHandlesList
+     */
+    private $entitySpecificHandlesList;
+
+    public function __construct(CurrentTheme $theme, EntitySpecificHandlesList $entitySpecificHandlesList)
     {
-        $this->theme = $theme;
+        $this->theme                     = $theme;
+        $this->entitySpecificHandlesList = $entitySpecificHandlesList;
     }
 
     public function execute(Observer $observer)
@@ -56,6 +63,11 @@ class AddLayoutHandles implements ObserverInterface
                 if (strpos($handle, 'hyva_') !== 0) {
                     $layout->getUpdate()->addHandle("hyva_$handle");
                 }
+            }
+        }
+        foreach ($this->entitySpecificHandlesList->getHandles() as $handle) {
+            if (strpos($handle, 'hyva_') !== 0) {
+                $this->entitySpecificHandlesList->addHandle("hyva_$handle");
             }
         }
     }
