@@ -38,6 +38,14 @@ class CurrentCategory implements ArgumentInterface, IdentityInterface
     }
 
     /**
+     * A convenient alternative to get() that doesn't throw if there is no current category
+     */
+    public function fetch(): ?CategoryInterface
+    {
+        return $this->exists() ? $this->get() : null;
+    }
+
+    /**
      * @return CategoryInterface
      * @throws \RuntimeException
      */
