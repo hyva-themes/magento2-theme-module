@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.18...main
 
-## [1.1.18] - 2022-09-20
+## [1.1.18] - 2022-10-14
 
 [1.1.18]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.17...1.1.18
 
@@ -43,6 +43,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   For more information please refer to [merge request #237](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/237).
 
   Many thanks to Daniel Galla (IMI) for the contribution!
+
+- **Add backwards compatibility classes for view models introduced in Magento 2.4.5**
+
+  In versions of Magento before the new view models exists, the new Hyvä classes provide the required functionality.  
+  In versions of Magento where the new view models exist (>= 2.4.5), the Magento core functionality will be used.
+
+  The new view models added are:
+    * `Hyva\Theme\ViewModel\Customer\Address\RegionProvider`
+    * `Hyva\Theme\ViewModel\Customer\CreateAccountButton`
+    * `Hyva\Theme\ViewModel\Customer\ForgotPasswordButton`
+    * `Hyva\Theme\ViewModel\Customer\LoginButton`
+
+  For more information please refer to [merge request #211](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/211).
+
+- **Add new template variable `$localeFormatter` for backwards compatibility with Magento versions < 2.4.5**
+
+  Since Magento 2.4.5 a new template variable `$localeFormatter` is available. Hyvä provides a version of the class for
+  older versions of Magento for backwards compatibility.
+
+  For more information please refer to [merge request #244](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/244).
 
 ### Changed
 
