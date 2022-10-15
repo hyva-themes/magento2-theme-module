@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.18...main
 
-## [1.1.18] - 2022-10-14
+## [1.1.18] - 2022-10-15
 
 [1.1.18]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.17...1.1.18
 
@@ -68,7 +68,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - **Fix GraphQL schema incompatibility with 2.4.5 and GraphQL Cart**
 
-  The issue occured only in combination with the Hyvä GraphQL cart. Because of a backward
+  The issue occurred only in combination with the Hyvä GraphQL cart. Because of a backward
   incompatible change in the GraphQL schema in Magento 2.4.5 visiting the cart page only displayed the error
   `Field "errors" of type "[CartItemError]" must have a sub selection.`, which is fixed now.
 
@@ -78,7 +78,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - **Automatically select text in first input field failing validation**
 
-  This is an imporovement to the advanced form validation library.
+  This is an improvement to the advanced form validation library.
 
   For more information, please refer to [issue #207](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/207).
 
