@@ -8,17 +8,23 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$version = $viewModels->require(ThemeLibrariesConfig::class)->getVersionIdFor('alpine');
+
 ?>
 
 <?= $block->getChildHtml() ?>
 
 <script type="module"
-        src="<?= $escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme::js/alpine.min.js')) ?>"
+        src="<?= $escaper->escapeUrl($block->getViewFileUrl("Hyva_Theme::js/alpine${version}.min.js")) ?>"
         defer
         crossorigin
 ></script>

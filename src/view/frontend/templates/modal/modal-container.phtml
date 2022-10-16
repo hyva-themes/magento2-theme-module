@@ -30,8 +30,10 @@ use Magento\Framework\View\Element\Template;
  * left-0 max-h-screen overflow-auto p-10 pb-1 pl-1 pr-1 pt-1 right-0 rounded-lg shadow-xl text-left top-0 z-10 z-50
  */
 ?>
-<div x-cloak x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
-     class="<?= /** @noEscape  */ $modal->getOverlayClasses() ?>">
+<div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?>
+    x-bind="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
+    x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
+    class="<?= /** @noEscape  */ $modal->getOverlayClasses() ?>">
     <div class="<?= /** @noEscape  */ $modal->getContainerClasses() ?>">
         <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog" aria-modal="true"
              <?php if ($modal->isOverlayDisabled()): ?>x-no-overlay<?php endif; ?>

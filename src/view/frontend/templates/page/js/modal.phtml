@@ -138,14 +138,6 @@ $deployMode = $viewModels->require(DeployMode::class);
             }, duration + 1);
         }
 
-        function ucFirst(s) {
-            return s.substr(0, 1).toUpperCase() + s.substr(1);
-        }
-
-        function isOpenProp(dialogName) {
-            return 'is' + ucFirst(dialogName) + 'Open';
-        }
-
         function determineTrigger($refs, dialog, trigger) {
             // if show() was called without arguments use the event target as open trigger
             if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog.target && dialog.target.focus) {
@@ -190,6 +182,7 @@ $deployMode = $viewModels->require(DeployMode::class);
             let lastHide = 0;
 
             return {
+                opened: {},
                 show(dialog, trigger) {
                     const focusTargetAfterHide = determineTrigger(this.$refs, dialog, trigger);
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
@@ -204,12 +197,12 @@ $deployMode = $viewModels->require(DeployMode::class);
 
                     dialogElement.scrollTop = 0;
 
-                    // Prevent adding the same modal on the stack twice
-                    if (this[isOpenProp(name)]) {
+                    <?php /* Prevent adding the same modal on the stack twice */ ?>
+                    if (this.opened[name]) {
                         return;
                     }
 
-                    this[isOpenProp(name)] = true;
+                    this.opened[name] = true;
                     useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
 
@@ -237,7 +230,7 @@ $deployMode = $viewModels->require(DeployMode::class);
 
                     const modal = modals.pop() || {};
                     const name = modal.name;
-                    this[isOpenProp(name)] = false;
+                    this.opened[name] = false;
 
                     freeFocusFromModalTrap(modal)
                     trapFocusInNextModalWithOverlay();
@@ -251,12 +244,11 @@ $deployMode = $viewModels->require(DeployMode::class);
 
                     modal.resolve(value);
                 },
-                [isOpenProp(config.dialog)]: false,
                 overlay(dialog) {
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
                     return {
                         ['x-show']() {
-                            return this[isOpenProp(name)];
+                            return this.opened[name]
                         },
                         ['x-transition:enter']: config.transitionEnter,
                         ['x-transition:enter-start']: config.transitionEnterStart,
@@ -291,7 +283,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     window.hyva.modal.pop();
                 }
             },
-            // generic modal @click.away handler
+            // generic modal @click.outside handler
             click: event => {
                 if (modals.length > 0) {
                     const modal = modals[modals.length -1];

@@ -1,0 +1,132 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * See https://hyva.io/license
+ */
+?>
+<script>
+    (function () {
+        "use strict";
+
+        const DIRECTIVE = "intersect";
+        const X_ATTR_RE = /^x-([a-z-]*)\b/i;
+
+        function parseHtmlAttribute(reference) {
+            const name = reference.name;
+            const value = reference.value;
+
+            const typeMatch = name.match(X_ATTR_RE);
+            const valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
+            const modifiers = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
+
+            return {
+                type: typeMatch ? typeMatch[1] : null,
+                value: valueMatch ? valueMatch[1] : null,
+                modifiers: modifiers.map((i) => i.replace(".", "")),
+                expression: value,
+            };
+        }
+
+        function getXDirectives(el) {
+            return Array.from(el.attributes)
+                .filter(function (attr) {
+                    return X_ATTR_RE.test(attr.name);
+                })
+                .map(parseHtmlAttribute);
+        }
+
+        if (window.Alpine) {
+            console.error("Intersect plugin must be included before AlpineJs, x-intersect will not work.");
+        }
+
+        const getLengthValue = (rawValue) => {
+            // Supported: -10px, -20 (implied px), 30 (implied px), 40px, 50%
+            let match = rawValue.match(/^(-?[0-9]+)(px|%)?$/)
+            return match ? match[1] + (match[2] || 'px') : undefined
+        }
+
+        const getRootMargin = (modifiers) => {
+            const key = 'margin'
+            const fallback = '0px 0px 0px 0px'
+            const index = modifiers.indexOf(key)
+
+            // If the modifier isn't present, use the default.
+            if (index === -1) return fallback
+
+            // Grab the 4 subsequent length values after it: x-intersect.margin.300px.0.50%.0
+            let values = []
+            for (let i = 1; i < 5; i++) {
+                values.push(getLengthValue(modifiers[index + i] || ''))
+            }
+
+            // Filter out undefined values (not a valid length)
+            values = values.filter((v) => v !== undefined)
+
+            return values.length ? values.join(' ').trim() : fallback
+        }
+
+        const getThreshhold = (modifiers) => {
+            if (modifiers.includes("full")) return 0.8;
+            if (modifiers.includes("half")) return 0.5;
+
+            return 0;
+        };
+
+        const AlpineIntersectionDirective = {
+            start: function start() {
+                Alpine.onBeforeComponentInitialized(function (component) {
+                    const legacyResolveBoundAttributes = component.resolveBoundAttributes;
+
+                    component.resolveBoundAttributes = function (el, initialUpdate, extraVars) {
+                        if (initialUpdate === void 0) {
+                            initialUpdate = false;
+                        }
+
+                        if (initialUpdate) {
+                            const attrs = getXDirectives(el);
+                            attrs.forEach(function (reference) {
+                                const type = reference.type;
+                                const expression = reference.expression;
+                                const value = reference.value;
+                                const modifiers = reference.modifiers;
+
+                                if (type === DIRECTIVE) {
+                                    const options = {
+                                        rootMargin: getRootMargin(modifiers),
+                                        threshold: getThreshhold(modifiers),
+                                    };
+
+                                    if ("IntersectionObserver" in window) {
+                                        const observer = new IntersectionObserver((elements) => {
+                                            elements.forEach((element) => {
+                                                // Ignore element if intersecting in leave mode,
+                                                // or not intersecting in enter mode
+                                                if (element.isIntersecting === (value === 'leave')) return
+
+                                                component.evaluateReturnExpression(el, expression, extraVars);
+
+                                                modifiers.includes("once") && observer.disconnect();
+                                            });
+                                        }, options);
+
+                                        observer.observe(el);
+                                    } else {
+                                        component.evaluateReturnExpression(el, expression, extraVars);
+                                    }
+                                }
+                            });
+                        }
+                        return legacyResolveBoundAttributes.bind(component)(el, initialUpdate, extraVars);
+                    };
+                });
+            },
+        };
+
+        const initAlpine = window.deferLoadingAlpine || ((callback) => callback());
+        window.deferLoadingAlpine = (callback) => {
+            AlpineIntersectionDirective.start();
+            initAlpine(callback);
+        };
+    })();
+</script>
