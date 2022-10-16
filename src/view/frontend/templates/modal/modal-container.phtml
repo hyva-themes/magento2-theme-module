@@ -32,6 +32,7 @@ use Magento\Framework\View\Element\Template;
 ?>
 <div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?>
     x-bind="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
+    x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
     class="<?= /** @noEscape  */ $modal->getOverlayClasses() ?>">
     <div class="<?= /** @noEscape  */ $modal->getContainerClasses() ?>">
         <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog" aria-modal="true"
