@@ -7,12 +7,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.18...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.0-beta1...main
+
+
+## [1.2.0-beta1] - 2022-10-16
+
+[1.2.0-beta1]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.18...1.2.0-beta1
+
+### Added
+
+- **Added Alpine v3 support**
+
+  Alpine v3 was added in addition to Alpine v2. Backwards compatibility is preserved.
+  Please refer to the upgrade documentation for details.
+
+  For more information please refer to [Merge Request #83](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/119)
+
+- **Added `ThemeLibrariesConfig` view model**
+
+  This class can be used to determine the version of Alpine that should be loaded for the current theme.
+
+  For more information please refer to [Merge Request #83](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/119)
+
+- **Added `require-alpine-v3` block class as extension point**
+
+  Extensions may add a child block to `require-alpine-v3` in layout XML using the module name as the child block name.  
+  If a theme then loads the module using a Alpine v2 theme, a warning is displayed in the browser console.  
+
+  For more information please refer to [Merge Request #83](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/119)
+
+### Changed
+
+- Nothing changed
+
+### Removed
+
+- Nothing removed
+
 
 ## [1.1.18] - 2022-10-15
 
 [1.1.18]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.17...1.1.18
-
 
 ### Added
 
