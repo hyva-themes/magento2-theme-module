@@ -96,7 +96,8 @@ class SwatchRenderer implements ArgumentInterface
             if (isset($allAttributes[$code])) {
                 $attribute = $allAttributes[$code];
                 if ($this->canReplaceImageWithSwatch($attribute)) {
-                    $usedFilterAttributes[$code] = $value;
+                    // Guard against array to string conversion error because some extensions allow selecting multiple values
+                    $usedFilterAttributes[$code] = is_array($value) ? implode('|', $value) : $value;
                 }
             }
         }
