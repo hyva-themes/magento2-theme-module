@@ -646,6 +646,10 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     "ref",
     "data",
     "id",
+    "tabs",
+    "radio",
+    "switch",
+    "disclosure",
     "bind",
     "init",
     "for",
@@ -1324,11 +1328,11 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     let attr = el.getAttribute(name);
     if (attr === null)
       return typeof fallback === "function" ? fallback() : fallback;
+    if (attr === "")
+      return true;
     if (isBooleanAttr(name)) {
       return !![name, "true"].includes(attr);
     }
-    if (attr === "")
-      return true;
     return attr;
   }
 
@@ -1461,7 +1465,7 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     get raw() {
       return raw;
     },
-    version: "3.10.3",
+    version: "3.10.4",
     flushAndStopDeferringMutations,
     dontAutoEvaluateFunctions,
     disableEffectScheduling,
@@ -2622,8 +2626,9 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
       return storeKeyForXFor(el, expression);
     let evaluate2 = evaluateLater(el, expression);
     effect3(() => evaluate2((result) => {
-      if (result === void 0 && expression.match(/\./))
+      if (result === void 0 && typeof expression === "string" && expression.match(/\./)) {
         result = "";
+      }
       mutateDom(() => bind(el, value, result, modifiers));
     }));
   });
