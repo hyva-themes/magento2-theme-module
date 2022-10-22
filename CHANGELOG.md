@@ -7,7 +7,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.18...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.19...1.1.x-main
+
+## [1.1.19] - 2022-10-22
+
+[1.1.19]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.18...1.1.19
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Guard against array to string conversion error if multipe attribute values can be specified**
+
+  This is relevant for extensions like elasticsuite.
+
+  For more information, please refer to [issue #1213](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/213).
+
+### Removed
+
+- Nothing removed
+
 
 ## [1.1.18] - 2022-10-15
 
