@@ -7,7 +7,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.0-beta1...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.0-beta2...main
+
+
+## [1.2.0-beta2] - 2022-10-22
+
+[1.2.0-beta2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.0-beta1...1.2.0-beta2
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Update Alpine v3 to 3.10.4**
+
+- **Guard against array to string conversion error if multipe attribute values can be specified**
+
+  This is relevant for extensions like elasticsuite.
+
+  For more information, please refer to [issue #1213](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/213).
+
+### Removed
+
+- Nothing removed
 
 
 ## [1.2.0-beta1] - 2022-10-16
@@ -32,7 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Added `require-alpine-v3` block class as extension point**
 
   Extensions may add a child block to `require-alpine-v3` in layout XML using the module name as the child block name.  
-  If a theme then loads the module using a Alpine v2 theme, a warning is displayed in the browser console.  
+  If a theme then loads the module using a Alpine v2 theme, a warning is displayed in the browser console.
 
   For more information please refer to [Merge Request #83](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/119)
 
