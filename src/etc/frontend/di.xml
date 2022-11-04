@@ -34,6 +34,18 @@
         <plugin name="save_double_cached_block_cache_tags" type="Hyva\Theme\Plugin\PageCache\SaveTagsForCachedBlocks"/>
     </type>
 
+    <type name="Magento\Theme\Controller\Result\JsFooterPlugin">
+        <plugin name="disable_move_js_to_footer_on_some_pages" type="Hyva\Theme\Plugin\Theme\DisableJsFooterPlugin"/>
+    </type>
+
+    <type name="Hyva\Theme\Plugin\Theme\DisableJsFooterPlugin">
+        <arguments>
+            <argument name="disableMoveToFooterOnActions" xsi:type="array">
+                <item name="php-cart-route" xsi:type="string">checkout_cart_index</item>
+            </argument>
+        </arguments>
+    </type>
+
     <!-- replace the convertBackgroundImages plugin with our own implementation, because it breaks AlpineJS attributes -->
     <type name="Magento\PageBuilder\Plugin\Filter\TemplatePlugin">
         <plugin name="convertBackgroundImages_override" type="Hyva\Theme\Plugin\PageBuilder\OverrideTemplatePlugin"/>
