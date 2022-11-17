@@ -27,7 +27,7 @@ use Magento\Framework\View\Element\Template;
         const formValidationRules = {
             required(value, options, field, context) {
                 const el = field.element.type === 'hidden' ? createTextInputFrom(field.element) : field.element,
-                    msg = '<?= $escaper->escapeJs(__('This field is required.')) ?>';
+                    msg = '<?= $escaper->escapeJs(__('This is a required field.')) ?>';
 
                 if (el.type === 'radio' || el.type === 'checkbox') {
                     return (value === undefined || value.length === 0) ? msg : true;
