@@ -128,6 +128,7 @@ class ProductListItem implements ArgumentInterface
 
         $itemRendererBlock->setData('product', $product)
                           ->setData('view_mode', $viewMode)
+                          ->setData('item_relation_type', $parentBlock->getData('item_relation_type'))
                           ->setData('image_display_area', $imageDisplayArea)
                           ->setData('show_description', $showDescription)
                           ->setData('position', $parentBlock->getPositioned())
