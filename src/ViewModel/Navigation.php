@@ -53,7 +53,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
 
     public function __construct(NavigationService $navigationService, int $maxCategoryCacheTags = 200)
     {
-        $this->navigationService    = $navigationService;
+        $this->navigationService = $navigationService;
         $this->maxCategoryCacheTags = $maxCategoryCacheTags;
     }
 
@@ -65,9 +65,28 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     public function getNavigation($maxLevel = false)
     {
-        $menuTree = $this->navigationService->getMenuTree($maxLevel);
+        $menuTree = $this->navigationService->getMenuTree((int) $maxLevel);
 
         return $this->processCacheIdentities($this->getMenuData($menuTree), $maxLevel);
+    }
+
+    private function flattenTree(array $categories, array $acc = []): array
+    {
+        foreach ($categories as $category) {
+            $id = substr($category['id'], strrpos($category['id'], '-') + 1);
+            $acc['c' . $id] = [
+                'url' => $category['url'],
+                'name' => $category['name'],
+                'path' => $category['path'],
+            ];
+            $acc = $this->flattenTree($category['childData'] ?? [], $acc);
+        }
+        return $acc;
+    }
+
+    public function getCategories($maxLevel = false): array
+    {
+        return $this->flattenTree($this->getNavigation($maxLevel));
     }
 
     /**
@@ -76,7 +95,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     protected function getMenuData(Node $menuTree)
     {
-        $children   = $menuTree->getChildren();
+        $children = $menuTree->getChildren();
         $childLevel = $this->getChildLevel($menuTree->getLevel());
         $this->removeChildrenWithoutActiveParent($children, $childLevel);
         $parentPositionClass = $menuTree->getPositionClass();
@@ -133,7 +152,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
     {
         if ($this->isNewMaxLevel($maxLevel) && !empty($menuData)) {
             $this->requestedMaxLevel = $maxLevel;
-            $this->cacheIdentities   = unique(merge(...values(map([$this, 'extractCacheIdentities'], $menuData))));
+            $this->cacheIdentities = unique(merge(...values(map([$this, 'extractCacheIdentities'], $menuData))));
         }
         return map([$this, 'removeCacheIdentities'], $menuData);
     }
