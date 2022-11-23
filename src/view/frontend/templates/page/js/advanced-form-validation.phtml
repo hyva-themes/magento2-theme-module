@@ -92,8 +92,8 @@ use Magento\Framework\View\Element\Template;
             },
             equalTo(value, options, field, context) {
                 const dependencyField = context.fields[options].element;
-                const dependencyFieldName = dependencyField.label || dependencyField.name;
                 if (value !== dependencyField.value) {
+                    const dependencyFieldName = dependencyField.label || dependencyField.title || dependencyField.name;
                     return hyva.strf('<?= $escaper->escapeJs(__('This field value must be the same as "%0".')) ?>', dependencyFieldName);
                 }
                 return true;
@@ -147,7 +147,7 @@ use Magento\Framework\View\Element\Template;
         function getRules(element) {
             let rules = {};
             const BROWSER_ATTRS = ['min', 'max', 'required', 'minlength', 'maxlength', 'step'];
-            const DEFAULT_TYPES = ['email', 'password'];
+            const DEFAULT_TYPES = ['email'];
             BROWSER_ATTRS.forEach(attrName => {
                 if (element.hasAttribute(attrName)) {
                     rules[attrName] = element.getAttribute(attrName);
@@ -333,6 +333,9 @@ use Magento\Framework\View\Element\Template;
 
                     this.validateField(field);
                 },
+                validateSafe() {
+                    return new Promise(resolve => this.validate().then(() => resolve(true)).catch(() => {}))
+                },
                 validate() {
                     if (!Object.keys(this.fields).length || !Object.keys(this.fields).length !== formElement.elements.length) {
                         this.setupFields(formElement.elements);
@@ -474,11 +477,11 @@ use Magento\Framework\View\Element\Template;
                     }
                 },
                 removeMessages(field, messagesClass) {
-                    if (! hasMessagesWrapper.call(this, field, messagesClass)) {
+                    if (! hasMessagesWrapper.call(this, field, messagesClass || options.messagesWrapperClassName)) {
                         return;
                     }
 
-                    const msgWrapper = getMessagesWrapper.call(this, field, messagesClass);
+                    const msgWrapper = getMessagesWrapper.call(this, field, messagesClass || options.messagesWrapperClassName);
                     const messages = msgWrapper.querySelectorAll(`[data-msg-field='${field.element.name}']`);
                     Array.from(messages).forEach(msg => msg.remove());
                     if (msgWrapper && msgWrapper.childElementCount === 0) {
