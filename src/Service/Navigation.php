@@ -218,6 +218,7 @@ class Navigation
             'is_parent_active' => $isParentActive,
             'position' => $category->getData('position'),
             'identities' => $category->getIdentities(),
+            'path' => $category->getPath()
         ];
     }
 }
