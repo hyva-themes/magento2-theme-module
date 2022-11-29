@@ -53,16 +53,31 @@ class ProductPrice implements ArgumentInterface
         $this->currentProduct = $currentProduct;
     }
 
+    public function getPriceValueInclTax(string $priceType, Product $product): float
+    {
+        // Cast in case no price is set and $amount is null or a false
+        return (float) $this->getPrice($priceType, $product)->getAmount()->getValue();
+    }
+
+    public function getPriceValueExclTax(string $priceType, Product $product): float
+    {
+        // Cast in case no price is set and $amount is null or a false
+        return (float) $this->getPrice($priceType, $product)->getAmount()->getBaseAmount();
+    }
+
+    /**
+     * Return the price incl. or excl. tax depending on the system settings.
+     *
+     * @param string $priceType
+     * @param Product|null $product
+     * @return float
+     */
     public function getPriceValue(string $priceType, Product $product = null): float
     {
-        $priceAmount = $this->getPrice($priceType, $product)->getAmount();
-
-        $amount = $this->displayPriceIncludingTax()
-            ? $priceAmount->getValue()
-            : $priceAmount->getBaseAmount();
-
         // Cast in case no price is set and $amount is null or a false
-        return (float) $amount;
+        return (float) $this->displayPriceIncludingTax()
+            ? $this->getPriceValueInclTax($priceType, $product ?? $this->getProduct())
+            : $this->getPriceValueExclTax($priceType, $product ?? $this->getProduct());
     }
 
     public function getPrice(string $priceType, Product $product = null): PriceInterface
@@ -98,15 +113,14 @@ class ProductPrice implements ArgumentInterface
         $this->product = $product;
     }
 
-    /**
-     * Check if we have display in catalog prices including tax
-     *
-     * @return bool
-     */
     public function displayPriceIncludingTax(): bool
     {
-        return $this->getPriceDisplayType() == Config::DISPLAY_TYPE_INCLUDING_TAX ||
-            $this->getPriceDisplayType() == Config::DISPLAY_TYPE_BOTH;
+        return $this->getPriceDisplayType() == Config::DISPLAY_TYPE_INCLUDING_TAX || $this->displayPriceInclAndExclTax();
+    }
+
+    public function displayPriceInclAndExclTax(): bool
+    {
+        return $this->getPriceDisplayType() === Config::DISPLAY_TYPE_BOTH;
     }
 
     /**
@@ -143,7 +157,9 @@ class ProductPrice implements ArgumentInterface
         // overrides the 'website_price' key with the required price including or excluding tax
         return array_map(
             function ($a, $b) use ($displayTax) {
-                $b['website_price'] = $displayTax ? $b['price']->getValue() : $b['price']->getBaseAmount();
+                $b['price_incl_tax'] = $b['price']->getValue();
+                $b['price_excl_tax'] = $b['price']->getBaseAmount();
+                $b['website_price'] = $displayTax ? $b['price']->getValue() : $b['price']->getBaseAmount(); // keep for backwards compatibility
                 return $b;
             },
             array_keys($tierPrices),
@@ -152,6 +168,8 @@ class ProductPrice implements ArgumentInterface
     }
 
     /**
+     * Return the price incl. or excl. tax depending on the system settings.
+     *
      * @param Option|Value $option
      * @param string $priceType
      * @param Product|null $product
@@ -159,16 +177,50 @@ class ProductPrice implements ArgumentInterface
      */
     public function getCustomOptionPrice($option, string $priceType, Product $product = null)
     {
+        return $this->displayPriceIncludingTax()
+            ? $this->getCustomOptionPriceInclTax($option, $priceType, $product)
+            : $this->getCustomOptionPriceExclTax($option, $priceType, $product);
+    }
+
+    /**
+     * @param Value|Option $option
+     * @param string $priceType
+     * @param Product|null $product
+     * @return float|mixed
+     */
+    public function getCustomOptionPriceInclTax($option, string $priceType, Product $product = null)
+    {
+        return $this->calcCustomOptionPrice($option, $priceType, $product ?? $this->getProduct(), true);
+    }
+
+    /**
+     * @param Value|Option $option
+     * @param string $priceType
+     * @param Product|null $product
+     * @return float|mixed
+     */
+    public function getCustomOptionPriceExclTax($option, string $priceType, Product $product = null)
+    {
+        return $this->calcCustomOptionPrice($option, $priceType, $product ?? $this->getProduct(), false);
+    }
+
+    /**
+     * @param Value|Option $option
+     * @param string $priceType
+     * @param Product $product
+     * @param bool $withTax
+     * @return float
+     */
+    private function calcCustomOptionPrice($option, string $priceType, Product $product, bool $withTax)
+    {
         if ($option->getPriceType() === 'percent') {
             return $option->getPrice();
         }
 
         $customOptionPrice = $this->getPrice($priceType, $product);
-        $displayTax = $this->displayPriceIncludingTax();
-
         $context = [CustomOptionPriceInterface::CONFIGURATION_OPTION_FLAG => true];
-        $optionPrice = $customOptionPrice->getCustomAmount($option->getPrice(), $displayTax, $context);
+        $optionPrice = $customOptionPrice->getCustomAmount($option->getPrice(), !$withTax, $context);
 
-        return $optionPrice->getValue($displayTax ? null : 'tax');
+        return $optionPrice->getValue($withTax ? null : 'tax');
     }
 }
