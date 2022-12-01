@@ -1,0 +1,20 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+
+// Bypass waiting for user interaction for pages where external script loading is critical.
+// e.g., running analytics/conversion scripts on the order success page.
+?>
+<script>
+    window.dispatchEvent(new Event('init-external-scripts'));
+</script>

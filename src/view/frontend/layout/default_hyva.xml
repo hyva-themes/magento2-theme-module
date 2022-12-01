@@ -22,6 +22,7 @@
             <block name="script-private-content" template="Hyva_Theme::page/js/private-content.phtml"/>
             <block name="view-model-identities" class="Hyva\Theme\Block\ViewModelCacheTagsBlock"/>
             <block name="form-submit.set-uenc" template="Hyva_Theme::page/js/set-uenc.phtml"/>
+            <block name="init.external.scripts" template="Hyva_Theme::page/js/init-external-scripts.phtml"/>
         </referenceContainer>
 
     </body>

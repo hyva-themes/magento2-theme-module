@@ -1,0 +1,25 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+
+// Dispatch event to load external scripts after the first user interaction
+?>
+<script>
+    (events => {
+        const dispatchUserInteractionEvent = () => {
+            events.forEach(type => window.removeEventListener(type, dispatchUserInteractionEvent))
+            window.dispatchEvent(new Event('init-external-scripts'))
+        };
+        events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true, passive: true}))
+    })(['touchstart', 'mouseover', 'wheel', 'scroll', 'keydown'])
+</script>
