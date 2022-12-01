@@ -8,16 +8,13 @@
 
 declare(strict_types=1);
 
-use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
-/** @var Escaper $escaper */
+
+// Bypass waiting for user interaction for pages where external script loading is critical.
+// e.g., running analytics/conversion scripts on the order success page.
 ?>
 <script>
-    // Bypass waiting for user interaction for pages where external script loading is critical.
-    // e.g., running analytics/conversion scripts on the order success page.
-    const userInteractionInitEvent = new CustomEvent('user.interaction.init');
-    window.dispatchEvent(userInteractionInitEvent);
-    console.debug('\'user.interaction.init\' event dispatched.');
+    window.dispatchEvent(new Event('user.interaction.init'));
 </script>
