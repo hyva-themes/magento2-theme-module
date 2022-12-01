@@ -9,8 +9,9 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <update handle="user_interaction_init"/>
     <body>
+        <!-- Include this layout handle on pages where external script loading is critical to bypass waiting for -->
+        <!-- user interaction, e.g., running analytics/conversion scripts on the order success page. -->
         <referenceBlock name="user.interaction.init" template="Hyva_Theme::page/js/user-interaction-init-bypass.phtml"/>
     </body>
 </page>
