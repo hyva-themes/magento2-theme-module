@@ -18,8 +18,8 @@ use Magento\Framework\View\Element\Template;
     (events => {
         const dispatchUserInteractionEvent = () => {
             events.forEach(type => window.removeEventListener(type, dispatchUserInteractionEvent))
-            window.dispatchEvent(new Event('user.interaction.init'));
+            window.dispatchEvent(new Event('user.interaction.init'))
         };
-        events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true}))
+        events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true, passive: true}))
     })(['touchstart', 'mouseover', 'wheel', 'scroll', 'keydown'])
 </script>
