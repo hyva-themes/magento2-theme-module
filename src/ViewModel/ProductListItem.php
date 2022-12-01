@@ -110,7 +110,8 @@ class ProductListItem implements ArgumentInterface
                 ? $this->currentCategory->get()->getId()
                 : '0',
             (int) $this->customerSession->getCustomerGroupId(),
-            (string) $block->getData('image_display_area')
+            (string) $block->getData('image_display_area'),
+            json_encode($product->getData('image_custom_attributes') ?? []),
         ];
     }
 
