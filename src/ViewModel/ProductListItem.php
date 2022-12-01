@@ -160,6 +160,11 @@ class ProductListItem implements ArgumentInterface
     ): string {
         /** @var AbstractBlock $itemRendererBlock */
         $itemRendererBlock = $this->layout->getBlock('product_list_item');
+
+        if (! $itemRendererBlock) {
+            return '';
+        }
+
         return $this->getItemHtmlWithRenderer(
             $itemRendererBlock,
             $product,
