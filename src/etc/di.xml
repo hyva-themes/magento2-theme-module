@@ -17,7 +17,13 @@
     </type>
 
     <type name="Magento\Deploy\Package\Package">
-        <plugin name="deploy_package_exclude_tailwind_from_deployment" type="Hyva\Theme\Plugin\Deploy\Package\ExcludeTailwindPlugin"/>
+        <plugin name="deploy_package_exclude_tailwind_from_deployment"
+                type="Hyva\Theme\Plugin\Deploy\Package\ExcludeTailwindPlugin"
+                sortOrder="99999"/>
+    </type>
+
+    <type name="Magento\Tax\Pricing\Render\Adjustment">
+        <plugin name="fix_core_type_php81_error" type="Hyva\Theme\Plugin\Tax\PriceAdjustmentRendererFixPlugin"/>
     </type>
 
     <type name="Magento\Framework\Filter\SimpleDirective\ProcessorPool">
