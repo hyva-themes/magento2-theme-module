@@ -12,6 +12,7 @@ namespace Hyva\Theme\Plugin\TemplateEngine;
 
 use Hyva\Theme\Model\LocaleFormatterFactory;
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\Service\CurrentTheme;
 use Magento\Framework\App\ProductMetadata;
 use Magento\Framework\Locale\LocaleFormatter as MagentoLocaleFormatter;
 use Magento\Framework\View\Element\BlockInterface;
@@ -38,14 +39,21 @@ class PhpPlugin
      */
     private $hyvaLocaleFormatterFactory;
 
+    /**
+     * @var CurrentTheme
+     */
+    private $currentTheme;
+
     public function __construct(
         ViewModelRegistry $viewModelRegistry,
         ProductMetadata $productMetadata,
-        LocaleFormatterFactory $hyvaLocaleFormatterFactory
+        LocaleFormatterFactory $hyvaLocaleFormatterFactory,
+        CurrentTheme $currentTheme
     ) {
-        $this->viewModelRegistry          = $viewModelRegistry;
-        $this->productMetadata            = $productMetadata;
+        $this->viewModelRegistry = $viewModelRegistry;
+        $this->productMetadata = $productMetadata;
         $this->hyvaLocaleFormatterFactory = $hyvaLocaleFormatterFactory;
+        $this->currentTheme = $currentTheme;
     }
 
     /**
@@ -59,9 +67,11 @@ class PhpPlugin
      */
     public function beforeRender(Php $subject, BlockInterface $block, $filename, array $dictionary = [])
     {
-        $dictionary['viewModels'] = $this->viewModelRegistry;
-        if (! class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
-            $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
+        if ($this->currentTheme->isHyva()) {
+            $dictionary['viewModels'] = $this->viewModelRegistry;
+            if (!class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
+                $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
+            }
         }
         return [$block, $filename, $dictionary];
     }
