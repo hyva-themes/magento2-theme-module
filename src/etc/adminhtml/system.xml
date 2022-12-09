@@ -7,8 +7,73 @@
  * See https://hyva.io/license
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
+        <tab id="hyva_themes" sortOrder="999" translate="label">
+            <label>Hyva Themes</label>
+        </tab>
+
+        <section id="hyva_theme_catalog" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+            <label>Catalog</label>
+            <tab>hyva_themes</tab>
+            <resource>Magento_Catalog::config_catalog</resource>
+            <group id="hyva_breadcrumbs" translate="label comment" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Hyvä Client-Side Breadcrumbs Rendering</label>
+                <comment>Enabling client side breadcrumb rendering can impact frontend performance for large category trees.</comment>
+                <field id="client_side_enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable on Product Detail Pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>catalog/hyva_breadcrumbs/client_side_enable</config_path>
+                </field>
+            </group>
+            <group id="frontend" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Compare Products</label>
+                <comment>(These settings can also be found in Catalog > Catalog > Storefront)</comment>
+                <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Add To Compare On Product Page</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>catalog/frontend/show_add_to_compare_on_product_page</config_path>
+                </field>
+                <field id="show_add_to_compare_in_list" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Add To Compare In Product List</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>catalog/frontend/show_add_to_compare_in_list</config_path>
+                </field>
+                <field id="show_sidebar_in_list" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Compare Sidebar On Product List</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>catalog/frontend/show_sidebar_in_list</config_path>
+                </field>
+            </group>
+            <group id="recently_products" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Recently Viewed Products</label>
+                <comment>(These settings can also be found in Catalog > Catalog > Recently Viewed/Compared Products)</comment>
+                <field id="recently_viewed_enabled" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Recently Viewed Products</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>catalog/recently_products/recently_viewed_enabled</config_path>
+                </field>
+                <field id="show_on_pdp" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Recently Viewed on Product Detail Pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>catalog/recently_products/show_on_pdp</config_path>
+                    <depends>
+                        <field id="recently_viewed_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="show_on_plp" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Recently Viewed on Product Listing Pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>catalog/recently_products/show_on_plp</config_path>
+                    <depends>
+                        <field id="recently_viewed_enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+
+
         <section id="catalog">
             <group id="frontend">
                 <field id="show_add_to_compare_in_list" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
@@ -48,18 +113,11 @@
                         <field id="recently_viewed_enabled">1</field>
                     </depends>
                 </field>
+
                 <field id="recently_viewed_lifetime" sortOrder="140">
                     <depends>
                         <field id="recently_viewed_enabled">1</field>
                     </depends>
-                </field>
-            </group>
-            <group id="hyva_breadcrumbs" translate="label" type="text" sortOrder="800" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Hyvä Client-Side Breadcrumbs Rendering</label>
-                <comment>Enabling client side breadcrumb rendering can impact frontend performance for large category trees.</comment>
-                <field id="client_side_enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enable on Product Detail Pages</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
         </section>
