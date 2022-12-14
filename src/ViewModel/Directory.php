@@ -35,4 +35,14 @@ class Directory implements ArgumentInterface
     {
         return $this->directoryHelper->getDefaultCountry($store);
     }
+
+    /**
+     * Retrieve the configured top country codes
+     *
+     * @return array Array of ISO2 country codes
+     */
+    public function getTopCountryCodes(): array
+    {
+        return $this->directoryHelper->getTopCountryCodes();
+    }
 }
