@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Directory\Helper\Data as DirectoryHelper;
+use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Store\Model\Store;
 
 class Directory implements ArgumentInterface
 {
@@ -26,9 +27,9 @@ class Directory implements ArgumentInterface
     }
 
     /**
-     * Return default country code
+     * Return default country code from system configuration at general/country/default
      *
-     * @param \Magento\Store\Model\Store|string|int $store
+     * @param Store|string|int $store
      * @return string
      */
     public function getDefaultCountry($store = null): string
@@ -37,9 +38,9 @@ class Directory implements ArgumentInterface
     }
 
     /**
-     * Retrieve the configured top country codes
+     * Return array of ISO2 country codes set in system configuration at general/country/destinations
      *
-     * @return array Array of ISO2 country codes
+     * @return string[]
      */
     public function getTopCountryCodes(): array
     {
