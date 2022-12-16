@@ -371,6 +371,11 @@ use Magento\Framework\View\Element\Template;
                 },
                 <?php /* Return Promise that is resolved to field.state.valid when all validators of the field are resolved */ ?>
                 validateField(field) {
+                    <?php /* Early return if field is undefined (if an element as no rules), or for fields that won't validate */ ?>
+                    if (! field || ! elementWillValidate(field.element)) {
+                        return new Promise(resolve => resolve(true))
+                    }
+
                     let value;
                     if (field.element.type === 'checkbox') {
                         value = getCheckedValues(field);
@@ -387,11 +392,6 @@ use Magento\Framework\View\Element\Template;
                     <?php /* Reset messages before validation in case async operations take a while */ ?>
                     field.state.valid = true;
                     this.showFieldState(field);
-
-                    <?php /* Early return for fields that won't validate */ ?>
-                    if (!elementWillValidate(field.element)) {
-                        return new Promise(resolve => resolve(true));
-                    }
 
                 <?php if ($viewModels->require(DeployMode::class)->isDeveloperMode()): ?>
                     Object.keys(rules).filter(rule => !formValidationRules[rule]).forEach(unknown => {
