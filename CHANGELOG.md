@@ -7,7 +7,130 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.19...1.1.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.20...1.1.x-main
+
+## [1.1.20] - 2022-12-21
+
+[1.1.20]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.19...1.1.20
+
+### Added
+
+- **Add user interaction init JavaScript event**
+  
+  The `init-external-scripts` event is intended to be used for deferring the loading of external scripts until a user has interacted with the page.
+
+  For more information please refer to [issue #226](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/226)
+  The new event is documented in the documentation under [Loading External JavaScript](https://docs.hyva.io/hyva-themes/writing-code/patterns/loading-external-javascript.html#example-deferring-scripts-until-any-user-interaction-with-init-external-scripts).
+
+  Many thanks to John Huges (Youwe) for the contribution!
+
+- **Add `Hyva\Theme\Block\Catalog\ProductBreadcrumbs` block for client side crumbs rendering on PDP pages**
+
+  This new block uses the new system configuration setting `hyva_theme_catalog/hyva_breadcrumbs/client_side_enable/`
+  to switch to a template rendering the breadcrumbs on product detail pages with JavaScript.
+
+  For more information please refer to the [default theme issue #424](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/424).
+
+  Many Thanks to Dung La (JaJuMa) for the contribution!
+
+- **Make list item relation type available inside `item.phtml`**
+
+  The slider type `crosssell`, `related` or `upsell` is now available inside the product list item template via `$block->getData('item_relation_type')`
+
+  For more information, please refer to [issue #216](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/216).
+
+- **Add methods required to show product prices incl. and excl. tax**
+
+  The following new methods are available on `Hyva\Theme\ViewModel\CustomOption`:
+  
+  * `getDateDropdownsHtml(int $optionId, array $additionalSelectAttributes = [])`
+  * `getTimeDropdownsHtml(int $optionId, array $additionalSelectAttributes = [])`
+  * `is24hTimeFormat()`
+
+  The following new methods are available on `Hyva\Theme\ViewModel\ProductPrice`:
+
+  * `getPriceValueInclTax(string $priceType, Product $product)`
+  * `getPriceValueExclTax(string $priceType, Product $product)`
+  * `displayPriceInclAndExclTax()`
+  * `getCustomOptionPriceInclTax($option, string $priceType, Product $product)`
+  * `getCustomOptionPriceExclTax($option, string $priceType, Product $product)`
+
+- **Add method to provide top countries system config value**
+
+  The following new methods are available on `Hyva\Theme\ViewModel\Directory`:
+
+  * `getTopCountryCodes()`
+
+  This method is used in the default theme merge request [Fix foreground countries in country_id select]/https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/633).  
+
+  For more information please refer to merge [request #281](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/281).
+
+  Many thanks to Mark van der Sanden (Ecomni) for the contribution!
+
+- **Workaround Magento core type error with PHP 8.1 in `Magento\Tax\Pricing\Render\Adjustment`**
+
+  The bug occurred when product prices were displayed including and excluding taxes for grouped products.  
+  It is expected to be fixed in Magento 2.4.6 (unreleased at the time of writing).  
+
+  This change allows using the feature on any Magento version.
+
+  For more information please refer to [issue #232](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/232)
+
+- **Disable move JS to footer on cart page**
+
+  This resolves an error where the PHP-Cart page refreshes endlessly after changing an item quantity.
+
+  For more information, please refer to [issue #223](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/223)
+
+### Changed
+
+- **Use default required field translation for form validation**
+
+  This is a backward incompatible change.  
+
+  Instead of using "This field is required.", use "This is a required field." as it is also in Luma.
+  
+  For more information please refer to [merge request 257](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/257).
+
+  The change was not required but the impact of the change is expected to be very low, as the advanced form validation is still a new feature and existing translations from a default Magento language pack will be used. 
+
+  Many thanks to Aad Mathijssen (Isaac) for the contribution!
+
+- **Do not automatically apply password validation to all password type inputs**
+
+  This is a backward incompatible change.
+
+  Previously, if advanced form validation was enabled for a form, password validation was applied automatically to any password field.  
+  Now `data-validate='{"password": true}'` needs to be used.
+
+  The change was required because otherwise it was impossible to use password type inputs without password a validation rule.
+
+- **Collect Hyvä system config fields into "Hyvä Themes" section**
+
+  The configuration paths for the settings was not changed, and the fields can still also be found in the previous location in the system configuration.  
+  Collecting them in one Tab makes it easier to find all Hyvä specific settings and avoids confusion why some settings might not apply to Luma store views.
+
+  For more information please refer to [issue #230](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/230).
+
+- **Check if `product_list_item` block exists before using it**
+
+  This fixes an incompatibility with indexing when using Algolia.
+
+  For more information please refer to [issue #227](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/227).
+
+  Many thanks to Rico Neitzel (riconeitzel.de) for the excellent issue!
+
+- **Use product list item image custom attributes in block_html cache key**
+
+  Since release 1.1.20 and 1.2.0 some product images on product lists are eagerly loaded.  
+  This requires adding the custom attribute values to the item cache key.  
+
+  For more information please refer to [issue #229](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/229).
+
+### Removed
+
+- Nothing
+
 
 ## [1.1.19] - 2022-10-22
 
@@ -23,7 +146,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   This is relevant for extensions like elasticsuite.
 
-  For more information, please refer to [issue #1213](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/213).
+  For more information, please refer to [issue #113](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/213).
 
 ### Removed
 
@@ -65,7 +188,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   Many thanks to Daniel Galla (IMI) for the contribution!
 
-- **Add backwards compatibility classes for view models introduced in Magento 2.4.5**
+- **Add backward compatibility classes for view models introduced in Magento 2.4.5**
 
   In versions of Magento before the new view models exists, the new Hyvä classes provide the required functionality.  
   In versions of Magento where the new view models exist (>= 2.4.5), the Magento core functionality will be used.
@@ -78,10 +201,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   For more information please refer to [merge request #211](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/211).
 
-- **Add new template variable `$localeFormatter` for backwards compatibility with Magento versions < 2.4.5**
+- **Add new template variable `$localeFormatter` for backward compatibility with Magento versions < 2.4.5**
 
   Since Magento 2.4.5 a new template variable `$localeFormatter` is available. Hyvä provides a version of the class for
-  older versions of Magento for backwards compatibility.
+  older versions of Magento for backward compatibility.
 
   For more information please refer to [merge request #244](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/244).
 
