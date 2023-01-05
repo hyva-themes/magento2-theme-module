@@ -79,7 +79,11 @@ use Magento\Framework\View\Element\Template;
                 field.element.setAttribute('pattern', options);
                 field.element.checkValidity();
                 if (field.element.validity.patternMismatch) {
-                    return '<?= $escaper->escapeJs(__('Please match the requested format.')) ?>';
+                    if (field.element.title !== undefined && field.element.title.length > 0) {
+                        return hyva.strf('<?= $escaper->escapeJs(__('Please match the requested format: %0.')) ?>', field.element.title);
+                    } else {
+                        return '<?= $escaper->escapeJs(__('Please match the requested format.')) ?>';
+                    }
                 }
                 return true;
             },
