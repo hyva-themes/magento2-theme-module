@@ -75,6 +75,14 @@ use Magento\Framework\View\Element\Template;
                 }
                 return true;
             },
+            pattern(value, options, field, context) {
+                field.element.setAttribute('pattern', options);
+                field.element.checkValidity();
+                if (field.element.validity.patternMismatch) {
+                    return '<?= $escaper->escapeJs(__('Please match the requested format.')) ?>';
+                }
+                return true;
+            },
             email(value, options, field, context) {
                 <?php /* The same email validation regex is also used in the Magento backend */ ?>
                 const rule = /^([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*@([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*\.(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]){2,})$/i;
@@ -146,7 +154,7 @@ use Magento\Framework\View\Element\Template;
 
         function getRules(element) {
             let rules = {};
-            const BROWSER_ATTRS = ['min', 'max', 'required', 'minlength', 'maxlength', 'step'];
+            const BROWSER_ATTRS = ['min', 'max', 'required', 'minlength', 'maxlength', 'step', 'pattern'];
             const DEFAULT_TYPES = ['email'];
             BROWSER_ATTRS.forEach(attrName => {
                 if (element.hasAttribute(attrName)) {
