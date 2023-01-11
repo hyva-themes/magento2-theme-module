@@ -60,19 +60,40 @@ class PhpPlugin
      * @param Php $subject
      * @param BlockInterface $block
      * @param $filename
-     * @param array $dictionary
-     * @return array
+     * @param mixed[] $dictionary
+     * @return mixed[]
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
+     * Assign template variables that are available in all Hyvä templates.
      */
     public function beforeRender(Php $subject, BlockInterface $block, $filename, array $dictionary = [])
     {
-        if ($this->currentTheme->isHyva()) {
-            $dictionary['viewModels'] = $this->viewModelRegistry;
-            if (!class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
-                $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
-            }
-        }
+        $dictionary = $this->addAllThemesTemplateVariables($dictionary);
+        $dictionary = $this->addHyvaOnlyTemplateVariables($dictionary);
+
         return [$block, $filename, $dictionary];
+    }
+
+    private function addAllThemesTemplateVariables(array $dictionary): array
+    {
+        // The $viewModels variable has been available in all themes for a long time now, so it must not be removed.
+        // New template variables should be assigned to Hyvä themes only to minimize potential conflicts.
+        $dictionary['viewModels'] = $this->viewModelRegistry;
+
+        return $dictionary;
+    }
+
+    private function addHyvaOnlyTemplateVariables(array $dictionary): array
+    {
+        if (! $this->currentTheme->isHyva()) {
+            return $dictionary;
+        }
+
+        if (!class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
+            $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
+        }
+
+        return $dictionary;
     }
 }
