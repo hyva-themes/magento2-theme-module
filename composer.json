@@ -9,6 +9,7 @@
     "magento/module-checkout": ">=100.3.0",
     "magento/module-cms": ">=103.0.0",
     "magento/module-customer": ">=102.0.0",
+    "magento/module-quote-graph-ql": "*",
     "magento/module-theme": ">=101.0.0",
     "magento/module-wishlist": ">=101.0.0"
   },
