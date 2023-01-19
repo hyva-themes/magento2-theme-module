@@ -53,7 +53,7 @@ class GraphQlQueriesWithVariables implements ArgumentInterface
               is_virtual
               items {
                 id
-                ${errors}
+                {$errors}
                 prices {
                   price {
                     value
@@ -139,7 +139,7 @@ class GraphQlQueriesWithVariables implements ArgumentInterface
                     option_label
                     value_label
                   }
-                  ${configuredVariantImageQuery}
+                  {$configuredVariantImageQuery}
                 }
                 ... on BundleCartItem {
                   bundle_options {
