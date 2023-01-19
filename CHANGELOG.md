@@ -7,7 +7,63 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.20...1.1.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.21...1.1.x-main
+
+## [1.1.21] - 2023-02-19
+
+[1.1.21]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.20...1.1.21
+
+### Added
+
+- **Make $viewModels template variable available in Luma again**
+
+  The template variable was removed in Hyvä release 1.1.20, but it turned out it had been used by many people, so it was decided to make it available again.
+
+  For more information please refer to [issue #238](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/238).
+
+- **Add support for the pattern attribute to advanced form validation**
+
+  For more information please refer to [merge request #290](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/290).
+
+  Many thanks to Aad Mathijssen (Isaac) for the contribution!
+
+- **Add missing requirement for Magento_QuoteGraphQl**
+
+  A class from the module is used by the theme-module, so it needs to be declared as a composer dependency and in the etc/module.xml file.
+
+  For more information please refer to [issue #244](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/244).
+
+  Many thanks to Thomas Hauschild (E3n) for the contribution!
+
+### Changed
+
+- **Improve minlength and maxlength translations for advanced form validation**
+
+  Previously there was no distinction between singlular and plural numbers.
+
+  For more information please refer to merge [request #288](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/288).
+
+  Many thanks to Aad Mathijssen (Isaac) for the contribution!
+
+- **Replace deprecated string interpolation to support PHP 8.2**
+
+  Two instances of a deprecated string interpolation syntax are changed to be PHP 8.2 compatible.
+
+  For more information please refer to [issue #241](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/241).
+
+  Many thanks to Pieter Hoste (Baldwin) for opening the issue and providing helpful information on automated checks!
+
+- **Make client-side breadcrumbs more compatible with third-party modules**
+
+  Previously an exception was thrown if no path property was set for a category.
+
+  For more information please refer to [issue #242](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/242).
+
+  Many Thanks to Dung La (JaJuMa) for the contribution!
+
+### Removed
+
+- Nothing removed
 
 ## [1.1.20] - 2022-12-21
 
@@ -368,7 +424,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   This is a workaround for a core bug.  
   More details can be found in the [Issue #175](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/175).
 
-- **Automatically update app/etc/hyva-config.json when a module is enabled/disabled**
+- **Automatically update app/etc/hyva-themes.json when a module is enabled/disabled**
 
   This happens when running `bin/magento module:enable` (or `disable`) and also when new modules are enabled while running `bin/magento setup:upgrade`.
   Now - in general - no more manual steps are required after installing a compatibility module.
@@ -434,7 +490,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   More information can be found in [Issue #170](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/170).
 
-- **The -f flag is no longer required when updating the hyva-config.json file**
+- **The -f flag is no longer required when updating the hyva-themes.json file**
 
   Now running the command `bin/magento hyva:config:generate` will overwrite an existing config file even without the `-f` or `--force` flag.
   The flag still is allowed for backward compatibility, but it has no effect.
