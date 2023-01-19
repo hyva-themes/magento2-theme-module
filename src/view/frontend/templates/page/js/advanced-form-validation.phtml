@@ -39,14 +39,20 @@ use Magento\Framework\View\Element\Template;
                 return el.validity.valueMissing ? msg : true;
             },
             maxlength(value, options, field, context) {
-                if (value.length > Number(options)) {
-                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than "%0" characters.')) ?>', options);
+                const n = Number(options)
+                if (value.length > n) {
+                    return n === 1
+                        ? hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than 1 character.')) ?>')
+                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than %0 characters.')) ?>', options)
                 }
                 return true;
             },
             minlength(value, options, field, context) {
-                if (value.length > 0 && value.length < Number(options)) {
-                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter at least "%0" characters.')) ?>', options);
+                const n = Number(options)
+                if (value.length > 0 && value.length < n) {
+                    return n === 1
+                        ? hyva.strf('<?= $escaper->escapeJs(__('Please enter at least 1 character.')) ?>')
+                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter at least %0 characters.')) ?>', options)
                 }
                 return true;
             },
