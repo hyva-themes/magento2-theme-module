@@ -77,7 +77,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
             $acc['c' . $id] = [
                 'url' => $category['url'],
                 'name' => $category['name'],
-                'path' => $category['path'],
+                'path' => $category['path'] ?? '',
             ];
             $acc = $this->flattenTree($category['childData'] ?? [], $acc);
         }
