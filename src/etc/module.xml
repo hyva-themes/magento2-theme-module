@@ -11,5 +11,6 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="Hyva_Theme">
         <sequence>Magento_Framework</sequence>
+        <sequence>Magento_QuoteGraphQl</sequence>
     </module>
 </config>
