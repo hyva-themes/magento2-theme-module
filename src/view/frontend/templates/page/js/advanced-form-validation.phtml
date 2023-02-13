@@ -256,8 +256,11 @@ use Magento\Framework\View\Element\Template;
             }
 
             const msgWrapper = document.createElement('ul');
-            msgWrapper.id = generateId.call(this);
+            const msgId = generateId.call(this);
+            msgWrapper.id = msgId;
+            field.element.setAttribute('aria-errormessage', msgId);
             msgWrapper.classList.add.apply(msgWrapper.classList, messagesWrapperClassName.split(' '));
+            msgWrapper.setAttribute('aria-live', 'polite');
             this.getMessageContainer(field).appendChild(msgWrapper);
 
             return msgWrapper;
@@ -501,6 +504,7 @@ use Magento\Framework\View\Element\Template;
                     const messages = msgWrapper.querySelectorAll(`[data-msg-field='${field.element.name}']`);
                     Array.from(messages).forEach(msg => msg.remove());
                     if (msgWrapper && msgWrapper.childElementCount === 0) {
+                        field.element.removeAttribute('aria-errormessage');
                         msgWrapper.remove();
                     }
                 },
