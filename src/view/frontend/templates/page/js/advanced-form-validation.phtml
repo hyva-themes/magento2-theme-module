@@ -259,8 +259,11 @@ use Magento\Framework\View\Element\Template;
             const msgId = generateId.call(this);
             msgWrapper.id = msgId;
             field.element.setAttribute('aria-errormessage', msgId);
+            field.element.setAttribute('aria-describedby', msgId);
             msgWrapper.classList.add.apply(msgWrapper.classList, messagesWrapperClassName.split(' '));
-            msgWrapper.setAttribute('aria-live', 'polite');
+            if (field.validateOnChange) {
+                msgWrapper.setAttribute('aria-live', 'polite');
+            }
             this.getMessageContainer(field).appendChild(msgWrapper);
 
             return msgWrapper;
@@ -303,15 +306,15 @@ use Magento\Framework\View\Element\Template;
                 fields: {},
                 idSeq: 0,
                 idPrefix: formElement.id || 'vld-msg',
-                setupFields(elements) {
+                setupFields(elements, onChange = false) {
                     this.fields = {};
                     Array.from(elements).forEach(element => {
                         if (elementWillValidate(element)) {
-                            this.setupField(element);
+                            this.setupField(element, onChange);
                         }
                     });
                 },
-                setupField(element) {
+                setupField(element, onChange = false) {
                     if (elementWillValidate(element)) {
                         const rules = getRules(element);
                         if (Object.keys(rules).length > 0) {
@@ -321,6 +324,7 @@ use Magento\Framework\View\Element\Template;
                                 this.fields[element.name] = {
                                     element,
                                     rules: rules,
+                                    validateOnChange: onChange,
                                     state: {
                                         valid: null,
                                         rules: {}
@@ -343,10 +347,10 @@ use Magento\Framework\View\Element\Template;
                 },
                 onChange(event) {
                     if (!Object.keys(this.fields).length) {
-                        this.setupFields(formElement.elements);
+                        this.setupFields(formElement.elements, true);
                     }
                     if (!Object.keys(this.fields).includes(event.target.name)) {
-                        this.setupField(event.target);
+                        this.setupField(event.target, true);
                     }
                     const field = this.fields[event.target.name];
 
@@ -505,16 +509,19 @@ use Magento\Framework\View\Element\Template;
                     Array.from(messages).forEach(msg => msg.remove());
                     if (msgWrapper && msgWrapper.childElementCount === 0) {
                         field.element.removeAttribute('aria-errormessage');
+                        field.element.removeAttribute('aria-describedby');
                         msgWrapper.remove();
                     }
                 },
                 createErrorMessage(field, messages) {
                     this.removeMessages(field, options.messagesWrapperClassName);
                     field.element.removeAttribute('aria-errormessage');
+                    field.element.removeAttribute('aria-describedby');
 
                     if (!field.state.valid) {
-                        const msgWrapper = this.addMessages(field, options.messagesWrapperClassName, messages)
+                        const msgWrapper = this.addMessages(field, options.messagesWrapperClassName, messages);
                         field.element.setAttribute('aria-errormessage', msgWrapper.id);
+                        field.element.setAttribute('aria-describedby', msgWrapper.id);
                     }
                 },
                 /** @deprecated */
