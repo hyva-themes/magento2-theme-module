@@ -151,6 +151,10 @@ class SvgIcons implements ArgumentInterface
         ?int $height = 24,
         array $attributes = []
     ): string {
+        if (!$this->isAriaHidden($attributes)) {
+            $attributes['role'] = 'img';
+        }
+
         $iconPath = $this->applyPathPrefixAndIconSet($icon);
 
         $cacheKey = $this->design->getDesignTheme()->getCode() .
@@ -166,7 +170,7 @@ class SvgIcons implements ArgumentInterface
 
         try {
             $rawIconSvg = \file_get_contents($this->getFilePath($iconPath)); // phpcs:disable
-            $result     = $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes);
+            $result     = $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes, $icon);
 
             $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
 
@@ -234,7 +238,8 @@ class SvgIcons implements ArgumentInterface
         string $classNames,
         ?int $width,
         ?int $height,
-        array $attributes
+        array $attributes,
+        string $icon
     ): string {
         $svgXml = new \SimpleXMLElement($origSvg);
         if (trim($classNames)) {
@@ -255,6 +260,20 @@ class SvgIcons implements ArgumentInterface
             }
         }
 
-        return \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
+        if (!$this->isAriaHidden($attributes)) {
+            $svgXml->addChild('title', $icon);
+
+            $xml = $svgXml->asXML();
+            $xml = str_replace("</title>", "</title>\n", $xml);
+        } else {
+            $xml = $svgXml->asXML();
+        }
+
+        return \str_replace("<?xml version=\"1.0\"?>\n", '', $xml);
+    }
+
+    private function isAriaHidden($attributes): bool
+    {
+        return (array_key_exists('aria-hidden', $attributes) && $attributes['aria-hidden'] === true);
     }
 }
