@@ -151,7 +151,7 @@ class SvgIcons implements ArgumentInterface
         ?int $height = 24,
         array $attributes = []
     ): string {
-        if (!$this->isAriaHidden($attributes)) {
+        if (!$this->isAriaHidden($attributes) && !isset($attributes['role'])) {
             $attributes['role'] = 'img';
         }
 
@@ -262,12 +262,9 @@ class SvgIcons implements ArgumentInterface
 
         if (!$this->isAriaHidden($attributes)) {
             $svgXml->addChild('title', $icon);
-
-            $xml = $svgXml->asXML();
-            $xml = str_replace("</title>", "</title>\n", $xml);
-        } else {
-            $xml = $svgXml->asXML();
         }
+
+        $xml = $svgXml->asXML();
 
         return \str_replace("<?xml version=\"1.0\"?>\n", '', $xml);
     }
