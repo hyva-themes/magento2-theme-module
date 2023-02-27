@@ -23,6 +23,11 @@ class PaymentResolver implements ArgumentInterface
      */
     private $coreRegistry;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         Registry $coreRegistry,
         LoggerInterface $logger
@@ -34,7 +39,7 @@ class PaymentResolver implements ArgumentInterface
     /**
      * @return string
      */
-    public function getPaymentInfo()
+    public function getPaymentInfo(): string
     {
         /** @var OrderInterface $order */
         $order = $this->coreRegistry->registry('current_order');
@@ -45,6 +50,6 @@ class PaymentResolver implements ArgumentInterface
             $this->logger->error('There is no payment method title ' . $e->getMessage());
         }
 
-        return $order->getPayment()->getMethod();
+        return (string) $order->getPayment()->getMethod();
     }
 }
