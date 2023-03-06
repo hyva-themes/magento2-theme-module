@@ -7,7 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.1...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.2...main
+
+## [1.2.2] - 2023-03-06
+
+[1.2.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.1...1.2.2
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Extract PageBuilder HTML content with ungreedy regex**
+
+  Previously, the regular expression would extract PageBuilder content elements following a HTML content element as part of the HTML content element data.
+
+  For more information, please refer to [issue #258](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/258).
+
+  Many thanks to Aad Mathijssen (iO Digital) for reporting!
+
+### Removed
+
+- Nothing removed
 
 ## [1.2.1] - 2023-01-19
 
