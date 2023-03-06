@@ -22,7 +22,7 @@ class OverrideTemplatePlugin
     public const BACKGROUND_IMAGE_PATTERN = '/data-background-images=\"([^"]*)\"/si';
 
     // matches any html element with the attribute data-content-type="html"
-    public const HTML_CONTENT_TYPE_PATTERN = '/<(\w+)\s[^>]*data-content-type=\"html\"[^>]*>[\s\S]*\1>/si';
+    public const HTML_CONTENT_TYPE_PATTERN = '/<(\w+)\s[^>]*data-content-type=\"html\"[^>]*>[\s\S]*?\1>/si';
 
     /**
      * @var CurrentTheme
