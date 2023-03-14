@@ -315,7 +315,7 @@ use Magento\Framework\View\Element\Template;
                     });
                 },
                 setupField(element) {
-                    const onChange = element.getAttributeNames().join().includes('@input', '@change');
+                    const onChange = !!element.dataset.onChange;
                     if (elementWillValidate(element)) {
                         const rules = getRules(element);
                         if (Object.keys(rules).length > 0) {
@@ -347,6 +347,7 @@ use Magento\Framework\View\Element\Template;
                     }
                 },
                 onChange(event) {
+                    event.target.dataset.onChange = 'true';
                     if (!Object.keys(this.fields).length) {
                         this.setupFields(formElement.elements);
                     }
@@ -356,6 +357,7 @@ use Magento\Framework\View\Element\Template;
                     const field = this.fields[event.target.name];
 
                     this.validateField(field);
+                    field.element.removeAttribute('data-on-change')
                 },
                 validateSafe() {
                     return new Promise(resolve => this.validate().then(() => resolve(true)).catch(() => {}))
