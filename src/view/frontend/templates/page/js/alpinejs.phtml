@@ -24,7 +24,7 @@ $version = $viewModels->require(ThemeLibrariesConfig::class)->getVersionIdFor('a
 <?= $block->getChildHtml() ?>
 
 <script type="module"
-        src="<?= $escaper->escapeUrl($block->getViewFileUrl("Hyva_Theme::js/alpine${version}.min.js")) ?>"
+        src="<?= $escaper->escapeUrl($block->getViewFileUrl("Hyva_Theme::js/alpine{$version}.min.js")) ?>"
         defer
         crossorigin
 ></script>

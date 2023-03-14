@@ -23,6 +23,8 @@ use Magento\Framework\Controller\ResultInterface;
  */
 class HyvaHeaderPlugin
 {
+    private $theme;
+
     public function __construct(CurrentTheme $theme)
     {
         $this->theme = $theme;
