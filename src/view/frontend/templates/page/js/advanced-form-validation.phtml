@@ -306,15 +306,16 @@ use Magento\Framework\View\Element\Template;
                 fields: {},
                 idSeq: 0,
                 idPrefix: formElement.id || 'vld-msg',
-                setupFields(elements, onChange = false) {
+                setupFields(elements) {
                     this.fields = {};
                     Array.from(elements).forEach(element => {
                         if (elementWillValidate(element)) {
-                            this.setupField(element, onChange);
+                            this.setupField(element);
                         }
                     });
                 },
-                setupField(element, onChange = false) {
+                setupField(element) {
+                    const onChange = element.getAttributeNames().join().includes('@input', '@change');
                     if (elementWillValidate(element)) {
                         const rules = getRules(element);
                         if (Object.keys(rules).length > 0) {
@@ -347,10 +348,10 @@ use Magento\Framework\View\Element\Template;
                 },
                 onChange(event) {
                     if (!Object.keys(this.fields).length) {
-                        this.setupFields(formElement.elements, true);
+                        this.setupFields(formElement.elements);
                     }
                     if (!Object.keys(this.fields).includes(event.target.name)) {
-                        this.setupField(event.target, true);
+                        this.setupField(event.target);
                     }
                     const field = this.fields[event.target.name];
 
