@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Framework\Exception\NosuchEntityException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\StoreManagerInterface;
