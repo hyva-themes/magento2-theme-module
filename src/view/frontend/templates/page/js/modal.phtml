@@ -281,7 +281,7 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         window.hyva.modal.excludeSelectorsFromFocusTrap = function (selectors) {
             typeof selectors === 'string' || selectors instanceof String
-                ? excludedFromFocusTrapping.add(selector)
+                ? excludedFromFocusTrapping.add(selectors)
                 : selectors.map(selector => excludedFromFocusTrapping.add(selector));
         }
 
