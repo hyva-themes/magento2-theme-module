@@ -7,7 +7,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.2...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.3...main
+
+## [1.2.3] - 2023-03-17
+
+[1.2.3]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.2...1.2.3
+
+### Added
+
+- Nothing added
+
+### Changed
+
+* **Avoid dynamic class properties for PHP 8.2 compatibility**
+
+  Previously the class property `\Hyva\Theme\Plugin\FrontController\HyvaHeaderPlugin::$theme` was undeclared,
+  and thus treated as a dynamic public property. Now the property is declared with `private` visibility.
+  Technically this is a backward compatibility-breaking change, as any child class referring to the parent class property
+  will no longer work. However, we believe this scenario to be unlikely, and it is simple to work around by declaring and
+  assigning the property in the child class, too.
+
+  For more information, please refer to [merge request #309](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/309).
+
+  Many thanks to Pieter Hoste (Baldwin) for the contribution!
+
+* **Refactor string variable interpolation deprecated in PHP 8.2**
+
+  In the template files `src/view/frontend/templates/page/js/plugins/intersect.phtml` and `src/view/frontend/templates/page/js/alpinejs.phtml`
+  a variable was interpolated into a string using the "${varname}". This syntax has been deprecated in PHP 8.2.  
+  Instead, the syntax "{$varname}" is now used.
+
+  For more information, please refer to [merge request #309](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/309) and [#322](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/322).
+
+  Many thanks to Pieter Hoste (Baldwin) and Peter Jaap Blaakmeer (Elgentos) for the contribution!
+
+### Removed
+
+- Nothing removed
+
 
 ## [1.2.2] - 2023-03-06
 
@@ -30,6 +67,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - Nothing removed
+
 
 ## [1.2.1] - 2023-01-19
 
