@@ -7,7 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.22...1.1.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.23...1.1.x-main
+
+## [1.1.23] - 2023-03-17
+
+[1.1.23]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.22...1.1.23
+
+### Added
+
+- Nothing added
+
+### Changed
+
+* **Apply changes required for PHP 8.2 compatibility**
+
+  Previously the class property `\Hyva\Theme\Plugin\FrontController\HyvaHeaderPlugin::$theme` was undeclared,
+  and thus treated as a dynamic public property. Now the property is declared with `private` visibility.
+  Technically this is a backward compatibility-breaking change, as any child class referring to the parent class property
+  will no longer work. However, we believe this scenario to be unlikely, and it is simple to work around by declaring and
+  assigning the property in the child class, too.
+
+  For more information, please refer to [merge request #323](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/323).
+
+  Many thanks to Pieter Hoste (Baldwin) for the contribution!
+
+### Removed
+
+- Nothing removed
 
 ## [1.1.22] - 2023-03-06
 
