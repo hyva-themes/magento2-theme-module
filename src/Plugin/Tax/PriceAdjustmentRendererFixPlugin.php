@@ -42,8 +42,7 @@ class PriceAdjustmentRendererFixPlugin
     public function aroundGetDataPriceType(): string
     {
         // The core bug was passing null to ucfirst() if price_type was not set.
-        return $this->amountRender->getPriceType() === 'finalPrice'
-            ? 'basePrice'
-            : 'base' . ucfirst($this->amountRender->getPriceType() ?: '');
+        $priceType = $this->amountRender->getPriceType();
+        return $priceType === 'finalPrice' ? 'basePrice' : ($priceType ? 'base' . ucfirst($priceType) : '');
     }
 }
