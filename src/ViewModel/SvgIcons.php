@@ -161,7 +161,7 @@ class SvgIcons implements ArgumentInterface
             '#' . hash('md5', json_encode($attributes));
 
         if ($result = $this->cache->load($cacheKey)) {
-            return $result;
+            return $this->disambiguateSvgIds($result);
         }
 
         try {
@@ -175,6 +175,20 @@ class SvgIcons implements ArgumentInterface
             $error = (string) __('Unable to find the SVG icon "%1"', $icon);
             throw new Asset\File\NotFoundException($error, 0, $exception);
         }
+    }
+
+    private function disambiguateSvgIds(string $svgContent): string
+    {
+        $svgXml = new \SimpleXMLElement($svgContent);
+        $idAttributes = $svgXml->xpath("/*/*//@id");
+        $uniqueIdList = [];
+        foreach($idAttributes as $idAttr) {
+            $uniqueId = uniqid($idAttr->id . "_");
+            $uniqueIdList["#".$idAttr->id] = "#".$uniqueId;
+            $idAttr->id = $uniqueId;
+        }
+        $svgContent = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
+        return str_replace(array_keys($uniqueIdList), array_values($uniqueIdList), $svgContent);
     }
 
     /**
