@@ -112,7 +112,7 @@ use Magento\Framework\View\Element\Template;
                     const dependencyFieldName =
                         dependencyField.label ||
                         dependencyField.title ||
-                        dependencyField.labels[0].innerText ||
+                        (dependencyField.labels && dependencyField.labels[0] && dependencyField.labels[0].innerText) ||
                         dependencyField.name;
                     return hyva.strf('<?= $escaper->escapeJs(__('This field value must be the same as "%0".')) ?>', dependencyFieldName);
                 }
