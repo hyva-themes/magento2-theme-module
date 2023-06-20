@@ -11,43 +11,34 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel\Sales;
 
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface;
 
-class PaymentResolver implements ArgumentInterface
+class PaymentInfo implements ArgumentInterface
 {
-    /**
-     * @var Registry
-     */
-    private $coreRegistry;
-
     /**
      * @var LoggerInterface
      */
     private $logger;
 
     public function __construct(
-        Registry $coreRegistry,
         LoggerInterface $logger
     ) {
-        $this->coreRegistry = $coreRegistry;
         $this->logger = $logger;
     }
 
     /**
+     * @param OrderInterface|Order $order
      * @return string
      */
-    public function getPaymentInfo(): string
+    public function getPaymentTitle($order): string
     {
-        /** @var OrderInterface $order */
-        $order = $this->coreRegistry->registry('current_order');
-
         try {
             return $order->getPayment()->getMethodInstance()->getTitle();
-        } catch (LocalizedException $e) {
-            $this->logger->error('There is no payment method title ' . $e->getMessage());
+        } catch (LocalizedException $exception) {
+            $this->logger->error('Error retrieving payment method title: ' . $exception->getMessage());
         }
 
         return (string) $order->getPayment()->getMethod();
