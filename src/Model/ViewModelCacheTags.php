@@ -17,7 +17,7 @@ use function array_merge as merge;
 use function array_unique as unique;
 
 /**
- * Record cache tags from the view models created by the view model registry so they can be passed to the page cache.
+ * Record cache tags from the view models created by the view model registry, so they can be passed to the page cache.
  */
 class ViewModelCacheTags
 {
