@@ -17,6 +17,7 @@ use Magento\Catalog\Model\CategoryFactory;
 use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\LinkFactory as ProductLinkFactory;
+use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection as ProductLinkCollection;
@@ -124,6 +125,11 @@ class ProductList implements ArgumentInterface
      */
     private $useAnchorAttribute;
 
+    /**
+     * @var ProductVisibility
+     */
+    private $productVisibility;
+
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder,
@@ -136,6 +142,7 @@ class ProductList implements ArgumentInterface
         CategoryFactory $categoryFactory,
         CategoryRepositoryInterface $categoryRepository,
         ReviewSummaryResource $reviewSummaryResource,
+        ProductVisibility $productVisibility,
         bool $isIncludingReviewSummary = true,
         int $maxCrosssellItemCount = 4,
         bool $useAnchorAttribute = false
@@ -149,6 +156,7 @@ class ProductList implements ArgumentInterface
         $this->productLinkCollectionFactory = $productLinkCollectionFactory;
         $this->collectionProcessor          = $collectionProcessor;
         $this->reviewSummaryResource        = $reviewSummaryResource;
+        $this->productVisibility            = $productVisibility;
         $this->isIncludingReviewSummary     = $isIncludingReviewSummary;
         $this->maxCrosssellItemCount        = $maxCrosssellItemCount;
         $this->categoryFactory              = $categoryFactory;
@@ -245,6 +253,7 @@ class ProductList implements ArgumentInterface
                    ->setIsStrongMode()
                    ->setPositionOrder()
                    ->addStoreFilter()
+                   ->setVisibility($this->productVisibility->getVisibleInCatalogIds())
                    ->addAttributeToSelect($this->catalogConfig->getProductAttributes());
 
         $this->loadReviewSummariesIfEnabled($collection);
