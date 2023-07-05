@@ -29,11 +29,13 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\EntityManager\MetadataPool as EntityMetadataPool;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\Review\Model\ResourceModel\Review\Summary as ReviewSummaryResource;
 use Magento\Review\Model\Review;
+
 use function array_filter as filter;
 use function array_map as map;
 use function array_merge as merge;
@@ -130,6 +132,16 @@ class ProductList implements ArgumentInterface
      */
     private $productVisibility;
 
+    /**
+     * @var EntityMetadataPool
+     */
+    private $entityMetadataPool;
+
+    /**
+     * @var string|null
+     */
+    private $memoizedProductLinkField;
+
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder,
@@ -143,6 +155,7 @@ class ProductList implements ArgumentInterface
         CategoryRepositoryInterface $categoryRepository,
         ReviewSummaryResource $reviewSummaryResource,
         ProductVisibility $productVisibility,
+        EntityMetadataPool $entityMetadataPool,
         bool $isIncludingReviewSummary = true,
         int $maxCrosssellItemCount = 4,
         bool $useAnchorAttribute = false
@@ -157,6 +170,7 @@ class ProductList implements ArgumentInterface
         $this->collectionProcessor          = $collectionProcessor;
         $this->reviewSummaryResource        = $reviewSummaryResource;
         $this->productVisibility            = $productVisibility;
+        $this->entityMetadataPool           = $entityMetadataPool;
         $this->isIncludingReviewSummary     = $isIncludingReviewSummary;
         $this->maxCrosssellItemCount        = $maxCrosssellItemCount;
         $this->categoryFactory              = $categoryFactory;
@@ -242,8 +256,20 @@ class ProductList implements ArgumentInterface
     private function extractProductId($item)
     {
         return $item->getProductId()
-            ?? $item->getEntityId()
+            ?? $item->getData($this->getProductLinkField())
             ?? $item->getId();
+    }
+
+    /**
+     * Return either entity_id (on open source) or row_id (on commerce, for staging)
+     */
+    private function getProductLinkField(): string
+    {
+        if (! $this->memoizedProductLinkField) {
+            $this->memoizedProductLinkField = $this->entityMetadataPool->getMetadata(ProductInterface::class)->getLinkField();
+        }
+
+        return $this->memoizedProductLinkField;
     }
 
     private function createProductLinkCollection(string $linkType, array $productIds): ProductLinkCollection
