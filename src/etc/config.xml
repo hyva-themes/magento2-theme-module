@@ -16,6 +16,12 @@
                 <show_add_to_compare_on_product_page>1</show_add_to_compare_on_product_page>
             </frontend>
         </catalog>
+        <google>
+            <gtag>
+                <anonymize>1</anonymize>
+                <lazyload>0</lazyload>
+            </gtag>
+        </google>
     </default>
 </config>
 

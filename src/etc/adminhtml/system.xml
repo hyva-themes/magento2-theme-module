@@ -14,7 +14,34 @@
             <label>Hyva Themes</label>
         </tab>
 
-        <section id="hyva_theme_catalog" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+        <section id="hyva_theme_google" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="5" translate="label">
+            <label>Google Tag Manager</label>
+            <tab>hyva_themes</tab>
+            <resource>Magento_GoogleAnalytics::google</resource>
+
+            <group id="gtag" translate="label comment" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Google GTag</label>
+                <comment>(These settings can also be found in Sales > Google API > Google GTag)</comment>
+
+                    <field id="anonymize" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Anonymize IP</label>
+                        <comment>Only works on Hyvä Storefronts!</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>google/gtag/anonymize</config_path>
+                    </field>
+
+                    <field id="lazyload" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Lazyload Tag Manager</label>
+                        <comment><![CDATA[Tagmanager will only load after user interaction. This improves performance, but makes your analytics less accurate!
+                            <br><br>Only works on Hyvä Storefronts!]]></comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>google/gtag/lazyload</config_path>
+                    </field>
+
+            </group>
+        </section>
+
+        <section id="hyva_theme_catalog" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="0" translate="label">
             <label>Catalog</label>
             <tab>hyva_themes</tab>
             <resource>Magento_Catalog::config_catalog</resource>
@@ -118,6 +145,25 @@
                     <depends>
                         <field id="recently_viewed_enabled">1</field>
                     </depends>
+                </field>
+            </group>
+        </section>
+
+        <section id="google">
+            <group id="gtag">
+                <field id="anonymize" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Anonymize IP</label>
+                    <comment>Only works on Hyvä Storefronts!</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>google/gtag/anonymize</config_path>
+                </field>
+
+                <field id="lazyload" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Lazyload Tag Manager</label>
+                    <comment><![CDATA[Tagmanager will only load after user interaction. This improves performance, but makes your analytics less accurate!
+                            <br><br>Only works on Hyvä Storefronts!]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>google/gtag/lazyload</config_path>
                 </field>
             </group>
         </section>
