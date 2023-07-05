@@ -150,7 +150,18 @@
         </section>
 
         <section id="google">
+            <group id="analytics">
+                <field id="type">
+                    <comment>Warning: Account type "Google Tag Manager" is a Adobe Commerce Feature is not implemented in Hyvä Theme!</comment>
+                </field>
+            </group>
             <group id="gtag">
+                <group id="analytics4">
+                    <field id="type">
+                        <comment>Warning: Account type "Google Tag Manager" is a Adobe Commerce Feature is not implemented in Hyvä Theme!</comment>
+                    </field>
+                </group>
+
                 <field id="anonymize" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Anonymize IP</label>
                     <comment>Only works on Hyvä Storefronts!</comment>
