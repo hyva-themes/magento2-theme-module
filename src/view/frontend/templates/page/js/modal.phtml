@@ -260,7 +260,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                         ['x-transition:leave']: config.transitionLeave,
                         ['x-transition:leave-start']: config.transitionLeaveStart,
                         ['x-transition:leave-end']: config.transitionLeaveEnd,
-                        ['@hyva-modal-show'](event) {
+                        ['@hyva-modal-show.window'](event) {
                             event.detail && event.detail.dialog === name && this.show(name)
                         }
                     };
