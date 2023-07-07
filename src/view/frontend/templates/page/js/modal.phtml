@@ -91,16 +91,16 @@ $deployMode = $viewModels->require(DeployMode::class);
         }
 
         function freeFocusFromModalTrap(modal) {
-            const dialogElement = modal.viewModel.$refs[modal.name];
-            isOverlayDisabled(dialogElement) || modal.viewModel.$nextTick(() => setSiblingsInert(dialogElement, false));
+            const dialogElement = modal.instance.$refs[modal.name];
+            isOverlayDisabled(dialogElement) || modal.instance.$nextTick(() => setSiblingsInert(dialogElement, false));
         }
 
         function trapFocusInNextModalWithOverlay() {
             for (let idx = modals.length -1; idx >= 0; idx--) {
                 const nextOnStack = modals[idx];
-                const nextDialogElement = nextOnStack.viewModel.$refs[nextOnStack.name];
+                const nextDialogElement = nextOnStack.instance.$refs[nextOnStack.name];
                 if (! isOverlayDisabled(nextDialogElement)) {
-                    nextOnStack.viewModel.$nextTick(() => setSiblingsInert(nextDialogElement, true));
+                    nextOnStack.instance.$nextTick(() => setSiblingsInert(nextDialogElement, true));
                     break;
                 }
             }
@@ -170,7 +170,7 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         function areRemainingModalsWithoutOverlay(modals)
         {
-            const overflowDisabled = modals.map(modal => modal.viewModel.$refs[modal.name]).filter(isOverlayDisabled);
+            const overflowDisabled = modals.map(modal => modal.instance.$refs[modal.name]).filter(isOverlayDisabled);
 
             return overflowDisabled.length === modals.length;
         }
@@ -213,7 +213,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
 
-                    const frame = {name, viewModel: this, focusTarget: focusTargetAfterHide, time: Date.now()};
+                    const frame = {name, instance: this, focusTarget: focusTargetAfterHide, time: Date.now()};
 
                     modals.push(frame);
                     if (useOverlay) {
@@ -272,10 +272,12 @@ $deployMode = $viewModels->require(DeployMode::class);
             };
         }
 
+        window.hyva.modal.peek = () => modals.length > 0 && modals[modals.length -1]
+
         window.hyva.modal.pop = function () {
             if (modals.length > 0) {
                 const modal = modals[modals.length -1];
-                modal.viewModel.hide();
+                modal.instance.hide();
             }
         }
 
@@ -295,11 +297,11 @@ $deployMode = $viewModels->require(DeployMode::class);
             click: event => {
                 if (modals.length > 0) {
                     const modal = modals[modals.length -1];
-                    const dialog = modal.viewModel.$refs[modal.name];
+                    const dialog = modal.instance.$refs[modal.name];
                     if (modal.time + 10 < Date.now() && // if last click processing is more than 10ms ago
                         ! isOverlayDisabled(dialog) && // if dialog has overlay
                         ! dialog.contains(event.target)) { // if click is outside of dialog
-                        modal.viewModel.hide();
+                        modal.instance.hide();
                     }
                 }
             }
