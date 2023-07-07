@@ -31,7 +31,7 @@ $deployMode = $viewModels->require(DeployMode::class);
         const excludedFromFocusTrapping = new Set();
 
         function loadInertPolyfill(callback) {
-            // undocumented "feature", should not be used unless inert attribute support is guaranteed
+            <?php /* Undocumented "feature", should not be used unless inert attribute support is guaranteed */ ?>
             if (window.hyva.modal.disableInertPolyfill) {
                 callback && callback();
             } else {
@@ -56,7 +56,7 @@ $deployMode = $viewModels->require(DeployMode::class);
             if (isInertPolyfillLoaded === 1) {
                 return;
             }
-            // Walk up the DOM, toggle inert attribute the siblings at each level
+            <?php /* Walk up the DOM, toggle inert attribute the siblings at each level */ ?>
             let el = dialogElement;
             while (el && (el = el.parentElement)) {
                 if (el === document.body || el.parentElement === null) continue;
@@ -67,8 +67,10 @@ $deployMode = $viewModels->require(DeployMode::class);
                     }
                 })
             }
+            <?php
             // Walk down the DOM, toggle inert attribute to opposite of toState.
             // This is needed if a nested dialog is rendered as a sibling of the opening dialog.
+            ?>
             (function setChildrenInert(el, toState) {
                 if (el) {
                     el.inert = toState;
@@ -139,19 +141,19 @@ $deployMode = $viewModels->require(DeployMode::class);
         }
 
         function determineTrigger($refs, dialog, trigger) {
-            // if show() was called without arguments use the event target as open trigger
+            <?php /* if show() was called without arguments use the event target as open trigger */ ?>
             if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog.target && dialog.target.focus) {
                 return dialog.target;
             }
-            // if show('name', $event) was called with the event as the second argument use the event target as trigger
+            <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
             if (typeof dialog === 'string' && typeof trigger === 'object' && trigger.target && trigger.target.focus) {
                 return trigger.target;
             }
-            // if show('name', 'trigger') was called with the ref name of the trigger element use that as the trigger
+            <?php /* if show('name', 'trigger') was called with the ref name of the trigger element use that as the trigger */ ?>
             if (typeof trigger === 'string' && $refs[trigger]) {
                 return $refs[trigger];
             } else {
-                // unknown trigger - no focus will be set when the dialog is hidden.
+                <?php /* unknown trigger - no focus will be set when the dialog is hidden */ ?>
                 return null;
             }
         }
@@ -170,8 +172,8 @@ $deployMode = $viewModels->require(DeployMode::class);
         window.hyva.modal = function(options) {
 
             const config = Object.assign({
-                dialog: '<?= /* @noEscape */ Modal::DEFAULT_NAME ?>', // default dialog ref name
-                duration: 300, // ms before allowing subsequent hiding of modals for nested modals (see transition duration)
+                dialog: '<?= /* @noEscape */ Modal::DEFAULT_NAME ?>', <?php /* default dialog ref name */ ?>
+                duration: 300, <?php /* ms before allowing subsequent hiding of modals for nested modals (see transition duration) */ ?>
                 transitionEnter: 'transition ease-out duration-300',
                 transitionEnterStart: 'opacity-0',
                 transitionEnterEnd: 'opacity-100',
@@ -221,8 +223,10 @@ $deployMode = $viewModels->require(DeployMode::class);
                     this.hide(true);
                 },
                 hide(value) {
+                    <?php
                     // Guard against Escape being pressed multiple times before a transition is finished, otherwise
                     // this function will pop further dialogs from the stack but the display will not update.
+                    ?>
                     if (Date.now() - lastHide < config.duration) {
                         return;
                     }
@@ -275,7 +279,7 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         window.hyva.modal.excludeSelectorsFromFocusTrap = function (selectors) {
             typeof selectors === 'string' || selectors instanceof String
-                ? excludedFromFocusTrapping.add(selector)
+                ? excludedFromFocusTrapping.add(selectors)
                 : selectors.map(selector => excludedFromFocusTrapping.add(selector));
         }
 
@@ -285,12 +289,12 @@ $deployMode = $viewModels->require(DeployMode::class);
                     window.hyva.modal.pop();
                 }
             },
-            // generic modal @click.outside handler
+            <?php /* generic modal @click.outside handler */ ?>
             click: event => {
                 if (modals.length > 0) {
                     const modal = modals[modals.length -1];
-                    const dialog = modal.instance.$refs[modal.name];
-                    if (modal.time + 10 < Date.now() && // if last click processing is more than 10ms ago
+                    const dialog = modal.viewModel.$refs[modal.name];
+                    if (modal.time + 50 < Date.now() && // if last click processing is more than 50ms ago
                         ! isOverlayDisabled(dialog) && // if dialog has overlay
                         ! dialog.contains(event.target)) { // if click is outside of dialog
                         modal.instance.hide();

@@ -173,7 +173,7 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
 
             let data = postParams.data;
 
-            if (!data.uenc) {
+            if (! postParams.skipUenc && ! data.uenc) {
                 data.uenc = btoa(window.location.href);
             }
             form.method = "POST";
