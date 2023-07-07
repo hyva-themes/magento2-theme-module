@@ -9,18 +9,18 @@ define([
     /**
      * Validate string could be a TailwindCSS class
      *
-     * This function overrides the original PageBuilder CSS class validator to allow TailwindCSS classes with : # and []
+     * This function overrides the original PageBuilder CSS class validator to allow TailwindCSS classes with : # . [] and more
      *
      * @param {String} str
      * @return {Boolean}
      */
     function validateTailwindCssClass(str) {
-        return (/^[a-zA-Z0-9 _(),:![\]#\-\d\/%]+$/i).test(str);
+        return (/^[a-zA-Z0-9 _(),.:![\]#\-\d\/%]+$/i).test(str);
     }
 
 
     /**
-     * Override the original PageBuilder validate-css-class validator to allow TailnwindCSS classes
+     * Override the original PageBuilder validate-css-class validator to allow TailwindCSS classes
      *
      * @param {Function} validator
      * @param {String} ruleName
