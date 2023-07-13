@@ -25,7 +25,7 @@ class TotalsOutput implements ArgumentInterface
         $this->taxConfig = $config;
     }
 
-    public function getSubtotalField()
+    public function getSubtotalField(): string
     {
         return $this->taxConfig->displayCartSubtotalExclTax() ? 'subtotal_excluding_tax' : 'subtotal_including_tax';
     }
@@ -39,14 +39,10 @@ class TotalsOutput implements ArgumentInterface
     {
         return $this->taxConfig->displayCartSubtotalExclTax() ?
             __('excl.') :
-            (
-            $this->taxConfig->displayCartSubtotalBoth() ?
-                '' :
-                __('incl.')
-            );
+            ($this->taxConfig->displayCartSubtotalBoth() ? '' : __('incl.'));
     }
 
-    public function getShippingLabelAddition()
+    public function getShippingLabelAddition(): string
     {
         return !$this->taxConfig->shippingPriceIncludesTax() ? __('excl.') . ' ' : '';
     }
@@ -54,5 +50,20 @@ class TotalsOutput implements ArgumentInterface
     public function displayCartTaxWithGrandTotal(): bool
     {
         return $this->taxConfig->displayCartTaxWithGrandTotal();
+    }
+
+    public function displayCartShippingExclTax(): bool
+    {
+        return $this->taxConfig->displayCartShippingExclTax();
+    }
+
+    public function displayCartShippingInclTax(): bool
+    {
+        return $this->taxConfig->displayCartShippingInclTax();
+    }
+
+    public function displayCartShippingBoth(): bool
+    {
+        return $this->taxConfig->displayCartShippingBoth();
     }
 }
