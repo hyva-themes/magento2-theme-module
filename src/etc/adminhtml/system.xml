@@ -100,6 +100,18 @@
             </group>
         </section>
 
+        <section id="hyva_theme_general" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="15" translate="label">
+            <label>General</label>
+            <tab>hyva_themes</tab>
+            <resource>Magento_Catalog::config_catalog</resource>
+            <group id="messages" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+                <label>Message Display</label>
+                <field id="success_message_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Success Message Default Timeout</label>
+                    <comment>The number of milliseconds, after which success messages disappear by default. Leave empty to disable automatic hiding.</comment>
+                </field>
+            </group>
+        </section>
 
         <section id="catalog">
             <group id="frontend">
