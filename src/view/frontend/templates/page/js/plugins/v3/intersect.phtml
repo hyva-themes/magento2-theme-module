@@ -8,7 +8,7 @@
 <script>
     (() => {
         function src_default(Alpine) {
-            Alpine.directive("intersect", (el, {value, expression, modifiers}, {evaluateLater, cleanup}) => {
+            Alpine.directive("intersect", (el, { value, expression, modifiers }, { evaluateLater, cleanup }) => {
                 let evaluate = evaluateLater(expression);
                 let options = {
                     rootMargin: getRootMargin(modifiers),
@@ -28,7 +28,6 @@
                 });
             });
         }
-
         function getThreshhold(modifiers) {
             if (modifiers.includes("full"))
                 return 0.99;
@@ -43,12 +42,10 @@
                 return 0;
             return Number(`.${threshold}`);
         }
-
         function getLengthValue(rawValue) {
             let match = rawValue.match(/^(-?[0-9]+)(px|%)?$/);
             return match ? match[1] + (match[2] || "px") : void 0;
         }
-
         function getRootMargin(modifiers) {
             const key = "margin";
             const fallback = "0px 0px 0px 0px";
