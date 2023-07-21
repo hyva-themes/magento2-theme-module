@@ -7,7 +7,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.23...1.1.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.24...1.1.x-main
+
+## [1.1.24] - 2023-07-21
+
+[1.1.24]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.23...1.1.24
+
+### Added
+
+- **Add JavaScript method to access currently active modal dialog**
+
+  The method `hyva.modal.peek()` will now return the currently active modal dialog (or `false` if there is none).
+
+  For more information, please refer to [issue #272](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/272).
+
+### Changed
+
+- **Fixed: ESI Block causing whole page to be invalidated in Varnish**
+
+  Previously, changes to categories caused all catalog FPC records to be invalidated, even though only the top menu ESI
+  block should have been needed regenerated.
+
+  For more information, please refer to [issue #256](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/256).
+
+  Many thansk to Matt Walsh for the detailed report!
+
+- **Fixed: typo in variable in hyva.modal.excludeSelectorsFromFocusTrap**
+
+  For more information, please refer to [merge request #321](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/321).
+
+  Many thanks to Jesse de Boer (Elgentos) for the contribution!
+
+- **Fixed: PageBuilder HTML content processing**
+
+  Previously, subsequent HTML content elements would be escaped, thus rendering the HTML tags visibly on the page.
+
+  For more information, please refer to [issue #267](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/267).
+
+- **Add . to PageBuilder CSS class name validation rule**
+
+  Previously, classes such as `mx-1.5`, `mb-4.5` and `md:mb-3.75` could not be saved because they contained a period `.` character.
+
+  For more information, please refer to [issue #277](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/277).
+
+### Removed
+
+- Nothing removed
+
 
 ## [1.1.23] - 2023-03-17
 
