@@ -7,7 +7,116 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.3...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.4...main
+
+## [1.2.4] - 2023-07-21
+
+[1.2.4]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.3...1.2.4
+
+### Added
+
+- **Magento_GTag compatibility**
+
+  This release now provides compatibility with the Magento_GoogleGtag module.  
+  It provided a basic Google Analytics 4 and Google Ads Gtag integration.
+
+- **Add JavaScript method to access currently active modal dialog**
+
+  The method `hyva.modal.peek()` will now return the currently active modal dialog (or `false` if there is none).
+
+  For more information, please refer to [issue #272](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/272).
+
+- **Add optional argument to allow skipping the uenc parameter in hyva.postForm**
+
+  Previously the `hyva.postForm` method always automatically added the `unec` parameter to the payload.  
+  Now it is possible to skip it by providing the key `unec: false` in the postParams argument.
+
+  For more information, please refer to [merge request #340](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/340).
+
+- **Add system configuration setting to specify a success message default timeout**
+
+  For more information, please refer to [merge request #343](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/343).
+
+- **Add viewmodel for escaping anchor tags keeping attributes intact**
+
+  The default Magento `$escaper->escapeHtml` method removes all `<a>` tag attributes except `href`.  
+  The new `\Hyva\Theme\ViewModel\Escaper\EscapeHtmlAllowingAnchorAttributes` view model allows escaping anchor tags while keeping attributes like `rel` and `target` intact.  
+
+  For more information, please refer to [issue #284](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/284).
+
+- **Add methods to get cart shipping total display config to TotalsOutput view model**
+
+  The methods `displayCartShippingExclTax`, `displayCartShippingInclTax`, `displayCartShippingBoth` were added to be able to display the shipping total incl. or excl. tax on the cart page.  
+
+  For more information, please refer to [issue #345](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/345).
+
+### Changed
+
+- **Upgrade Alpine.js from 3.10.4 to 3.12.3**
+
+  For details on what changed, please refer to the [Alpine.js release notes](https://github.com/alpinejs/alpine/releases).
+
+- **Fixed: typo in variable in hyva.modal.excludeSelectorsFromFocusTrap**
+
+  For more information, please refer to [merge request #321](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/321).
+
+  Many thanks to Jesse de Boer (Elgentos) for the contribution!
+
+- **Adjusted workaround for PHP 8.1 core bug in Magento\Tax\Pricing\Render\Adjustment**
+
+  The previously applied fix was subtely different from the one introduced upstream by Magento.
+  Now the behavior of the backport in Hyvä behaves identically.  
+
+  For more information, please refer to [merge request #326](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/326).
+
+  Many thanks to Pieter Hoste (Baldwin) for the contribution!
+
+- **Fixed: model open event listener**
+  
+  Opening modal by events now works.
+
+  For more information, please refer to [issue #2547](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/247).
+
+  Many thanks to Valentyn Kuchak (Perspective) for the contribution!
+
+- **Fixed: ESI Block causing whole page to be invalidated in Varnish**
+
+  Previously, changes to categories caused all catalog FPC records to be invalidated, even though only the top menu ESI 
+  block should have been needed regenerated.
+
+  For more information, please refer to [issue #256](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/256).
+
+  Many thansk to Matt Walsh for the detailed report!
+
+- **Fixed: PageBuilder HTML content processing**
+
+  Previously, subsequent HTML content elements would be escaped, thus rendering the HTML tags visibly on the page.  
+
+  For more information, please refer to [issue #267](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/267).
+
+- **Add . to PageBuilder CSS class name validation rule**
+
+  Previously, classes such as `mx-1.5`, `mb-4.5` and `md:mb-3.75` could not be saved because they contained a period `.` character.  
+
+  For more information, please refer to [issue #277](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/277).
+
+- **Increase modal click-guard time**
+
+  Previously, under some circumstances, possibly heavy main-thread load, the click opening the modal was registered as a closing click.
+
+  For more information, please refer to [issue #270](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/270).
+
+- **Fixed: not-visible products in from product relations are shown**
+
+  Products not visible in the catalog were previously included in related, upsell and crosssell product sliders.  
+  Now products set to not-visible-individually or only-visible-in-search are excluded, as well as deactivated products.
+
+  For more information, please refer to [merge request #341](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/341).
+
+### Removed
+
+- Nothing removed.
+
 
 ## [1.2.3] - 2023-03-17
 
