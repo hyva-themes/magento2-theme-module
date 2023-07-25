@@ -10,7 +10,10 @@ declare(strict_types=1);
 
 namespace Hyva\Theme;
 
+use function array_map as map;
+use function array_values as values;
 use Hyva\Theme\ViewModel\ProductList;
+use Magento\Catalog\Api\CategoryLinkManagementInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\Data\ProductLinkInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -20,13 +23,9 @@ use Magento\Catalog\Model\Product\Type as ProductType;
 use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
-use Magento\Quote\Model\Cart\Data\CartItem;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
-
-use function array_map as map;
-use function array_values as values;
 
 class ProductListTest extends TestCase
 {
@@ -81,6 +80,8 @@ class ProductListTest extends TestCase
         /** @var ProductResource $productResource */
         $productResource = ObjectManager::getInstance()->get(ProductResource::class);
 
+        $categoryLinkManagement = ObjectManager::getInstance()->get(CategoryLinkManagementInterface::class);
+
         $rootProductCount = 1;
         $rootSku = 'simple-related-';
         $simpleProducts = [];
@@ -96,6 +97,7 @@ class ProductListTest extends TestCase
                     ->setStatus(ProductStatus::STATUS_ENABLED)
                     ->setWebsiteIds([1]);
             $productResource->save($product);
+            $categoryLinkManagement->assignProductToCategories($product->getSku(), [1]);
             $simpleProducts[$i] = $product;
         }
 
@@ -116,6 +118,8 @@ class ProductListTest extends TestCase
                               ->setStatus(ProductStatus::STATUS_ENABLED)
                               ->setWebsiteIds([1]);
                 $productResource->save($linkedProduct);
+                $categoryLinkManagement->assignProductToCategories($linkedProduct->getSku(), [1]);
+
                 $link = $linkFactory->create();
                 $link->setSku($product->getSku());
                 $link->setLinkedProductSku($linkedSku);
