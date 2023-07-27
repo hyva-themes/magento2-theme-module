@@ -82,7 +82,7 @@ class OverrideTemplatePlugin
 
     private function maskAlpineAttributes(string $content): string
     {
-        while (preg_match('/<[^>]+?(@[^=]+)=/', $content, $matches)) {
+        while (preg_match('/<[^>]+?\s(@[^=]+)=/', $content, $matches)) {
             $mask = $this->generateMaskString();
             $this->maskedAttributes[$mask] = $matches[1];
             $content = str_replace($matches[1], $mask, $content);
