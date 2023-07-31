@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.2.5] - 2023-07-31
 
-[1.2.5]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.3...1.2.4
+[1.2.5]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.4...1.2.5
 
 ### Added
 
