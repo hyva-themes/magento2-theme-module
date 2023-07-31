@@ -293,7 +293,7 @@ $deployMode = $viewModels->require(DeployMode::class);
             click: event => {
                 if (modals.length > 0) {
                     const modal = modals[modals.length -1];
-                    const dialog = modal.viewModel.$refs[modal.name];
+                    const dialog = modal.instance.$refs[modal.name];
                     if (modal.time + 50 < Date.now() && // if last click processing is more than 50ms ago
                         ! isOverlayDisabled(dialog) && // if dialog has overlay
                         ! dialog.contains(event.target)) { // if click is outside of dialog
