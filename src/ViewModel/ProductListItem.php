@@ -124,6 +124,18 @@ class ProductListItem implements ArgumentInterface
         string $imageDisplayArea,
         bool $showDescription
     ): string {
+        return $this->withParentChildLayoutRelationshipExecute($parentBlock, $itemRendererBlock, [$this, 'renderItemHtml'], func_get_args());
+    }
+
+    private function renderItemHtml(
+        AbstractBlock $itemRendererBlock,
+        Product $product,
+        AbstractBlock $parentBlock,
+        string $viewMode,
+        string $templateType,
+        string $imageDisplayArea,
+        bool $showDescription
+    ): string {
         // Careful! Temporal coupling!
         // First the values on the block need to be set, then the cache key info array can be created.
 
@@ -149,6 +161,32 @@ class ProductListItem implements ArgumentInterface
         }
 
         return $itemRendererBlock->toHtml();
+    }
+
+    /**
+     * Temporarily set the parent - child relationship in the layout structure and execute the given callback
+     *
+     * @param AbstractBlock $newParent
+     * @param AbstractBlock $child
+     * @param callable $fn
+     * @param mixed[] $args
+     * @return mixed
+     */
+    private function withParentChildLayoutRelationshipExecute(AbstractBlock $newParent, AbstractBlock $child, callable $fn, array $args = [])
+    {
+        $childName = $child->getNameInLayout();
+        $origParentBlock = $child->getParentBlock();
+        $origAlias = $this->layout->getElementAlias($childName);
+        $this->layout->setChild($newParent->getNameInLayout(), $childName, $childName);
+
+        //phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
+        $result = call_user_func_array($fn, $args);
+
+        if ($origParentBlock) {
+            $this->layout->setChild($origParentBlock->getNameInLayout(), $childName, $origAlias ?: $childName);
+        }
+
+        return $result;
     }
 
     public function getItemHtml(
