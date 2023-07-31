@@ -7,7 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.24...1.1.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.25...1.1.x-main
+
+## [1.1.25] - 2023-07-31
+
+[1.1.25]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.1.24...1.1.25
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Fix Template Processor Plugin Regex to avoid matching non-alpine attributes**
+
+  The previous release 1.2.4 introduced a regression that caused non-alpine attributes to be matched.  
+
+  For more information, please refer to [issue #291](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/291).
+
+### Removed
+
+- Nothing removed
 
 ## [1.1.24] - 2023-07-21
 
