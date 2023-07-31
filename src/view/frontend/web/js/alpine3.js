@@ -2736,7 +2736,7 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
   function getInputValue(el, modifiers, event, currentValue) {
     return mutateDom(() => {
       if (event instanceof CustomEvent && event.detail !== void 0)
-        return event.detail ?? event.target.value;
+        return event.detail !== null && event.detail !== void 0 ? event.detail : event.target.value;
       else if (el.type === "checkbox") {
         if (Array.isArray(currentValue)) {
           let newValue = modifiers.includes("number") ? safeParseNumber(event.target.value) : event.target.value;
