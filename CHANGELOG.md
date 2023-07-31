@@ -7,7 +7,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.4...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.5...main
+
+## [1.2.5] - 2023-07-31
+
+[1.2.5]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.3...1.2.4
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Fix property name reference in modal click handler**
+
+  For more information, please refer to [issue #292](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/292).
+
+- **Fix Template Processor Plugin Regex to avoid matching non-alpine attributes**
+
+  The previous release 1.2.4 introduced a regression that caused non-alpine attributes to be matched.
+
+  For more information, please refer to [issue #291](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/291).
+
+- **Patch Alpine 3.12.3 for full mobile Safari 13 compatibility**
+
+  The previous release 1.2.4 upgraded Alpine to 3.12.3. This release makes use of the nullish coalescing operator `??`, which is not supported by mobile Safari 13.3 and earlier (This roughly corresponds to the iPhone 6).
+  This release contains a custom build of 3.12.3 that replaces the `??` operator with backward-compatible code.
+
+  For more information, please refer to [issue #293](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/293).
+
+### Removed
+
+- Nothing removed
+
 
 ## [1.2.4] - 2023-07-21
 
