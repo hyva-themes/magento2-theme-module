@@ -355,7 +355,7 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
         hyva.trapFocus = (rootElement) => {
             if (!rootElement) return;
 
-            const focusableElements = 'button, [href], input, select, textarea, details, [tabindex]:not([tabindex="-1"])';
+            const focusableElements = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), details, [tabindex]:not([tabindex="-1"])';
             const focusableContentWithoutTrigger = Array.from(rootElement.querySelectorAll(focusableElements))
 
             const firstFocusableElement = focusableContentWithoutTrigger.length > 0
