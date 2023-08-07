@@ -136,9 +136,11 @@ class ProductListItem implements ArgumentInterface
                           ->setData('pos', $parentBlock->getPositioned())
                           ->setData('template_type', $templateType)
                           ->setData('cache_lifetime', 3600)
-                          ->setData('cache_tags', $product->getIdentities());
+                          ->setData('cache_tags', $product->getIdentities())
+                          ->setData('hideDetails', $parentBlock->getData('hideDetails'))
+                          ->setData('hide_rating_summary', $parentBlock->getData('hide_rating_summary'));
 
-        $itemCacheKeyInfo = $this->getItemCacheKeyInfo($product, $parentBlock, $viewMode, $templateType);
+        $itemCacheKeyInfo = $this->getItemCacheKeyInfo($product, $itemRendererBlock, $viewMode, $templateType);
         $itemRendererBlock->setData('cache_key', $this->blockCache->hashCacheKeyInfo($itemCacheKeyInfo));
 
         foreach (($itemRendererBlock->getData('additional_item_renderer_processors') ?? []) as $processor) {
