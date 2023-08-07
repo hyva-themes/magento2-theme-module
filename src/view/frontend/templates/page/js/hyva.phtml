@@ -352,6 +352,32 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
         const replace = {['+']: '-', ['/']: '_', ['=']: ','};
         hyva.getUenc = () => btoa(window.location.href).replace(/[+/=]/g, match => replace[match]);
 
+        hyva.trapFocus = (rootElement) => {
+            if (!rootElement) return;
+
+            const focusableElements = 'button, [href], input, select, textarea, details, [tabindex]:not([tabindex="-1"])';
+            const focusableContentWithoutTrigger = Array.from(rootElement.querySelectorAll(focusableElements))
+
+            const firstFocusableElement = focusableContentWithoutTrigger.length > 0
+                ? focusableContentWithoutTrigger[0]
+                : null;
+            const lastFocusableElement = focusableContentWithoutTrigger.length > 0
+                ? focusableContentWithoutTrigger[focusableContentWithoutTrigger.length - 1]
+                : null;
+
+            rootElement.addEventListener('keydown', function(e) {
+                const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+
+                if (!isTabPressed) {
+                    return;
+                }
+
+                e.shiftKey
+                    ? document.activeElement === firstFocusableElement && (lastFocusableElement.focus(), e.preventDefault())
+                    : document.activeElement === lastFocusableElement && (firstFocusableElement.focus(), e.preventDefault());
+            });
+        }
+
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
 
     }( window.hyva = window.hyva || {} ));
