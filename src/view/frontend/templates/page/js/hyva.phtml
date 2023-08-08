@@ -352,6 +352,38 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
         const replace = {['+']: '-', ['/']: '_', ['=']: ','};
         hyva.getUenc = () => btoa(window.location.href).replace(/[+/=]/g, match => replace[match]);
 
+        let currentTrap;
+
+        const focusableElements = (rootElement) => {
+            const selector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), details, [tabindex]:not([tabindex="-1"])';
+            return Array.from(rootElement.querySelectorAll(selector))
+        }
+
+        const focusTrap = (e) => {
+            const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+            if (!isTabPressed) return;
+
+            const focusable = focusableElements(currentTrap)
+            const firstFocusableElement = focusable[0]
+            const lastFocusableElement = focusable[focusable.length - 1]
+
+            e.shiftKey
+                ? document.activeElement === firstFocusableElement && (lastFocusableElement.focus(), e.preventDefault())
+                : document.activeElement === lastFocusableElement && (firstFocusableElement.focus(), e.preventDefault())
+        };
+
+        hyva.releaseFocus = () => {
+            if (currentTrap) currentTrap.removeEventListener('keydown', focusTrap)
+        }
+        hyva.trapFocus = (rootElement) => {
+            if (!rootElement) return;
+            hyva.releaseFocus()
+            currentTrap = rootElement
+            rootElement.addEventListener('keydown', focusTrap)
+            const firstElement = focusableElements(rootElement)[0]
+            firstElement && firstElement.focus()
+        }
+
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
 
     }( window.hyva = window.hyva || {} ));
