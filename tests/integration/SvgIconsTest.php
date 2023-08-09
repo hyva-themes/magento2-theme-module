@@ -82,19 +82,15 @@ class SvgIconsTest extends TestCase
                 'check',
                 'checkHtml',
                 <<<'SVG'
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                SVG,
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG,
             ],
             'arrow-up' => [
                 'arrow-up',
                 'arrowUpHtml',
                 <<<'SVG'
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
-                </svg>
-                SVG,
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 10 7-7m0 0 7 7m-7-7v18"/></svg>
+SVG,
             ],
         ];
     }
@@ -196,10 +192,8 @@ class SvgIconsTest extends TestCase
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6" width="24" height="24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
-            SVG;
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="h-6 w-6" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG;
         $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('check', 'h-6 w-6')));
     }
 
@@ -211,10 +205,8 @@ class SvgIconsTest extends TestCase
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="12">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
-            SVG;
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG;
         $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('check', '', 16, 12)));
     }
 
@@ -225,15 +217,15 @@ class SvgIconsTest extends TestCase
     {
         $this->givenCurrentTheme('Hyva/test');
         $svg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-            </svg>
-            SVG;
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+</svg>
+SVG;
         $expectedSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5" width="12" height="12">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-            </svg>
-            SVG;
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5" width="12" height="12">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+</svg>
+SVG;
         $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $svg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
         $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
@@ -251,10 +243,8 @@ class SvgIconsTest extends TestCase
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-red" width="16" height="12">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
-            SVG;
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-red" width="16" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG;
         $this->assertEquals($expectedSvg, trim($svgIcons->checkHtml('text-red', 16, 12)));
     }
 
