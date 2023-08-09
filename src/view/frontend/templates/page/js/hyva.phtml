@@ -355,8 +355,9 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
         let currentTrap;
 
         const focusableElements = (rootElement) => {
-            const selector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), details, [tabindex]:not([tabindex="-1"])';
+            const selector = 'button, [href], input, select, textarea, details, [tabindex]:not([tabindex="-1"])';
             return Array.from(rootElement.querySelectorAll(selector))
+                .filter(el => el.style.display !== 'none' && !el.disabled)
         }
 
         const focusTrap = (e) => {
@@ -372,8 +373,11 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
                 : document.activeElement === lastFocusableElement && (firstFocusableElement.focus(), e.preventDefault())
         };
 
-        hyva.releaseFocus = () => {
-            if (currentTrap) currentTrap.removeEventListener('keydown', focusTrap)
+        hyva.releaseFocus = (rootElement) => {
+            if (currentTrap && (!rootElement || rootElement === currentTrap)) {
+                currentTrap.removeEventListener('keydown', focusTrap)
+                currentTrap = null
+            }
         }
         hyva.trapFocus = (rootElement) => {
             if (!rootElement) return;
