@@ -357,7 +357,7 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
         const focusableElements = (rootElement) => {
             const selector = 'button, [href], input, select, textarea, details';
             return Array.from(rootElement.querySelectorAll(selector))
-                .filter(el => el.style.display !== 'none' && !el.disabled && el.tabIndex !=-1)
+                .filter(el => el.style.display !== 'none' && !el.disabled && el.tabIndex !== -1)
         }
 
         const focusTrap = (e) => {
