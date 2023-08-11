@@ -172,7 +172,7 @@ class SvgIcons implements ArgumentInterface
 
             return $result;
         } catch (Asset\File\NotFoundException $exception) {
-            $error = (string) __('Unable to find the SVG icon "%1', $icon);
+            $error = (string) __('Unable to find the SVG icon "%1"', $icon);
             throw new Asset\File\NotFoundException($error, 0, $exception);
         }
     }
