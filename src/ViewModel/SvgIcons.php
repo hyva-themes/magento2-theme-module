@@ -260,13 +260,23 @@ class SvgIcons implements ArgumentInterface
             }
         }
 
-        if (!$this->isAriaHidden($attributes)) {
+        if (!$this->isAriaHidden($attributes) && ! $this->hasTitle($svgXml)) {
             $svgXml->addChild('title', $icon);
         }
 
         $xml = $svgXml->asXML();
 
         return \str_replace("<?xml version=\"1.0\"?>\n", '', $xml);
+    }
+
+    private function hasTitle(\SimpleXMLElement  $svgXml): bool
+    {
+        foreach ($svgXml->children() as $child) {
+            if ($child->getName() === 'title') {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function isAriaHidden($attributes): bool
