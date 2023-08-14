@@ -81,12 +81,12 @@ class TemplateVariableTest extends TestCase
     private function registerTestTheme(): void
     {
         ThemeFixture::registerTestThemes();
-        ThemeFixture::setCurrentTheme('Hyva/test');
+        ThemeFixture::setCurrentTheme('Hyva/integration-test');
     }
 
     private function createTemplate(string $templateFile, string $templateContents): void
     {
-        $templatePath = __DIR__ . '/_files/design/frontend/Hyva/test/' . $templateFile . '';
+        $templatePath = __DIR__ . '/_files/design/frontend/Hyva/integration-test/' . $templateFile . '';
         \file_put_contents(
             $templatePath,
             $templateContents
