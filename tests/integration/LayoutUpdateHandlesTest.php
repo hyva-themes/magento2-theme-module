@@ -111,7 +111,7 @@ class LayoutUpdateHandlesTest extends AbstractController
     /** @test */
     public function block_loaded_from_hyva_prefix_layout()
     {
-        $this->givenCurrentTheme('Hyva/test');
+        $this->givenCurrentTheme('Hyva/integration-test');
         $this->dispatch('/');
         /** @var Layout $layout */
         $layout = $this->_objectManager->get(Layout::class);

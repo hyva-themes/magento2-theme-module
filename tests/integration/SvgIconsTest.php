@@ -67,7 +67,7 @@ class SvgIconsTest extends TestCase
 
     private function createViewFile(string $viewFile, string $viewFileContents): void
     {
-        $viewFilePath = __DIR__ . '/_files/design/frontend/Hyva/test/' . $viewFile . '';
+        $viewFilePath = __DIR__ . '/_files/design/frontend/Hyva/integration-test/' . $viewFile . '';
         \file_put_contents(
             $viewFilePath,
             $viewFileContents
@@ -125,7 +125,7 @@ SVG,
      */
     public function svg_can_be_overridden_in_theme()
     {
-        $this->givenCurrentTheme('Hyva/test');
+        $this->givenCurrentTheme('Hyva/integration-test');
         $overriddenSvg = <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="5" d="M5 13l4 4L19 7"/>
@@ -145,7 +145,7 @@ SVG,
      */
     public function can_use_arbitrary_icon_set_in_theme()
     {
-        $this->givenCurrentTheme('Hyva/test');
+        $this->givenCurrentTheme('Hyva/integration-test');
         $svg = <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
@@ -165,7 +165,7 @@ SVG,
      */
     public function can_be_used_without_icon_set_in_theme()
     {
-        $this->givenCurrentTheme('Hyva/test');
+        $this->givenCurrentTheme('Hyva/integration-test');
         $svg = <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
@@ -215,7 +215,7 @@ SVG;
      */
     public function replaces_existing_attributes()
     {
-        $this->givenCurrentTheme('Hyva/test');
+        $this->givenCurrentTheme('Hyva/integration-test');
         $svg = <<<'SVG'
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
@@ -318,7 +318,7 @@ SVG;
      */
     public function caches_icons_based_on_icon_path_prefix()
     {
-        $this->givenCurrentTheme('Hyva/test');
+        $this->givenCurrentTheme('Hyva/integration-test');
         $this->createViewFile('Hyva_PaymentIcons/web/svg/dark/eye.svg', <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
@@ -337,7 +337,7 @@ SVG;
      */
     public function applies_icon_path_prefix_di_config()
     {
-        $this->givenCurrentTheme('Hyva/test');
+        $this->givenCurrentTheme('Hyva/integration-test');
         $idealSvg = <<<'SVG'
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="blue" class="" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
