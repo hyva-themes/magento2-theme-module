@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
 // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps, Generic.Files.LineLength.TooLong
 
 /**
+ * @covers \Hyva\Theme\ViewModel\SvgIcons
  * @magentoAppArea frontend
  * @magentoAppIsolation enabled
  * @magentoComponentsDir ../../../../vendor/hyva-themes/magento2-theme-module/tests/integration/_files/design
@@ -45,6 +46,12 @@ class SvgIconsTest extends TestCase
         $cache = $this->objectManager->get(CacheInterface::class);
         $cache->clean([SvgIcons::CACHE_TAG]);
         ThemeFixture::registerTestThemes();
+
+        $reflectedClass = new \ReflectionClass(SvgIcons::class);
+        $prop = $reflectedClass->getProperty('internalIdUsageCounts');
+        $prop->setAccessible(true);
+        $prop->setValue([]);
+        $prop->setAccessible(false);
     }
 
     protected function tearDown(): void
@@ -372,5 +379,118 @@ SVG;
         $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage('Unable to find the SVG icon "non-existent-icon');
         $icons->renderHtml('non-existent-icon');
+    }
+
+    /**
+     * @test
+     */
+    public function disambiguate_internal_ids()
+    {
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
+    <defs>
+        <linearGradient id="aaa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2c4d9d"/>
+            <stop offset="1" stop-color="#3a8fce"/>
+        </linearGradient>
+        <linearGradient id="bbb" x1="17.63" y1="51.23" x2="56.29" y2="11.21" xlink:href="#aaa"/>
+    </defs>
+    <path d="M37.28,50.68a1.64," style="fill:url(#aaa)"/>
+    <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
+</svg>
+SVG;
+        $expectedSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
+    <defs>
+        <linearGradient id="aaa_1" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2c4d9d"/>
+            <stop offset="1" stop-color="#3a8fce"/>
+        </linearGradient>
+        <linearGradient id="bbb_1" x1="17.63" y1="51.23" x2="56.29" y2="11.21" xlink:href="#aaa_1"/>
+    </defs>
+    <path d="M37.28,50.68a1.64," style="fill:url(#aaa_1)"/>
+    <path d="M71.45,29.54a6.63," style="fill:url(#bbb_1)"/>
+</svg>
+SVG;
+        $this->createViewFile('web/svg/test.svg', $inputSvg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $this->assertSame($expectedSvg, trim($icons->renderHtml('test')));
+    }
+
+    /**
+     * @test
+     */
+    public function disambiguate_internal_ids_over_multiple_instances_of_the_same_icon()
+    {
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
+    <defs>
+        <linearGradient id="aaa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2c4d9d"/>
+            <stop offset="1" stop-color="#3a8fce"/>
+        </linearGradient>
+        <linearGradient id="bbb" x1="17.63" y1="51.23" x2="56.29" y2="11.21" xlink:href="#aaa"/>
+    </defs>
+    <path d="M37.28,50.68a1.64," style="fill:url(#aaa)"/>
+    <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
+</svg>
+SVG;
+        $expectedSvg1 = str_replace(['aaa', 'bbb'], ['aaa_1', 'bbb_1'], $inputSvg);
+        $expectedSvg2 = str_replace(['aaa', 'bbb'], ['aaa_2', 'bbb_2'], $inputSvg);
+        $this->createViewFile('web/svg/test.svg', $inputSvg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $this->assertSame($expectedSvg1, trim($icons->renderHtml('test')));
+        $this->assertSame($expectedSvg2, trim($icons->renderHtml('test')));
+    }
+
+    /**
+     * @test
+     */
+    public function disambiguate_internal_ids_over_instances_of_different_same_icons()
+    {
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
+    <defs>
+        <linearGradient id="aaa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2c4d9d"/>
+            <stop offset="1" stop-color="#3a8fce"/>
+        </linearGradient>
+        <linearGradient id="bbb" x1="17.63" y1="51.23" x2="56.29" y2="11.21" xlink:href="#aaa"/>
+    </defs>
+    <path d="M37.28,50.68a1.64," style="fill:url(#aaa)"/>
+    <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
+</svg>
+SVG;
+        $expectedSvg1 = str_replace(['aaa', 'bbb'], ['aaa_1', 'bbb_1'], $inputSvg);
+        $expectedSvg2 = str_replace(['aaa', 'bbb'], ['aaa_2', 'bbb_2'], $inputSvg);
+
+        $this->createViewFile('web/svg/test1.svg', $inputSvg);
+        $this->createViewFile('web/svg/test2.svg', $inputSvg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $this->assertSame($expectedSvg1, trim($icons->renderHtml('test1')));
+        $this->assertSame($expectedSvg2, trim($icons->renderHtml('test2')));
+    }
+
+    /**
+     * @test
+     */
+    public function can_process_alpine_attributes()
+    {
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" :class="{'hidden': true}" @click.window="open=true" width="500" height="500">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+</svg>
+SVG;
+        $this->createViewFile('web/svg/test.svg', $inputSvg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $this->assertSame($inputSvg, trim($icons->renderHtml('test', '', null, null)));
     }
 }
