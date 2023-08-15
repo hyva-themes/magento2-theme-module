@@ -384,10 +384,10 @@ SVG;
     /**
      * @test
      */
-    public function disambiguate_internal_ids()
+    public function does_not_disambiguate_single_use_internal_ids()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
-        $inputSvg = <<<'SVG'
+        $testSvg = <<<'SVG'
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
     <defs>
         <linearGradient id="aaa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
@@ -400,23 +400,10 @@ SVG;
     <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
 </svg>
 SVG;
-        $expectedSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
-    <defs>
-        <linearGradient id="aaa_1" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#2c4d9d"/>
-            <stop offset="1" stop-color="#3a8fce"/>
-        </linearGradient>
-        <linearGradient id="bbb_1" x1="17.63" y1="51.23" x2="56.29" y2="11.21" xlink:href="#aaa_1"/>
-    </defs>
-    <path d="M37.28,50.68a1.64," style="fill:url(#aaa_1)"/>
-    <path d="M71.45,29.54a6.63," style="fill:url(#bbb_1)"/>
-</svg>
-SVG;
-        $this->createViewFile('web/svg/test.svg', $inputSvg);
+        $this->createViewFile('web/svg/test.svg', $testSvg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
         $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
-        $this->assertSame($expectedSvg, trim($icons->renderHtml('test')));
+        $this->assertSame($testSvg, trim($icons->renderHtml('test')));
     }
 
     /**
@@ -438,7 +425,7 @@ SVG;
     <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
 </svg>
 SVG;
-        $expectedSvg1 = str_replace(['aaa', 'bbb'], ['aaa_1', 'bbb_1'], $inputSvg);
+        $expectedSvg1 = $inputSvg;
         $expectedSvg2 = str_replace(['aaa', 'bbb'], ['aaa_2', 'bbb_2'], $inputSvg);
         $this->createViewFile('web/svg/test.svg', $inputSvg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
@@ -466,7 +453,7 @@ SVG;
     <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
 </svg>
 SVG;
-        $expectedSvg1 = str_replace(['aaa', 'bbb'], ['aaa_1', 'bbb_1'], $inputSvg);
+        $expectedSvg1 = $inputSvg;
         $expectedSvg2 = str_replace(['aaa', 'bbb'], ['aaa_2', 'bbb_2'], $inputSvg);
 
         $this->createViewFile('web/svg/test1.svg', $inputSvg);

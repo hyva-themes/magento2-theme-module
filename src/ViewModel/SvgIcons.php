@@ -195,10 +195,13 @@ class SvgIcons implements ArgumentInterface
         $uniqueIdList = [];
         foreach ($idAttributes as $idAttr) {
             $id = (string) $idAttr->id;
-            self::$internalIdUsageCounts[$id] = (self::$internalIdUsageCounts[$id] ?? 0) + 1;
-            $uniqueId = $id . '_' . self::$internalIdUsageCounts[$id];
-            $uniqueIdList['#' . $id] = '#' . $uniqueId;
-            $idAttr->id = $uniqueId;
+            if (isset(self::$internalIdUsageCounts[$id])) {
+                $uniqueId = $id . '_' . (++self::$internalIdUsageCounts[$id]);
+                $uniqueIdList['#' . $id] = '#' . $uniqueId;
+                $idAttr->id = $uniqueId;
+            } else {
+                self::$internalIdUsageCounts[$id] = 1;
+            }
         }
         $svgContent = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
         return str_replace(array_keys($uniqueIdList), array_values($uniqueIdList), $svgContent);

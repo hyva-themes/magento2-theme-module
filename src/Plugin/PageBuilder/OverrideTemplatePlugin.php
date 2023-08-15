@@ -93,10 +93,6 @@ class OverrideTemplatePlugin
 
     private function unmaskAlpineAttributes(string $content): string
     {
-        foreach ($this->maskedAttributes as $mask => $orig) {
-            $content = str_replace($mask, $orig, $content);
-        }
-
-        return $content;
+        return str_replace(array_keys($this->maskedAttributes), array_values($this->maskedAttributes), $content);
     }
 }
