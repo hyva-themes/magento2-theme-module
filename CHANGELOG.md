@@ -7,7 +7,76 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.5...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.6...main
+
+## [1.2.6] - 2023-08-28
+
+[1.2.6]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.5...1.2.6
+
+### Added
+
+- **Add hyva.trapFocus() and hyva.releaseFocus() methods**
+
+  The `trapFocus` method causes keyboard tab navigation to iterate only over focusable elements inside the given root element.  
+
+  Please refer to the [documentation](https://docs.hyva.io/hyva-themes/writing-code/the-window-hyva-object.html#hyvatrapfocuselement-rootelement) for more information.
+
+### Changed
+
+- **Update Hero icon library from 0.4.2  to 1.0.6**
+
+  This is a backward-compatible upgrade.  
+
+  For more information, please refer to [issue #222](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/222).
+
+  Many thanks to Oleksandr Hasniuk (planeta-web.com.ua) for the contribution!
+
+- **Add product list item template name to product item cache key in ProductListItem view model**
+
+  Previously the parent block template was used, which made it impossible to use a different list item template for different uses.
+
+  For more information, please refer to [issue #296](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/296).
+
+- **Set product list item parent block**
+
+  Previously it was not possible to refer to the parent block from within the product list item template.
+
+  For more information, please refer to [issue #294](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/294).
+
+- **Add a missing quote to the exception thrown in the SVG icon view model**
+
+  Previously the phrase `Unable to find the SVG icon "%1` was used. This now was changed to `Unable to find the SVG icon "%1"`.  
+  This is a backward compatibility-breaking change, however, we do not believe it will have a wide impact.  
+  Be sure to update your localization CSV files if they contain a translation if they include this phrase.  
+  The `i18n/en_US.csv` translation file in `hyva-themes/magento2-default-theme` has also been updated to match this change in release 1.2.6.
+
+- **Ensure ID attributes inside of SVG icons are unique**
+
+  Previously, rendering an SVG icon with internal IDs multiple times on a page would cause duplicate ID warnings.  
+  Now, if an ID is used multiple times within separate SVGs, the ID value is changed to be unique each time the SVG is rendered.  
+  This only applies to SVG icons rendered with the SvgIcons view model.
+
+  For more information, please refer to [issue #275](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/275).
+
+  Many thanks to the development team at Fronius for the contribution!
+
+- **Fix private-content not being loaded on Mobile Safari on iOS**
+
+  This change fixes an annoying safari behavior change for pages cached in the local browser HTTP cache.
+
+  For more information, please refer to [issue #304](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/304).
+
+- **Use staging product link field for crosssell items on commerce**
+
+  This improves the fix introduced in 1.2.4.  
+
+  For more information, please refer to [merge request #369](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/369).
+
+  Many thanks to Sandra Kotowska from PHPro for the fix!
+
+### Removed
+
+- Nothing removed
 
 ## [1.2.5] - 2023-07-31
 
