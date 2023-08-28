@@ -255,8 +255,11 @@ class ProductList implements ArgumentInterface
 
     private function extractProductId($item)
     {
-        return $item->getProductId()
-            ?? $item->getData($this->getProductLinkField())
+        $linkField = $this->getProductLinkField();
+        $product = $item->getProduct();
+        return ($product ? $product->getData($linkField) : null)
+            ?? $item->getProductId()
+            ?? $item->getData($linkField)
             ?? $item->getId();
     }
 
