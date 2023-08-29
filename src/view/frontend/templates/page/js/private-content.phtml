@@ -113,7 +113,7 @@ use Magento\Framework\View\Element\Template;
             }
         }
 
-        window.addEventListener('load', loadSectionData);
+        window.addEventListener('alpine:initialized', loadSectionData);
         window.addEventListener('reload-customer-section-data', loadSectionData);
 
         function dispatchPrivateContent(data) {

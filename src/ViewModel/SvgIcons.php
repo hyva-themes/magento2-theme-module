@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Math\Random as MathRandom;
 use Magento\Framework\View\Asset;
 use Magento\Framework\View\DesignInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -76,7 +78,6 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
  */
 class SvgIcons implements ArgumentInterface
 {
-
     public const CACHE_TAG = 'HYVA_ICONS';
 
     /**
@@ -115,6 +116,14 @@ class SvgIcons implements ArgumentInterface
      */
     private $design;
 
+    /**
+     * Global counter for how many times SVG internal IDs is rendered.
+     *
+     * @var  int[]
+     * @see self::disambiguateSvgIds
+     */
+    private static $internalIdUsageCounts = [];
+
     public function __construct(
         Asset\Repository $assetRepository,
         CacheInterface $cache,
@@ -123,11 +132,11 @@ class SvgIcons implements ArgumentInterface
         string $iconSet = '',
         array $pathPrefixMapping = []
     ) {
-        $this->assetRepository   = $assetRepository;
-        $this->cache             = $cache;
-        $this->design            = $design;
-        $this->iconPathPrefix    = rtrim($iconPathPrefix, '/');
-        $this->iconSet           = $iconSet;
+        $this->assetRepository = $assetRepository;
+        $this->cache = $cache;
+        $this->design = $design;
+        $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
+        $this->iconSet = $iconSet;
         $this->pathPrefixMapping = $pathPrefixMapping;
     }
 
@@ -165,20 +174,41 @@ class SvgIcons implements ArgumentInterface
             '#' . hash('md5', json_encode($attributes));
 
         if ($result = $this->cache->load($cacheKey)) {
-            return $result;
+            return $this->withMaskedAlpineAttributes($result, [$this, 'disambiguateSvgIds']);
         }
 
         try {
             $rawIconSvg = \file_get_contents($this->getFilePath($iconPath)); // phpcs:disable
-            $result     = $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes, $icon);
+            $result = $this->withMaskedAlpineAttributes($rawIconSvg, function (string $rawIconSvg) use ($icon, $attributes, $height, $width, $classNames): string {
+                return $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes, $icon);
+            });
 
             $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
 
-            return $result;
+            return $this->withMaskedAlpineAttributes($result, [$this, 'disambiguateSvgIds']);
         } catch (Asset\File\NotFoundException $exception) {
-            $error = (string) __('Unable to find the SVG icon "%1', $icon);
+            $error = (string) __('Unable to find the SVG icon "%1"', $icon);
             throw new Asset\File\NotFoundException($error, 0, $exception);
         }
+    }
+
+    private function disambiguateSvgIds(string $svgContent): string
+    {
+        $svgXml = new \SimpleXMLElement($svgContent);
+        $idAttributes = $svgXml->xpath('/*/*//@id');
+        $uniqueIdList = [];
+        foreach ($idAttributes as $idAttr) {
+            $id = (string) $idAttr->id;
+            if (isset(self::$internalIdUsageCounts[$id])) {
+                $uniqueId = $id . '_' . (++self::$internalIdUsageCounts[$id]);
+                $uniqueIdList['#' . $id] = '#' . $uniqueId;
+                $idAttr->id = $uniqueId;
+            } else {
+                self::$internalIdUsageCounts[$id] = 1;
+            }
+        }
+        $svgContent = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
+        return str_replace(array_keys($uniqueIdList), array_values($uniqueIdList), $svgContent);
     }
 
     /**
@@ -225,7 +255,7 @@ class SvgIcons implements ArgumentInterface
 
     private function applyPathPrefixAndIconSet(string $icon): string
     {
-        $iconSet       = $this->iconSet ? $this->iconSet . '/' : '';
+        $iconSet = $this->iconSet ? $this->iconSet . '/' : '';
         $iconPathParts = explode('/', $icon, 2);
 
         return count($iconPathParts) === 2 && isset($this->pathPrefixMapping[$iconPathParts[0]])
@@ -282,5 +312,30 @@ class SvgIcons implements ArgumentInterface
     private function isAriaHidden($attributes): bool
     {
         return (array_key_exists('aria-hidden', $attributes) && $attributes['aria-hidden'] === true);
+    }
+
+    private function generateMaskString(array $otherMasks): string
+    {
+        $mathRandom = ObjectManager::getInstance()->get(MathRandom::class);
+        do {
+            $mask = $mathRandom->getRandomString(32, $mathRandom::CHARS_LOWERS);
+        } while (isset($otherMasks[$mask]));
+
+        return $mask;
+    }
+
+    private function withMaskedAlpineAttributes(string $content, callable $fn): string
+    {
+        $maskedAttributes = [];
+
+        while (preg_match('/<[a-zA-Z][^>]+?\s([@:][a-z][^=]*)=/', $content, $matches)) {
+            $mask = $this->generateMaskString($maskedAttributes);
+            $maskedAttributes[$mask] = $matches[1];
+            $content = str_replace($matches[1], $mask, $content);
+        }
+
+        $content = $fn($content);
+
+        return str_replace(array_keys($maskedAttributes), array_values($maskedAttributes), $content);
     }
 }

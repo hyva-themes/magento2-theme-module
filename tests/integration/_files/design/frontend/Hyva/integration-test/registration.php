@@ -8,4 +8,4 @@
 
 use \Magento\Framework\Component\ComponentRegistrar;
 
-ComponentRegistrar::register(ComponentRegistrar::THEME, 'frontend/Hyva/test', __DIR__);
+ComponentRegistrar::register(ComponentRegistrar::THEME, 'frontend/Hyva/integration-test', __DIR__);
