@@ -7,7 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.6...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.0...main
+
+## [1.3.0] - 2023-08-31
+
+[1.3.0]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.6...1.3.0
+
+### Added
+
+- **Added aria-live and aria-state to validation library**
+
+- **Add title child node and role="img" attribute to SVG icons if missing**
+
+- **Added ViewModel to render payment titles in order info if available**
+
+  The class `\Hyva\Theme\ViewModel\Sales\PaymentInfo` was added.
+
+- **Added ViewModel to format radio option price adjustments**
+
+  The class `\Hyva\Theme\ViewModel\Product\RadioPriceRenderer` was added.
+
+### Changed
+
+- Nothing changed
+
+### Removed
+
+- Nothing removed
 
 ## [1.2.6] - 2023-08-28
 
