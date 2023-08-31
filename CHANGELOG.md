@@ -21,11 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - **Added ViewModel to render payment titles in order info if available**
 
-  The class `\Hyva\Theme\ViewModel\Sales\PaymentInfo` was added.
+    The class `\Hyva\Theme\ViewModel\Sales\PaymentInfo` was added.
 
 - **Added ViewModel to format radio option price adjustments**
 
-  The class `\Hyva\Theme\ViewModel\Product\RadioPriceRenderer` was added.
+    The class `\Hyva\Theme\ViewModel\Product\RadioPriceRenderer` was added.
 
 ### Changed
 
