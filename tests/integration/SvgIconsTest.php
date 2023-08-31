@@ -89,14 +89,14 @@ class SvgIconsTest extends TestCase
                 'check',
                 'checkHtml',
                 <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>check</title></svg>
 SVG,
             ],
             'arrow-up' => [
                 'arrow-up',
                 'arrowUpHtml',
                 <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 10 7-7m0 0 7 7m-7-7v18"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 10 7-7m0 0 7 7m-7-7v18"/><title>arrow-up</title></svg>
 SVG,
             ],
         ];
@@ -134,9 +134,9 @@ SVG,
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $overriddenSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" role="img">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="5" d="M5 13l4 4L19 7"/>
-            </svg>
+            <title>check</title></svg>
             SVG;
         $this->createViewFile('Hyva_Theme/web/svg/heroicons/outline/check.svg', $overriddenSvg);
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -154,9 +154,9 @@ SVG,
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $svg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" role="img">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-            </svg>
+            <title>custom-icon</title></svg>
             SVG;
         $this->createViewFile('Hyva_Theme/web/svg/custom/custom-icon.svg', $svg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -174,9 +174,9 @@ SVG,
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $svg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" role="img">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-            </svg>
+            <title>custom-icon</title></svg>
             SVG;
         $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $svg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -199,7 +199,7 @@ SVG,
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="h-6 w-6" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="h-6 w-6" width="24" height="24" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>check</title></svg>
 SVG;
         $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('check', 'h-6 w-6')));
     }
@@ -212,9 +212,47 @@ SVG;
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>check</title></svg>
 SVG;
         $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('check', '', 16, 12)));
+    }
+
+    /**
+     * @test
+     */
+    public function adds_role_attribute()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>check</title></svg>
+SVG;
+        $expectedSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12" class="h-5 w-5" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>check</title></svg>
+SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $inputSvg);
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', 'h-5 w-5', 12, 12)));
+    }
+
+    /**
+     * @test
+     */
+    public function adds_title_node()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG;
+        $expectedSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>custom-icon</title></svg>
+SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $inputSvg);
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', '', 12, 12)));
     }
 
     /**
@@ -229,9 +267,9 @@ SVG;
 </svg>
 SVG;
         $expectedSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5" width="12" height="12">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5" width="12" height="12" role="img">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-</svg>
+<title>custom-icon</title></svg>
 SVG;
         $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $svg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -250,7 +288,7 @@ SVG;
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
         $svgIcons = $this->objectManager->get(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
         $expectedSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-red" width="16" height="12"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-red" width="16" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>check</title></svg>
 SVG;
         $this->assertEquals($expectedSvg, trim($svgIcons->checkHtml('text-red', 16, 12)));
     }
@@ -346,14 +384,14 @@ SVG;
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $idealSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="blue" class="" width="24" height="24">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="blue" class="" width="24" height="24" role="img">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-            </svg>
+            <title>payment-icons/dark/ideal</title></svg>
             SVG;
         $cartSvg = <<<'SVG'
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black" class="" width="24" height="24">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black" class="" width="24" height="24" role="img">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-            </svg>
+            <title>heroicons/solid/shopping-cart</title></svg>
             SVG;
         $this->createViewFile('Hyva_PaymentIcons/web/svg/dark/ideal.svg', $idealSvg);
         $this->createViewFile('web/svg/cart.svg', $cartSvg);
@@ -388,7 +426,7 @@ SVG;
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $testSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59" role="img">
     <defs>
         <linearGradient id="aaa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#2c4d9d"/>
@@ -398,7 +436,7 @@ SVG;
     </defs>
     <path d="M37.28,50.68a1.64," style="fill:url(#aaa)"/>
     <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
-</svg>
+<title>test</title></svg>
 SVG;
         $this->createViewFile('web/svg/test.svg', $testSvg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
@@ -413,7 +451,7 @@ SVG;
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $inputSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59" role="img">
     <defs>
         <linearGradient id="aaa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#2c4d9d"/>
@@ -423,7 +461,7 @@ SVG;
     </defs>
     <path d="M37.28,50.68a1.64," style="fill:url(#aaa)"/>
     <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
-</svg>
+<title>test</title></svg>
 SVG;
         $expectedSvg1 = $inputSvg;
         $expectedSvg2 = str_replace(['aaa', 'bbb'], ['aaa_2', 'bbb_2'], $inputSvg);
@@ -441,7 +479,7 @@ SVG;
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $inputSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59" role="img">
     <defs>
         <linearGradient id="aaa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#2c4d9d"/>
@@ -451,7 +489,7 @@ SVG;
     </defs>
     <path d="M37.28,50.68a1.64," style="fill:url(#aaa)"/>
     <path d="M71.45,29.54a6.63," style="fill:url(#bbb)"/>
-</svg>
+<title>test1</title></svg>
 SVG;
         $expectedSvg1 = $inputSvg;
         $expectedSvg2 = str_replace(['aaa', 'bbb'], ['aaa_2', 'bbb_2'], $inputSvg);
@@ -471,9 +509,9 @@ SVG;
     {
         $this->givenCurrentTheme('Hyva/integration-test');
         $inputSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" :class="{'hidden': true}" @click.window="open=true" width="500" height="500">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" :class="{'hidden': true}" @click.window="open=true" width="500" height="500" role="img">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
-</svg>
+<title>test</title></svg>
 SVG;
         $this->createViewFile('web/svg/test.svg', $inputSvg);
         /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
