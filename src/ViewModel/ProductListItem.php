@@ -71,14 +71,21 @@ class ProductListItem implements ArgumentInterface
             'zone'                  => Render::ZONE_ITEM_LIST,
         ];
 
+        return $this->getPriceRendererBlock()->render($priceType, $product, $arguments);
+    }
+
+    /**
+     * @return Render
+     */
+    private function getPriceRendererBlock()
+    {
         /** @var Render $priceRender */
         $priceRender = $this->layout->getBlock('product.price.render.default');
-        $price       = '';
-
-        if ($priceRender) {
-            $price = $priceRender->render($priceType, $product, $arguments);
-        }
-        return $price;
+        return $priceRender ?: $this->layout->createBlock(
+            Render::class,
+            'product.price.render.default',
+            ['data' => ['price_render_handle' => 'catalog_product_prices']]
+        );
     }
 
     private function getCurrencyCode(): string
