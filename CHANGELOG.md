@@ -7,7 +7,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.0...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.1...main
+
+## [1.3.1] - 2023-09-06
+
+[1.3.1]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.0...1.3.1
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Dispatch messages from cookie during alpine:initialize for Safari on iOS compatibility**
+
+    Previously a theoretical race condition on cached pages could cause messages not to show on Safari on iOS.
+
+    For more information please refer to [issue #309](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/309).
+
+- **Instantiate default product price renderer block if not present**
+
+    During custom Ajax requests that render a single block without loading the default layout, the price renderer block   
+    is not be instantiated. Previously this would cause no price to be rendered during such requests.
+
+    For more information please refer to [issue #240](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/240).
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.0] - 2023-08-31
 
