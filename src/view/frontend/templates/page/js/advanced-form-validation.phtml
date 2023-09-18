@@ -361,7 +361,7 @@ use Magento\Framework\View\Element\Template;
                     const field = this.fields[event.target.name];
 
                     this.validateField(field);
-                    field.element.removeAttribute('data-on-change')
+                    field && field.element.removeAttribute('data-on-change')
                 },
                 validateSafe() {
                     return new Promise(resolve => this.validate().then(() => resolve(true)).catch(() => {}))
