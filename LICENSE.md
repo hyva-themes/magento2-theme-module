@@ -38,6 +38,8 @@ You **may not** redistribute any part of the product, in any other form, either 
 1.2.3 The ownership of a license can be transferred once, and can be done by sending us an email with the license information and the new owner's contact data.  
 1.2.4 You can’t redistribute the Product as stock, in a tool, SaaS platform, as a template, or with source files. You can’t do this with a Product either on its own or bundled with other items, and even if you modify the Product. You can’t re-distribute or make available the Product as-is or with superficial modifications. These things are not allowed even if the redistribution is for Free.  
 
+> Please contact us if you have plans to use The Product in any way described above, so that we might discuss custom license arrangements
+
 ### 1.3 Refund
 
 1.3.1 A full refund may be requested within 30 days after the order was paid and access to the code has been granted.  
@@ -98,7 +100,4 @@ You **may not** redistribute any part of the product, in any other form, either 
 5.2 The Multi Year Support package gives you access to our Support Team via Slack as well as Software Updates for the duration of the package.  
 5.3 Multi Year Support Packages are non-refundable.  
 
-Please contact us if you have plans to use The Product in any way described above, so that we might discuss custom license arrangements
-
 Copyright © Hyvä Themes B.V. 2022-present. All rights reserved. 
-
