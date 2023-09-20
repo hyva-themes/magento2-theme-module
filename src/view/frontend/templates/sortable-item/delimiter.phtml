@@ -8,17 +8,13 @@
 
 declare(strict_types=1);
 
-use Hyva\Theme\Block\SortableLink;
+use Hyva\Theme\Block\SortableItem;
 use Magento\Framework\Escaper;
 
-/** @var SortableLink $block */
+/** @var SortableItem $block */
 /** @var Escaper $escaper */
-
-$label = $block->getLabel();
 ?>
 
-<?php if ($label): ?>
-    <span class="block px-4 py-2 lg:px-5 lg:py-2 font-bold text-xs">
-        <?= $escaper->escapeHtml($label) ?>
-    </span>
-<?php endif; ?>
+<span id="<?= $escaper->escapeHtmlAttr($block->getNameInLayout()) ?>"
+      class="delimiter block border-b border-container w-full my-2"
+></span>
