@@ -12,7 +12,7 @@ namespace Hyva\Theme\Block;
 
 use Magento\Framework\View\Element\AbstractBlock;
 
-class SortableLinks extends AbstractBlock
+class SortableItems extends AbstractBlock
 {
     protected function _toHtml(): string
     {
@@ -20,15 +20,18 @@ class SortableLinks extends AbstractBlock
         return empty($linkBlocks) ? '' : implode('', $linkBlocks);
     }
 
+    /**
+     * @return string[]
+     */
     private function getLinkBlocks(): array
     {
         $linkBlocks = $this->_layout->getChildBlocks($this->getNameInLayout());
         $sortableLinks = [];
         foreach ($linkBlocks as $linkBlock) {
-            if ($linkBlock instanceof SortableLinkInterface === false || $linkBlock->getSortOrder() === null) {
+            if ($linkBlock instanceof SortableItemInterface === false || $linkBlock->getSortOrder() === null) {
                 $linkBlock->setData(
-                    SortableLinkInterface::SORT_ORDER,
-                    SortableLinkInterface::SORT_ORDER_DEFAULT_VALUE
+                    SortableItemInterface::SORT_ORDER,
+                    SortableItemInterface::SORT_ORDER_DEFAULT_VALUE
                 );
             }
             $sortableLinks[$linkBlock->getSortOrder()] = $linkBlock->toHtml();
