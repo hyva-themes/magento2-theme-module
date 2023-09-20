@@ -16,28 +16,28 @@ class SortableItems extends AbstractBlock
 {
     protected function _toHtml(): string
     {
-        $linkBlocks = $this->getLinkBlocks();
-        return empty($linkBlocks) ? '' : implode('', $linkBlocks);
+        $sortedItems = $this->getSortedItems();
+        return empty($sortedItems) ? '' : implode('', $sortedItems);
     }
 
     /**
      * @return string[]
      */
-    private function getLinkBlocks(): array
+    private function getSortedItems(): array
     {
-        $linkBlocks = $this->_layout->getChildBlocks($this->getNameInLayout());
-        $sortableLinks = [];
-        foreach ($linkBlocks as $linkBlock) {
-            if ($linkBlock instanceof SortableItemInterface === false || $linkBlock->getSortOrder() === null) {
-                $linkBlock->setData(
+        $childBlocks = $this->_layout->getChildBlocks($this->getNameInLayout());
+        $sortedItems = [];
+        foreach ($childBlocks as $childBlock) {
+            if ($childBlock instanceof SortableItemInterface === false || $childBlock->getSortOrder() === null) {
+                $childBlock->setData(
                     SortableItemInterface::SORT_ORDER,
                     SortableItemInterface::SORT_ORDER_DEFAULT_VALUE
                 );
             }
-            $sortableLinks[$linkBlock->getSortOrder()] = $linkBlock->toHtml();
+            $sortedItems[$childBlock->getSortOrder()] = $childBlock->toHtml();
         }
 
-        ksort($sortableLinks);
-        return $sortableLinks;
+        ksort($sortedItems);
+        return $sortedItems;
     }
 }
