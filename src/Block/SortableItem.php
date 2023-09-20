@@ -12,7 +12,7 @@ namespace Hyva\Theme\Block;
 
 use Magento\Framework\View\Element\Template;
 
-class SortableLink extends Template implements SortableLinkInterface
+class SortableItem extends Template implements SortableItemInterface
 {
     public function getLabel(): string
     {

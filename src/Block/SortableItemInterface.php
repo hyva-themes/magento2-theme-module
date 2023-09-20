@@ -10,13 +10,13 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Block;
 
-interface SortableLinkInterface
+interface SortableItemInterface
 {
     public const LABEL = 'label';
     public const PATH = 'path';
     public const SORT_ORDER = 'sort_order';
     public const SORT_ORDER_DEFAULT_VALUE = 1000;
-    public const TEMPLATE = 'Hyva_Theme::sortable-link/default.phtml';
+    public const TEMPLATE = 'Hyva_Theme::sortable-item/link.phtml';
 
     public function getLabel(): string;
 

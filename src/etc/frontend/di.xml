@@ -66,7 +66,7 @@
     <preference for="Hyva\Theme\Model\Modal\ConfirmationBuilderInterface" type="Hyva\Theme\Model\Modal\ConfirmationBuilder"/>
     <preference for="Hyva\Theme\Model\Modal\ModalInterface" type="Hyva\Theme\Model\Modal\ModalBuilder"/>
 
-    <preference for="Hyva\Theme\Block\SortableLinkInterface" type="Hyva\Theme\Block\SortableLink"/>
+    <preference for="Hyva\Theme\Block\SortableItemInterface" type="Hyva\Theme\Block\SortableItem"/>
 
     <preference for="Magento\Framework\View\Model\Layout\Merge" type="Hyva\Theme\Framework\View\Model\Layout\Merge"/>
 
