@@ -1,0 +1,26 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Block\SortableItem;
+use Magento\Framework\Escaper;
+
+/** @var SortableItem $block */
+/** @var Escaper $escaper */
+
+$label = $block->getLabel();
+?>
+
+<?php if ($label): ?>
+    <span id="<?= $escaper->escapeHtmlAttr($block->getNameInLayout()) ?>"
+          class="block px-4 py-2 lg:px-5 lg:py-2 font-bold text-xs"
+    >
+        <?= $escaper->escapeHtml($label) ?>
+    </span>
+<?php endif; ?>
