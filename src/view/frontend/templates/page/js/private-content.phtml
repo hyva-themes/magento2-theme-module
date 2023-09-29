@@ -149,7 +149,7 @@ use Magento\Framework\View\Element\Template;
                                 const browserStorage = hyva.getBrowserStorage();
 
                                 // merge new data preserving non-invalidated sections
-                                const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}');
+                                const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}') || {};
 
 <?php
                                 /** Ensure no checkout data remains after logout (from Luma checkout) */
