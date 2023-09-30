@@ -7,7 +7,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.1...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.2...main
+
+## [1.3.2] - 2023-09-30
+
+[1.3.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.1...1.3.2
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Build account top menu form individual blocks instead of a hardcoded template**
+
+    This is a much-requested, although backward compatibility breaking, change. It allows items to be added to
+    the account top menu using layout XML without requiring a template override.  
+    In the past, this has often led to conflicting template overrides from third-party extensions.
+
+    Please refer to [merge request #378](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/378), 
+    or see the 1.3.2 upgrade notes for more information.
+
+- **Allow fields without rules have an `@input="onChange"` callback**
+
+    This is a fix for a regression introduced with release 1.3.0.
+
+    For more information please refer to [issue #314](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/314).
+
+- **Make section data cache handling more robust**
+
+    This change fixes a reported but unreproducible issue on Adobe Cloud installations.
+
+    For more information please refer to [issue #317](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/317).
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.1] - 2023-09-06
 
