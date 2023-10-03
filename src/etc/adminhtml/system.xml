@@ -98,6 +98,14 @@
                     </depends>
                 </field>
             </group>
+            <group id="crosssells_products" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Crosssell's Products</label>
+                <field id="limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Products Limit for Crosssell's list</label>
+                    <comment>(By default Product Limit is 4)</comment>
+                    <validate>integer no-whitespace</validate>
+                </field>
+            </group>
         </section>
 
         <section id="hyva_theme_general" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="15" translate="label">
