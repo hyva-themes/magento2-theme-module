@@ -52,7 +52,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
     private $maxCategoryCacheTags;
 
     /**
-     * Save Navigation cache so if used twice with the same settings resolve the same data 
+     * Save Navigation cache so if used twice with the same settings resolve the same data
      *
      * @var array
      */
@@ -73,7 +73,7 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     public function getNavigation($maxLevel = false)
     {
-        if (isset($this->requestLevelCache[$maxLevel])) {
+        if (array_key_exists($this->requestLevelCache[$maxLevel])) {
             return $this->requestLevelCache[$maxLevel];
         }
 
