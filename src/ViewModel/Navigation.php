@@ -58,7 +58,6 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     private $requestLevelCache = [];
 
-
     public function __construct(NavigationService $navigationService, int $maxCategoryCacheTags = 200)
     {
         $this->navigationService = $navigationService;
