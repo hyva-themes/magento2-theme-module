@@ -147,7 +147,6 @@ class ProductList implements ArgumentInterface
      */
     private $scopeConfig;
 
-
     /**
      * @var string|null
      */
@@ -214,7 +213,7 @@ class ProductList implements ArgumentInterface
         }
 
         $crossellsLimitConfig = $this->getCrosssellsLimit();
-        if($crossellsLimitConfig) {
+        if ($crossellsLimitConfig) {
             $this->maxCrosssellItemCount = $crossellsLimitConfig;
         }
 
@@ -483,7 +482,8 @@ class ProductList implements ArgumentInterface
         return $this;
     }
 
-    public function getCrosssellsLimit() {
+    public function getCrosssellsLimit() 
+    {
         return (int) $this->scopeConfig->getValue(self::XML_CROSSSELLS_PRODUCTS_LIMIT, ConfigScope::SCOPE_STORE);
     }
 
