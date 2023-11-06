@@ -284,6 +284,10 @@ class SvgIcons implements ArgumentInterface
 
         if (!empty($attributes)) {
             foreach ($attributes as $key => $value) {
+                if ($key === 'title') {
+                    continue;
+                }
+
                 if (!empty($key) && !isset($svgXml[strtolower($key)])) {
                     $svgXml[strtolower($key)] = (string) $value;
                 }
