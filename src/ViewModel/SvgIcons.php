@@ -311,7 +311,8 @@ class SvgIcons implements ArgumentInterface
 
     private function isAriaHidden($attributes): bool
     {
-        return (array_key_exists('aria-hidden', $attributes) && $attributes['aria-hidden'] === 'true');
+        return (array_key_exists('aria-hidden', $attributes) &&
+            ($attributes['aria-hidden'] === true || $attributes['aria-hidden'] === 'true'));
     }
 
     private function generateMaskString(array $otherMasks): string
