@@ -45,12 +45,7 @@ class Customer implements ArgumentInterface
         return (bool)$this->httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
     }
 
-    /**
-     * Get Customer by Customer ID
-     *
-     * @return CustomerInterface
-     */
-    private function getCustomerById(int $id)
+    private function getCustomerById(int $id): CustomerInterface
     {
         return $this->customerRepositoryInterface->getById($id);
     }
