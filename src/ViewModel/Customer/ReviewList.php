@@ -21,7 +21,6 @@ class ReviewList implements ArgumentInterface
      */
     protected $customerRepositoryInterface;
 
-
     public function __construct(
         CustomerRepositoryInterface $customerRepositoryInterface
     ) {
