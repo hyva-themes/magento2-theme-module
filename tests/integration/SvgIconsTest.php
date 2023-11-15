@@ -248,7 +248,7 @@ class SvgIconsTest extends TestCase
      */
     public function handles_boolean_attributes()
     {
-        $this->givenCurrentTheme('Hyva/integration-test');
+        $this->givenCurrentTheme('Hyva/test');
         $svg = <<<'SVG'
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
