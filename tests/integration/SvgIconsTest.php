@@ -246,6 +246,36 @@ class SvgIconsTest extends TestCase
     /**
      * @test
      */
+    public function handles_boolean_attributes()
+    {
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $svg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="" width="500" height="500">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+</svg>
+SVG;
+        $expectedSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5" width="12" height="12" foo="true" bar="true" baz="false" qux="false">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="10" d="M5 13l4 4L19 7"/>
+</svg>
+SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $svg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $this->assertEquals(
+            $expectedSvg,
+            trim($svgIcons->renderHtml('custom-icon', 'h-5 w-5', 12, 12, [
+                'foo' => 'true',
+                'bar' => true,
+                'baz' => 'false',
+                'qux' => false,
+            ]))
+        );
+    }
+
+    /**
+     * @test
+     */
     public function adds_classes_width_and_height_with_magic_method()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
