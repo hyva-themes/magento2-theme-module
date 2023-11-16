@@ -239,6 +239,30 @@ SVG;
     /**
      * @test
      */
+    public function can_process_boolean_attribute_values()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG;
+        $expectedSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12" role="img" foo="true" bar="true" baz="false" qux="false"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>custom-icon</title></svg>
+SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $inputSvg);
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', '', 12, 12, [
+            'foo' => true,
+            'bar' => 'true',
+            'baz' => false,
+            'qux' => 'false'
+        ])));
+    }
+
+    /**
+     * @test
+     */
     public function adds_title_node()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -253,6 +277,25 @@ SVG;
 SVG;
         $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $inputSvg);
         $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', '', 12, 12)));
+    }
+
+    /**
+     * @test
+     */
+    public function adds_custom_title_node()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG;
+        $expectedSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>Example</title></svg>
+SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $inputSvg);
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', '', 12, 12, ['title' => 'Example'])));
     }
 
     /**

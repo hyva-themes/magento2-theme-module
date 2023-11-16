@@ -284,14 +284,16 @@ class SvgIcons implements ArgumentInterface
 
         if (!empty($attributes)) {
             foreach ($attributes as $key => $value) {
-                if (!empty($key) && !isset($svgXml[strtolower($key)])) {
-                    $svgXml[strtolower($key)] = (string) $value;
+                if (!empty($key) && $key !== 'title' && !isset($svgXml[strtolower($key)])) {
+                    $svgXml[strtolower($key)] = is_bool($value)
+                        ? ($value ? 'true' : 'false')
+                        : (string) $value;
                 }
             }
         }
 
         if (!$this->isAriaHidden($attributes) && ! $this->hasTitle($svgXml)) {
-            $svgXml->addChild('title', $icon);
+            $svgXml->addChild('title', (string) ($attributes['title'] ?? $icon));
         }
 
         $xml = $svgXml->asXML();
