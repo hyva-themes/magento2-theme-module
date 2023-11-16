@@ -5,7 +5,7 @@
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
- 
+
 declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
@@ -20,9 +20,6 @@ class Customer implements ArgumentInterface
      */
     protected $httpContext;
 
-    /**
-     * @param HttpContext $httpContext
-     */
     public function __construct(
         HttpContext $httpContext
     ) {
