@@ -38,6 +38,8 @@ class ReviewList implements ArgumentInterface
     }
 
     /**
+     * Return map of customer IDs to emails for the given reviews.
+     *
      * @param Review[] $reviews
      * @return string[]
      */
@@ -50,14 +52,7 @@ class ReviewList implements ArgumentInterface
                 $customerIds[] = $customerId;
             }
         }
-        $customerIdsToEmails = $this->mapCustomerIdsToEmails($customerIds);
-
-        $reviewIdToEmails = [];
-        foreach ($reviews as $review) {
-            $reviewIdToEmails[$review->getId()] = $customerIdsToEmails[$review->getData('customer_id')];
-        }
-
-        return $reviewIdToEmails;
+        return $this->mapCustomerIdsToEmails($customerIds);
     }
 
     /**
@@ -72,16 +67,6 @@ class ReviewList implements ArgumentInterface
             $map[$customer->getId()] = $customer->getEmail();
             return $map;
         }, []);
-    }
-
-    public function getEmailByCustomerId(int $id): string
-    {
-        try {
-            $customer = $this->customerRepository->getById($id);
-            return $customer->getEmail();
-        } catch (NoSuchEntityException $e) {
-            return '';
-        }
     }
 
     /**

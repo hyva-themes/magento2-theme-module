@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme;
 
+use Magento\Review\Model\Review;
 use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
 
@@ -54,19 +55,11 @@ class CustomerViewModelsTest extends TestCase
     public function testReturnsEmailsForReviews(): void
     {
         $sut = ObjectManager::getInstance()->create(\Hyva\Theme\ViewModel\Customer\ReviewList::class);
+        /** @var Review $reviewFixture */
         $reviewFixture = ObjectManager::getInstance()->get(\Magento\Framework\Registry::class)->registry('review_data');
 
         $reviewToEmailMap = $sut->getCustomerEmailsForReviews([$reviewFixture]);
 
-        $this->assertSame([$reviewFixture->getId() => 'customer@example.com'], $reviewToEmailMap);
-    }
-
-    /**
-     * @magentoDataFixture Magento/Customer/_files/customer.php
-     */
-    public function testReturnsCustomerEmailById(): void
-    {
-        $sut = ObjectManager::getInstance()->create(\Hyva\Theme\ViewModel\Customer\ReviewList::class);
-        $this->assertSame('customer@example.com', $sut->getEmailByCustomerId(1));
+        $this->assertSame([$reviewFixture->getData('customer_id') => 'customer@example.com'], $reviewToEmailMap);
     }
 }
