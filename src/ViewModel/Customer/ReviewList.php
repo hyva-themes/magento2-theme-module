@@ -10,48 +10,78 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel\Customer;
 
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Magento\Review\Model\Review;
 
 class ReviewList implements ArgumentInterface
 {
     /**
      * @var CustomerRepositoryInterface
      */
-    protected $customerRepositoryInterface;
+    protected $customerRepository;
+
+    /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
 
     public function __construct(
-        CustomerRepositoryInterface $customerRepositoryInterface
+        CustomerRepositoryInterface $customerRepositoryInterface,
+        SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
-        $this->customerRepositoryInterface = $customerRepositoryInterface;
+        $this->customerRepository = $customerRepositoryInterface;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
-    public function getCustomerReviewEmailCollection(array $items): array
+    /**
+     * @param Review[] $reviews
+     * @return string[]
+     */
+    public function getCustomerEmailsForReviews(array $reviews): array
     {
-        $customerEmails = [];
+        $customerIds = [];
 
-        foreach ($items as $review) {
-            $customerId = (int) $review->getCustomerId();
-            if (!$customerId) {
-                continue;
+        foreach ($reviews as $review) {
+            if ($customerId = (int) $review->getData('customer_id')) {
+                $customerIds[] = $customerId;
             }
+        }
+        $customerIdsToEmails = $this->mapCustomerIdsToEmails($customerIds);
 
-            $customerEmails[$customerId] = $this->getEmailById($customerId);
+        $reviewIdToEmails = [];
+        foreach ($reviews as $review) {
+            $reviewIdToEmails[$review->getId()] = $customerIdsToEmails[$review->getData('customer_id')];
         }
 
-        return $customerEmails;
+        return $reviewIdToEmails;
     }
 
-    private function getCustomerById(int $id): CustomerInterface
+    /**
+     * @param int[] $customerIds
+     * @return CustomerInterface[]
+     */
+    private function mapCustomerIdsToEmails(array $customerIds): array
     {
-        return $this->customerRepositoryInterface->getById($id);
+        $this->searchCriteriaBuilder->addFilter('entity_id', $customerIds, 'in');
+        $customers = $this->customerRepository->getList($this->searchCriteriaBuilder->create())->getItems();
+        return array_reduce($customers, function (array $map, CustomerInterface $customer): array {
+            $map[$customer->getId()] = $customer->getEmail();
+            return $map;
+        }, []);
     }
 
-    public function getEmailById(int $id): string
+    public function getEmailByCustomerId(int $id): string
     {
-        $customer = $this->getCustomerById($id);
-        return $customer ? $customer->getEmail() : '';
+        try {
+            $customer = $this->customerRepository->getById($id);
+            return $customer->getEmail();
+        } catch (NoSuchEntityException $e) {
+            return '';
+        }
     }
 
     /**
