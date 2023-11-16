@@ -7,7 +7,55 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.2...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.3...main
+
+## [1.3.3] - 2023-11-16
+
+[1.3.3]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.2...1.3.3
+
+### Added
+
+- **Add method getCustomerEmailsForReviews to ReviewList view model**
+
+    This method is useful when rendering [Gravatars](https://gravatar.com/) for customer reviews.
+
+    For details, please refer to [issue #321](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/321).
+
+- **Allow custom titles for SVG icons**
+
+    Previously, the icon name was rendered as the title on SVG icons for accessibility purposes.  
+    Now a custom title can be specified to replace the default, by passing it as a title in the attributes argument: `['title' => 'Example']`.
+
+    For details, please refer to [issue #315](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/315).
+
+### Changed
+
+- **Fix: Properly render boolean value SVG attributes**
+
+    Previously, boolean attributes to SVG icons had to be specified as strings, for example `['aria-hidden' => 'true']`.  
+    Specifying the value as a boolean `true` or `false` failed. With this change, both string and boolean values work as expected.
+
+    For details, please refer to [merge request #387](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/387).
+
+    Many thanks Stephanie Ehrling (artplants.eu) for the contribution!
+
+- **Fix: Do not render SVG icon title if aria-hidden is 'true'**
+
+    Previously the title was only omitted if the aria-hidden value was specified as a boolean `true`.
+
+    For details, please refer to [merge request #388](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/388).
+
+    Many thanks Stephanie Ehrling (artplants.eu) for the contribution!
+
+- **Fix: Move SortableItemInterface preference into global scope**
+
+    This change resolves the issue "Error: Cannot instantiate interface Hyva\Theme\Block\SortableItemInterface" when editing CMS content in the admin.
+
+    For details, please refer to [merge request #391](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/391).
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.2] - 2023-09-30
 
