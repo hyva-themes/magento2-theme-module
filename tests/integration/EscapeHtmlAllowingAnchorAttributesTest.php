@@ -13,6 +13,8 @@ namespace Hyva\Theme;
 use Hyva\Theme\ViewModel\Escaper\EscapeHtmlAllowingAnchorAttributes;
 use PHPUnit\Framework\TestCase;
 
+// phpcs:disable Generic.Files.LineLength.TooLong
+
 /**
  * @covers \Hyva\Theme\ViewModel\Escaper\EscapeHtmlAllowingAnchorAttributes
  */
