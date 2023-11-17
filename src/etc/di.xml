@@ -68,4 +68,6 @@
         </arguments>
     </type>
 
+    <preference for="Hyva\Theme\Block\SortableItemInterface" type="Hyva\Theme\Block\SortableItem"/>
+
 </config>
