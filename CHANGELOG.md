@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
     For details, please refer to [merge request #387](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/387).
 
-    Many thanks Stephanie Ehrling (artplants.eu) for the contribution!
+    Many thanks Stephanie Ehrling (ECOPLAN) for the contribution!
 
 - **Fix: Do not render SVG icon title if aria-hidden is 'true'**
 
@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
     For details, please refer to [merge request #388](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/388).
 
-    Many thanks Stephanie Ehrling (artplants.eu) for the contribution!
+    Many thanks Stephanie Ehrling (ECOPLAN) for the contribution!
 
 - **Fix: Move SortableItemInterface preference into global scope**
 
