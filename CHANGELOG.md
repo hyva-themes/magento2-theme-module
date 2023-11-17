@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   For details, please refer to [merge request #393](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/393).
 
-  Many thanks Stephanie Ehrling (artplants.eu) for the contribution!
+  Many thanks Stephanie Ehrling (ECOPLAN) for the contribution!
 
 ### Removed
 
