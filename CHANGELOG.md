@@ -7,7 +7,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.6...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.6...1.2.x-main
+
+## [1.2.7] - 2023-11-17
+
+[1.2.7]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.6...1.2.7
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Build account top menu form individual blocks instead of a hardcoded template**
+
+  This change was released for the main branch as part of 1.3.2.
+
+  This is a much-requested, although backward compatibility breaking, change. It allows items to be added to
+  the account top menu using layout XML without requiring a template override.  
+  In the past, this has often led to conflicting template overrides from third-party extensions.
+
+  Please refer to [merge request #392](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/392),
+  or see the 1.2.7 upgrade notes for more information.
+
+- **Fix: Properly render boolean value SVG attributes**
+
+  Previously, boolean attributes to SVG icons had to be specified as strings, for example `['aria-hidden' => 'true']`.  
+  Specifying the value as a boolean `true` or `false` failed. With this change, both string and boolean values work as expected.
+
+  For details, please refer to [merge request #393](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/393).
+
+  Many thanks Stephanie Ehrling (artplants.eu) for the contribution!
+
+### Removed
 
 ## [1.2.6] - 2023-08-28
 
