@@ -67,8 +67,7 @@ declare(strict_types=1);
         }
 
         window.addEventListener('DOMContentLoaded', hyva.initFormKey);
-        window.addEventListener('alpine:initialized', hyva.initMessages);
-
+        hyva.alpineInitialized(hyva.initMessages)
 
     }( window.hyva = window.hyva || {} ));
 </script>
