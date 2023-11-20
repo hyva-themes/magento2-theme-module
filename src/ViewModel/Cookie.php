@@ -78,4 +78,9 @@ class Cookie implements ArgumentInterface
     {
         return $this->sessionConfig->getCookieLifetime();
     }
+
+    public function getCookieSecure(): bool
+    {
+        return (bool) $this->sessionConfig->getCookieSecure();
+    }
 }
