@@ -41,7 +41,7 @@ $cookieRestriction = $cookieHelper->isCookieRestrictionModeEnabled();
         "expires": null,
         "path": "<?= $escaper->escapeJs($cookieViewModel->getPath()) ?>",
         "domain": "<?= $escaper->escapeJs($cookieViewModel->getDomain()) ?>",
-        "secure": false,
+        "secure": <?= $cookieViewModel->getCookieSecure() ? 'true' : 'false' ?>,
         "lifetime": "<?= $escaper->escapeJs($cookieViewModel->getLifetime()) ?>",
         "cookie_restriction_enabled": <?= /* @noEscape */ $cookieRestriction ? 'true' : 'false'?>
     };
