@@ -11,6 +11,7 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
 use Hyva\Theme\ViewModel\StoreConfig;
+use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
 use Magento\Cookie\Helper\Cookie;
 use Magento\Framework\Escaper;
 
@@ -20,6 +21,7 @@ use Magento\Framework\Escaper;
 $currencyViewModel = $viewModels->require(Currency::class);
 $storeConfig = $viewModels->require(StoreConfig::class);
 $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/code'));
+$alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionIdFor('alpine') ?? 2;
 
 ?>
 <script>
@@ -388,6 +390,17 @@ $jsLocale = str_replace('_', '-', $storeConfig->getStoreConfig('general/locale/c
             firstElement && firstElement.focus()
         }
 
+        <?php if ((int) $alpineVersion === 2): ?>
+        hyva.alpineInitialized = (fn) => {
+            const initAlpine = window.deferLoadingAlpine || ((callback) => callback())
+            window.deferLoadingAlpine = (callback) => {
+                initAlpine(callback)
+                Promise.resolve().then(() => fn())
+            }
+        }
+        <?php else: /* Alpine >= v3 */ ?>
+        hyva.alpineInitialized = (fn) => window.addEventListener('alpine:initialized', fn, {once: true})
+        <?php endif; ?>
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
 
     }( window.hyva = window.hyva || {} ));
