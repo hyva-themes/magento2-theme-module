@@ -57,7 +57,7 @@ class ReviewList implements ArgumentInterface
 
     /**
      * @param int[] $customerIds
-     * @return CustomerInterface[]
+     * @return string[]
      */
     private function mapCustomerIdsToEmails(array $customerIds): array
     {
