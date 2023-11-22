@@ -7,7 +7,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.6...1.2.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.8...1.2.x-main
+
+## [1.2.8] - 2023-11-22
+
+[1.2.8]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.7...1.2.8
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Restore Alpine.js v2 compatibility**
+
+  The `hyva-themes/magento2-theme-module` has been incompatible with themes using Alpine v2 since release 1.2.6.
+
+  For more details, please refer to merge request [#405](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/405).
+
+- **Fix etc/module.xml sequence tags**
+
+  Previously the module sequence was declared in a way that it did not have any effect.
+
+  For details, please refer to [issue #323](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/323).
+
+- **Apply cookie_secure setting instead of hardcoding to false**
+
+  Previously the cookie_secure value was hardcoded to false instead of using the value set for PHP.
+
+  For details, please refer to [issue #322](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/322).
+
+### Removed
+
+- Nothing removed
 
 ## [1.2.7] - 2023-11-17
 
