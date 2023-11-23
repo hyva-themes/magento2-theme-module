@@ -160,17 +160,18 @@ use Magento\Framework\View\Element\Template;
             });
         }
 
+        const INPUT_ATTRIBUTE_RULES = {min: 'min', max: 'max', required: 'required', minlength: 'minlength', maxlength: 'maxlength', step: 'step', pattern: 'pattern'}
+        const INPUT_TYPE_RULES = {email: 'email'}
+
         function getRules(element) {
             let rules = {};
-            const BROWSER_ATTRS = ['min', 'max', 'required', 'minlength', 'maxlength', 'step', 'pattern'];
-            const DEFAULT_TYPES = ['email'];
-            BROWSER_ATTRS.forEach(attrName => {
+            Object.keys(INPUT_ATTRIBUTE_RULES).forEach(attrName => {
                 if (element.hasAttribute(attrName)) {
-                    rules[attrName] = element.getAttribute(attrName);
+                    rules[INPUT_ATTRIBUTE_RULES[attrName]] = element.getAttribute(attrName);
                 }
             })
-            if (DEFAULT_TYPES.includes(element.type)) {
-                rules[element.type] = true;
+            if (INPUT_TYPE_RULES[element.type]) {
+                rules[INPUT_TYPE_RULES[element.type]] = true;
             }
 
             if (element.dataset.validate) {
@@ -562,9 +563,9 @@ use Magento\Framework\View\Element\Template;
 
         hyva.formValidation = formValidation;
         hyva.formValidation.rules = formValidationRules;
-        hyva.formValidation.addRule = (name, validator) => {
-            formValidationRules[name] = validator;
-        }
+        hyva.formValidation.setInputAttributeRuleName = (attrName, ruleName) => INPUT_ATTRIBUTE_RULES[attrName] = ruleName || attrName;
+        hyva.formValidation.setInputTypeRuleName = (typeName, ruleName) => INPUT_TYPE_RULES[typeName] = ruleName || typeName;
+        hyva.formValidation.addRule = (name, validator) => formValidationRules[name] = validator;
     }(window.hyva = window.hyva || {}));
 </script>
 
