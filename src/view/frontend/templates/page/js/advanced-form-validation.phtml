@@ -319,6 +319,7 @@ use Magento\Framework\View\Element\Template;
                     });
                 },
                 setupField(element) {
+                    if (! element) return;
                     const onChange = !!element.dataset.onChange;
                     if (elementWillValidate(element)) {
                         const rules = getRules(element);
