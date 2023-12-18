@@ -30,10 +30,10 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
         function lifetimeToExpires(options, defaults) {
 
-            var lifetime = options.lifetime || defaults.lifetime;
+            const lifetime = options.lifetime || defaults.lifetime;
 
             if (lifetime) {
-                var date = new Date;
+                const date = new Date;
                 date.setTime(date.getTime() + lifetime * 1000);
                 return date;
             }
@@ -49,12 +49,14 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             let formKey = '',
                 charactersLength = allowedCharacters.length;
 
-            for (var i = 0; i < length; i++) {
+            for (let i = 0; i < length; i++) {
                 formKey += allowedCharacters[Math.round(Math.random() * (charactersLength - 1))]
             }
 
             return formKey;
         }
+
+        const sessionCookieMarker = {noLifetime: true}
 
         const cookieTempStorage = {};
 
@@ -81,7 +83,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
                 const cookieConfig = window.COOKIE_CONFIG || {};
 
-                expires = days
+                expires = days && days !== sessionCookieMarker
                     ? lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultCookieConfig)
                     : lifetimeToExpires(window.COOKIE_CONFIG, defaultCookieConfig) || defaultCookieConfig.expires;
 
@@ -91,7 +93,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                 samesite = cookieConfig.samesite || defaultCookieConfig.samesite;
 
                 document.cookie = name + "=" + encodeURIComponent(value) +
-                    (expires ? '; expires=' + expires.toGMTString() : '') +
+                    (expires && days !== sessionCookieMarker ? '; expires=' + expires.toGMTString() : '') +
                     (path ? '; path=' + path : '') +
                     (domain ? '; domain=' + domain : '') +
                     (secure ? '; secure' : '') +
@@ -154,6 +156,11 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             return internalCookie.set(name, value, days, skipSetDomain);
         }
 
+
+        hyva.setSessionCookie = (name, value, skipSetDomain) => {
+            return hyva.setCookie(name, value, sessionCookieMarker, skipSetDomain)
+        }
+
         hyva.getBrowserStorage = () => {
             const browserStorage = window.localStorage || window.sessionStorage;
             if (!browserStorage) {
@@ -161,7 +168,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                 return false;
             }
             try {
-                browserStorage.setItem('storage_test', 1);
+                browserStorage.setItem('storage_test', '1');
                 browserStorage.removeItem('storage_test');
             } catch (error) {
                 console.warn('Browser Storage is not accessible', error);
@@ -212,7 +219,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
         }
 
         hyva.formatPrice = (value, showSign) => {
-            var formatter = new Intl.NumberFormat(
+            const formatter = new Intl.NumberFormat(
                 '<?= $escaper->escapeJs($jsLocale) ?>',
                 {
                     style: 'currency',
