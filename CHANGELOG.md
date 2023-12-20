@@ -7,7 +7,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.4...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.5...main
+
+## [1.3.5] - 2023-12-20
+
+[1.3.5]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.4...1.3.5
+
+### Added
+
+- **Add method hyva.setSessionCookie**
+
+  The method was added because `hyva.setCookie` does not allow setting a cookie with Session duration if a default cookie lifetime is configured.
+
+  For details, please refer to [issue #313](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/313).
+
+- **Add feature for showing HTML form validation messages**
+
+  Previously all form validation messages were rendered as text. By returning a JS object with a `type` and a `content`
+  property from the form validation rule it will render the HTML without escaping it:  
+  `{ type: 'html', content '<a href="">click me</a>"' }
+
+  For details, please refer to [merge request #413](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/413).
+
+- **Allow adding input type or attribute-based form validation rules**
+
+  This change allows hooking into default INPUT types (e.g. `url`) and browser attributes (e.g. `accept` for allowed file extensions) and associate form validation rules that way.
+
+  For details, please refer to [merge request #410](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/410).
+
+- **Add aria-expanded attribute state to modal trigger**
+
+  Previously it was not possible to specify the element to focus after a modal was closed, if the element was outside of the modal component, or if the modal
+  was opened by triggering a custom event.
+
+  When opening a modal by calling the `show()` method, the element to focus after it is closed can be specified as a selector string argument, e.g. `@some-event.window="show('#some-trigger')"`.  
+  When opening a modal with an `hyva-modal-show` event, the element to focus after it is closed can be specified as an argument in the event details: `{detail: {name: 'my-dialog', focusAfterHide: '#some-trigger'}}`  
+  When rendering the JS to open the modal with the modal view model in PHP, the element selector can be specified as an argument to `getShowJs`: `@click="<?= $modal->getShowJs('#some-trigger') ?>"`
+
+  For details, please refer to [merge request #381](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/381).
+
+### Changed
+
+- Nothing changed
+
+### Removed
+
+- Nothing removed
+
 
 ## [1.3.4] - 2023-11-21
 
