@@ -190,7 +190,7 @@ use Magento\Framework\View\Element\Template;
         }
 
         function isInvalidRuleResult(ruleState) {
-            return typeof ruleState === 'string' || !ruleState;
+            return typeof ruleState === 'string' || !ruleState || (ruleState.type && ruleState.content);
         }
 
         async function runValidateFn(rule, options, value, field) {
@@ -278,6 +278,12 @@ use Magento\Framework\View\Element\Template;
             const name = field.element.name.replace(/([\\"])/g, '\\$1');
             const elements = field.element.form.querySelectorAll('input[name="' + name + '"]:checked');
             return Array.from(elements).map(el => el.value);
+        }
+
+        function escapeHtml(s) {
+            const div = document.createElement('div')
+            div.innerText = s;
+            return div.innerHTML;
         }
 
         <?php
@@ -449,6 +455,7 @@ use Magento\Framework\View\Element\Template;
                         })
                     });
                 },
+                <?php /* Each message is either a String or an Object {type: 'html'|'text', content: String} */ ?>
                 getMessagesByField(field) {
                     const messages = [];
                     const invalidRules = Object.keys(field.state.rules).filter(rule => isInvalidRuleResult(field.state.rules[rule]));
@@ -459,13 +466,15 @@ use Magento\Framework\View\Element\Template;
                             const message = customMessage ? customMessage : field.state.rules[rule];
                             const ruleOptions = JSON.parse(JSON.stringify(field.rules[rule]));
 
-                            if (typeof message !== 'string') {
+                            if (typeof message === 'undefined' || message === null || (typeof message !== 'string' && ! message.type)) {
                                 messages.push(hyva.strf('Validation rule "%0" failed.', rule));
                             } else if (Array.isArray(ruleOptions)) {
-                                ruleOptions.unshift(message);
-                                messages.push(hyva.strf.apply(null, ruleOptions));
+                                ruleOptions.unshift(message.type ? message.content : message);
+                                const content = hyva.strf.apply(null, ruleOptions);
+                                messages.push(message.type ? {type: message.type, content} : content);
                             } else {
-                                messages.push(hyva.strf(message, ruleOptions));
+                                const content = hyva.strf(message.type ? message.content : message, ruleOptions)
+                                messages.push(message.type ? {type: message.type, content} : content);
                             }
                         }
                     });
@@ -493,10 +502,13 @@ use Magento\Framework\View\Element\Template;
                 },
                 showFieldState(field) {
                     const container = this.getMessageContainer(field),
-                        hasErrorMessages = hasMessagesWrapper.call(this, field, options.messagesWrapperClassName);
+                        hasErrorMessages = hasMessagesWrapper.call(this, field, options.messagesWrapperClassName),
+                        messages = this.getMessagesByField(field).map(m => {
+                            return m.type !== 'html' ? escapeHtml(m.type ? m.content : m) : m.content;
+                        });
                     container.classList.toggle(options.validClassName, field.state.valid && ! hasErrorMessages);
                     container.classList.toggle(options.invalidClassName, !field.state.valid || hasErrorMessages);
-                    this.createErrorMessage(field, this.getMessagesByField(field));
+                    this.createHtmlErrorMessage(field, messages);
 
                     if (field.state.valid) {
                         field.element.removeAttribute('aria-invalid');
@@ -522,12 +534,16 @@ use Magento\Framework\View\Element\Template;
                     }
                 },
                 createErrorMessage(field, messages) {
+                    const htmlMessages = (Array.isArray(messages) ? messages : [messages]).map(escapeHtml)
+                    this.createHtmlErrorMessage(field, htmlMessages);
+                },
+                createHtmlErrorMessage(field, messages) {
                     this.removeMessages(field, options.messagesWrapperClassName);
                     field.element.removeAttribute('aria-errormessage');
                     field.element.removeAttribute('aria-describedby');
 
                     if (!field.state.valid) {
-                        const msgWrapper = this.addMessages(field, options.messagesWrapperClassName, messages);
+                        const msgWrapper = this.addHtmlMessages(field, options.messagesWrapperClassName, messages);
                         field.element.setAttribute('aria-errormessage', msgWrapper.id);
                         field.element.setAttribute('aria-describedby', msgWrapper.id);
                     }
@@ -538,11 +554,15 @@ use Magento\Framework\View\Element\Template;
                     return this.addMessages(field, options.messagesWrapperClassName, message);
                 },
                 addMessages(field, messagesClass, messages) {
+                    const htmlMessages = (Array.isArray(messages) ? messages : [messages]).map(escapeHtml)
+                    return this.addHtmlMessages(field, messagesClass, htmlMessages);
+                },
+                addHtmlMessages(field, messagesClass, htmlMessages) {
                     const msgWrapper = getMessagesWrapper.call(this, field, messagesClass);
 
-                    (Array.isArray(messages) ? messages : [messages]).forEach((message) => {
+                    (Array.isArray(htmlMessages) ? htmlMessages : [htmlMessages]).forEach((htmlMessage) => {
                         const li = document.createElement('li');
-                        li.innerText = message;
+                        li.innerHTML = htmlMessage;
                         li.setAttribute('data-msg-field', field.element.name);
                         msgWrapper.appendChild(li);
                     });
