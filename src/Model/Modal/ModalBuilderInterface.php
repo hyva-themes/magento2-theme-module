@@ -74,5 +74,5 @@ interface ModalBuilderInterface
 
     public function withContent(string $content): ModalBuilderInterface;
 
-    public function getShowJs(): string;
+    public function getShowJs(?string $focusAfterHide = null): string;
 }

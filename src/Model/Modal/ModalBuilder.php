@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Model\Modal;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\BlockInterface;
 use Magento\Framework\View\Element\Template as TemplateBlock;
 use Magento\Framework\View\LayoutInterface;
@@ -78,10 +80,16 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
      */
     private $memoizedRenderer;
 
-    public function __construct(LayoutInterface $layout, array $data = null)
+    /**
+     * @var Escaper
+     */
+    private $escaper;
+
+    public function __construct(LayoutInterface $layout, array $data = null, Escaper $escaper = null)
     {
-        $this->layout = $layout;
-        $this->data   = merge($this->defaults, $this->data, $data);
+        $this->layout  = $layout;
+        $this->escaper = $escaper ?? ObjectManager::getInstance()->get(Escaper::class);
+        $this->data    = merge($this->defaults, $this->data, $data);
     }
 
     // --- modal builder interface methods ---
@@ -258,9 +266,9 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData('content', $content);
     }
 
-    public function getShowJs(): string
+    public function getShowJs(?string $focusAfterHide = null): string
     {
-        return sprintf("show('%s', \$event)", $this->getDialogRefName());
+        return sprintf("show('%s', %s)", $this->getDialogRefName(), $focusAfterHide ? "'" . $this->escaper->escapeJs($focusAfterHide) . "'" : '$event');
     }
 
     // --- modal interface methods ---

@@ -149,13 +149,19 @@ $deployMode = $viewModels->require(DeployMode::class);
             if (typeof dialog === 'string' && typeof trigger === 'object' && trigger.target && trigger.target.focus) {
                 return trigger.target;
             }
-            <?php /* if show('name', 'trigger') was called with the ref name of the trigger element use that as the trigger */ ?>
-            if (typeof trigger === 'string' && $refs[trigger]) {
-                return $refs[trigger];
-            } else {
-                <?php /* unknown trigger - no focus will be set when the dialog is hidden */ ?>
-                return null;
+            <?php /* if show('name', 'trigger') was called with the ref name pr selector of the trigger element */ ?>
+            if (typeof trigger === 'string') {
+                try {
+                    return $refs[trigger] || document.querySelector(trigger)
+                } catch (e) {<?php /* Intentionally left empty because we don't know if trigger is intended as a valid selector string */ ?>}
             }
+            <?php /* if show('name', document.querySelector('...')) was called, use that as the trigger */ ?>
+            if (trigger instanceof Element) {
+                return trigger;
+            }
+
+            <?php /* unknown trigger - no focus will be set when the dialog is hidden */ ?>
+            return null;
         }
 
         function isOverlayDisabled(dialog) {
@@ -204,6 +210,10 @@ $deployMode = $viewModels->require(DeployMode::class);
                         return;
                     }
 
+                    if (focusTargetAfterHide) {
+                        focusTargetAfterHide.setAttribute('aria-expanded', 'true');
+                    }
+
                     this.opened[name] = true;
                     useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
                     setFocusAfterTransition(dialogElement, config.duration);
@@ -240,7 +250,10 @@ $deployMode = $viewModels->require(DeployMode::class);
                     trapFocusInNextModalWithOverlay();
 
                     const nextFocusAfterHide = modal.focusTarget;
-                    nextFocusAfterHide && this.$nextTick(() => nextFocusAfterHide.focus());
+                    nextFocusAfterHide && setTimeout(() => {
+                        nextFocusAfterHide.setAttribute('aria-expanded', 'false');
+                        nextFocusAfterHide.focus()
+                    }, config.duration);
 
                     if (modals.length === 0 || areRemainingModalsWithoutOverlay(modals)) {
                         document.body.classList.remove('overflow-hidden');
@@ -261,7 +274,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                         ['x-transition:leave-start']: config.transitionLeaveStart,
                         ['x-transition:leave-end']: config.transitionLeaveEnd,
                         ['@hyva-modal-show.window'](event) {
-                            event.detail && event.detail.dialog === name && this.show(name)
+                            event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide)
                         }
                     };
                 }
