@@ -309,6 +309,7 @@ use Magento\Framework\View\Element\Template;
                     });
                 },
                 setupField(element) {
+                    if (! element) return;
                     if (elementWillValidate(element)) {
                         const rules = getRules(element);
                         if (Object.keys(rules).length > 0) {
