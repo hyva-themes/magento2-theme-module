@@ -7,7 +7,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.8...1.2.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.9...1.2.x-main
+
+## [1.2.9] - 2023-12-21
+
+[1.2.9]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.2.8...1.2.9
+
+### Added
+
+- **Add method hyva.setSessionCookie**
+
+  The method was added because `hyva.setCookie` does not allow setting a cookie with Session duration if a default cookie lifetime is configured.
+
+  For details, please refer to [merge request #420](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/420).
+
+- **Add feature for showing HTML form validation messages**
+
+  Previously all form validation messages were rendered as text. By returning a JS object with a `type` and a `content`
+  property from the form validation rule it will render the HTML without escaping it:  
+  `{ type: 'html', content '<a href="">click me</a>"' }
+
+  For details, please refer to [merge request #418](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/418).
+
+- **Allow adding input type or attribute-based form validation rules**
+
+  This change allows hooking into default INPUT types (e.g. `url`) and browser attributes (e.g. `accept` for allowed file extensions) and associate form validation rules that way.
+
+  For details, please refer to [merge request #419](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/419).
+
+### Changed
+
+- Nothing changed
+
+### Removed
+
+- Nothing removed
 
 ## [1.2.8] - 2023-11-22
 
