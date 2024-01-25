@@ -76,8 +76,9 @@ use Magento\Framework\View\Element\Template;
                 field.element.setAttribute('step', options);
                 field.element.checkValidity();
                 if (field.element.validity.stepMismatch) {
-                    const val = Number(options);
-                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter a valid value. The two nearest valid values are "%0" and "%1".')) ?>', Math.floor(val), Math.ceil(val));
+                    const val = Number(value);
+                    const step = Number(options);
+                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter a valid value. The two nearest valid values are "%0" and "%1".')) ?>', Math.floor((val) / step ) * step, Math.ceil((val) / step ) * step);
                 }
                 return true;
             },
