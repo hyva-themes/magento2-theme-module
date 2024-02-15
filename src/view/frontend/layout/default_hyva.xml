@@ -24,6 +24,8 @@
             <block name="form-submit.set-uenc" template="Hyva_Theme::page/js/set-uenc.phtml"/>
             <block name="require-alpine-v3" template="Hyva_Theme::page/js/require-min-alpine-version.phtml"/>
             <block name="init.external.scripts" template="Hyva_Theme::page/js/init-external-scripts.phtml"/>
+            <block name="page-js-dependencies" template="Hyva_Theme::page/page-js-dependencies.phtml"/>
         </referenceContainer>
+
     </body>
 </page>
