@@ -66,9 +66,10 @@ class IconProcessor implements ProcessorInterface
         $classes = $parameters['classes'] ?? '';
         $width = isset($parameters['width']) ? (int)$parameters['width'] : null;
         $height = isset($parameters['height']) ? (int)$parameters['height'] : null;
+        $title = $parameters['title'] ?? null;
 
         try {
-            return $this->svgIcons->renderHtml($path, $classes, $width, $height);
+            return $this->svgIcons->renderHtml($path, $classes, $width, $height, ['title' => $title]);
         } catch (NotFoundException $error) {
             // if source file not found -> remove the directive code
             return '';
