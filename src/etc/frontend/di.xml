@@ -76,4 +76,12 @@
     <type name="Magento\Catalog\Helper\Product\View">
         <plugin name="update_canonical_page_param_product_review" type="Hyva\Theme\Plugin\Catalog\Helper\Product\ProductReviewPaginationCanonicalUrlFixPlugin" />
     </type>
+
+    <type name="Hyva\Theme\ViewModel\CustomerSectionData">
+        <arguments>
+            <argument name="defaultSectionDataKeys" xsi:type="array">
+                <item name="directory-data" xsi:type="boolean">true</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
