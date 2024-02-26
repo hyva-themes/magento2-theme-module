@@ -76,4 +76,8 @@
     <type name="Magento\Catalog\Helper\Product\View">
         <plugin name="update_canonical_page_param_product_review" type="Hyva\Theme\Plugin\Catalog\Helper\Product\ProductReviewPaginationCanonicalUrlFixPlugin" />
     </type>
+
+    <type name="Magento\Customer\Controller\Ajax\Login">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin"/>
+    </type>
 </config>
