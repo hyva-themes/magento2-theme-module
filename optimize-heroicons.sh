@@ -14,9 +14,8 @@ function modify_svg_files() {
       # Read file content
       content=$(cat "$file")
 
-      # Replace target string using string manipulation
-      new_content="${content//stroke=\"#111827\" }"
-      new_content="${new_content//}"
+      # Replace target string only (without any additional characters)
+      new_content="${content//stroke=\"#111827\" /}"
 
       # Write modified content back to the file
       echo "$new_content" > "$file"
