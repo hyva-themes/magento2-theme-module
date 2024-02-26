@@ -30,86 +30,19 @@ $deployMode = $viewModels->require(DeployMode::class);
         const modals = [];
         const excludedFromFocusTrapping = new Set();
 
-        function loadInertPolyfill(callback) {
-            <?php /* Undocumented "feature", should not be used unless inert attribute support is guaranteed */ ?>
-            if (window.hyva.modal.disableInertPolyfill) {
-                callback && callback();
-            } else {
-                const polyfill = document.createElement('script');
-                polyfill.src = '<?= $escaper->escapeJs($escaper->escapeUrl($block->getViewFileUrl('Hyva_Theme/js/wicg-inert-3.1.1/inert.min.js'))) ?>';
-                callback && polyfill.addEventListener('load', callback);
-                const firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(polyfill, firstScriptTag);
-            }
-        }
-
-        let isInertPolyfillLoaded = 0;
-        function setSiblingsInert(dialogElement, toState) {
-            if (isInertPolyfillLoaded === 0) {
-                isInertPolyfillLoaded = 1;
-                loadInertPolyfill(() => {
-                    isInertPolyfillLoaded = 2;
-                    setSiblingsInert(dialogElement, toState)
-                })
-                return;
-            }
-            if (isInertPolyfillLoaded === 1) {
-                return;
-            }
-            <?php /* Walk up the DOM, toggle inert attribute the siblings at each level */ ?>
-            let el = dialogElement;
-            while (el && (el = el.parentElement)) {
-                if (el === document.body || el.parentElement === null) continue;
-
-                Array.from(el.parentElement.children).forEach(sibling => {
-                    if (sibling !== el) {
-                        sibling.inert = toState;
-                    }
-                })
-            }
-            <?php
-            // Walk down the DOM, toggle inert attribute to opposite of toState.
-            // This is needed if a nested dialog is rendered as a sibling of the opening dialog.
-            ?>
-            (function setChildrenInert(el, toState) {
-                if (el) {
-                    el.inert = toState;
-                    Array.from(el.children).forEach(child => setChildrenInert(child, toState));
-                }
-            })(findParentWithOverlaySpread(dialogElement), ! toState)
-
-            excludedFromFocusTrapping.forEach(selector => {
-                Array.from(document.querySelectorAll(selector)).map(el => el.inert = false);
-            })
-        }
-
-        function findParentWithOverlaySpread(el) {
-            while (el && (el = el.parentElement)) {
-                if (el === document.body || el.parentElement === null) continue;
-                if (el.hasAttribute('x-spread') && el.getAttribute('x-spread').indexOf('overlay(') !== -1) {
-                    return el;
-                }
-            }
-        }
-
-        function freeFocusFromModalTrap(modal) {
-            const dialogElement = modal.instance.$refs[modal.name];
-            isOverlayDisabled(dialogElement) || modal.instance.$nextTick(() => setSiblingsInert(dialogElement, false));
-        }
-
         function trapFocusInNextModalWithOverlay() {
             for (let idx = modals.length -1; idx >= 0; idx--) {
                 const nextOnStack = modals[idx];
                 const nextDialogElement = nextOnStack.instance.$refs[nextOnStack.name];
                 if (! isOverlayDisabled(nextDialogElement)) {
-                    nextOnStack.instance.$nextTick(() => setSiblingsInert(nextDialogElement, true));
+                    hyva.trapFocus(nextDialogElement);
                     break;
                 }
             }
         }
 
         function focusables(dialogElement) {
-            const selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+            const selector = 'button, [href], input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
             return Array.from(dialogElement.querySelectorAll(selector))
                 .filter(el => !el.hasAttribute('disabled'));
         }
@@ -132,12 +65,27 @@ $deployMode = $viewModels->require(DeployMode::class);
         }
 
         function setFocusAfterTransition(dialogElement, duration) {
+            <?php
+            /*
+             * If the dialog contains an x-focus-first element that is not within a nested dialog, set focus
+             * immediately from the trapFocus default, to avoid the switch after the transition duration.
+             */
+            ?>
+            const nested = Array.from(dialogElement.querySelectorAll('[role="dialog"]'));
+            const candidates = Array.from(dialogElement.querySelectorAll('[x-focus-first]'));
+            next: for (let candidate of candidates) {
+                for (let child of nested) {
+                    if (child.contains(candidate)) continue next;
+                }
+                setTimeout(() => candidate.focus(), 50);
+                break;
+            }
             window.setTimeout(() => {
                 const focusElement = firstVisible(dialogElement.querySelectorAll('[x-focus-first]')) ||
                     focusables(dialogElement)[0] ||
                     null;
                 focusElement && isInViewport(focusElement) && focusElement.focus();
-            }, duration + 1);
+            }, Math.max(1, duration));
         }
 
         function determineTrigger($refs, dialog, trigger) {
@@ -215,7 +163,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     }
 
                     this.opened[name] = true;
-                    useOverlay && this.$nextTick(() => setSiblingsInert(dialogElement, true));
+                    useOverlay && this.$nextTick(() => hyva.trapFocus(dialogElement));
                     setFocusAfterTransition(dialogElement, config.duration);
 
                     const frame = {name, instance: this, focusTarget: focusTargetAfterHide, time: Date.now()};
@@ -245,8 +193,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     const modal = modals.pop() || {};
                     const name = modal.name;
                     this.opened[name] = false;
-
-                    freeFocusFromModalTrap(modal)
+                    hyva.releaseFocus(modal.instance.$refs[modal.name])
                     trapFocusInNextModalWithOverlay();
 
                     const nextFocusAfterHide = modal.focusTarget;
