@@ -78,7 +78,8 @@ use Magento\Framework\View\Element\Template;
                 if (field.element.validity.stepMismatch) {
                     const val = Number(value);
                     const step = Number(options);
-                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter a valid value. The two nearest valid values are "%0" and "%1".')) ?>', Math.floor((val) / step ) * step, Math.ceil((val) / step ) * step);
+                    const msg = '<?= $escaper->escapeJs(__('Please enter a valid value. The two nearest valid values are "%0" and "%1".')) ?>';
+                    return hyva.strf(msg, Math.floor(val / step) * step, Math.ceil(val / step) * step);
                 }
                 return true;
             },
