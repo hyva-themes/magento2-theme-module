@@ -54,8 +54,7 @@ use function array_unique as unique;
  */
 class ProductList implements ArgumentInterface
 {
-
-    public const XML_CROSSSELLS_PRODUCTS_LIMIT = 'hyva_theme_catalog/crosssells_products/limit';
+    public const XML_CROSSSELL_PRODUCTS_LIMIT = 'hyva_theme_catalog/crosssell_products/limit';
 
     /**
      * @var SearchCriteriaBuilder
@@ -212,13 +211,10 @@ class ProductList implements ArgumentInterface
             return [];
         }
 
-        $crossellsLimitConfig = $this->getCrosssellsLimit();
-        if ($crossellsLimitConfig) {
-            $this->maxCrosssellItemCount = $crossellsLimitConfig;
-        }
+        $maxCrosssellItemCount = $this->getConfiguredMaxCrosssellItemCount() ?: $this->maxCrosssellItemCount;
 
         $criteria = $this->searchCriteriaBuilder->create();
-        $criteria->setPageSize($this->maxCrosssellItemCount);
+        $criteria->setPageSize($maxCrosssellItemCount);
 
         // return most recently added product crosssell items first
         usort($cartItems, function (QuoteItem $itemA, QuoteItem $itemB) {
@@ -232,13 +228,13 @@ class ProductList implements ArgumentInterface
         $items = $this->loadCrosssellItems($criteria, slice($cartItems, 0, 1), $exclude);
 
         // if more crosssell items are expected, load crosssells for other products in cart
-        if (count($items) < $this->maxCrosssellItemCount && count($cartItems) > 1 &&
-            $criteria->getPageSize() >= $this->maxCrosssellItemCount) {
-            $criteria->setPageSize($this->maxCrosssellItemCount - count($items));
+        if (count($items) < $maxCrosssellItemCount && count($cartItems) > 1 &&
+            $criteria->getPageSize() >= $maxCrosssellItemCount) {
+            $criteria->setPageSize($maxCrosssellItemCount - count($items));
             $items = merge($items, $this->loadCrosssellItems($criteria, slice($cartItems, 1), merge($exclude, $items)));
         }
 
-        return slice($items, 0, $this->maxCrosssellItemCount);
+        return slice($items, 0, $maxCrosssellItemCount);
     }
 
     /**
@@ -482,9 +478,9 @@ class ProductList implements ArgumentInterface
         return $this;
     }
 
-    public function getCrosssellsLimit() 
+    public function getConfiguredMaxCrosssellItemCount(): ?int
     {
-        return (int) $this->scopeConfig->getValue(self::XML_CROSSSELLS_PRODUCTS_LIMIT, ConfigScope::SCOPE_STORE);
+        return $this->scopeConfig->getValue(self::XML_CROSSSELL_PRODUCTS_LIMIT, ConfigScope::SCOPE_STORE);
     }
 
     public function includeReviewSummary(): self
