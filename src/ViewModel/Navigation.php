@@ -72,11 +72,12 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     public function getNavigation($maxLevel = false)
     {
-        if (array_key_exists($this->requestLevelCache[$maxLevel])) {
+        $maxLevel = (int) $maxLevel;
+        if (isset($this->requestLevelCache[$maxLevel])) {
             return $this->requestLevelCache[$maxLevel];
         }
 
-        $menuTree = $this->navigationService->getMenuTree((int) $maxLevel);
+        $menuTree = $this->navigationService->getMenuTree($maxLevel);
 
         return $this->requestLevelCache[$maxLevel] = $this->processCacheIdentities($this->getMenuData($menuTree), $maxLevel);
     }
