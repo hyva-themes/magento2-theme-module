@@ -308,7 +308,6 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          * defined by `targetSelector`
          */
         hyva.replaceDomElement = (targetSelector, content) => {
-
             // Parse the content and extract the DOM node using the `targetSelector`
             const parser = new DOMParser();
             const doc = parser.parseFromString(content, 'text/html');
@@ -319,7 +318,18 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                 return;
             }
 
-            // Extract all the script tags from the new content.
+            hyva.activateScripts(contentNode)
+
+            // Replace the old DOM node with the new content
+            document.querySelector(targetSelector).replaceWith(contentNode);
+
+            // Reload customerSectionData and display cookie-messages if present
+            window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+            hyva.initMessages();
+        }
+
+        hyva.activateScripts = (contentNode) => {
+            // Extract all the script tags from the content.
             // Script tags won't execute when inserted into a dom-element directly,
             // therefore we need to inject them to the head of the document.
             const tmpScripts = contentNode.getElementsByTagName('script');
@@ -339,17 +349,11 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
                     document.head.appendChild(script);
 
-                    // Remove the original (non-executing) node from the page
+                    // Remove the original (non-executing) node from the content
                     scripts[i].parentNode.removeChild(scripts[i]);
                 }
             }
-
-            // Replace the old DOM node with the new content
-            document.querySelector(targetSelector).replaceWith(contentNode);
-
-            // Reload customerSectionData and display cookie-messages if present
-            window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
-            hyva.initMessages();
+            return contentNode;
         }
 
 <?php
