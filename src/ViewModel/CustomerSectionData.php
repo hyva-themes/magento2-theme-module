@@ -60,8 +60,10 @@ class CustomerSectionData implements ArgumentInterface
     {
         $sectionData = $this->sectionPool->getSectionsData() ?: [];
         foreach (keys($sectionData) as $key) {
-            if (! isset($this->defaultSectionDataKeys[$key]) || ! $this->defaultSectionDataKeys[$key]) {
+            if (! isset($this->defaultSectionDataKeys[$key])) {
                 $sectionData[$key] = [];
+            } else if (true !== $this->defaultSectionDataKeys[$key]) {
+                $sectionData[$key] = json_decode($this->defaultSectionDataKeys[$key]) ?? [];
             }
         }
 
