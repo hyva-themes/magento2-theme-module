@@ -27,4 +27,7 @@
     <event name="hyva_config_generate_before">
         <observer name="hyva_theme" instance="Hyva\Theme\Observer\RegisterModuleForHyvaConfig"/>
     </event>
+    <event name="view_block_abstract_to_html_after">
+        <observer name="hyva_theme" instance="Hyva\Theme\Observer\RegisterPageJsDependencies"/>
+    </event>
 </config>
