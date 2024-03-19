@@ -7,7 +7,124 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.5...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.6...main
+
+## [1.3.6] - 2024-03-28
+
+[1.3.6]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.5...1.3.6
+
+### Added
+
+- **Allow JS to be rendered on a page only when it is needed**
+
+  This feature enables several performance improvements on product listing pages.  
+  JavaScript can now be rendered on a page only when it is required.  
+
+  For details, please refer to [merge request #425](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/425).
+
+- **Add hyva.activateScripts method**
+
+  The `hyva.activateScripts` method can be used to have a browser process scripts in HTML snippets from Ajax reponses.
+
+  For details, please refer to [merge request #434](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/434).
+
+- **Make the amount of crosssell items configurable in admin**
+
+  For details, please refer to [issue #257](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/257) and the associated merge request.
+
+  Many thanks to Antonio Carboni (Magenio) for the contribution!
+
+- **Enable the title attribute for SVG icons in CMS content**
+
+  Allow icon directives in the backend to assign a title, e.g. `{{icon "heroicons/solid/shopping-cart" classes="w-12 h-12" title="Shopping Cart"}}`
+
+  For details, please refer to [merge request #426](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/426).
+
+  Many thanks to Andreas Pointner (Copex) for the contribution!
+
+- **Add formatting options argument to hyva.formatPrice()**
+
+  This change allows for easier customization of frontend price rendering.  
+
+  For details, please refer to [merge request #431](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/431).
+
+### Changed
+
+- **Avoid loading section data for customers without a session**
+
+  This is a performance improvement to reduce the number of Ajax requests to the server.  
+  We don't expect this will affect many extensions (if any), but just in case please refer to the 1.3.6 upgrade notes for more information.
+
+  For details, please refer to [issue #279](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/279) and the associated merge request.
+
+- **Restore view model registry param annotation to avoid having to type hint return values**
+
+  This functionality was originally contributed to release 1.1.9 by Thijs de Witt and was accidentally removed in 1.1.18.
+
+  For details, please refer to [merge request #411](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/411).
+
+  Many thanks to Matthijs Perik (Ecomni) for the contribution!
+
+- **Memoize category tree data**
+
+  This is a performance improvement to reduce server load in case both the mobile and the desktop category menus have the same depth.
+
+  For details, please refer to [merge request #386](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/386).
+
+  Many thanks to Jeroen Boersma (Elgentos) for the contribution!
+
+- **Fix Exception Return value must be of type string, null returned for payment method title**
+
+  For details, please refer to [issue #339](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/339) and the associated merge request.
+
+  Many thanks to Michiel Gerritsen for the contribution!
+
+- **Fix input validation message with step nearest allowed values**
+
+  For details, please refer to [issue #340](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/340).
+
+- **Reload section data if a request fails**
+
+  Previously the frontend would get stuck without section data if the request failed at the wrong moment.  
+
+  For details, please refer to [issue #347](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/347).
+
+  Many thanks to Harsh Tank (Graas.ai) for the contribution!
+
+- **Use optimized versions of Heroicons**
+
+  Previously some Heroicons contained static colors or stroke width inside the SVG on the path element.
+
+  For details, please refer to [merge request #429](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/429).
+
+- **Add missing form key validation for customer Ajax login controller**
+
+  For details, please refer to [merge request #430](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/430).
+
+  Many thanks to Talesh Seeparsan for reporting the issue!
+
+- **Use hyva.trapFocus for modals**
+
+  Previously the Hyvä modal library used a different implementation relying on the `inert` element attribute.  
+  This change to the more lightweight implementation improves consistency and resolves issues with some third-party libraries when used inside of modals.
+
+  For details, please refer to [merge request #432](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/432).
+
+- **Fix: exclude hidden elements from focus targets**
+
+  Previously hidden elements were used as focus targets leading to inconsistent behavior.
+
+  For details, please refer to [merge request #433](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/433).
+
+- **Fix: do not call focus() on window object when modal is closed**
+
+  Previously, if no valid focus-after-close target was specified when showing a modal dialog, the `focus()` method was called on the window object.
+
+  For details, please refer to [issue #361](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/361).
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.5] - 2023-12-20
 
