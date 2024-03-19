@@ -218,20 +218,20 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             return formKey;
         }
 
-        hyva.formatPrice = (value, showSign) => {
+        hyva.formatPrice = (value, showSign, options = {}) => {
             const formatter = new Intl.NumberFormat(
                 '<?= $escaper->escapeJs($jsLocale) ?>',
-                {
+                Object.assign({
                     style: 'currency',
-                    currency: '<?= $escaper->escapeHtml($currencyViewModel->getCurrentCurrencyCode()) ?>',
-                    signDisplay: showSign ? "always" : "auto"
-                }
+                    currency: '<?= $escaper->escapeJs($currencyViewModel->getCurrentCurrencyCode()) ?>',
+                    signDisplay: showSign ? 'always' : 'auto'
+                }, options)
             );
             return (typeof Intl.NumberFormat.prototype.formatToParts === 'function') ?
                 formatter.formatToParts(value).map(({type, value}) => {
                     switch (type) {
                         case 'currency':
-                            return '<?= $currencyViewModel->getCurrentCurrencySymbol() ?: ""; ?>' || value;
+                            return '<?= $escaper->escapeJs($currencyViewModel->getCurrentCurrencySymbol() ?: '') ?>' || value;
                         case 'minusSign':
                             return '- ';
                         case 'plusSign':
