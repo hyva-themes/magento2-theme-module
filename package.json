@@ -1,0 +1,15 @@
+{
+  "name": "@hyva-themes/magento2-theme-module",
+  "version": "1.0.0",
+  "description": "The npm pkg is here just here to update the Heroicons for Hyvä",
+  "private": true,
+  "scripts": {
+    "build:icons:outline": "cp -r ./node_modules/heroicons/outline/*.svg ./src/view/frontend/web/svg/heroicons/outline",
+    "build:icons:solid": "cp -r ./node_modules/heroicons/solid/*.svg ./src/view/frontend/web/svg/heroicons/solid",
+    "build:signature": "./bin/generate-icons-signatures",
+    "build": "npm run build:icons:outline && npm run build:icons:solid && npm run build:signature"
+  },
+  "devDependencies": {
+    "heroicons": "1.0.6"
+  }
+}

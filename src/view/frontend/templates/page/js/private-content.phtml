@@ -73,6 +73,7 @@ use Magento\Framework\View\Element\Template;
 ?>
                 if (!hyva.getCookie(mage_cache_session_id_key)) {
                     isInvalid = true;
+                    browserStorage.removeItem(private_content_key);
                     const skipSetDomain = true;
                     const days = false;
                     hyva.setCookie(mage_cache_session_id_key, true, days, skipSetDomain)
@@ -91,7 +92,12 @@ use Magento\Framework\View\Element\Template;
                 }
 
                 if (isInvalid) {
-                    fetchPrivateContent([]);
+                    if (! cookieVersion && document.getElementById('default-section-data')) {
+                        const privateContent = JSON.parse(document.getElementById('default-section-data').innerText.trim());
+                        dispatchPrivateContent(privateContent);
+                    } else {
+                        fetchPrivateContent([]);
+                    }
                 } else if (cookieVersion && storageVersion && cookieVersion === storageVersion) {
                     const privateContent = JSON.parse(browserStorage.getItem(private_content_key));
                     if (

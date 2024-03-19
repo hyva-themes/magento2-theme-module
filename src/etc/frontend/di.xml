@@ -76,4 +76,20 @@
     <type name="Magento\Catalog\Helper\Product\View">
         <plugin name="update_canonical_page_param_product_review" type="Hyva\Theme\Plugin\Catalog\Helper\Product\ProductReviewPaginationCanonicalUrlFixPlugin" />
     </type>
+
+    <type name="Magento\Customer\Controller\Ajax\Login">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin"/>
+    </type>
+
+    <type name="Hyva\Theme\ViewModel\CustomerSectionData">
+        <arguments>
+            <!-- Specifying `true` will allow the section to be cached in the FPC. Only use it with sections without PII. -->
+            <!-- When a JSON string is specified, it is used as the section default value. -->
+            <!-- Any section that is not listed will be replaced with an empty array as the default value. -->
+            <argument name="defaultSectionDataKeys" xsi:type="array">
+                <item name="directory-data" xsi:type="boolean">true</item>
+                <item name="wishlist" xsi:type="string">{"items": []}</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

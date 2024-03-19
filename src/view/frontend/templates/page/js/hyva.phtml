@@ -218,20 +218,20 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             return formKey;
         }
 
-        hyva.formatPrice = (value, showSign) => {
+        hyva.formatPrice = (value, showSign, options = {}) => {
             const formatter = new Intl.NumberFormat(
                 '<?= $escaper->escapeJs($jsLocale) ?>',
-                {
+                Object.assign({
                     style: 'currency',
-                    currency: '<?= $escaper->escapeHtml($currencyViewModel->getCurrentCurrencyCode()) ?>',
-                    signDisplay: showSign ? "always" : "auto"
-                }
+                    currency: '<?= $escaper->escapeJs($currencyViewModel->getCurrentCurrencyCode()) ?>',
+                    signDisplay: showSign ? 'always' : 'auto'
+                }, options)
             );
             return (typeof Intl.NumberFormat.prototype.formatToParts === 'function') ?
                 formatter.formatToParts(value).map(({type, value}) => {
                     switch (type) {
                         case 'currency':
-                            return '<?= $currencyViewModel->getCurrentCurrencySymbol() ?: ""; ?>' || value;
+                            return '<?= $escaper->escapeJs($currencyViewModel->getCurrentCurrencySymbol() ?: '') ?>' || value;
                         case 'minusSign':
                             return '- ';
                         case 'plusSign':
@@ -364,9 +364,14 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
         let currentTrap;
 
         const focusableElements = (rootElement) => {
-            const selector = 'button, [href], input, select, textarea, details';
+            const selector = 'button, [href], input, select, textarea, details, [tabindex]:not([tabindex="-1"]';
             return Array.from(rootElement.querySelectorAll(selector))
-                .filter(el => el.style.display !== 'none' && !el.disabled && el.tabIndex !== -1)
+                .filter(el => {
+                    return el.style.display !== 'none'
+                        && !el.disabled
+                        && el.tabIndex !== -1
+                        && (el.offsetWidth || el.offsetHeight || el.getClientRects().length)
+                })
         }
 
         const focusTrap = (e) => {

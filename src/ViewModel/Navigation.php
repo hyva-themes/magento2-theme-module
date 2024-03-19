@@ -51,6 +51,13 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     private $maxCategoryCacheTags;
 
+    /**
+     * Save Navigation cache so if used twice with the same settings resolve the same data
+     *
+     * @var array
+     */
+    private $requestLevelCache = [];
+
     public function __construct(NavigationService $navigationService, int $maxCategoryCacheTags = 200)
     {
         $this->navigationService = $navigationService;
@@ -65,9 +72,14 @@ class Navigation implements ArgumentInterface, IdentityInterface
      */
     public function getNavigation($maxLevel = false)
     {
-        $menuTree = $this->navigationService->getMenuTree((int) $maxLevel);
+        $maxLevel = (int) $maxLevel;
+        if (isset($this->requestLevelCache[$maxLevel])) {
+            return $this->requestLevelCache[$maxLevel];
+        }
 
-        return $this->processCacheIdentities($this->getMenuData($menuTree), $maxLevel);
+        $menuTree = $this->navigationService->getMenuTree($maxLevel);
+
+        return $this->requestLevelCache[$maxLevel] = $this->processCacheIdentities($this->getMenuData($menuTree), $maxLevel);
     }
 
     private function flattenTree(array $categories, array $acc = []): array

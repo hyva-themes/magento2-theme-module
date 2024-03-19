@@ -35,12 +35,14 @@ class PaymentInfo implements ArgumentInterface
      */
     public function getPaymentTitle($order): string
     {
+        $method = (string)$order->getPayment()->getMethod();
+
         try {
-            return $order->getPayment()->getMethodInstance()->getTitle();
+            return $order->getPayment()->getMethodInstance()->getTitle() ?? $method;
         } catch (LocalizedException $exception) {
             $this->logger->error('Error retrieving payment method title: ' . $exception->getMessage());
         }
 
-        return (string) $order->getPayment()->getMethod();
+        return $method;
     }
 }
