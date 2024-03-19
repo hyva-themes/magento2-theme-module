@@ -30,6 +30,8 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\EntityManager\MetadataPool as EntityMetadataPool;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface as ConfigScope;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
@@ -52,6 +54,8 @@ use function array_unique as unique;
  */
 class ProductList implements ArgumentInterface
 {
+    public const XML_CROSSSELL_PRODUCTS_LIMIT = 'hyva_theme_catalog/crosssell_products/limit';
+
     /**
      * @var SearchCriteriaBuilder
      */
@@ -138,6 +142,11 @@ class ProductList implements ArgumentInterface
     private $entityMetadataPool;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * @var string|null
      */
     private $memoizedProductLinkField;
@@ -156,6 +165,7 @@ class ProductList implements ArgumentInterface
         ReviewSummaryResource $reviewSummaryResource,
         ProductVisibility $productVisibility,
         EntityMetadataPool $entityMetadataPool,
+        ScopeConfigInterface $scopeConfig,
         bool $isIncludingReviewSummary = true,
         int $maxCrosssellItemCount = 4,
         bool $useAnchorAttribute = false
@@ -171,6 +181,7 @@ class ProductList implements ArgumentInterface
         $this->reviewSummaryResource        = $reviewSummaryResource;
         $this->productVisibility            = $productVisibility;
         $this->entityMetadataPool           = $entityMetadataPool;
+        $this->scopeConfig                  = $scopeConfig;
         $this->isIncludingReviewSummary     = $isIncludingReviewSummary;
         $this->maxCrosssellItemCount        = $maxCrosssellItemCount;
         $this->categoryFactory              = $categoryFactory;
@@ -200,8 +211,10 @@ class ProductList implements ArgumentInterface
             return [];
         }
 
+        $maxCrosssellItemCount = $this->getConfiguredMaxCrosssellItemCount() ?: $this->maxCrosssellItemCount;
+
         $criteria = $this->searchCriteriaBuilder->create();
-        $criteria->setPageSize($this->maxCrosssellItemCount);
+        $criteria->setPageSize($maxCrosssellItemCount);
 
         // return most recently added product crosssell items first
         usort($cartItems, function (QuoteItem $itemA, QuoteItem $itemB) {
@@ -215,13 +228,13 @@ class ProductList implements ArgumentInterface
         $items = $this->loadCrosssellItems($criteria, slice($cartItems, 0, 1), $exclude);
 
         // if more crosssell items are expected, load crosssells for other products in cart
-        if (count($items) < $this->maxCrosssellItemCount && count($cartItems) > 1 &&
-            $criteria->getPageSize() >= $this->maxCrosssellItemCount) {
-            $criteria->setPageSize($this->maxCrosssellItemCount - count($items));
+        if (count($items) < $maxCrosssellItemCount && count($cartItems) > 1 &&
+            $criteria->getPageSize() >= $maxCrosssellItemCount) {
+            $criteria->setPageSize($maxCrosssellItemCount - count($items));
             $items = merge($items, $this->loadCrosssellItems($criteria, slice($cartItems, 1), merge($exclude, $items)));
         }
 
-        return slice($items, 0, $this->maxCrosssellItemCount);
+        return slice($items, 0, $maxCrosssellItemCount);
     }
 
     /**
@@ -463,6 +476,11 @@ class ProductList implements ArgumentInterface
         $this->searchCriteriaBuilder->setCurrentPage($currentPage);
 
         return $this;
+    }
+
+    public function getConfiguredMaxCrosssellItemCount(): ?int
+    {
+        return $this->scopeConfig->getValue(self::XML_CROSSSELL_PRODUCTS_LIMIT, ConfigScope::SCOPE_STORE);
     }
 
     public function includeReviewSummary(): self
