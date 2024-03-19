@@ -73,6 +73,7 @@ use Magento\Framework\View\Element\Template;
 ?>
                 if (!hyva.getCookie(mage_cache_session_id_key)) {
                     isInvalid = true;
+                    browserStorage.removeItem(private_content_key);
                     const skipSetDomain = true;
                     const days = false;
                     hyva.setCookie(mage_cache_session_id_key, true, days, skipSetDomain)
