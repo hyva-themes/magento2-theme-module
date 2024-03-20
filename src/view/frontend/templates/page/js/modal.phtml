@@ -90,11 +90,11 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         function determineTrigger($refs, dialog, trigger) {
             <?php /* if show() was called without arguments use the event target as open trigger */ ?>
-            if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog.target && dialog.target.focus) {
+            if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog.target instanceof HTMLElement) {
                 return dialog.target;
             }
             <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
-            if (typeof dialog === 'string' && typeof trigger === 'object' && trigger.target && trigger.target.focus) {
+            if (typeof dialog === 'string' && typeof trigger === 'object' && trigger.target instanceof HTMLElement) {
                 return trigger.target;
             }
             <?php /* if show('name', 'trigger') was called with the ref name pr selector of the trigger element */ ?>
