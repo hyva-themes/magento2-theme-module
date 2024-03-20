@@ -62,7 +62,7 @@ class CustomerSectionData implements ArgumentInterface
         foreach (keys($sectionData) as $key) {
             if (! isset($this->defaultSectionDataKeys[$key])) {
                 $sectionData[$key] = [];
-            } else if (true !== $this->defaultSectionDataKeys[$key]) {
+            } elseif (true !== $this->defaultSectionDataKeys[$key]) {
                 $sectionData[$key] = json_decode($this->defaultSectionDataKeys[$key]) ?? [];
             }
         }

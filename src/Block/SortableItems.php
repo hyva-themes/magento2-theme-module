@@ -13,7 +13,6 @@ namespace Hyva\Theme\Block;
 use Magento\Framework\View\Element\AbstractBlock;
 use function array_map as map;
 
-
 class SortableItems extends AbstractBlock
 {
     protected function _toHtml(): string
@@ -21,7 +20,6 @@ class SortableItems extends AbstractBlock
         return implode('', map(function ($block): string {
             return $block->toHtml();
         }, $this->getSortedItems()));
-
     }
 
     /**
