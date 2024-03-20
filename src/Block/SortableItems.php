@@ -11,13 +11,17 @@ declare(strict_types=1);
 namespace Hyva\Theme\Block;
 
 use Magento\Framework\View\Element\AbstractBlock;
+use function array_map as map;
+
 
 class SortableItems extends AbstractBlock
 {
     protected function _toHtml(): string
     {
-        $sortedItems = $this->getSortedItems();
-        return empty($sortedItems) ? '' : implode('', $sortedItems);
+        return implode('', map(function ($block): string {
+            return $block->toHtml();
+        }, $this->getSortedItems()));
+
     }
 
     /**
@@ -26,18 +30,20 @@ class SortableItems extends AbstractBlock
     private function getSortedItems(): array
     {
         $childBlocks = $this->_layout->getChildBlocks($this->getNameInLayout());
-        $sortedItems = [];
         foreach ($childBlocks as $childBlock) {
-            if ($childBlock instanceof SortableItemInterface === false || $childBlock->getSortOrder() === null) {
+            if ($childBlock instanceof SortableItemInterface === false && $childBlock->getSortOrder() === null) {
                 $childBlock->setData(
                     SortableItemInterface::SORT_ORDER,
                     SortableItemInterface::SORT_ORDER_DEFAULT_VALUE
                 );
             }
-            $sortedItems[$childBlock->getSortOrder()] = $childBlock->toHtml();
+
         }
 
-        ksort($sortedItems);
-        return $sortedItems;
+        usort($childBlocks, static function ($a, $b) {
+            return ((int) $a->getSortOrder()) <=> ((int) $b->getSortOrder());
+        });
+
+        return $childBlocks;
     }
 }
