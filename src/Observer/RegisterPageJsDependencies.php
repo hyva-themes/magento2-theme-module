@@ -83,7 +83,7 @@ class RegisterPageJsDependencies implements ObserverInterface
 
         $cachedDeps = false;
         if ($this->isBlockCacheEnabled() && $this->isBlockCached($block) && ($cachedDeps = $this->cache->load($this->getDependenciesCacheKey($block)))) {
-            [$blockNameToPriorityMap, $templateNameToPriorityMap] = json_decode($cachedDeps);
+            [$blockNameToPriorityMap, $templateNameToPriorityMap] = json_decode($cachedDeps, true);
         } else {
             $blockNameToPriorityMap = $this->collectBlockNameDependenciesFromBlockHierarchy($block);
             $templateNameToPriorityMap = $this->collectTemplateDependenciesFromBlockHierarchy($block);
