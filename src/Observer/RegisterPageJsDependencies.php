@@ -10,7 +10,11 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Observer;
 
-use Hyva\Theme\ViewModel\PageJsDependencyRegistry;
+use Hyva\Theme\Model\PageJsDependencyRegistry;
+use Hyva\Theme\ViewModel\BlockJsDependencies;
+use Magento\Framework\App\Cache\Type\Block as BlockCache;
+use Magento\Framework\App\Cache\StateInterface as CacheState;
+use Magento\Framework\App\CacheInterface;
 use Magento\Framework\Event\Observer as Event;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\View\Element\AbstractBlock;
@@ -18,9 +22,14 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 
 use function array_filter as filter;
+use function array_map as map;
+use function array_merge as merge;
+use function array_values as values;
 
 class RegisterPageJsDependencies implements ObserverInterface
 {
+    private const KEY_SUFFIX = '-dependencies';
+
     /**
      * @var PageJsDependencyRegistry
      */
@@ -31,12 +40,26 @@ class RegisterPageJsDependencies implements ObserverInterface
      */
     private $layout;
 
+    /**
+     * @var CacheState
+     */
+    private $cacheState;
+
+    /**
+     * @var CacheInterface
+     */
+    private $cache;
+
     public function __construct(
         PageJsDependencyRegistry $jsDependencyRegistry,
-        LayoutInterface $layout
+        LayoutInterface $layout,
+        CacheState $cacheState,
+        CacheInterface $cache
     ) {
         $this->jsDependencyRegistry = $jsDependencyRegistry;
         $this->layout = $layout;
+        $this->cacheState = $cacheState;
+        $this->cache = $cache;
     }
 
     /**
@@ -48,6 +71,9 @@ class RegisterPageJsDependencies implements ObserverInterface
         $this->applyBlockOutputPatternJsDependencyRules($event);
     }
 
+    /**
+     * Read dependencies from the blocks and register them in the page js dependency registry, also adding them to the block_html cache if the block is cached.
+     */
     private function applyBlockJsDependencies(Event $event): void
     {
         /** @var AbstractBlock $block */
@@ -55,17 +81,33 @@ class RegisterPageJsDependencies implements ObserverInterface
             return; // Container
         }
 
-        $blockNameToPriorityMap = $block->getData('hyva_js_block_dependencies') ?? [];
+        $cachedDeps = false;
+        if ($this->isBlockCacheEnabled() && $this->isBlockCached($block) && ($cachedDeps = $this->cache->load($this->getDependenciesCacheKey($block)))) {
+            [$blockNameToPriorityMap, $templateNameToPriorityMap] = json_decode($cachedDeps);
+        } else {
+            $blockNameToPriorityMap = $this->collectBlockNameDependenciesFromBlockHierarchy($block);
+            $templateNameToPriorityMap = $this->collectTemplateDependenciesFromBlockHierarchy($block);
+        }
 
-        if ($blockNameToPriorityMap && is_array($blockNameToPriorityMap)) {
-            filter($blockNameToPriorityMap, static function ($value): bool {
-                return $value === 0 || $value; // allow 0 as value. Remove false, empty strings and nulls.
+        $this->addDependencies($blockNameToPriorityMap, [$this->jsDependencyRegistry, 'requireBlockName']);
+        $this->addDependencies($templateNameToPriorityMap, [$this->jsDependencyRegistry, 'requireTemplate']);
+
+        if ($this->isBlockCacheEnabled() && $this->isBlockCached($block) && ! $cachedDeps) {
+            $key = $this->getDependenciesCacheKey($block);
+            $tags = $this->getDependenciesCacheTags($block);
+            $data = json_encode([$blockNameToPriorityMap, $templateNameToPriorityMap]);
+            $this->cache->save($data, $key, $tags, $block->getData('cache_lifetime'));
+        }
+    }
+
+    private function addDependencies(?array $dependencyToPriorityMap, callable $addDependencyFn): void
+    {
+        if ($dependencyToPriorityMap) {
+            $dependencyToPriorityMap = filter($dependencyToPriorityMap, static function ($priority): bool {
+                return $priority === 0 || $priority; // allow 0 as value. Remove false, empty strings and nulls.
             });
-            foreach ($blockNameToPriorityMap as $blockName => $priority) {
-                $jsBlock = $this->layout->getBlock($blockName);
-                if ($jsBlock instanceof AbstractBlock) {
-                    $this->jsDependencyRegistry->requireBlock($jsBlock, (int) $priority);
-                }
+            foreach ($dependencyToPriorityMap as $dependency => $priority) {
+                $addDependencyFn($dependency, $priority);
             }
         }
     }
@@ -81,5 +123,53 @@ class RegisterPageJsDependencies implements ObserverInterface
                 $this->jsDependencyRegistry->applyBlockOutputPatternRules($blockOutputPatternMap, $blockHtml);
             }
         }
+    }
+
+    private function isBlockCacheEnabled(): bool
+    {
+        return $this->cacheState->isEnabled(BlockCache::TYPE_IDENTIFIER);
+    }
+
+    private function getDependenciesCacheKey(AbstractBlock $block): string
+    {
+        return $block->getCacheKey() . self::KEY_SUFFIX;
+    }
+
+    private function getDependenciesCacheTags(AbstractBlock $block)
+    {
+        return merge($this->collectCacheTagsFromBlockHierarchy($block) ?? [], [BlockCache::CACHE_TAG]);
+    }
+
+    private function isBlockCached(AbstractBlock $block): bool
+    {
+        return $block->getData('cache_lifetime') !== null;
+    }
+
+    private function collectCacheTagsFromBlockHierarchy(AbstractBlock $block): array
+    {
+        return $this->collectArrayDataFromBlockHierarchy('cache_tags', $block);
+    }
+
+    private function collectBlockNameDependenciesFromBlockHierarchy(AbstractBlock $block): ?array
+    {
+        return $this->collectArrayDataFromBlockHierarchy(BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY, $block);
+    }
+
+    private function collectTemplateDependenciesFromBlockHierarchy(AbstractBlock $block): ?array
+    {
+        return $this->collectArrayDataFromBlockHierarchy(BlockJsDependencies::HYVA_JS_TEMPLATE_DEPENDENCIES_KEY, $block);
+    }
+
+    private function collectArrayDataFromBlockHierarchy(string $dataKey, AbstractBlock $block): array
+    {
+
+        $collector = function (AbstractBlock $block) use ($dataKey, &$collector): array {
+            $data     = $block->getData($dataKey);
+            $children = values(filter(map([$block->getLayout(), 'getBlock'], $block->getChildNames() ?? [])));
+
+            return merge(is_array($data) ? $data : [], ...map($collector, $children));
+        };
+
+        return $collector($block);
     }
 }

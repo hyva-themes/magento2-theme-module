@@ -8,19 +8,18 @@
 
 declare(strict_types=1);
 
-namespace Hyva\Theme\ViewModel;
+namespace Hyva\Theme\Model;
 
 use Magento\Framework\View\Element\AbstractBlock;
-use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 
 use function array_keys as keys;
 use function array_map as map;
 
-class PageJsDependencyRegistry implements ArgumentInterface
+class PageJsDependencyRegistry
 {
-    public const DEFAULT_PRIORITY = 100;
+    public const DEFAULT_PRIORITY = 10;
 
     /**
      * The first entry starts has the index 1.
@@ -54,7 +53,7 @@ class PageJsDependencyRegistry implements ArgumentInterface
     private $layout;
 
     public function __construct(
-        LayoutInterface $layout,
+        LayoutInterface $layout
     ) {
         $this->layout = $layout;
     }
@@ -64,7 +63,7 @@ class PageJsDependencyRegistry implements ArgumentInterface
      *
      * Blocks and templates are rendered in ascending order of priority.
      */
-    public function requireTemplate(string $template, int $priority = null): void
+    public function requireTemplate(string $template, $priority = null): void
     {
         $idx = $this->templateIndex[$template] ?? $this->createIndex();
         $this->templateIndex[$template] = $idx;
@@ -79,14 +78,13 @@ class PageJsDependencyRegistry implements ArgumentInterface
      *
      * Blocks and templates are rendered in ascending order of priority.
      */
-    public function requireBlock(AbstractBlock $block, int $priority = null): void
+    public function requireBlockName(string $blockName, $priority = null): void
     {
-        $name = $block->getNameInLayout();
-        if (! $name) {
-            throw new \LogicException('JsTemplateBlock are required to have a name in layout XML');
+        if (! ($block = $this->layout->getBlock($blockName))) {
+            return;
         }
-        $idx = $this->blockIndex[$name] ?? $this->createIndex();
-        $this->blockIndex[$name] = $idx;
+        $idx = $this->blockIndex[$blockName] ?? $this->createIndex();
+        $this->blockIndex[$blockName] = $idx;
         $this->jsDependencies[$idx] = [
             'block' => $block,
             'priority' => $priority ?? $this->jsDependencies[$idx]['priority'] ?? self::DEFAULT_PRIORITY
@@ -114,14 +112,13 @@ class PageJsDependencyRegistry implements ArgumentInterface
         }
     }
 
-    public function removeBlock(AbstractBlock $block): void
+    public function removeBlock(string $bockName): void
     {
-        $name = $block->getNameInLayout();
-        if ($name && ($idx = $this->blockIndex[$name])) {
+        if ($bockName && ($idx = $this->blockIndex[$bockName])) {
             if ($template = $this->jsDependencies[$idx]['template'] ?? false) {
                 unset($this->templateIndex[$template]);
             }
-            unset($this->blockIndex[$name]);
+            unset($this->blockIndex[$bockName]);
             unset($this->jsDependencies[$idx]);
         }
     }
@@ -129,7 +126,7 @@ class PageJsDependencyRegistry implements ArgumentInterface
     /**
      * Return all js dependencies without sorting. Intended to be used as an after plugin target.
      *
-     * :ach item in the returned array may have the following keys
+     * Each item in the returned array may have the following keys
      *
      * [
      *   'template' => string 'Some_Module::template.phtml',
