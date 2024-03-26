@@ -28,11 +28,11 @@ use function array_values as values;
  * Allow html-cached blocks to also be ESI-cached blocks with all their cache tags.
  *
  * This solves the following scenario:
- * Assume a block B calculates it's cache tags dynamically when it is rendered. This happens a lot, e.g. the
+ * Assume a block B calculates its cache tags dynamically when it is rendered. This happens a lot, e.g. the
  * tags for all loaded products.
  *
  * 1. Block B is rendered and stored in the block_html cache with all cache tags in a normal frontend request.
- * 2. In an Varnish ESI request, the block B is loaded from the cache.
+ * 2. In a Varnish ESI request, the block B is loaded from the cache.
  * 3. Now Block B cache tags are empty because it was cached, the cache tags where not calculated.
  * 4. Varnish now stores the block output for the ESI request without any cache tags.
  * 5. A cache clean request is made for one of the blocks cache tags.

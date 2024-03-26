@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\PageJsDependencyRegistry;
+use Hyva\Theme\ViewModel\PageJsDependenciesRenderer;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -17,8 +17,7 @@ use Magento\Framework\View\Element\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var PageJsDependencyRegistry $jsDependencies */
-$jsDependencies = $viewModels->require(PageJsDependencyRegistry::class);
+$jsDependencies = $viewModels->require(PageJsDependenciesRenderer::class);
 
 // This $block is also used in \Hyva\Theme\Observer\RegisterPageJsDependencies::applyBlockOutputPatternJsDependencyRules
 
