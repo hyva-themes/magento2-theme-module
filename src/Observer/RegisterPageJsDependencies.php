@@ -85,8 +85,8 @@ class RegisterPageJsDependencies implements ObserverInterface
         if ($this->isBlockCacheEnabled() && $this->isBlockCached($block) && ($cachedDeps = $this->cache->load($this->getDependenciesCacheKey($block)))) {
             [$blockNameToPriorityMap, $templateNameToPriorityMap] = json_decode($cachedDeps, true);
         } else {
-            $blockNameToPriorityMap = $this->collectBlockNameDependenciesFromBlockHierarchy($block);
-            $templateNameToPriorityMap = $this->collectTemplateDependenciesFromBlockHierarchy($block);
+            $blockNameToPriorityMap = $this->collectBlockNameDependencies($block);
+            $templateNameToPriorityMap = $this->collectTemplateDependencies($block);
         }
 
         $this->addDependencies($blockNameToPriorityMap, [$this->jsDependencyRegistry, 'requireBlockName']);
@@ -147,20 +147,24 @@ class RegisterPageJsDependencies implements ObserverInterface
 
     private function collectCacheTagsFromBlockHierarchy(AbstractBlock $block): array
     {
-        return $this->collectArrayDataFromBlockHierarchy('cache_tags', $block);
+        return $this->collectArrayDataFromBlockHierarchy($block, 'cache_tags');
     }
 
-    private function collectBlockNameDependenciesFromBlockHierarchy(AbstractBlock $block): ?array
+    private function collectBlockNameDependencies(AbstractBlock $block): ?array
     {
-        return $this->collectArrayDataFromBlockHierarchy(BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY, $block);
+        return $this->isBlockCached($block)
+            ? $this->collectArrayDataFromBlockHierarchy($block, BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY)
+            : $block->getData(BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY);
     }
 
-    private function collectTemplateDependenciesFromBlockHierarchy(AbstractBlock $block): ?array
+    private function collectTemplateDependencies(AbstractBlock $block): ?array
     {
-        return $this->collectArrayDataFromBlockHierarchy(BlockJsDependencies::HYVA_JS_TEMPLATE_DEPENDENCIES_KEY, $block);
+        return $this->isBlockCached($block)
+            ? $this->collectArrayDataFromBlockHierarchy($block, BlockJsDependencies::HYVA_JS_TEMPLATE_DEPENDENCIES_KEY)
+            : $block->getData(BlockJsDependencies::HYVA_JS_TEMPLATE_DEPENDENCIES_KEY);
     }
 
-    private function collectArrayDataFromBlockHierarchy(string $dataKey, AbstractBlock $block): array
+    private function collectArrayDataFromBlockHierarchy(AbstractBlock $block, string $dataKey): array
     {
 
         $collector = function (AbstractBlock $block) use ($dataKey, &$collector): array {

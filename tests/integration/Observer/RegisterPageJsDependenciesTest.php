@@ -21,16 +21,19 @@ use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
 use function array_values as values;
 
+/**
+ * @cover \Hyva\Theme\Observer\RegisterPageJsDependencies
+ */
 class RegisterPageJsDependenciesTest extends TestCase
 {
-    public function testUncachedBlockDependencies(): void
+    public function testDoesNotCollectChildDependenciesFromUncachedBlocks(): void
     {
         $objectManager = ObjectManager::getInstance();
         $cache = $objectManager->create(CacheInterface::class);
         $layout = $objectManager->create(LayoutInterface::class);
         $dependencyRegistry = $objectManager->create(PageJsDependencyRegistry::class, ['layout' => $layout]);
 
-        $block1Dependencies = [
+        $uncachedBlockDependencies = [
             BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY    => [
                 'foo.block' => '10',
                 'bar.block' => '20',
@@ -40,7 +43,8 @@ class RegisterPageJsDependenciesTest extends TestCase
                 'bar.phtml' => '10',
             ],
         ];
-        $block1 = $layout->createBlock(Template::class, 'test1', ['data' => $block1Dependencies]);
+        $uncachedBlock = $layout->createBlock(Template::class, 'test1', ['data' => $uncachedBlockDependencies]);
+        $uncachedBlock->setData('cache_lifetime', null);
 
         $block2Dependencies = [
             BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY    => [
@@ -54,11 +58,11 @@ class RegisterPageJsDependenciesTest extends TestCase
         ];
         $block2 = $layout->createBlock(Template::class, 'test2', ['data' => $block2Dependencies]);
 
-        $fooBlock = $layout->createBlock(Template::class, 'foo.block');
-        $buzBlock = $layout->createBlock(Template::class, 'buz.block');
+        $layout->createBlock(Template::class, 'foo.block');
+        $layout->createBlock(Template::class, 'buz.block');
 
-        $block1->setChild('test2', $block2);
-        $cache->remove($block1->getCacheKey());
+        $uncachedBlock->setChild('test2', $block2);
+        $cache->remove($uncachedBlock->getCacheKey());
 
         $sut = $objectManager->create(RegisterPageJsDependencies::class, [
             'jsDependencyRegistry' => $dependencyRegistry,
@@ -67,7 +71,7 @@ class RegisterPageJsDependenciesTest extends TestCase
         ]);
         $sut->execute($objectManager->create(Event::class, [
             'data' => [
-                'block'     => $block1,
+                'block'     => $uncachedBlock,
                 'transport' => $objectManager->create(DataObject::class),
             ],
         ]));
@@ -75,11 +79,78 @@ class RegisterPageJsDependenciesTest extends TestCase
         $deps = $dependencyRegistry->getUnsortedJsDependencies();
         $this->assertSame([
             [
-                'block'    => $fooBlock,
+                'block'    => $layout->getBlock('foo.block'),
                 'priority' => '10',
             ],
             [
-                'block'    => $buzBlock,
+                'template' => 'foo.phtml',
+                'priority' => '10',
+            ],
+            [
+                'template' => 'bar.phtml',
+                'priority' => '10',
+            ]
+        ], values($deps));
+    }
+
+    public function testCollectChildDependenciesFromCachedBlocks(): void
+    {
+        $objectManager = ObjectManager::getInstance();
+        $cache = $objectManager->create(CacheInterface::class);
+        $layout = $objectManager->create(LayoutInterface::class);
+        $dependencyRegistry = $objectManager->create(PageJsDependencyRegistry::class, ['layout' => $layout]);
+
+        $cachedBlockDependencies = [
+            BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY    => [
+                'foo.block' => '10',
+                'bar.block' => '20',
+            ],
+            BlockJsDependencies::HYVA_JS_TEMPLATE_DEPENDENCIES_KEY => [
+                'foo.phtml' => '10',
+                'bar.phtml' => '10',
+            ],
+        ];
+        $cachedBlock = $layout->createBlock(Template::class, 'test1', ['data' => $cachedBlockDependencies]);
+        $cachedBlock->setData('cache_lifetime', 5000);
+
+        $block2Dependencies = [
+            BlockJsDependencies::HYVA_JS_BLOCK_DEPENDENCIES_KEY    => [
+                'buz.block' => '20',
+                'bar.block' => '20',
+            ],
+            BlockJsDependencies::HYVA_JS_TEMPLATE_DEPENDENCIES_KEY => [
+                'foo.phtml' => '10',
+                'buz.phtml' => '30',
+            ],
+        ];
+        $block2 = $layout->createBlock(Template::class, 'test2', ['data' => $block2Dependencies]);
+
+        $layout->createBlock(Template::class, 'foo.block');
+        $layout->createBlock(Template::class, 'buz.block');
+
+        $cachedBlock->setChild('test2', $block2);
+        $cache->remove($cachedBlock->getCacheKey());
+
+        $sut = $objectManager->create(RegisterPageJsDependencies::class, [
+            'jsDependencyRegistry' => $dependencyRegistry,
+            'layout'               => $layout,
+            'cache'                => $cache,
+        ]);
+        $sut->execute($objectManager->create(Event::class, [
+            'data' => [
+                'block'     => $cachedBlock,
+                'transport' => $objectManager->create(DataObject::class),
+            ],
+        ]));
+
+        $deps = $dependencyRegistry->getUnsortedJsDependencies();
+        $this->assertSame([
+            [
+                'block'    => $layout->getBlock('foo.block'),
+                'priority' => '10',
+            ],
+            [
+                'block'    => $layout->getBlock('buz.block'),
                 'priority' => '20',
             ],
             [
@@ -93,7 +164,7 @@ class RegisterPageJsDependenciesTest extends TestCase
             [
                 'template' => 'buz.phtml',
                 'priority' => '30',
-            ],
+            ]
         ], values($deps));
     }
 }
