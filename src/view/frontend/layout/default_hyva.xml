@@ -17,6 +17,7 @@
         <referenceContainer name="before.body.end">
             <block name="script-alpine-js" template="Hyva_Theme::page/js/alpinejs.phtml">
                 <block name="alpine-plugin-intersect" template="Hyva_Theme::page/js/plugins/intersect.phtml"/>
+                <block name="alpine-plugin-load" template="Hyva_Theme::page/js/plugins/load.phtml"/>
             </block>
             <block name="script-cookies" template="Hyva_Theme::page/js/cookies.phtml"/>
             <block name="script-private-content" template="Hyva_Theme::page/js/private-content.phtml"/>
