@@ -19,5 +19,14 @@ $version = $themeLibrary->getVersionIdFor('defer-plugin')
     ?: $themeLibrary->getVersionIdFor('alpine')
     ?: '2';
 
+$deferred = $block->getData('deferred_components') ?? [];
+
 ?>
+<?php if ($deferred): ?>
+<script>
+    for (const [selector, deferUntil] of Object.entries(<?= /** @noEscape */ json_encode($deferred) ?>)) {
+        document.querySelectorAll(selector).forEach(el => el.setAttribute('x-defer', `${deferUntil}`));
+    }
+</script>
+<?php endif ?>
 <?= /** @noEscape */ $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/defer.phtml")) ?>
