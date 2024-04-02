@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 use function array_values as values;
 
 /**
- * @cover \Hyva\Theme\Observer\RegisterPageJsDependencies
+ * @covers \Hyva\Theme\Observer\RegisterPageJsDependencies
  */
 class RegisterPageJsDependenciesTest extends TestCase
 {
