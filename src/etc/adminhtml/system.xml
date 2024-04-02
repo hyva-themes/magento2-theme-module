@@ -119,6 +119,19 @@
                     <comment>The number of milliseconds, after which success messages disappear by default. Leave empty to disable automatic hiding.</comment>
                 </field>
             </group>
+            <group id="alpine_defer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="20" translate="label">
+                <label>Deferred Alpine.js Components</label>
+                <field id="defer_idle_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Defer until idle timeout</label>
+                    <comment>The number of milliseconds after which Alpine components deferred until the browser is idle will be initialized at the latest.</comment>
+                </field>
+                <field id="deferred_components" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label,comment">
+                    <label>Defer components</label>
+                    <comment><![CDATA[Valid defer until values: <strong>interact</strong>, <strong>intersect</strong>, <strong>idle</strong>, <strong>event:eventname</strong>.<br/>Configuring many deferred components here may increase the Total Blocking Time. Consider defering components by changing the PHTML templates instead.]]></comment>
+                    <frontend_model>Hyva\Theme\Block\Adminhtml\Form\Field\DeferredAlpineComponents</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
         </section>
 
         <section id="catalog">

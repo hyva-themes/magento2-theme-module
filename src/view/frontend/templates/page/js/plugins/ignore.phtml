@@ -19,6 +19,8 @@ $version = $themeLibrary->getVersionIdFor('ignore-plugin')
     ?: $themeLibrary->getVersionIdFor('alpine')
     ?: '2';
 
-if ($version === '2') {
-    /** @noEscape */ echo $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/ignore.phtml"));
+if ($version !== '2') {
+    return;
 }
+?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/ignore.phtml")) ?>

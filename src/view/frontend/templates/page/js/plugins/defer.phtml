@@ -11,15 +11,26 @@ declare(strict_types=1);
 /** @var ViewModelRegistry $viewModels */
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\StoreConfig;
 use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
 use Magento\Framework\View\Element\Template;
 
 $themeLibrary = $viewModels->require(ThemeLibrariesConfig::class);
+$storeConfig = $viewModels->require(StoreConfig::class);
+$block->setData('defer_idle_timeout', $storeConfig->getStoreConfig('hyva_theme_general/alpine_defer/defer_idle_timeout'));
+
 $version = $themeLibrary->getVersionIdFor('defer-plugin')
     ?: $themeLibrary->getVersionIdFor('alpine')
     ?: '2';
 
 $deferred = $block->getData('deferred_components') ?? [];
+
+if ($deferredComponentsConfig = $storeConfig->getStoreConfig('hyva_theme_general/alpine_defer/deferred_components')) {
+    foreach (json_decode($deferredComponentsConfig, true) ?: [] as $tuple) {
+        $deferred[$tuple['selector']] = $tuple['defer_until'];
+    }
+}
+
 
 ?>
 <?php if ($deferred): ?>

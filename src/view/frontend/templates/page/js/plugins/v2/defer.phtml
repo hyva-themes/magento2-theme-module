@@ -67,7 +67,7 @@ use Magento\Framework\View\Element\Template;
                         onIntersect(el).then(() => runComponent(el))
                         break;
                     case 'idle':
-                        window.requestIdleCallback(() => runComponent(el), {timeout: 4000})
+                        window.requestIdleCallback(() => runComponent(el), {timeout: <?= (int) ($block->getData('defer_idle_timeout') ?? 4000) ?>})
                         break;
                     case 'eager':
                         runComponent(el);

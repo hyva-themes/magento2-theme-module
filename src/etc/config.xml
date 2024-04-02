@@ -9,6 +9,11 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
+        <hyva_theme_general>
+            <alpine_defer>
+                <defer_idle_timeout>4000</defer_idle_timeout>
+            </alpine_defer>
+        </hyva_theme_general>
         <catalog>
             <frontend>
                 <show_add_to_compare_in_list>1</show_add_to_compare_in_list>
