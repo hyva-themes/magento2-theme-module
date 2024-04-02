@@ -21,8 +21,8 @@ use Magento\Framework\View\Element\Template;
         "use strict";
 
         const hasAlpine = new Promise(resolve => {
-            window.addEventListener('hyva-alpine:x-load-initialized', resolve, {once: true, passive: true})
-        })
+            window.addEventListener('alpine:initialized', resolve, {once: true, passive: true});
+        });
 
         const hasInteract = new Promise(resolve => {
             (events => {
@@ -51,24 +51,15 @@ use Magento\Framework\View\Element\Template;
         function runComponent(el) {
             hasAlpine.then(() => {
                 el.removeAttribute('x-ignore');
-                el.setAttribute('x-data', el.getAttribute('x-data-ignored'));
-                el.removeAttribute('x-data-ignored');
-                queueMicrotask(() => Alpine.initializeComponent(el));
+                queueMicrotask(() => Alpine.initTree(el));
             });
         }
 
         function initDeferredComponents() {
-            document.querySelectorAll('[x-ignore]').forEach(el => {
-                if (el.hasAttribute('x-data')) {
-                    el.setAttribute('x-data-ignored', el.getAttribute('x-data'));
-                    el.removeAttribute('x-data');
-                }
-            })
-            document.querySelectorAll('[x-load]').forEach(el => {
-                if (! el.hasAttribute('x-ignore')) {
-                    return;
-                }
-                switch (el.getAttribute('x-load')) {
+            document.querySelectorAll('[x-data][x-defer]').forEach(el => {
+                el.setAttribute('x-ignore', '');
+                const deferUntil = (el.getAttribute('x-defer') || '').trim();
+                switch (deferUntil) {
                     case 'interact':
                         hasInteract.then(() => runComponent(el));
                         break;
@@ -76,20 +67,19 @@ use Magento\Framework\View\Element\Template;
                         onIntersect(el).then(() => runComponent(el))
                         break;
                     case 'idle':
-                        window.requestIdleCallback(() => runComponent(el), {timeout: 3500})
+                        window.requestIdleCallback(() => runComponent(el), {timeout: 4000})
                         break;
                     case 'eager':
                         runComponent(el);
+                        break;
+                    default:
+                        if (deferUntil.startsWith('event:') && deferUntil.length > 6) {
+                            window.addEventListener(deferUntil.substring(6), () => runComponent(el), {once: true, passive: true});
+                        }
                 }
             });
         }
 
-
-        const initAlpine = window.deferLoadingAlpine || ((callback) => callback());
-        window.deferLoadingAlpine = (callback) => {
-            initDeferredComponents()
-            initAlpine(callback);
-            window.dispatchEvent(new Event('hyva-alpine:x-load-initialized'));
-        };
+        window.addEventListener('alpine:init', initDeferredComponents, {once: true, passive: true});
     })()
 </script>
