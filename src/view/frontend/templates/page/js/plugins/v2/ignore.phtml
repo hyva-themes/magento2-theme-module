@@ -17,12 +17,14 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 ?>
 <script>
-    (() => {
+    (function () {
+        "use strict";
+
         const initAlpine = window.deferLoadingAlpine || ((callback) => callback());
         window.deferLoadingAlpine = (callback) => {
             const origInitializeComponent = Alpine.initializeComponent;
             Alpine.initializeComponent = function (el) {
-                if (! el.hasAttribute('x-ignore')) {
+                if (! el.closest('[x-ignore]')) {
                     origInitializeComponent.call(this, el);
                 }
             };
