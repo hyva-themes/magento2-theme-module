@@ -1,0 +1,26 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
+use Magento\Framework\View\Element\Template;
+
+$themeLibrary = $viewModels->require(ThemeLibrariesConfig::class);
+$version = $themeLibrary->getVersionIdFor('ignore-plugin')
+    ?: $themeLibrary->getVersionIdFor('alpine')
+    ?: '2';
+
+if ($version !== '2') {
+    return;
+}
+?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/ignore.phtml")) ?>

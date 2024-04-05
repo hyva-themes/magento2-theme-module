@@ -1,0 +1,93 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2022-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+?>
+<script>
+    (function () {
+        "use strict";
+
+        const hasAlpine = new Promise(resolve => {
+            window.addEventListener('hyva-alpine:x-defer-initialized', resolve, {once: true, passive: true})
+        })
+
+        const hasInteract = new Promise(resolve => {
+            (events => {
+                const onInteract = () => {
+                    resolve();
+                    events.forEach(type => window.removeEventListener(type, onInteract));
+                }
+                events.forEach(type => window.addEventListener(type, onInteract, {once: true, passive: true}))
+            })(['touchstart', 'mouseover', 'wheel', 'scroll', 'keydown'])
+        });
+
+        const onIntersect = (el) => {
+            return new Promise(resolve => {
+                const observer = new IntersectionObserver(entries => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting) {
+                            observer.disconnect()
+                            resolve();
+                        }
+                    }
+                }, {});
+                observer.observe(el);
+            });
+        }
+
+        function runComponent(el) {
+            hasAlpine.then(() => {
+                el.removeAttribute('x-ignore');
+                queueMicrotask(() => Alpine.initializeComponent(el));
+            });
+        }
+
+        function initDeferredComponents() {
+            document.querySelectorAll('[x-data][x-defer]').forEach(el => {
+                el.setAttribute('x-ignore', '');
+                const deferUntil = (el.getAttribute('x-defer') || '').trim();
+                switch (deferUntil) {
+                    case 'interact':
+                        hasInteract.then(() => runComponent(el));
+                        break;
+                    case 'intersect':
+                        onIntersect(el).then(() => runComponent(el))
+                        break;
+                    case 'idle':
+                        window.requestIdleCallback
+                            ? window.requestIdleCallback(() => runComponent(el), {timeout: <?= (int) ($block->getData('defer_idle_timeout') ?? 4000) ?>})
+                            : setTimeout(() => runComponent(el), <?= (int) ($block->getData('defer_idle_timeout') ?? 4000) ?>);
+                        break;
+                    case 'eager':
+                        runComponent(el);
+                        break;
+                    default:
+                        if (deferUntil.startsWith('event:') && deferUntil.length > 6) {
+                            window.addEventListener(deferUntil.substring(6), () => runComponent(el), {once: true, passive: true});
+                        }
+                }
+            });
+        }
+
+
+        const initAlpine = window.deferLoadingAlpine || ((callback) => callback());
+        window.deferLoadingAlpine = (callback) => {
+            initDeferredComponents()
+            initAlpine(callback);
+            window.dispatchEvent(new Event('hyva-alpine:x-defer-initialized'));
+        };
+    })()
+</script>

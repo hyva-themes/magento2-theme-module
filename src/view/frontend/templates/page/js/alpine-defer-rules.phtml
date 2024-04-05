@@ -1,0 +1,34 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\View\Element\Template;
+
+$storeConfig = $viewModels->require(StoreConfig::class);
+$deferred = $block->getData('deferred_components') ?? [];
+
+if ($deferredComponentsConfig = $storeConfig->getStoreConfig('hyva_theme_general/alpine_defer/deferred_components')) {
+    foreach (json_decode($deferredComponentsConfig, true) ?: [] as $tuple) {
+        $deferred[$tuple['selector']] = $tuple['defer_until'];
+    }
+}
+
+
+?>
+<?php if ($deferred): ?>
+<script>
+    for (const [selector, deferUntil] of Object.entries(<?= /** @noEscape */ json_encode($deferred) ?>)) {
+        document.querySelectorAll(selector).forEach(el => el.setAttribute('x-defer', `${deferUntil}`));
+    }
+</script>
+<?php endif ?>

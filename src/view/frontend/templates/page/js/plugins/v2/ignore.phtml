@@ -1,0 +1,34 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2022-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+?>
+<script>
+    (function () {
+        "use strict";
+
+        const initAlpine = window.deferLoadingAlpine || ((callback) => callback());
+        window.deferLoadingAlpine = (callback) => {
+            const origInitializeComponent = Alpine.initializeComponent;
+            Alpine.initializeComponent = function (el) {
+                if (! el.closest('[x-ignore]')) {
+                    origInitializeComponent.call(this, el);
+                }
+            };
+            initAlpine(callback);
+        };
+    })()
+</script>

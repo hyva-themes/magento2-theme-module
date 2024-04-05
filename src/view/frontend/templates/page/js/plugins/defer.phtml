@@ -1,0 +1,28 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
+use Magento\Framework\View\Element\Template;
+
+$themeLibrary = $viewModels->require(ThemeLibrariesConfig::class);
+$storeConfig = $viewModels->require(StoreConfig::class);
+$block->setData('defer_idle_timeout', $storeConfig->getStoreConfig('hyva_theme_general/alpine_defer/defer_idle_timeout'));
+
+$version = $themeLibrary->getVersionIdFor('defer-plugin')
+    ?: $themeLibrary->getVersionIdFor('alpine')
+    ?: '2';
+
+?>
+<?= $block->getChildHtml('alpine-defer-rules') ?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/defer.phtml")) ?>
