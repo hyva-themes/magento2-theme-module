@@ -10,22 +10,26 @@
         function src_default(Alpine) {
             Alpine.directive("intersect", (el, { value, expression, modifiers }, { evaluateLater, cleanup }) => {
                 let evaluate = evaluateLater(expression);
-                let options = {
-                    rootMargin: getRootMargin(modifiers),
-                    threshold: getThreshhold(modifiers)
-                };
-                let observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting === (value === "leave"))
-                            return;
-                        evaluate();
-                        modifiers.includes("once") && observer.disconnect();
+                if ("IntersectionObserver" in window) {
+                    let options = {
+                        rootMargin: getRootMargin(modifiers),
+                        threshold: getThreshhold(modifiers)
+                    };
+                    let observer = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting === (value === "leave"))
+                                return;
+                            evaluate();
+                            modifiers.includes("once") && observer.disconnect();
+                        });
+                    }, options);
+                    observer.observe(el);
+                    cleanup(() => {
+                        observer.disconnect();
                     });
-                }, options);
-                observer.observe(el);
-                cleanup(() => {
-                    observer.disconnect();
-                });
+                } else {
+                    evaluate();
+                }
             });
         }
         function getThreshhold(modifiers) {

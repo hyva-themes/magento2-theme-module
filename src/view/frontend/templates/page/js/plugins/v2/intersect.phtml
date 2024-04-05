@@ -92,12 +92,11 @@
                                 const modifiers = reference.modifiers;
 
                                 if (type === DIRECTIVE) {
-                                    const options = {
-                                        rootMargin: getRootMargin(modifiers),
-                                        threshold: getThreshhold(modifiers),
-                                    };
-
                                     if ("IntersectionObserver" in window) {
+                                        const options = {
+                                            rootMargin: getRootMargin(modifiers),
+                                            threshold: getThreshhold(modifiers),
+                                        };
                                         const observer = new IntersectionObserver((elements) => {
                                             elements.forEach((element) => {
                                                 // Ignore element if intersecting in leave mode,
