@@ -96,24 +96,19 @@
                                         rootMargin: getRootMargin(modifiers),
                                         threshold: getThreshhold(modifiers),
                                     };
+                                    const observer = new IntersectionObserver((elements) => {
+                                        elements.forEach((element) => {
+                                            // Ignore element if intersecting in leave mode,
+                                            // or not intersecting in enter mode
+                                            if (element.isIntersecting === (value === 'leave')) return
 
-                                    if ("IntersectionObserver" in window) {
-                                        const observer = new IntersectionObserver((elements) => {
-                                            elements.forEach((element) => {
-                                                // Ignore element if intersecting in leave mode,
-                                                // or not intersecting in enter mode
-                                                if (element.isIntersecting === (value === 'leave')) return
+                                            component.evaluateReturnExpression(el, expression, extraVars);
 
-                                                component.evaluateReturnExpression(el, expression, extraVars);
+                                            modifiers.includes("once") && observer.disconnect();
+                                        });
+                                    }, options);
 
-                                                modifiers.includes("once") && observer.disconnect();
-                                            });
-                                        }, options);
-
-                                        observer.observe(el);
-                                    } else {
-                                        component.evaluateReturnExpression(el, expression, extraVars);
-                                    }
+                                    observer.observe(el);
                                 }
                             });
                         }

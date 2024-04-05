@@ -1,0 +1,39 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2022-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/*
+ * Dummy IntersectionObserver fallback that is only intended to execute intersection callbacks immediately.
+ * This is not a full implementation - it is only intended to be used with the x-intersect and x-defer plugins.
+ *
+ * Note: x-intersect.leave will never be evaluated. All other intersection modifiers will evaluate on page load.
+ *
+ * Remove this once Hyvä drops support for Opera Mobile v73 (all other supported browsers implement IntersectionObserver).
+ * Reference: https://caniuse.com/intersectionobserver
+ */
+
+?>
+<script>
+    if (!window.IntersectionObserver) {
+        window.IntersectionObserver = function (callback) {
+            this.observe = el => el && callback(this.takeRecords());
+            this.takeRecords = () => [{isIntersecting: true, intersectionRatio: 1}];
+            this.disconnect = () => {};
+            this.unobserve = () => {};
+        }
+    }
+</script>
