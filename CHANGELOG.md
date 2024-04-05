@@ -7,7 +7,63 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.6...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.7...main
+
+## [1.3.7] - 2024-04-05
+
+[1.3.7]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.6...1.3.7
+
+### Added
+
+- **Add Alpine.js x-defer directive**
+  This new directive allows defering the initialization of an alpine component until a given condition. Possible attribute
+  values are `interact`, `intersect`, `idle`, and `event:eventname`.  
+  It can help reducing the TBT on pages with many Alpine components.
+  The theme-module automatically injects the directive into a number of components with JavaScript.  
+  These automatically deferred components can be configured with both layout XML and in the Magento system configuration.  
+
+  For details, please refer to [merge request #444](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/444) and [the x-defer documentation](https://docs.hyva.io/hyva-themes/view-utilities/alpine-defer-plugin.html).
+
+- **Add Alpine.js x-ignore directive**
+  The x-ignore directive - available in Alpine v3 - has been backported to Alpine v2 for Hyvä 1.3.7.  
+  It is utilized in the x-defer directive implementation.
+
+  For details, please refer to [merge request #444](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/444) and [the x-defer documentation](https://docs.hyva.io/hyva-themes/view-utilities/alpine-ignore-plugin.html).
+
+- **Add PHP View Model to support Magento_OrderCancellationUi**
+  For details, please refer to [merge request #445](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/445).
+
+- **Speculation-rules-api Page Pre-Render Experiment**
+  The new speculation rule browser API allows for an improved user experience by pre-rendering pages a user is likely to visit next based on JSON based rules. For more information on the browser API please visit [developer.chrome.com/docs/web-platform/prerender-pages](https://developer.chrome.com/docs/web-platform/prerender-pages) and [nitropack.io/blog/post/speculation-rules-api](https://nitropack.io/blog/post/speculation-rules-api).  
+
+   By default the feature is disabled. It can be enabled in the system configuration found at  
+   *Hyvä Themes > Experimental > Experimental Features > Enable Preloading Speculation Rules*
+
+   For details, please refer to [merge request 448](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/448).
+
+- **Call IsCaptchaEnabledInterface::isCaptchaEnabledFor for extension compatibility**
+  Previously the recaptcha implementation only accessed the system configuration values directly.  
+  By also using the interface compatiblity with related third party modules is improved.
+
+  For details, please refer to [issue request 356](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/356).
+
+### Changed
+
+- **Gracefully handle browsers without intersection observer**
+  Now intersection observer callbacks will fall back to executing immediately on supported browsers that don't
+  implement InteractionObserver natively (currently Mobile Opera v73 is the only one of the supported browsers
+  missing InteractionObserver).
+
+  For details, please refer to [merge request 449](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/449). 
+
+- **Fix default section data for instant purchase section source model**
+  Previously the default section data implementation introduced in 1.3.6 caused issue with the Magento_InstantPurchase module under some circumstances.
+
+  For details, please refer to [issue 371](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/371).
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.6] - 2024-03-28
 
