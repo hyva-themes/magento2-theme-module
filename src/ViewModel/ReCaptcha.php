@@ -11,8 +11,11 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Module\ModuleListInterface;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
+use Magento\ReCaptchaUi\Model\IsCaptchaEnabledInterface;
 use Magento\Store\Model\ScopeInterface;
 
 class ReCaptcha implements ArgumentInterface
@@ -51,13 +54,27 @@ class ReCaptcha implements ArgumentInterface
     /** @var string[] */
     private $resultFieldNames;
 
+    /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
+     * @var ModuleListInterface
+     */
+    private $moduleList;
+
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         LayoutInterface $layout,
+        ModuleListInterface  $moduleList,
+        ObjectManagerInterface $objectManager,
         array $resultFieldNames = []
     ) {
         $this->scopeConfig      = $scopeConfig;
         $this->layout           = $layout;
+        $this->moduleList       = $moduleList;
+        $this->objectManager    = $objectManager;
         $this->resultFieldNames = $resultFieldNames;
     }
 
@@ -121,7 +138,9 @@ class ReCaptcha implements ArgumentInterface
      */
     private function getSelectedTypeForForm(string $formId): ?string
     {
-        return $this->scopeConfig->getValue(self::XML_CONFIG_PATH_RECAPTCHA . $formId, ScopeInterface::SCOPE_STORE);
+        return $this->isCaptchaEnabledFor($formId)
+            ? $this->scopeConfig->getValue(self::XML_CONFIG_PATH_RECAPTCHA . $formId, ScopeInterface::SCOPE_STORE)
+            : null;
     }
 
     /**
@@ -178,5 +197,17 @@ class ReCaptcha implements ArgumentInterface
         }
 
         return self::RECAPTCHA_SCRIPT_TOKEN_BLOCK;
+    }
+
+    private function isCaptchaEnabledFor(string $key): bool
+    {
+        if (! $this->moduleList->has('Magento_ReCaptchaUi')) {
+            return false;
+        }
+
+        // At this place we know the module is installed and enabled, so we can reference the object.
+        // We use the instance instead of accessing the store config directly so extensions using it
+        // as a customization point work with Hyvä.
+        return $this->objectManager->get(IsCaptchaEnabledInterface::class)->isCaptchaEnabledFor($key);
     }
 }
