@@ -19,13 +19,15 @@
                 <block name="alpine-plugin-intersect" template="Hyva_Theme::page/js/plugins/intersect.phtml"/>
                 <block name="alpine-plugin-ignore" template="Hyva_Theme::page/js/plugins/ignore.phtml"/>
                 <block name="alpine-plugin-defer" template="Hyva_Theme::page/js/plugins/defer.phtml">
-                    <!--
-                    <arguments>
-                        <argument name="deferred_components" xsi:type="array">
-                            <item name=".product-slider > div > section[x-data]" xsi:type="string">intersect</item>
-                        </argument>
-                    </arguments>
-                    -->
+                    <block name="alpine-defer-rules" template="Hyva_Theme::page/js/alpine-defer-rules.phtml">
+                        <!--
+                        <arguments>
+                            <argument name="deferred_components" xsi:type="array">
+                                <item name=".product-slider > div > section[x-data]" xsi:type="string">intersect</item>
+                            </argument>
+                        </arguments>
+                        -->
+                    </block>
                 </block>
             </block>
             <block name="script-cookies" template="Hyva_Theme::page/js/cookies.phtml"/>

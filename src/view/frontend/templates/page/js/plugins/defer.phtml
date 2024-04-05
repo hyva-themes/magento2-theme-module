@@ -23,21 +23,6 @@ $version = $themeLibrary->getVersionIdFor('defer-plugin')
     ?: $themeLibrary->getVersionIdFor('alpine')
     ?: '2';
 
-$deferred = $block->getData('deferred_components') ?? [];
-
-if ($deferredComponentsConfig = $storeConfig->getStoreConfig('hyva_theme_general/alpine_defer/deferred_components')) {
-    foreach (json_decode($deferredComponentsConfig, true) ?: [] as $tuple) {
-        $deferred[$tuple['selector']] = $tuple['defer_until'];
-    }
-}
-
-
 ?>
-<?php if ($deferred): ?>
-<script>
-    for (const [selector, deferUntil] of Object.entries(<?= /** @noEscape */ json_encode($deferred) ?>)) {
-        document.querySelectorAll(selector).forEach(el => el.setAttribute('x-defer', `${deferUntil}`));
-    }
-</script>
-<?php endif ?>
+<?= $block->getChildHtml('alpine-defer-rules') ?>
 <?= /** @noEscape */ $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/defer.phtml")) ?>
