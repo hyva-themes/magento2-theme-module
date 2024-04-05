@@ -52,6 +52,10 @@ class CustomerSectionData implements ArgumentInterface
      */
     public function getDefaultSectionData(): array
     {
+        /*
+         * Ensure no customer specific data is returned by $sectionPool->getSectionsData().
+         * Aside from security considerations, Magento_InstantPurchase causes issues otherwise.
+         */
         $customerId = $this->customerSession->getCustomerId();
         $customerGroupId = $this->customerSession->getCustomerGroupId();
         $this->customerSession->setCustomerId(null);
@@ -59,12 +63,13 @@ class CustomerSectionData implements ArgumentInterface
 
         $sectionData = $this->sectionPool->getSectionsData() ?: [];
 
+        /*
+         * Restore session
+         */
         $this->customerSession->setCustomerId($customerId);
         $this->customerSession->setCustomerGroupId($customerGroupId);
 
-        $sectionData = $this->cleanCustomerSectionData($sectionData);
-
-        return $sectionData;
+        return $this->cleanCustomerSectionData($sectionData);
     }
 
     private function cleanCustomerSectionData(array $sectionData): array
