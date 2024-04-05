@@ -38,6 +38,7 @@
             <block name="require-alpine-v3" template="Hyva_Theme::page/js/require-min-alpine-version.phtml"/>
             <block name="init.external.scripts" template="Hyva_Theme::page/js/init-external-scripts.phtml"/>
             <block name="page-js-dependencies" template="Hyva_Theme::page/page-js-dependencies.phtml"/>
+            <block name="speculationrules" template="Hyva_Theme::page/js/speculationrules.phtml" ifconfig="hyva_theme_experimental/feature_flag/speculationrules"/>
             <block name="default-section-data" template="Hyva_Theme::page/default-section-data.phtml" after="-"/>
         </referenceContainer>
 
