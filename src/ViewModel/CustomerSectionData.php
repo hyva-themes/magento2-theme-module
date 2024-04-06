@@ -10,16 +10,15 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Customer\CustomerData\SectionPoolInterface;
+use Magento\Customer\CustomerData\SectionPool;
 use Magento\Customer\Model\Group as CustomerGroup;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use function array_keys as keys;
 
 class CustomerSectionData implements ArgumentInterface
 {
     /**
-     * @var SectionPoolInterface
+     * @var SectionPool
      */
     private $sectionPool;
 
@@ -34,7 +33,7 @@ class CustomerSectionData implements ArgumentInterface
     private $defaultSectionDataKeys;
 
     public function __construct(
-        SectionPoolInterface $sectionPool,
+        SectionPool $sectionPool,
         CustomerSession $customerSession,
         array $defaultSectionDataKeys = []
     ) {
@@ -54,14 +53,16 @@ class CustomerSectionData implements ArgumentInterface
     {
         /*
          * Ensure no customer specific data is returned by $sectionPool->getSectionsData().
-         * Aside from security considerations, Magento_InstantPurchase causes issues otherwise.
          */
         $customerId = $this->customerSession->getCustomerId();
         $customerGroupId = $this->customerSession->getCustomerGroupId();
         $this->customerSession->setCustomerId(null);
         $this->customerSession->setCustomerGroupId(CustomerGroup::NOT_LOGGED_IN_ID);
 
-        $sectionData = $this->sectionPool->getSectionsData() ?: [];
+        $defaultSectionData = [];
+        foreach ($this->sectionPool->getSectionNames() as $key) {
+            $defaultSectionData[$key] = $this->getDefaultDataForSection($key);
+        }
 
         /*
          * Restore session
@@ -69,18 +70,17 @@ class CustomerSectionData implements ArgumentInterface
         $this->customerSession->setCustomerId($customerId);
         $this->customerSession->setCustomerGroupId($customerGroupId);
 
-        return $this->cleanCustomerSectionData($sectionData);
+        return $defaultSectionData;
     }
 
-    private function cleanCustomerSectionData(array $sectionData): array
+    private function getDefaultDataForSection(string $name): array
     {
-        foreach (keys($sectionData) as $key) {
-            if (!isset($this->defaultSectionDataKeys[$key])) {
-                $sectionData[$key] = [];
-            } elseif (true !== $this->defaultSectionDataKeys[$key]) {
-                $sectionData[$key] = json_decode($this->defaultSectionDataKeys[$key], true) ?? [];
-            }
+        if (!isset($this->defaultSectionDataKeys[$name])) {
+            return [];
         }
-        return $sectionData;
+        if (true === $this->defaultSectionDataKeys[$name]) {
+            return $this->sectionPool->getSectionsData([$name])[$name];
+        }
+        return json_decode($this->defaultSectionDataKeys[$name], true) ?? [];
     }
 }
