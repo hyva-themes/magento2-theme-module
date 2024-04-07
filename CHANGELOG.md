@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.7...main
 
-## [1.3.7] - 2024-04-05
+## [1.3.7] - 2024-04-08
 
 [1.3.7]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.6...1.3.7
 
@@ -56,8 +56,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   For details, please refer to [merge request 449](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/449). 
 
-- **Fix default section data for instant purchase section source model**
-  Previously the default section data implementation introduced in 1.3.6 caused issue with the Magento_InstantPurchase module under some circumstances.
+- **Fix default section data generation**
+  Previously the default section data implementation introduced in 1.3.6 caused some issues with the Magento_InstantPurchase module under some circumstances as well as potentially causing messages not to be shown to the customer.
 
   For details, please refer to [issue 371](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/371).
 
