@@ -78,7 +78,8 @@
     </type>
 
     <type name="Magento\Customer\Controller\Ajax\Login">
-        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin"/>
+        <!-- The sorOrder is so it runs after \Hyva\ThemeFallback\Plugin\ThemeFallbackPlugin that set's the configured theme -->
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin" sortOrder="30"/>
     </type>
 
     <type name="Hyva\Theme\ViewModel\CustomerSectionData">
