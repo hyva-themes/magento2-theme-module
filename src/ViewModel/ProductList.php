@@ -307,6 +307,7 @@ class ProductList implements ArgumentInterface
     {
         $collection = $this->productCollectionFactory->create();
         $collection->addStoreFilter()
+                   ->setVisibility($this->productVisibility->getVisibleInCatalogIds())
                    ->addAttributeToSelect($this->catalogConfig->getProductAttributes());
 
         $this->loadReviewSummariesIfEnabled($collection);

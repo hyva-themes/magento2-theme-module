@@ -47,7 +47,7 @@ class ProductListTest extends TestCase
 
     /**
      * Product ID 1 - no category (product_simple.php)
-     * Product ID 6 - category 333 (second_product_simple.php, category_with_two_products.php)
+     * Product ID 6 - category 333 (second_product_simple.php (ID 6 visible), category_with_two_products.php (ID 333, not visible))
      * Product ID 333 - Category ID 333 (category_product.php)
      *
      * @magentoAppArea frontend
@@ -61,8 +61,10 @@ class ProductListTest extends TestCase
         $sut->addFilter('category_id', [333], 'in');
         $sut->addAscendingSortOrder('id');
         $items = $sut->getItems();
-        $this->assertCount(2, $items);
-        $this->assertIds([6, 333], $items);
+
+        // Expect only one item to be in the results, since the other product is not visible in catalog.
+        $this->assertCount(1, $items);
+        $this->assertIds([6], $items);
     }
 
     /**
