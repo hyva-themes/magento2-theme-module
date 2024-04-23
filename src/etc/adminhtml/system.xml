@@ -14,7 +14,7 @@
             <label>Hyva Themes</label>
         </tab>
 
-        <section id="hyva_theme_google" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="5" translate="label">
+        <section id="hyva_theme_google" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
             <label>Google Tag Manager</label>
             <tab>hyva_themes</tab>
             <resource>Magento_GoogleAnalytics::google</resource>
@@ -41,7 +41,7 @@
             </group>
         </section>
 
-        <section id="hyva_theme_catalog" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="0" translate="label">
+        <section id="hyva_theme_catalog" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="5" translate="label">
             <label>Catalog</label>
             <tab>hyva_themes</tab>
             <resource>Magento_Catalog::config_catalog</resource>
@@ -108,7 +108,7 @@
             </group>
         </section>
 
-        <section id="hyva_theme_general" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="15" translate="label">
+        <section id="hyva_theme_general" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="0" translate="label">
             <label>General</label>
             <tab>hyva_themes</tab>
             <resource>Magento_Catalog::config_catalog</resource>
