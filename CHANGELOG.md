@@ -7,7 +7,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.7...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.8...main
+
+## [1.3.8] - 2024-04-25
+
+[1.3.8]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.7...1.3.8
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Move the General section to the top of Hyvä system configuration setting sections**
+
+  For details, please refer to [issue 363](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/363).  
+
+  Many thanks to Ruud van Zuidam (Siteation) for the contribution!
+
+- **Verify the form key for customer/ajax/login after the fallback theme is applied**
+
+  This plugin sort order change is part of a fix for the guest login in checkout for the Luma fallback checkout.
+
+  For details, please refer to [merge request #452](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/452).
+
+- **Exclude products not visible in catalog from custom sliders**
+
+  For details, please refer to [issue 368](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/368).
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.7] - 2024-04-08
 
@@ -50,7 +80,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   Previously the recaptcha implementation only accessed the system configuration values directly.  
   By also using the interface compatiblity with related third party modules is improved.
 
-  For details, please refer to [issue request 356](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/356).
+  For details, please refer to [issue 356](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/356).
 
 ### Changed
 
