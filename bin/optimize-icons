@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+
+<?php
+
+function removeAriaHiddenFromSvg($svgFilePath)
+{
+    $svgContent = file_get_contents($svgFilePath);
+    $modifiedSvg = preg_replace('/\s+aria-hidden="true"/i', '', $svgContent);
+    file_put_contents($svgFilePath, $modifiedSvg);
+}
+
+function processSvgFiles($folderPath)
+{
+    $files = scandir($folderPath);
+
+    foreach ($files as $file) {
+        if (in_array($file, ['.', '..'])) continue;
+
+        $filePath = realpath($folderPath . DIRECTORY_SEPARATOR . $file);
+
+        if (pathinfo($filePath, PATHINFO_EXTENSION) === 'svg') {
+            removeAriaHiddenFromSvg($filePath);
+        }
+    }
+}
+
+processSvgFiles('src/view/frontend/web/svg/heroicons/outline');
+processSvgFiles('src/view/frontend/web/svg/heroicons/solid');
