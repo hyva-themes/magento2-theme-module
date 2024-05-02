@@ -91,13 +91,8 @@ use Magento\Framework\View\Element\Template;
                     browserStorage.removeItem(private_content_key);
                 }
 
-                if (isInvalid) {
-                    if (! cookieVersion && document.getElementById('default-section-data')) {
-                        const privateContent = JSON.parse(document.getElementById('default-section-data').innerText.trim());
-                        dispatchPrivateContent(privateContent);
-                    } else {
-                        fetchPrivateContent([]);
-                    }
+                if (isInvalid && cookieVersion) {
+                    fetchPrivateContent([]);
                 } else if (cookieVersion && storageVersion && cookieVersion === storageVersion) {
                     const privateContent = JSON.parse(browserStorage.getItem(private_content_key));
                     if (
@@ -111,7 +106,12 @@ use Magento\Framework\View\Element\Template;
                         fetchPrivateContent([]);
                     }
                 } else {
-                    dispatchPrivateContent({});
+                    if (document.getElementById('default-section-data')) {
+                        const privateContent = JSON.parse(document.getElementById('default-section-data').innerText.trim());
+                        dispatchPrivateContent(privateContent);
+                    } else {
+                        dispatchPrivateContent({});
+                    }
                 }
 
             } catch (error) {
