@@ -53,10 +53,10 @@ class ViewModelRegistry
      * Returns view model instance for given FQN
      *
      * @template T
-     * @param string-class<T> $viewModelClass Fully qualified class name (FQN)
+     * @param class-string<T> $viewModelClass Fully qualified class name (FQN)
      * @param AbstractBlock|null $block Only required if view model is used within a template cached in ESI (ttl="n" in layout XML)
      * @return T
-     * @throw InvalidViewModelClass if class not found or not a view model
+     * @throws InvalidViewModelClass if class not found or not a view model
      */
     public function require(string $viewModelClass, AbstractBlock $block = null): ArgumentInterface
     {
