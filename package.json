@@ -6,8 +6,9 @@
   "scripts": {
     "build:icons:outline": "cp -r ./node_modules/heroicons/outline/*.svg ./src/view/frontend/web/svg/heroicons/outline",
     "build:icons:solid": "cp -r ./node_modules/heroicons/solid/*.svg ./src/view/frontend/web/svg/heroicons/solid",
+    "build:optimize-icons": "./bin/optimize-icons",
     "build:signature": "./bin/generate-icons-signatures",
-    "build": "npm run build:icons:outline && npm run build:icons:solid && npm run build:signature"
+    "build": "npm run build:icons:outline && npm run build:icons:solid && npm run build:optimize-icons && npm run build:signature"
   },
   "devDependencies": {
     "heroicons": "1.0.6"
