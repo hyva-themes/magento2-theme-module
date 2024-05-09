@@ -7,7 +7,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.8...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...main
+
+## [1.3.9] - 2024-05-10
+
+[1.3.9]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.8...1.3.9
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Fixed: Default section data not dispatched on reload**
+
+  Previously the default section data for new visitors was only dispatched once. This only affected visitors without a session.
+
+  For details, please refer to [merge request #457](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/457).
+
+- **Fixed phpdoc type for class-string in ViewModelRegistry**
+
+  For details, please refer to [merge request #458](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/458).
+
+  Many thanks to Thomas Hauschild (E3n) for the contribution!
+
+### Removed
+
+- **Remove accidental aria-hidden on SVG attributes**
+
+  In version 1.3.6, the icon update unintentionally included an additional `aria-hidden="true"` attribute from the heroicon source on all bundled heroicons. This attribute is now removed so it is possible to use the SVG icons together with accessible technology.
+
+  For details, please refer to [issue #387](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/387).  
 
 ## [1.3.8] - 2024-04-25
 
@@ -21,7 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - **Move the General section to the top of Hyvä system configuration setting sections**
 
-  For details, please refer to [issue 363](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/363).  
+  For details, please refer to [issue #363](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/363).  
 
   Many thanks to Ruud van Zuidam (Siteation) for the contribution!
 
