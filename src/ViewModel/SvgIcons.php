@@ -293,7 +293,7 @@ class SvgIcons implements ArgumentInterface
         }
 
         if (!$this->isAriaHidden($attributes) && ! $this->hasTitle($svgXml)) {
-            $svgXml->addChild('title', (string) ($attributes['title'] ?? $icon));
+            $svgXml->title = (string) ($attributes['title'] ?? $icon);
         }
 
         $xml = $svgXml->asXML();

@@ -300,10 +300,29 @@ SVG;
 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
 SVG;
         $expectedSvg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>Example</title></svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12" role="img" foo="bar"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>Example</title></svg>
 SVG;
         $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $inputSvg);
-        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', '', 12, 12, ['title' => 'Example'])));
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', '', 12, 12, ['title' => 'Example', 'foo' => 'bar'])));
+    }
+
+    /**
+     * @test
+     */
+    public function can_process_titles_with_umlauts()
+    {
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
+        $svgIcons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/></svg>
+SVG;
+        $expectedSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="12" height="12" role="img"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 13 4 4L19 7"/><title>Foo &amp; Bar - &#xC4;hm</title></svg>
+SVG;
+        $this->createViewFile('Hyva_Theme/web/svg/custom-icon.svg', $inputSvg);
+        $this->assertEquals($expectedSvg, trim($svgIcons->renderHtml('custom-icon', '', 12, 12, ['title' => 'Foo & Bar - Ähm'])));
     }
 
     /**
