@@ -22,22 +22,17 @@ use Magento\Framework\View\Element\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 ?>
-<script>
-    if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
-        const specScript = document.createElement('script');
-        specScript.type = 'speculationrules';
-        specRules = {
-            'prerender': [{
-                'where': {
-                    'and': [
-                        { 'href_matches': '/*.html' },
-                        { 'not': {'selector_matches': '.do-not-prerender'}}
-                    ]
-                },
-                'eagerness': 'moderate'
-            }]
-        };
-        specScript.textContent = JSON.stringify(specRules);
-        document.body.append(specScript);
-    }
+<script type="speculationrules">
+{
+    "prerender": [{
+        "source": "document",
+        "where": {
+            "and": [
+                { "href_matches": "/*.html" },
+                { "not": {"selector_matches": ".do-not-prerender"}}
+            ]
+        },
+        "eagerness": "moderate"
+    }]
+}
 </script>
