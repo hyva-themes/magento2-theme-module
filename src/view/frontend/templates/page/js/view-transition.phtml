@@ -1,0 +1,64 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2022-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/**
+ * @experimental
+ *
+ * This template may change in backward incompatible ways without notice,
+ * since the view-transition browser API it depends on is experimental, too.
+ *
+ * @link https://developer.chrome.com/docs/web-platform/view-transitions/cross-document
+ * @link https://caniuse.com/mdn-css_at-rules_view-transition
+ */
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+?>
+
+<script>
+    const setTransitionNameBetweenGallery = async (url, promise) => {
+        if (window.matchMedia('(prefers-reduced-motion)').matches) return;
+
+        const productGallery = document.getElementById('gallery');
+        const targetElement = productGallery
+            ? productGallery.querySelector('img').parentNode
+            : document.querySelector(`.product-item-photo[href="${url}"]`);
+
+        if (targetElement) {
+            targetElement.style.viewTransitionName = `view-transition-to-gallery`;
+            await promise;
+            targetElement.style.viewTransitionName = '';
+        }
+    };
+
+    window.addEventListener('pageswap', async (e) => {
+        if (!e.viewTransition) return;
+        const targetUrl = new URL(e.activation.entry.url);
+        setTransitionNameBetweenGallery(targetUrl.href, e.viewTransition.finished);
+    });
+
+    window.addEventListener('pagereveal', async (e) => {
+        if (!e.viewTransition || !navigation.activation.from) return;
+        const fromUrl = new URL(navigation.activation.from.url);
+        // const entryURL = new URL(navigation.activation.entry.url);
+        setTransitionNameBetweenGallery(fromUrl.href, e.viewTransition.ready);
+    });
+</script>
+
+<style>
+    @view-transition {
+        navigation: auto;
+    }
+</style>

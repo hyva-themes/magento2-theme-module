@@ -146,6 +146,15 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[More information: <a href="https://developer.chrome.com/docs/web-platform/prerender-pages">developer.chrome.com/docs/web-platform/prerender-pages</a> and <a href="https://nitropack.io/blog/post/speculation-rules-api">nitropack.io/blog/post/speculation-rules-api</a>.<br/>Browser support: <a href="https://caniuse.com/mdn-html_elements_script_type_speculationrules">caniuse.com/mdn-html_elements_script_type_speculationrules</a>]]></comment>
                 </field>
+                <field id="view_transition" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable View Transitions</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[
+                        More information: <a href="https://developer.chrome.com/docs/web-platform/view-transitions/cross-document">developer.chrome.com/docs/web-platform/view-transitions/cross-document</a>.<br>
+                        Browser support: <a href="https://caniuse.com/mdn-css_at-rules_view-transition">caniuse.com/mdn-css_at-rules_view-transition</a>.<br>
+                        View Transitions works best in combination with the Speculation Rules, since the page is prerenderd.
+                    ]]></comment>
+                </field>
             </group>
         </section>
 
