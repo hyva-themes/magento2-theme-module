@@ -37,12 +37,12 @@ class Date implements ArgumentInterface
     }
 
     /**
-     * Get input date or the current date in UTC format ('Y-m-d')
+     * Get input date or the current date in UTC timezone ('Y-m-d')
      *
      * @param string|null $date
      * @return string
      */
-    public function getDateInUtcFormat(?string $date): string
+    public function getDateYMD(?string $date): string
     {
         return $date ? date('Y-m-d', strtotime($date)) : date('Y-m-d');
     }
