@@ -59,7 +59,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
     ];
 
     private $positionClasses = [
-        'none'          => [],
+        'none'         => [],
         'top'          => ['inset-x-0', 'top-0', 'pt-1'],
         'right'        => ['inset-y-0', 'right-0', 'pr-1'],
         'bottom'       => ['inset-x-0', 'bottom-0', 'pb-1'],
