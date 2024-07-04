@@ -28,8 +28,20 @@ use Magento\Framework\View\Element\Template;
         "source": "document",
         "where": {
             "and": [
-                { "href_matches": "/*.html" },
-                { "not": {"selector_matches": ".do-not-prerender"}}
+                { "href_matches": "/*" },
+                { "not": {
+                    "href_matches": [
+                        "*/customer/*",
+                        "*/search/*",
+                        "*/sales/*",
+                        "*/checkout/*",
+                        "*.pdf"
+                    ]
+                }},
+                { "not": { "selector_matches": ".do-not-prerender" } },
+                { "not": { "selector_matches": "[download]" } },
+                { "not": { "selector_matches": "[rel~=nofollow]" } }
+
             ]
         },
         "eagerness": "moderate"
