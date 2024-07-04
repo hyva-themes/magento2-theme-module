@@ -50,7 +50,7 @@ class SvgIconsTest extends TestCase
         $reflectedClass = new \ReflectionClass(SvgIcons::class);
         $prop = $reflectedClass->getProperty('internalIdUsageCounts');
         $prop->setAccessible(true);
-        $prop->setValue([]);
+        $prop->setValue($reflectedClass, []);
         $prop->setAccessible(false);
     }
 
