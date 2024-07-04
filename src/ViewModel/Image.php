@@ -14,7 +14,10 @@ use Magento\Catalog\Helper\Image as ImageHelper;
 
 class Image implements ArgumentInterface
 {
-    private ImageHelper $imageHelper;
+    /**
+     * @var ImageHelper
+     */
+    private $imageHelper;
 
     public function __construct(
         ImageHelper $imageHelper
@@ -23,7 +26,7 @@ class Image implements ArgumentInterface
     }
 
     /**
-     * Returns the Placeholder-image according to the imageType
+     * Return the Placeholder-image according to the imageType
      */
     public function getPlaceholderImageUrl(string $imageType): string
     {
