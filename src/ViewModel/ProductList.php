@@ -482,7 +482,8 @@ class ProductList implements ArgumentInterface
     public function getConfiguredMaxCrosssellItemCount(): ?int
     {
         $value = $this->scopeConfig->getValue(self::XML_CROSSSELL_PRODUCTS_LIMIT, ConfigScope::SCOPE_STORE);
-        return $value ? (int)$value : null;
+
+        return $value !== null && $value !== '' ? (int)$value : null;
     }
 
     public function includeReviewSummary(): self
