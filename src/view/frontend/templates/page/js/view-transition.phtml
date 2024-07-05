@@ -32,9 +32,10 @@ use Magento\Framework\View\Element\Template;
         if (window.matchMedia('(prefers-reduced-motion)').matches) return;
 
         const productGallery = document.getElementById('gallery');
-        const targetElement = productGallery
-            ? productGallery.querySelector('img').parentNode
-            : document.querySelector(`.product-item-photo[href="${url}"]`);
+        const productListItem = document.querySelector(`.product-item-photo[href="${url}"]`);
+        const targetElement = productListItem
+            ? productListItem
+            : (productGallery ? productGallery.querySelector('img').parentNode : null);
 
         if (targetElement) {
             targetElement.style.viewTransitionName = `view-transition-to-gallery`;
