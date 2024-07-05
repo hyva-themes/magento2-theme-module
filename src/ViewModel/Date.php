@@ -10,30 +10,12 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Framework\Locale\Resolver;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class Date implements ArgumentInterface
 {
-    /**
-     * @var Resolver
-     */
-    protected $localeResolver;
-
-    public function __construct(
-        Resolver $localeResolver
-    ) {
-        $this->localeResolver = $localeResolver;
-    }
-
-    /**
-     * Get the store local
-     *
-     * @return string
-     */
-    public function getLocale(): string
+    public function __construct()
     {
-        return str_replace('_', '-', $this->localeResolver->getLocale());
     }
 
     /**
