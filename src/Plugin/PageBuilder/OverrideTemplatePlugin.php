@@ -66,6 +66,7 @@ class OverrideTemplatePlugin
         $result = $proceed($interceptor, $result);
 
         if ($this->theme->isHyva() && is_string($result)) {
+            $result = $this->removeEagerLoadingBackgroundImageStyles($result);
             $result = $this->unmaskAlpineAttributes($result);
         }
         return $result;
@@ -94,5 +95,15 @@ class OverrideTemplatePlugin
     private function unmaskAlpineAttributes(string $content): string
     {
         return str_replace(array_keys($this->maskedAttributes), array_values($this->maskedAttributes), $content);
+    }
+
+    /**
+     * Remove the CSS generated at \Magento\PageBuilder\Model\Filter\Template::generateBackgroundImageStyles.
+     *
+     * They will be set as the background image url by frontend code.
+     */
+    private function removeEagerLoadingBackgroundImageStyles(string $result): string
+    {
+        return preg_replace('@<style type="text/css">\.background-image-.+?</style>@s', '', $result);
     }
 }
