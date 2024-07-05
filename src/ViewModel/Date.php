@@ -14,6 +14,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class Date implements ArgumentInterface
 {
+    // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedFunction
     public function __construct()
     {
     }
