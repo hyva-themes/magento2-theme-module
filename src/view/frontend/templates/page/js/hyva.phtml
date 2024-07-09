@@ -429,3 +429,4 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
     }( window.hyva = window.hyva || {} ));
 </script>
+<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>

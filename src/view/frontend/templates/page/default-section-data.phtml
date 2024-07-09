@@ -29,3 +29,4 @@ if (! $defaultSectionData) {
 <script type="text/json" id="default-section-data">
     <?= /** @noEscape */ json_encode($defaultSectionData) ?>
 </script>
+<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>

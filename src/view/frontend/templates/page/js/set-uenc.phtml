@@ -4,3 +4,4 @@
         document.addEventListener('submit', event => event.target.action = event.target.action.replace('%25uenc%25', hyva.getUenc()));
     })()
 </script>
+<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>

@@ -268,3 +268,4 @@ $deployMode = $viewModels->require(DeployMode::class);
         document.addEventListener('click', window.hyva.modal.eventListeners.click);
     })();
 </script>
+<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>

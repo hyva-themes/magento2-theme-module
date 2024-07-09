@@ -32,3 +32,4 @@ if ($deferredComponentsConfig = $storeConfig->getStoreConfig('hyva_theme_general
     }
 </script>
 <?php endif ?>
+<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>

@@ -587,4 +587,4 @@ use Magento\Framework\View\Element\Template;
         hyva.formValidation.addRule = (name, validator) => formValidationRules[name] = validator;
     }(window.hyva = window.hyva || {}));
 </script>
-
+<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>

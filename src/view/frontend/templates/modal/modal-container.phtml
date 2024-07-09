@@ -57,4 +57,5 @@ use Magento\Framework\View\Element\Template;
         hyva.modal.excludeSelectorsFromFocusTrap(<?= /** @noEscape */ json_encode($selectors) ?>);
     });
 </script>
+<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
 <?php endif; ?>
