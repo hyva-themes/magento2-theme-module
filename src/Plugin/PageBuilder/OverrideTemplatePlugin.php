@@ -104,6 +104,6 @@ class OverrideTemplatePlugin
      */
     private function removeEagerLoadingBackgroundImageStyles(string $result): string
     {
-        return preg_replace('@<style type="text/css">\.background-image-.+?</style>@s', '', $result);
+        return preg_replace('#<style type="text/css">(@media only screen and [^<]+)?\.background-image-.+?</style>#s', '', $result);
     }
 }
