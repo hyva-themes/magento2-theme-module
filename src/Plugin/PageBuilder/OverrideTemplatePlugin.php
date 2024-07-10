@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Hyva\Theme\Plugin\PageBuilder;
 
 use Hyva\Theme\Service\CurrentTheme;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filter\Template as FrameworkTemplateFilter;
 use Magento\Framework\Math\Random as MathRandom;
 use Magento\Framework\View\ConfigInterface;
@@ -29,6 +31,11 @@ class OverrideTemplatePlugin
     private $mathRandom;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * @var string[]
      */
     private $maskedAttributes = [];
@@ -37,10 +44,14 @@ class OverrideTemplatePlugin
      * @param CurrentTheme $theme
      * @param ConfigInterface $viewConfig
      */
-    public function __construct(CurrentTheme $theme, MathRandom $mathRandom)
-    {
+    public function __construct(
+        CurrentTheme $theme,
+        MathRandom $mathRandom,
+        ScopeConfigInterface $scopeConfig = null
+    ) {
         $this->theme = $theme;
         $this->mathRandom = $mathRandom;
+        $this->scopeConfig = $scopeConfig ?? ObjectManager::getInstance()->get(ScopeConfigInterface::class);
     }
 
     /**
@@ -66,7 +77,9 @@ class OverrideTemplatePlugin
         $result = $proceed($interceptor, $result);
 
         if ($this->theme->isHyva() && is_string($result)) {
-            $result = $this->removeEagerLoadingBackgroundImageStyles($result);
+            if ($this->scopeConfig->getValue('hyva_theme_pagebuilder/background_images/load_on_intersect', 'store')) {
+                $result = $this->removeEagerLoadingBackgroundImageStyles($result);
+            }
             $result = $this->unmaskAlpineAttributes($result);
         }
         return $result;

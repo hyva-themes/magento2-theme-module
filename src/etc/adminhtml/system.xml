@@ -134,6 +134,22 @@
             </group>
         </section>
 
+        <section id="hyva_theme_pagebuilder" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label">
+            <label>Page Builder</label>
+            <tab>hyva_themes</tab>
+            <resource>Magento_Cms::config_cms</resource>
+
+            <group id="background_images" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Background Images</label>
+
+                <field id="load_on_intersect" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Load on intersect</label>
+                    <comment>Enabling this can reduce the initial page load time, but may impact the LCP, depending on the content, images and visitor bandwidth.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+
         <section id="hyva_theme_experimental" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="25" translate="label">
             <label>Experimental</label>
             <tab>hyva_themes</tab>
