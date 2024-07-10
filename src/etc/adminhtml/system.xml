@@ -139,12 +139,12 @@
             <tab>hyva_themes</tab>
             <resource>Magento_Cms::config_cms</resource>
 
-            <group id="background_images" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="background_images" translate="label comment" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Background Images</label>
-
+                <comment>Loading background images on intersection can reduce the initial page load time, but may impact the LCP, depending on the page content, used images and visitor bandwidth.</comment>
                 <field id="load_on_intersect" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Load on intersect</label>
-                    <comment>Enabling this can reduce the initial page load time, but may impact the LCP, depending on the content, images and visitor bandwidth.</comment>
+                    <comment><![CDATA[<strong>Requires hyva-themes/magento2-default-theme 1.3.10 or newer!</strong>]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
