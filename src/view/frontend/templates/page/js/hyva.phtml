@@ -219,6 +219,10 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
         }
 
         hyva.formatPrice = (value, showSign, options = {}) => {
+            const groupSeparator = options.groupSeparator;
+            const decimalSeparator = options.decimalSeparator
+            delete options.groupSeparator;
+            delete options.decimalSeparator;
             const formatter = new Intl.NumberFormat(
                 '<?= $escaper->escapeJs($jsLocale) ?>',
                 Object.assign({
@@ -236,6 +240,10 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                             return '- ';
                         case 'plusSign':
                             return '+ ';
+                        case 'group':
+                            return groupSeparator || value;
+                        case 'decimal':
+                            return decimalSeparator || value;
                         default :
                             return value;
                     }
