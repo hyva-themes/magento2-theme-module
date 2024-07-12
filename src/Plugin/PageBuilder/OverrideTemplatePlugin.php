@@ -11,8 +11,6 @@ declare(strict_types=1);
 namespace Hyva\Theme\Plugin\PageBuilder;
 
 use Hyva\Theme\Service\CurrentTheme;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filter\Template as FrameworkTemplateFilter;
 use Magento\Framework\Math\Random as MathRandom;
 use Magento\Framework\View\ConfigInterface;
@@ -31,11 +29,6 @@ class OverrideTemplatePlugin
     private $mathRandom;
 
     /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
      * @var string[]
      */
     private $maskedAttributes = [];
@@ -47,11 +40,9 @@ class OverrideTemplatePlugin
     public function __construct(
         CurrentTheme $theme,
         MathRandom $mathRandom,
-        ScopeConfigInterface $scopeConfig = null
     ) {
         $this->theme = $theme;
         $this->mathRandom = $mathRandom;
-        $this->scopeConfig = $scopeConfig ?? ObjectManager::getInstance()->get(ScopeConfigInterface::class);
     }
 
     /**
@@ -77,9 +68,7 @@ class OverrideTemplatePlugin
         $result = $proceed($interceptor, $result);
 
         if ($this->theme->isHyva() && is_string($result)) {
-            if ($this->scopeConfig->getValue('hyva_theme_pagebuilder/background_images/load_on_intersect', 'store')) {
-                $result = $this->removeEagerLoadingBackgroundImageStyles($result);
-            }
+            $result = $this->removeEagerLoadingBackgroundImageStyles($result);
             $result = $this->unmaskAlpineAttributes($result);
         }
         return $result;
@@ -111,12 +100,28 @@ class OverrideTemplatePlugin
     }
 
     /**
-     * Remove the CSS generated at \Magento\PageBuilder\Model\Filter\Template::generateBackgroundImageStyles.
+     * Remove the lazy loaded CSS generated in \Magento\PageBuilder\Model\Filter\Template::generateBackgroundImageStyles.
      *
      * They will be set as the background image url by frontend code.
      */
     private function removeEagerLoadingBackgroundImageStyles(string $result): string
     {
-        return preg_replace('#<style type="text/css">(@media only screen and [^<]+)?\.background-image-.+?</style>#s', '', $result);
+        $backgroundIds = [];
+        // Match all lazy loading background image elements
+        if (preg_match_all('/(<[^>]+data-background-lazy-load="true"[^>]+>)/s', $result, $matches)) {
+            $bgElements = $matches[1];
+            // Capture all background image ids
+            if (preg_match_all('/class="[^"]*background-image-([a-z0-9]+)/', implode('', $bgElements), $matches)) {
+                $backgroundIds = array_merge($backgroundIds, $matches[1] ?? []);
+            }
+        }
+
+        if ($backgroundIds) {
+            $idsGroup = implode('|', array_map('preg_quote', $backgroundIds));
+            $regex = sprintf('#<style type="text/css">(?:@media only screen and [^<]+)?\.background-image-(?:%s).+?</style>#s', $idsGroup);
+            return preg_replace($regex, '', $result);
+        }
+
+        return $result;
     }
 }
