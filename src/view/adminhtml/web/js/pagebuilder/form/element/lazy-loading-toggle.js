@@ -1,0 +1,33 @@
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+define([
+    'Magento_Ui/js/form/element/single-checkbox',
+    'Magento_PageBuilder/js/config',
+    'uiRegistry'
+], function (SingleCheckbox, pageBuilderConfig, registry) {
+    'use strict';
+
+    return SingleCheckbox.extend({
+        initialize(options) {
+            this._super(options);
+
+            // The regular configured default values above are overridden by ko listeners, so they don't take effect.
+            // If this is a new element, enforce the default value after the listeners are initialized.
+
+            if (registry.get('pagebuilder_slide_form.pagebuilder_slide_form_data_source').data.background_lazy_load === '') {
+                console.log(JSON.stringify(pageBuilderConfig.getConfig('background_lazy_load_default')));
+                this.default = pageBuilderConfig.getConfig('background_lazy_load_default')
+                    ? this.valueMap.true
+                    : this.valueMap.false
+                this.value(this.default);
+                this.initialValue = this.default;
+                this.checked(this.getReverseValueMap(this.default));
+                this.initialChecked = this.checked();
+            }
+        }
+    });
+});

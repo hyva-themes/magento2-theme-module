@@ -9,15 +9,8 @@
 -->
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <fieldset name="background">
-        <field name="background_lazy_load" sortOrder="17" formElement="checkbox">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <!-- Default to 'false' for backward compatibility. -->
-                    <!-- Using true would break background images for all sites that didn't upgrade the default-theme and -->
-                    <!-- are missing the JS to lazy-load the background images. -->
-                    <item name="default" xsi:type="string">false</item>
-                </item>
-            </argument>
+        <field name="background_lazy_load" sortOrder="17" formElement="checkbox" component="Hyva_Theme/js/pagebuilder/form/element/lazy-loading-toggle">
+            <!-- Note: the default value is set dynamically depending on the system configuration -->
             <settings>
                 <dataType>boolean</dataType>
                 <visible>true</visible>
