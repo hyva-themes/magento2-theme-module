@@ -15,9 +15,10 @@ define([
         initialize(options) {
             this._super(options);
 
-            // The regular configured default values above are overridden by ko listeners, so they don't take effect.
-            // If this is a new element, enforce the default value after the listeners are initialized.
+            // The regular configured default value from pagebuilder_base_form_with_background_attributes.xml is
+            // overridden by ko listeners, so they don't take effect.
 
+            // If this is a new element, enforce the default value after the listeners are initialized.
             const dataProvider = registry.get(options.provider);
             if (dataProvider && dataProvider.data.background_lazy_load === '') {
                 this.default = pageBuilderConfig.getConfig('background_lazy_load_default')
