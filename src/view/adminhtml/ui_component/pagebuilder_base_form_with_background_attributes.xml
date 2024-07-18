@@ -9,7 +9,7 @@
 -->
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <fieldset name="background">
-        <field name="background_lazy_load" sortOrder="17" formElement="checkbox" component="Hyva_Theme/js/pagebuilder/form/element/lazy-loading-toggle">
+        <field name="background_lazy_load" sortOrder="17" formElement="checkbox" component="Hyva_Theme/js/pagebuilder/form/element/background-lazy-loading-toggle">
             <!-- Note: the default value is set dynamically depending on the system configuration -->
             <settings>
                 <dataType>boolean</dataType>

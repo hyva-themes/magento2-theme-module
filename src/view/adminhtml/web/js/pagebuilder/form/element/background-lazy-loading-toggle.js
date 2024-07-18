@@ -18,8 +18,8 @@ define([
             // The regular configured default values above are overridden by ko listeners, so they don't take effect.
             // If this is a new element, enforce the default value after the listeners are initialized.
 
-            if (registry.get('pagebuilder_slide_form.pagebuilder_slide_form_data_source').data.background_lazy_load === '') {
-                console.log(JSON.stringify(pageBuilderConfig.getConfig('background_lazy_load_default')));
+            const dataProvider = registry.get(options.provider);
+            if (dataProvider && dataProvider.data.background_lazy_load === '') {
                 this.default = pageBuilderConfig.getConfig('background_lazy_load_default')
                     ? this.valueMap.true
                     : this.valueMap.false
