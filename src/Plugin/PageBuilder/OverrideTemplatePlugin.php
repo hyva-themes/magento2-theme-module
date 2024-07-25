@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Plugin\PageBuilder;
 
+use Hyva\Theme\Model\InjectImageDimensions;
 use Hyva\Theme\Service\CurrentTheme;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filter\Template as FrameworkTemplateFilter;
 use Magento\Framework\Math\Random as MathRandom;
 use Magento\Framework\View\ConfigInterface;
@@ -34,13 +36,22 @@ class OverrideTemplatePlugin
     private $maskedAttributes = [];
 
     /**
+     * @var InjectImageDimensions
+     */
+    private $injectImageDimensions;
+
+    /**
      * @param CurrentTheme $theme
      * @param ConfigInterface $viewConfig
      */
-    public function __construct(CurrentTheme $theme, MathRandom $mathRandom)
-    {
+    public function __construct(
+        CurrentTheme $theme,
+        MathRandom $mathRandom,
+        InjectImageDimensions $injectImageDimensions = null
+    ) {
         $this->theme = $theme;
         $this->mathRandom = $mathRandom;
+        $this->injectImageDimensions = $injectImageDimensions ?? ObjectManager::getInstance()->get(InjectImageDimensions::class);
     }
 
     /**
@@ -61,6 +72,7 @@ class OverrideTemplatePlugin
     ): string {
         if ($this->theme->isHyva() && is_string($result)) {
             $result = $this->maskAlpineAttributes($result);
+            $result = $this->injectImageDimensions->addNativeImageDimensionsToPageBuilderImages($result);
         }
 
         $result = $proceed($interceptor, $result);

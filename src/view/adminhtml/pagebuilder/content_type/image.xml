@@ -14,9 +14,15 @@
                 <elements>
                     <element name="desktop_image">
                         <attribute name="loading" source="loading"/>
+                        <attribute name="native_dimensions" source="data-use-native-image-dimensions"/>
+                        <attribute name="desktop_image_width" source="width"/>
+                        <attribute name="desktop_image_height" source="height"/>
                     </element>
                     <element name="mobile_image">
                         <attribute name="loading" source="loading"/>
+                        <attribute name="native_dimensions" source="data-use-native-image-dimensions"/>
+                        <attribute name="mobile_image_width" source="width"/>
+                        <attribute name="mobile_image_height" source="height"/>
                     </element>
                 </elements>
             </appearance>
