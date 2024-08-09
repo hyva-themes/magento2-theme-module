@@ -29,8 +29,7 @@ class ProductListWidgetPreviewFixPlugin
     public function __construct(
         CurrentTheme $currentTheme,
         Escaper $escaper
-    )
-    {
+    ) {
         $this->currentTheme = $currentTheme;
         $this->escaper = $escaper;
     }
