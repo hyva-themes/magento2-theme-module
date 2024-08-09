@@ -51,7 +51,7 @@ class ProductListWidgetPreviewFixPlugin
   <link  rel="stylesheet" type="text/css"  media="all" href="{$subject->getViewFileUrl('css/styles.css')}"/>
 </head>
 <body>
-  $result
+  <div style="pointer-events: none">$result</div>
 </body>
 </html>
 EOT;
@@ -59,7 +59,7 @@ EOT;
             return <<<EOT
 <iframe id="{$this->escaper->escapeHtmlAttr($iframeId)}"
         srcdoc="{$this->escaper->escapeHtmlAttr($doc)}"
-        style="width: 100%; border: 0; pointer-events: none"></iframe>
+        style="width: 100%; border: 0;"></iframe>
 <script>
 (() => {
   // update the iframe height to match the content
