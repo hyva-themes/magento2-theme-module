@@ -7,6 +7,9 @@
     <type name="Magento\Theme\Model\Theme\Registration">
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\CheckVirtualThemes"/>
     </type>
+    <type name="Magento\CatalogWidget\Block\Product\ProductsList">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\PageBuilder\ProductListWidgetPreviewFixPlugin"/>
+    </type>
 
     <!-- The shortcut button needs to be defined for the admin area also because of PageBuilder block previews -->
     <virtualType name="Magento\Catalog\Block\ShortcutButtons\InCatalog" type="Magento\Catalog\Block\ShortcutButtons">
