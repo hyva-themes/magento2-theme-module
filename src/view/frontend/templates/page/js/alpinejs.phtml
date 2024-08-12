@@ -19,11 +19,18 @@ use Magento\Framework\View\Element\Template;
 
 $version = $viewModels->require(ThemeLibrariesConfig::class)->getVersionIdFor('alpine');
 
+$block->getChildHtml()
+
+// Reason for the `crossorigin` attribute to be used:
+//
+// Normal script elements pass minimal information to the window.onerror for scripts which do not pass the standard CORS checks.
+// To allow error logging for sites which use a separate domain for static media, the `crossorigin` attribute should be used.
+//
+// Reference: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#crossorigin
+
 ?>
-
-<?= $block->getChildHtml() ?>
-
 <script type="module"
         src="<?= $escaper->escapeUrl($block->getViewFileUrl("Hyva_Theme::js/alpine{$version}.min.js")) ?>"
         defer
+        crossorigin
 ></script>
