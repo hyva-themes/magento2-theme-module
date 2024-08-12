@@ -10,18 +10,18 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Framework\Locale\Resolver;
+use Magento\Framework\Locale\Resolver as LocaleResolver;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class Locale implements ArgumentInterface
 {
     /**
-     * @var Resolver
+     * @var LocaleResolver
      */
     protected $localeResolver;
 
     public function __construct(
-        Resolver $localeResolver
+        LocaleResolver $localeResolver
     ) {
         $this->localeResolver = $localeResolver;
     }
