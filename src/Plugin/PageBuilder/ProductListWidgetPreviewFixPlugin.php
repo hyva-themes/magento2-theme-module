@@ -42,8 +42,18 @@ class ProductListWidgetPreviewFixPlugin
         if (! $this->currentTheme->isHyva()) {
             return $result;
         }
-            $iframeId = uniqid();
+        $iframeId = uniqid();
 
+        $initCarouselJs = $fixCarouselNavJs = '';
+        if (strpos($result, 'widget-product-carousel') !== false) {
+            $initCarouselJs = $subject->fetchView($subject->getTemplateFile('Magento_PageBuilder::widgets/carousel.phtml'));
+            $fixCarouselNavJs = <<<EOT
+      const carouselNav = doc.querySelector('.carousel-nav');
+      if (carouselNav) {
+        carouselNav.style.pointerEvents = 'auto';
+      };
+EOT;
+        }
             $doc = <<<EOT
 <!doctype html>
 <html>
@@ -51,7 +61,8 @@ class ProductListWidgetPreviewFixPlugin
   <link  rel="stylesheet" type="text/css"  media="all" href="{$subject->getViewFileUrl('css/styles.css')}"/>
 </head>
 <body>
-  <div style="pointer-events: none">$result</div>
+  <div style="pointer-events: none" data-content-type="products" data-appearance="carousel">$result</div>
+  {$initCarouselJs}
 </body>
 </html>
 EOT;
@@ -63,12 +74,17 @@ EOT;
 <script>
 (() => {
   // update the iframe height to match the content
-  setTimeout(() => {
   const iframe = document.getElementById('{$this->escaper->escapeJs($iframeId)}');
-  const doc = iframe.contentWindow.document;
-  const height = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
-  iframe.style.height = height + 'px';
-}, 50)
+  iframe.addEventListener('load', () => {
+    // wait until the iframe contents are done rendering.
+    setTimeout(() => {
+      const iframe = document.getElementById('{$this->escaper->escapeJs($iframeId)}');
+      const doc = iframe.contentWindow.document;
+      {$fixCarouselNavJs}
+      const height = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+      iframe.style.height = height + 'px';
+    }, 50);
+  });
 })()
 </script>
 EOT;
