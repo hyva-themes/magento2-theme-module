@@ -241,9 +241,9 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                         case 'plusSign':
                             return '+ ';
                         case 'group':
-                            return groupSeparator || value;
+                            return groupSeparator !== undefined ? groupSeparator : value;
                         case 'decimal':
-                            return decimalSeparator || value;
+                            return decimalSeparator !== undefined ? decimalSeparator : value;
                         default :
                             return value;
                     }
