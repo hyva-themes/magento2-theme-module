@@ -229,14 +229,8 @@
 
         <section id="customer">
             <group id="captcha">
-                <comment>
-                    <![CDATA[
-                        These CAPTCHA options are unsupported by Hyvä.
-                        <a href="https://docs.hyva.io/hyva-themes/view-utilities/recaptcha-in-custom-forms.html#captcha-support-in-hyva" target="_blank">
-                            See the Hyvä documentation for supported CAPTCHA versions.
-                        </a>
-                    ]]>
-                </comment>
+                <comment><![CDATA[These CAPTCHA options are unsupported by Hyvä.<br>
+                See the <a href="https://docs.hyva.io/hyva-themes/view-utilities/recaptcha-in-custom-forms.html#captcha-support-in-hyva" target="_blank">Hyvä documentation for supported CAPTCHA versions</a>.]]></comment>
             </group>
         </section>
     </system>
