@@ -558,6 +558,34 @@ SVG;
     /**
      * @test
      */
+    public function does_not_disambiguate_hex_colors_with_id_overlap()
+    {
+        $this->givenCurrentTheme('Hyva/integration-test');
+        $inputSvg = <<<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 295 59" role="img">
+    <defs>
+        <linearGradient id="aa" x1="24.14" y1="57.36" x2="37.43" y2="50.44" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#aabbcc"/>
+            <stop offset="1" stop-color="#ccbbaa"/>
+        </linearGradient>
+        <linearGradient id="cc" x1="17.63" y1="51.23" x2="56.29" y2="11.21" xlink:href="#aaa"/>
+    </defs>
+    <path d="M37.28,50.68a1.64," style="fill:url(#aa)"/>
+    <path d="M71.45,29.54a6.63," style="fill:url(#cc)"/>
+<title>test</title></svg>
+SVG;
+        $expectedSvg1 = $inputSvg;
+        $expectedSvg2 = str_replace(['id="aa"', 'id="cc"', 'url(#aa)', 'url(#cc)'], ['id="aa_2"', 'id="cc_2"', 'url(#aa_2)', 'url(#cc_2)'], $inputSvg);
+        $this->createViewFile('web/svg/test.svg', $inputSvg);
+        /** @var \Hyva\Theme\ViewModel\SvgIcons $icons */
+        $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
+        $this->assertSame($expectedSvg1, trim($icons->renderHtml('test')));
+        $this->assertSame($expectedSvg2, trim($icons->renderHtml('test')));
+    }
+
+    /**
+     * @test
+     */
     public function can_process_alpine_attributes()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
