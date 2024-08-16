@@ -1,0 +1,130 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+?>
+<script>
+    'use strict';
+
+    hyva.formValidation.setInputAttributeRuleName('accept', 'file-type'); <?php /* Apply to all input fields with 'accept' attribute */ ?>
+    hyva.formValidation.addRule('file-type', function (value, options, field, context) {
+        if (field.element.type !== 'file' || !field.element.files.length || !field.element.accept) {
+            return true;
+        }
+
+        for (const file of Object.values(field.element.files)) {
+            const allowedFileTypesArray = field.element.accept.split(',');
+            const filenameSplit = file.name.split('.');
+            const fileExtension = `.${filenameSplit[filenameSplit.length - 1]}`;
+
+            if (!allowedFileTypesArray.includes(fileExtension)) {
+                return hyva.strf(
+                    '<?= $escaper->escapeJs(
+                        __('%0 is not an allowed file type. Please select a different file.')
+                    ) ?>',
+                    fileExtension
+                ) + hyva.strf(
+                    ' <?= $escaper->escapeJs(
+                        __('Allowed file formats: %0.')
+                    ) ?>',
+                    field.element.accept
+                );
+            }
+        }
+
+        return true;
+    });
+
+    hyva.formValidation.addRule('file-max-size', function (value, options, field, context) {
+        if (!field.element.files.length || !options) {
+            return true;
+        }
+
+        for (const file of Object.values(field.element.files)) {
+            const maxFileSize = options;
+
+            if (file.size > maxFileSize) {
+                const maxSizeMb = maxFileSize / (1024 * 1024);
+                return hyva.strf(
+                    '<?= $escaper->escapeJs(
+                        __('The maximum allowed file size is %0 MB. Please select a different file.')
+                    ) ?>',
+                    maxSizeMb
+                );
+            }
+        }
+
+        return true;
+    });
+
+    hyva.formValidation.addRule('image-max-dimensions', async function (value, options, field, context) {
+        if (!field.element.files.length) {
+            return true;
+        }
+
+        const {width: maxWidth, height: maxHeight} = options;
+
+        if ((!maxWidth && !maxHeight) || (maxWidth === 0 && maxHeight === 0)) {
+            return true; <?php /* If neither maximum width nor maximum height is provided, allow the image */ ?>
+        }
+
+        try {
+            const dimensions = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+
+                    img.onload = function () {
+                        resolve({
+                            width: this.width,
+                            height: this.height
+                        });
+                    };
+
+                    img.onerror = function (e) {
+                        reject(new Error('Failed to load the image.'));
+                    };
+
+                    img.src = e.target.result;
+                };
+
+                reader.onerror = function (e) {
+                    reject(new Error('Failed to read the file.'));
+                };
+
+                reader.readAsDataURL(field.element.files[0]);
+            });
+
+            if ((maxWidth && dimensions.width > maxWidth) || (maxHeight && dimensions.height > maxHeight)) {
+                let errorMessage = '';
+                if (maxWidth && maxHeight) {
+                    errorMessage = hyva.strf('<?= $escaper->escapeJs(__('The maximum allowed image width is %0 (px). The maximum allowed image Height is %1 (px).')) ?>', maxWidth, maxHeight);
+                } else if (maxWidth) {
+                    errorMessage = hyva.strf('<?= $escaper->escapeJs(__('The maximum allowed image width is %0 (px).')) ?>', maxWidth);
+                } else {
+                    errorMessage = hyva.strf('<?= $escaper->escapeJs(__('The maximum allowed image Height is %0 (px).')) ?>', maxHeight);
+                }
+                errorMessage += ' <?= $escaper->escapeJs(__('Please select a different image.')) ?>';
+
+                return errorMessage;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error:', error);
+            return false;
+        }
+    });
+</script>
