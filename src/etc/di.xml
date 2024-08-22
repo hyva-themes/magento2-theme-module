@@ -58,7 +58,10 @@
     </type>
 
     <type name="Magento\Framework\View\Asset\PreProcessor\Minify">
-        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\DisableMinifyPreprocessorForHyvaPlugin"/>
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\DisableJsAndCssMinifierForHyvaPlugin"/>
+    </type>
+    <type name="\Magento\Framework\View\Template\Html\Minifier">
+        <plugin name="hyva_theme" type="\Hyva\Theme\Plugin\Theme\DisableHtmlMinifierForHyvaPlugin"/>
     </type>
 
     <type name="Hyva\Theme\ViewModel\HeroiconsSolid">

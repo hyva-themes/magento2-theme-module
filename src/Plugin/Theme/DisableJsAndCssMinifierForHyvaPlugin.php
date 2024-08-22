@@ -15,7 +15,7 @@ use Magento\Framework\View\Asset\PreProcessor\Chain as PreProcessorChain;
 use Magento\Framework\View\Asset\PreProcessor\Minify as MinifyPreProcessor;
 use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
 
-class DisableMinifyPreprocessorForHyvaPlugin
+class DisableJsAndCssMinifierForHyvaPlugin
 {
     private $memoizedHyvaThemes = [];
 
@@ -58,5 +58,4 @@ class DisableMinifyPreprocessorForHyvaPlugin
         }
         return false;
     }
-
 }
