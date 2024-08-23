@@ -23,7 +23,9 @@ $defaultSectionData = $sectionDataViewModel->getDefaultSectionData();
 if (! $defaultSectionData) {
     return;
 }
+
+// The script type application/json causes issues on some versions of Chrome on Linux with pretty-printing and breakpoints, so we use text/json instead.
 ?>
-<script type="application/json" id="default-section-data">
+<script type="text/json" id="default-section-data">
     <?= /** @noEscape */ json_encode($defaultSectionData) ?>
 </script>
