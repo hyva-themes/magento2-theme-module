@@ -56,6 +56,9 @@
     <type name="Magento\Framework\App\DeploymentConfig\Writer">
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\HyvaModulesConfig\UpdateOnModuleStatusChange"/>
     </type>
+    <type name="Magento\Deploy\Console\Command\App\ConfigImport\Processor">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\HyvaModulesConfig\UpdateOnModuleStatusChange"/>
+    </type>
 
     <type name="Hyva\Theme\ViewModel\HeroiconsSolid">
         <arguments>
