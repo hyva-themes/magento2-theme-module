@@ -212,7 +212,7 @@ class Navigation
             'id' => 'category-node-' . $categoryId,
             'url' => $this->catalogCategory->getCategoryUrl($category),
             'image' => $category->getImageUrl(),
-            'has_active' => in_array((string)$categoryId, explode('/', (string)$currentCategory->getPath()), true),
+            'has_active' => in_array((string)$categoryId, $currentCategory->getPathIds(), true),
             'is_active' => $categoryId == $currentCategory->getId(),
             'is_category' => true,
             'is_parent_active' => $isParentActive,
