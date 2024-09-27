@@ -18,7 +18,7 @@
                 <deferred_components><![CDATA[{"_1712233026687_687":{"selector":".product-slider section[x-data]","defer_until":"intersect"},"_1712233027612_612":{"selector":".product-info [x-data]","defer_until":"intersect"},"_1712233028224_224":{"selector":"#filters-content [x-data]","defer_until":"intersect"},"_1712233028850_850":{"selector":"#review_form","defer_until":"intersect"},"_1712233075252_252":{"selector":"section[x-data^=initRecentlyViewedProductsComponent]","defer_until":"intersect"},"_1712233076143_143":{"selector":"div[x-data^=initBundleOptions]","defer_until":"intersect"},"_1712233077441_441":{"selector":"#product_addtocart_form [x-data]","defer_until":"intersect"},"_1712233109466_466":{"selector":"#notice-cookie-block","defer_until":"intersect"}}]]></deferred_components>
             </alpine_defer>
             <demo_content>
-                <show_hyva_homepage_content>1</show_hyva_homepage_content>
+                <show_homepage_demo_content>1</show_homepage_demo_content>
             </demo_content>
         </hyva_theme_general>
         <catalog>
