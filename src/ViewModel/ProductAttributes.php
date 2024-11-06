@@ -13,9 +13,10 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Catalog\Helper\Output as ProductOutputHelper;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResource;
+use Magento\Eav\Model\Config as EavConfig;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DataObject\IdentityInterface;
-use Magento\Framework\Phrase;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -48,6 +49,11 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
     private $productOutputHelper;
 
     /**
+     * @var EavConfig
+     */
+    private $eavConfig;
+
+    /**
      * @param Registry $registry
      * @param PriceCurrencyInterface $priceCurrency
      */
@@ -55,12 +61,14 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
         Registry $registry,
         ProductResource $productResource,
         PriceCurrencyInterface $priceCurrency,
-        ProductOutputHelper $productOutputHelper
+        ProductOutputHelper $productOutputHelper,
+        EavConfig $eavConfig = null
     ) {
         $this->coreRegistry        = $registry;
         $this->priceCurrency       = $priceCurrency;
         $this->productResource     = $productResource;
         $this->productOutputHelper = $productOutputHelper;
+        $this->eavConfig           = $eavConfig ?? ObjectManager::getInstance()->get(EavConfig::class);
     }
 
     /**
@@ -122,12 +130,15 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
     }
 
     /**
-     * @param AbstractAttribute $attribute
+     * @param AbstractAttribute|string $attribute
      * @param Product $product
      * @return string[]
      */
     public function getAttributeData($attribute, $product)
     {
+        if (is_string($attribute)) {
+            $attribute = $this->eavConfig->getAttribute('catalog_product', $attribute);
+        }
         $code  = $attribute->getAttributeCode();
         $rawValue = $attribute->getFrontend()->getValue($product);
 
@@ -142,6 +153,26 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
             'value' => (string) $value,
             'code'  => $code,
         ];
+    }
+
+    /**
+     * @param Product $product
+     * @param AbstractAttribute|string $attribute
+     * @return string
+     */
+    public function getValue(Product $product, $attribute): string
+    {
+        return $this->getAttributeData($attribute, $product)['value'];
+    }
+
+    /**
+     * @param Product $product
+     * @param AbstractAttribute|string $attribute
+     * @return string
+     */
+    public function getLabel(Product $product, $attribute): string
+    {
+        return (string) $this->getAttributeData($attribute, $product)['label'];
     }
 
     /**
