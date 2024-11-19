@@ -81,7 +81,7 @@ class HtmlBlockCacheTagsStorage
 
     public function save(BlockInterface $block): void
     {
-        if ($block instanceof AbstractBlock && $this->isDoubleCachedBlock($block)) {
+        if ($block instanceof AbstractBlock && $this->isDoubleCachedBlock($block) && $this->isBlockCacheEnabled() && $this->isVarnishFullPageCache()) {
             $this->saveBlockCacheTags($block);
         }
     }
@@ -96,8 +96,7 @@ class HtmlBlockCacheTagsStorage
 
     private function saveBlockCacheTags(AbstractBlock $block): void
     {
-        $tags = unique($this->collectCacheTagsFromBlockAndChildren($block));
-        if ($tags && $this->isBlockCacheEnabled() && $this->isVarnishEnabled()) {
+        if ($tags = unique($this->collectCacheTagsFromBlockAndChildren($block))) {
             $data = $this->serializer->serialize($tags);
             $this->cache->save($data, $this->getTagsCacheKey($block), merge($tags, [BlockCache::CACHE_TAG]));
         }
@@ -136,7 +135,7 @@ class HtmlBlockCacheTagsStorage
         return $this->cacheState->isEnabled(BlockCache::TYPE_IDENTIFIER);
     }
 
-    private function isVarnishEnabled(): bool
+    private function isVarnishFullPageCache(): bool
     {
         return $this->pageCacheConfig->getType() == PageCacheConfig::VARNISH;
     }
