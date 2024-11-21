@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\Observer;
 
 use Hyva\Theme\Model\PageJsDependencyRegistry;
+use Hyva\Theme\Service\CurrentTheme;
 use Hyva\Theme\ViewModel\BlockJsDependencies;
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\DataObject;
@@ -19,6 +20,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 use Magento\TestFramework\ObjectManager;
 use PHPUnit\Framework\TestCase;
+
 use function array_values as values;
 
 /**
@@ -26,6 +28,39 @@ use function array_values as values;
  */
 class RegisterPageJsDependenciesTest extends TestCase
 {
+    /**
+     * @before
+     */
+    public function emulateHyvaTheme(): void
+    {
+        /** @var ObjectManager $objectManager */
+        $objectManager = ObjectManager::getInstance();
+        $objectManager->addSharedInstance(new class extends CurrentTheme
+        {
+            public function __construct()
+            {
+                // Leave empty and don't call parent constructor on purpose
+            }
+
+            public function isHyva(): bool
+            {
+                return true;
+            }
+
+        }, CurrentTheme::class);
+    }
+
+    /**
+     * @after
+     */
+    public function stopHyvaThemeEmulation(): void
+    {
+
+        /** @var ObjectManager $objectManager */
+        $objectManager = ObjectManager::getInstance();
+        $objectManager->removeSharedInstance(CurrentTheme::class);
+    }
+
     public function testDoesNotCollectChildDependenciesFromUncachedBlocks(): void
     {
         $objectManager = ObjectManager::getInstance();
