@@ -147,7 +147,7 @@ use Magento\Framework\View\Element\Template;
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-                .then(response => response.json())
+                .then(response => response.ok && response.json())
                 .then(
                     data => {
                         if (data) {
