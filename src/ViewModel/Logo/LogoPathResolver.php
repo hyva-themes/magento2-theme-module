@@ -71,7 +71,7 @@ class LogoPathResolver extends LogoBlock implements ArgumentInterface
     {
         $path = $this->getPath();
         if ($path !== null && $this->_isFile($path)) {
-            $url = $this->_urlBuilder->getBaseUrl(['_type' => UrlInterface::URL_TYPE_MEDIA]) . $path;
+            $url = $this->_urlBuilder->getDirectUrl($path, ['_type' => UrlInterface::URL_TYPE_MEDIA]);
         } elseif ($logoFile) {
             $url = $this->getViewFileUrl($logoFile);
         } else {
