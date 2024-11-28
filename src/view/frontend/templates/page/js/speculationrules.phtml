@@ -22,22 +22,29 @@ use Magento\Framework\View\Element\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 ?>
-<script>
-    if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
-        const specScript = document.createElement('script');
-        specScript.type = 'speculationrules';
-        specRules = {
-            'prerender': [{
-                'where': {
-                    'and': [
-                        { 'href_matches': '/*.html' },
-                        { 'not': {'selector_matches': '.do-not-prerender'}}
+<script type="speculationrules">
+{
+    "prerender": [{
+        "source": "document",
+        "where": {
+            "and": [
+                { "href_matches": "/*" },
+                { "not": {
+                    "href_matches": [
+                        "*/customer/*",
+                        "*/search/*",
+                        "*/sales/*",
+                        "*/checkout/*",
+                        "*.pdf"
                     ]
-                },
-                'eagerness': 'moderate'
-            }]
-        };
-        specScript.textContent = JSON.stringify(specRules);
-        document.body.append(specScript);
-    }
+                }},
+                { "not": { "selector_matches": ".do-not-prerender" } },
+                { "not": { "selector_matches": "[download]" } },
+                { "not": { "selector_matches": "[rel~=nofollow]" } }
+
+            ]
+        },
+        "eagerness": "moderate"
+    }]
+}
 </script>
