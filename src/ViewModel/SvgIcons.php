@@ -201,14 +201,18 @@ class SvgIcons implements ArgumentInterface
             $id = (string) $idAttr->id;
             if (isset(self::$internalIdUsageCounts[$id])) {
                 $uniqueId = $id . '_' . (++self::$internalIdUsageCounts[$id]);
-                $uniqueIdList['#' . $id] = '#' . $uniqueId;
+                $uniqueIdList['/#' . preg_quote($id, '/') . '\b/'] = '#' . $uniqueId;
                 $idAttr->id = $uniqueId;
             } else {
                 self::$internalIdUsageCounts[$id] = 1;
             }
         }
+
         $svgContent = \str_replace("<?xml version=\"1.0\"?>\n", '', $svgXml->asXML());
-        return str_replace(array_keys($uniqueIdList), array_values($uniqueIdList), $svgContent);
+
+        // A simple str_replace will also match hex colors that start with the same string as the id, e.g. id="#b" fill="#bcd".
+        // We use preg_replace with a word boundary token at the end of the ID to make the match less likely.
+        return preg_replace(array_keys($uniqueIdList), array_values($uniqueIdList), $svgContent);
     }
 
     /**
