@@ -7,6 +7,11 @@
     <type name="Magento\Theme\Model\Theme\Registration">
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\CheckVirtualThemes"/>
     </type>
+
+    <type name="Magento\CatalogWidget\Block\Product\ProductsList">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\PageBuilder\ProductListWidgetPreviewFixPlugin"/>
+    </type>
+
     <type name="Magento\PageBuilder\Model\Stage\Config">
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\PageBuilder\PageBuilderConfigPlugin"/>
     </type>
