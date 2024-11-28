@@ -19,6 +19,9 @@ use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\ObjectManager\ConfigLoaderInterface;
 use Magento\Framework\ObjectManagerInterface;
+use function array_merge as merge;
+use function array_reduce as reduce;
+use function array_values as values;
 
 class HyvaModulesConfig
 {
@@ -81,7 +84,7 @@ class HyvaModulesConfig
      */
     public function gatherConfigData(): array
     {
-        // Keep reference to current ObjectManager instance so it can be reset later
+        // Keep reference to current ObjectManager instance, so it can be reset later
         $currentObjectManager = ObjectManager::getInstance();
 
         $newObjectManager = $this->createObjectManagerWithCurrentModulesList();
@@ -92,7 +95,15 @@ class HyvaModulesConfig
         // Revert ObjectManager to reset app state
         ObjectManager::setInstance($currentObjectManager);
 
-        return $configContainer->getData();
+        // Merge records with the same src (could happen for compat modules that also add an observer)
+        $data = $configContainer->getData();
+        $data['extensions'] = values(reduce($data['extensions'] ?? [], function (array $acc, array $record): array {
+            if ($path = $record['src'] ?? false) {
+                $acc[$path] = merge($acc[$path] ?? [], $record);
+            }
+            return $acc;
+        }, []));
+        return $data;
     }
 
     private function createObjectManagerWithCurrentModulesList(): ObjectManagerInterface
