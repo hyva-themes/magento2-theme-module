@@ -78,6 +78,7 @@ class OverrideTemplatePlugin
         $result = $proceed($interceptor, $result);
 
         if ($this->theme->isHyva() && is_string($result)) {
+            $result = $this->removeEagerLoadingBackgroundImageStyles($result);
             $result = $this->unmaskAlpineAttributes($result);
         }
         return $result;
@@ -106,5 +107,31 @@ class OverrideTemplatePlugin
     private function unmaskAlpineAttributes(string $content): string
     {
         return str_replace(array_keys($this->maskedAttributes), array_values($this->maskedAttributes), $content);
+    }
+
+    /**
+     * Remove the lazy loaded CSS generated in \Magento\PageBuilder\Model\Filter\Template::generateBackgroundImageStyles.
+     *
+     * They will be set as the background image url by frontend code.
+     */
+    private function removeEagerLoadingBackgroundImageStyles(string $result): string
+    {
+        $backgroundIds = [];
+        // Match all lazy loading background image elements
+        if (preg_match_all('/(<[^>]+data-background-lazy-load="true"[^>]+>)/s', $result, $matches)) {
+            $bgElements = $matches[1];
+            // Capture all background image ids
+            if (preg_match_all('/class="[^"]*background-image-([a-z0-9]+)/', implode('', $bgElements), $matches)) {
+                $backgroundIds = array_merge($backgroundIds, $matches[1] ?? []);
+            }
+        }
+
+        if ($backgroundIds) {
+            $idsGroup = implode('|', array_map('preg_quote', $backgroundIds));
+            $regex = sprintf('#<style type="text/css">(?:@media only screen and [^<]+)?\.background-image-(?:%s).+?</style>#s', $idsGroup);
+            return preg_replace($regex, '', $result);
+        }
+
+        return $result;
     }
 }

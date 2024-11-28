@@ -82,6 +82,10 @@
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin" sortOrder="30"/>
     </type>
 
+    <type name="Magento\LoginAsCustomerFrontendUi\Controller\Login\Index">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\LoginAsCustomer\ImplyFrontendPostRequestPlugin" sortOrder="30"/>
+    </type>
+
     <type name="Hyva\Theme\ViewModel\CustomerSectionData">
         <arguments>
             <!-- Specifying `true` will allow the section to be cached in the FPC. Only use it with sections without PII. -->
