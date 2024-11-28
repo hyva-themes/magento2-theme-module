@@ -13,6 +13,7 @@
             <block name="head.js" class="Magento\Framework\View\Element\Template" template="Hyva_Theme::page/js/variables.phtml"/>
             <block name="head.hyva-scripts" template="Hyva_Theme::page/js/hyva.phtml"/>
             <block name="head.intersection-observer-polyfill" template="Hyva_Theme::page/js/intersection-observer-polyfill.phtml"/>
+            <block name="view-transition" template="Hyva_Theme::page/js/view-transition.phtml" ifconfig="hyva_theme_experimental/feature_flag/view_transition"/>
             <block name="speculationrules" template="Hyva_Theme::page/js/speculationrules.phtml" ifconfig="hyva_theme_experimental/feature_flag/speculationrules"/>
         </referenceContainer>
 
