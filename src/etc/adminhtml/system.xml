@@ -132,6 +132,14 @@
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
             </group>
+            <group id="demo_content" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+                <label>Hyvä Demo Content</label>
+                <field id="show_homepage_demo_content" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"  canRestore="1">
+                    <label>Show Homepage Content</label>
+                    <comment>When disabled, this will remove the demo content from the Homepage.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
         </section>
 
         <section id="hyva_theme_pagebuilder" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
