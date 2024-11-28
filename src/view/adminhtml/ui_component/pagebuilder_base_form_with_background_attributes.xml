@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="background">
+        <field name="background_lazy_load" sortOrder="17" formElement="checkbox" component="Hyva_Theme/js/pagebuilder/form/element/background-lazy-loading-toggle">
+            <!-- Note: the default value is set dynamically depending on the system configuration -->
+            <settings>
+                <dataType>boolean</dataType>
+                <visible>true</visible>
+                <dataType>text</dataType>
+                <label translate="true">Lazy Load</label>
+                <notice translate="true">[Hyvä only] Delay loading the image until it is within the viewport.</notice>
+                <dataScope>background_lazy_load</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="string">false</map>
+                            <map name="true" xsi:type="string">true</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

@@ -134,6 +134,20 @@
             </group>
         </section>
 
+        <section id="hyva_theme_pagebuilder" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+            <label>PageBuilder</label>
+            <tab>hyva_themes</tab>
+            <resource>Magento_Cms::config_cms</resource>
+            <group id="images" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+                <label>Images</label>
+                <field id="background_lazy_load_default" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable lazy-loading by default for background images</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Enable only after all Hyvä child themes are updated to <strong>hyva-themes/magento2-default-theme 1.3.10</strong> or newer, otherwise the JavaScript to load the background images on intersect may be missing in the theme.]]></comment>
+                </field>
+            </group>
+        </section>
+
         <section id="hyva_theme_experimental" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="25" translate="label">
             <label>Experimental</label>
             <tab>hyva_themes</tab>
