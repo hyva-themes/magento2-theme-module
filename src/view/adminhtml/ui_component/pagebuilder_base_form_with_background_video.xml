@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="background">
+        <field name="background_lazy_load" sortOrder="27">
+            <settings>
+                <visible>false</visible>
+                <imports>
+                    <link name="visible">${$.parentName}.background_type:imageVisible</link>
+                </imports>
+            </settings>
+        </field>
+    </fieldset>
+</form>

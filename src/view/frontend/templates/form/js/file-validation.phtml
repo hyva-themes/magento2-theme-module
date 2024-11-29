@@ -1,0 +1,127 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+?>
+<script>
+    'use strict';
+
+    hyva.formValidation.setInputAttributeRuleName('accept', 'file-type'); <?php /* Apply to all input fields with 'accept' attribute */ ?>
+    hyva.formValidation.addRule('file-type', function (value, options, field, context) {
+        if (field.element.type !== 'file' || !field.element.files.length || !field.element.accept) {
+            return true;
+        }
+
+        for (const file of Object.values(field.element.files)) {
+            const allowedFileTypesArray = field.element.accept.split(',');
+            const filenameSplit = file.name.split('.');
+            const fileExtension = `.${filenameSplit[filenameSplit.length - 1]}`;
+
+            if (!allowedFileTypesArray.includes(fileExtension)) {
+                return `${hyva.str('<?= $escaper->escapeJs(__('"%1" is not a valid file extension.')) ?>', fileExtension)} <?= $escaper->escapeJs(__('Allowed file types')) ?>: ${field.element.accept}`;
+            }
+        }
+
+        return true;
+    });
+
+    hyva.formValidation.addRule('file-max-size', function (value, options, field, context) {
+        if (!field.element.files.length || !options) {
+            return true;
+        }
+
+        for (const file of Object.values(field.element.files)) {
+            const maxFileSize = options;
+
+            if (file.size > maxFileSize) {
+                const maxSizeMb = maxFileSize / (1024 * 1024);
+                return `<?= $escaper->escapeJs(__('Maximum file size')) ?>: ${maxSizeMb} MB.`;
+            }
+        }
+
+        return true;
+    });
+
+    hyva.formValidation.addRule('image-max-dimensions', async function (value, options, field, context) {
+        if (!field.element.files.length) {
+            return true;
+        }
+
+        const {width: maxWidth, height: maxHeight} = options;
+
+        if ((!maxWidth && !maxHeight) || (maxWidth === 0 && maxHeight === 0)) {
+            return true; <?php /* If neither maximum width nor maximum height is provided, allow the image */ ?>
+        }
+
+        try {
+            const dimensions = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+
+                    img.onload = function () {
+                        resolve({
+                            width: this.width,
+                            height: this.height
+                        });
+                    };
+
+                    img.onerror = function (e) {
+                        reject(new Error('Failed to load the image.'));
+                    };
+
+                    img.src = e.target.result;
+                };
+
+                reader.onerror = function (e) {
+                    reject(new Error('Failed to read the file.'));
+                };
+
+                reader.readAsDataURL(field.element.files[0]);
+            });
+
+            const errorMessages = [];
+            if (maxWidth && dimensions.width > maxWidth) {
+                errorMessages.push(
+                    hyva.str(
+                        '<?= $escaper->escapeJs(__('"%1" width exceeds allowed value of %2 px.')) ?>',
+                        `${dimensions.width} px`,
+                        maxWidth
+                    )
+                );
+            }
+            if (maxHeight && dimensions.height > maxHeight) {
+                errorMessages.push(
+                    hyva.str(
+                        '<?= $escaper->escapeJs(__('"%1" height exceeds allowed value of %2 px.')) ?>',
+                        `${dimensions.height} px`,
+                        maxHeight
+                    )
+                );
+            }
+
+            if (errorMessages.length > 0) {
+                return errorMessages.join(' ');
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error:', error);
+            return false;
+        }
+    });
+</script>

@@ -96,7 +96,7 @@ class RegisterPageJsDependencies implements ObserverInterface
             $key = $this->getDependenciesCacheKey($block);
             $tags = $this->getDependenciesCacheTags($block);
             $data = json_encode([$blockNameToPriorityMap, $templateNameToPriorityMap]);
-            $this->cache->save($data, $key, $tags, $block->getData('cache_lifetime'));
+            $this->cache->save($data, $key, $tags, $block->getCacheLifetime());
         }
     }
 
@@ -142,7 +142,7 @@ class RegisterPageJsDependencies implements ObserverInterface
 
     private function isBlockCached(AbstractBlock $block): bool
     {
-        return $block->getData('cache_lifetime') !== null;
+        return $block->getCacheLifetime() !== null;
     }
 
     private function collectCacheTagsFromBlockHierarchy(AbstractBlock $block): array
