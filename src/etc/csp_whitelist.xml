@@ -8,6 +8,12 @@
         </policy>
         <policy id="script-src">
             <values>
+                <value id="google_maps" type="host">https://maps.googleapis.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="google_maps" type="host">https://maps.googleapis.com</value>
                 <value id="vimeo_player" type="host">https://player.vimeo.com</value>
             </values>
         </policy>
