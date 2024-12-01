@@ -46,7 +46,7 @@
         </arguments>
     </type>
 
-    <!-- replace the convertBackgroundImages plugin with our own implementation, because it breaks AlpineJS attributes -->
+    <!-- Replace the convertBackgroundImages plugin with our own implementation, because it breaks AlpineJS attributes -->
     <type name="Magento\PageBuilder\Plugin\Filter\TemplatePlugin">
         <plugin name="convertBackgroundImages_override" type="Hyva\Theme\Plugin\PageBuilder\OverrideTemplatePlugin"/>
     </type>
@@ -60,6 +60,11 @@
     </type>
     <type name="Magento\Catalog\Block\Product\View">
         <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToProductViewBlockJson"/>
+    </type>
+
+    <!-- Prevent the payment services minicart button from breaking section data generation -->
+    <type name="Magento\PaymentServicesPaypal\Observer\AddCheckoutComponents">
+        <plugin name="prevent_payment_services_breaking_section_data" type="Hyva\Theme\Plugin\AdobePaymentServices\FixSectionDataIfPaymentServicesAreDisabled"/>
     </type>
 
     <preference for="Hyva\Theme\Model\Modal\ModalBuilderInterface" type="Hyva\Theme\Model\Modal\ModalBuilder"/>
