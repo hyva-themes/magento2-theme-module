@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.10-rc1...main
 
-## [1.3.10-RC1] - 2024-12-01
+## [1.3.10-RC2] - 2024-12-03
+[1.3.10-RC2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10-rc2
 
-[1.3.10-RC1]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10-rc1
+The [1.3.10-RC1](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10-rc1) release made on 2024-12-01 does not have it's own changelog entry.
 
 ### Added
 
