@@ -4,6 +4,7 @@
   "type": "magento2-module",
   "require": {
     "ext-simplexml": "*",
+    "hyva-themes/magento2-mollie-theme-bundle": "^1.0.1",
     "magento/framework": "*",
     "magento/module-catalog": ">=103.0.0",
     "magento/module-checkout": ">=100.3.0",

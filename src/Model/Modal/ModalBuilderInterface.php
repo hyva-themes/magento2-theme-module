@@ -34,6 +34,8 @@ interface ModalBuilderInterface
 
     public function removeContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
+    public function positionNone(): ModalBuilderInterface;
+
     public function positionTop(): ModalBuilderInterface;
 
     public function positionRight(): ModalBuilderInterface;

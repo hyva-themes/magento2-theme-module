@@ -15,9 +15,24 @@
                 <!-- The default deferred_components configuration is intended for existing themes that are upgraded to 1.3.7 or newer. -->
                 <!-- Themes based on release 1.3.7 or newer can remove the settings in the backend system configuration at -->
                 <!-- Hyvä Themes > General > Deferred Alpine.js Components > Defer components -->
-                <deferred_components><![CDATA[{"_1712233026687_687":{"selector":".product-slider section[x-data]","defer_until":"intersect"},"_1712233027612_612":{"selector":".product-info [x-data]","defer_until":"intersect"},"_1712233028224_224":{"selector":"#filters-content [x-data]","defer_until":"intersect"},"_1712233028850_850":{"selector":"#review_form","defer_until":"intersect"},"_1712233075252_252":{"selector":"section[x-data^=initRecentlyViewedProductsComponent]","defer_until":"intersect"},"_1712233076143_143":{"selector":"div[x-data^=initBundleOptions]","defer_until":"intersect"},"_1712233077441_441":{"selector":"#product_addtocart_form [x-data]","defer_until":"intersect"},"_1712233109466_466":{"selector":"#notice-cookie-block","defer_until":"intersect"}}]]></deferred_components>
+                <deferred_components><![CDATA[{"_1712233026687_687":{"selector":".product-slider section[x-data]","defer_until":"intersect"},"_1712233027612_612":{"selector":".product-info [x-data]","defer_until":"intersect"},"_1712233028224_224":{"selector":"#filters-content [x-data]","defer_until":"intersect"},"_1712233028850_850":{"selector":"#review_form","defer_until":"intersect"},"_1712233075252_252":{"selector":"section[x-data^=initRecentlyViewedProductsComponent]","defer_until":"intersect"},"_1712233076143_143":{"selector":"div[x-data^=initBundleOptions]","defer_until":"intersect"},"_1712233077441_441":{"selector":"#product_addtocart_form [x-data]","defer_until":"intersect"},"_1712233109466_466":{"selector":"#notice-cookie-block","defer_until":"idle"}}]]></deferred_components>
             </alpine_defer>
+            <demo_content>
+                <show_homepage_demo_content>1</show_homepage_demo_content>
+            </demo_content>
         </hyva_theme_general>
+        <hyva_theme_pagebuilder>
+            <images>
+                <!-- Loading background images for page-builder components on intersection is possible since 1.3.10. -->
+                <!-- We set the default to "false", since sites that upgrade the theme-module but don't upgrade the theme -->
+                <!-- may end up with missing background images by accident, because the JS to load the images on -->
+                <!-- intersection is missing, when a content manager forgets to disable lazy loading for a background -->
+                <!-- image after editing existing content. -->
+                <!-- After all Hyvä child themes are updated to the hyva-themes/magento2-default-theme 1.3.10 or newer -->
+                <!-- it is safe to enable lazy loading for background images by default. -->
+                <background_lazy_load_default>0</background_lazy_load_default>
+            </images>
+        </hyva_theme_pagebuilder>
         <catalog>
             <frontend>
                 <show_add_to_compare_in_list>1</show_add_to_compare_in_list>

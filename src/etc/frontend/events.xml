@@ -29,5 +29,6 @@
     </event>
     <event name="view_block_abstract_to_html_after">
         <observer name="hyva_theme" instance="Hyva\Theme\Observer\RegisterPageJsDependencies"/>
+        <observer name="hyva_theme_cache_block_tags" instance="Hyva\Theme\Observer\SaveCacheTagsForCachedBlocksDuringAjaxRequests"/>
     </event>
 </config>

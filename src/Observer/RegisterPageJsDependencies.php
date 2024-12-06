@@ -11,10 +11,12 @@ declare(strict_types=1);
 namespace Hyva\Theme\Observer;
 
 use Hyva\Theme\Model\PageJsDependencyRegistry;
+use Hyva\Theme\Service\CurrentTheme;
 use Hyva\Theme\ViewModel\BlockJsDependencies;
 use Magento\Framework\App\Cache\Type\Block as BlockCache;
 use Magento\Framework\App\Cache\StateInterface as CacheState;
 use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Event\Observer as Event;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\View\Element\AbstractBlock;
@@ -50,16 +52,23 @@ class RegisterPageJsDependencies implements ObserverInterface
      */
     private $cache;
 
+    /**
+     * @var CurrentTheme
+     */
+    private $currentTheme;
+
     public function __construct(
         PageJsDependencyRegistry $jsDependencyRegistry,
         LayoutInterface $layout,
         CacheState $cacheState,
-        CacheInterface $cache
+        CacheInterface $cache,
+        CurrentTheme $currentTheme = null
     ) {
         $this->jsDependencyRegistry = $jsDependencyRegistry;
         $this->layout = $layout;
         $this->cacheState = $cacheState;
         $this->cache = $cache;
+        $this->currentTheme = $currentTheme ?? ObjectManager::getInstance()->get(CurrentTheme::class);
     }
 
     /**
@@ -67,8 +76,10 @@ class RegisterPageJsDependencies implements ObserverInterface
      */
     public function execute(Event $event)
     {
-        $this->applyBlockJsDependencies($event);
-        $this->applyBlockOutputPatternJsDependencyRules($event);
+        if ($this->currentTheme->isHyva()) {
+            $this->applyBlockJsDependencies($event);
+            $this->applyBlockOutputPatternJsDependencyRules($event);
+        }
     }
 
     /**
@@ -96,7 +107,7 @@ class RegisterPageJsDependencies implements ObserverInterface
             $key = $this->getDependenciesCacheKey($block);
             $tags = $this->getDependenciesCacheTags($block);
             $data = json_encode([$blockNameToPriorityMap, $templateNameToPriorityMap]);
-            $this->cache->save($data, $key, $tags, $block->getData('cache_lifetime'));
+            $this->cache->save($data, $key, $tags, $block->getCacheLifetime());
         }
     }
 
@@ -142,7 +153,7 @@ class RegisterPageJsDependencies implements ObserverInterface
 
     private function isBlockCached(AbstractBlock $block): bool
     {
-        return $block->getData('cache_lifetime') !== null;
+        return $block->getCacheLifetime() !== null;
     }
 
     private function collectCacheTagsFromBlockHierarchy(AbstractBlock $block): array
