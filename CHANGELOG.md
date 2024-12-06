@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
     For details, please refer to [merge request #467](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/467).
 
-- **Lazy load pagebuilder slider background images**
+- **Lazy load PageBuilder slider background images**
 
     Lazy loading can be enabled for each slider background individually.  
     The default can be configured in the system configuration at "Hyvä Themes > PageBuilder > Images > Enable lazy-loading by default for background images". 
@@ -131,7 +131,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
     For details, please refer to [issue #393](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/393).
 
-    Many thanks to Emils Malovka (magenbit) for the contribution!
+    Many thanks to Emils Malovka (magebit) for the contribution!
 
 - **Improve browser speculation rules**
 
