@@ -7,205 +7,203 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.10-rc1...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.10...main
 
-## [1.3.10-RC2] - 2024-12-03
-[1.3.10-RC2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10-rc2
-
-The [1.3.10-RC1](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10-rc1) release made on 2024-12-01 does not have it's own changelog entry.
+## [1.3.10] - 2024-12-06
+[1.3.10]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10
 
 ### Added
 
 - **Add experimental view transitions**
 
-  View Transitions is a new browser API allowing for smooth and engaging animations during page transitions.  
-  This can significantly improve user experience by providing visual cues and reducing the perception of page load times.  
-  The feature is disabled by default. It can be enabled in the "Hyvä Themes > Experimental > Enable View Transitions" system configuration.
+    View Transitions is a new browser API allowing for smooth and engaging animations during page transitions.  
+    This can significantly improve user experience by providing visual cues and reducing the perception of page load times.  
+    The feature is disabled by default. It can be enabled in the "Hyvä Themes > Experimental > Enable View Transitions" system configuration.
 
-  Further resources:
-    - caniuse: https://caniuse.com/mdn-css_at-rules_view-transition
-    - Release notes of Chrome 126: https://developer.chrome.com/blog/new-in-chrome-126#cross-document-transitions
-    - Learn more about cross-document View Transitions: https://developer.chrome.com/docs/web-platform/view-transitions/cross-document
+    Further resources:
+    - caniuse: <https://caniuse.com/mdn-css_at-rules_view-transition>  
+    - Release notes of Chrome 126: <https://developer.chrome.com/blog/new-in-chrome-126#cross-document-transitions>  
+    - Learn more about cross-document View Transitions: <https://developer.chrome.com/docs/web-platform/view-transitions/cross-document>    
 
-  For details, please refer to [merge request #467](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/467).
+    For details, please refer to [merge request #467](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/467).
 
 - **Lazy load pagebuilder slider background images**
 
-  Lazy loading can be enabled for each slider background individually.  
-  The default can be configured in the system configuration at "Hyvä Themes > PageBuilder > Images > Enable lazy-loading by default for background images". 
+    Lazy loading can be enabled for each slider background individually.  
+    The default can be configured in the system configuration at "Hyvä Themes > PageBuilder > Images > Enable lazy-loading by default for background images". 
 
-  For details, please refer to [merge request #472](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/472).
+    For details, please refer to [merge request #472](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/472).
 
 - **Allow lazy loading PageBuilder images / add image dimensions**
 
-  For details, please refer to [merge request #475](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/475).
+    For details, please refer to [merge request #475](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/475).
 
 - **Add position `none` to ModalBuilder**
 
-  This allows the manual positioning of the modal box.
+    This allows the manual positioning of the modal box.
 
-  For details, please refer to [merge request #435](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/435).
+    For details, please refer to [merge request #435](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/435).
 
-  Many thanks to Andy Eades (elevate web) for the contribution!
+    Many thanks to Andy Eades (elevate web) for the contribution!
 
 - **Add Image view model**
 
-  The view model only has the method `getPlaceholderImageUrl`. The method is required by Hyvä Enterprise.
+    The view model only has the method `getPlaceholderImageUrl`. The method is required by Hyvä Enterprise.
 
-  For details, please refer to [merge request #462](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/462).
+    For details, please refer to [merge request #462](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/462).
 
 - **Add Vimeo player host to CSP policy**
 
-  For details, please refer to [merge request #468](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/468).
+    For details, please refer to [merge request #468](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/468).
 
-  Many thanks to Ole Schäfer (Customgento) for the contribution!
+    Many thanks to Ole Schäfer (Customgento) for the contribution!
 
 - **Add Date and Locale PHP view models**
 
-  The view models are used in Hyvä Enterprise and could also be useful in general.  
-    - `Date::getDateYMD(?string $date = null) `: Return the input date or the current date in UTC timezone ('Y-m-d')
-    - `Locale::getLocale()`: return the store locale, for example, `en-US`.
+    The view models are used in Hyvä Enterprise and could also be useful in general.  
+    - `Date::getDateYMD(?string $date = null) `: Return the input date or the current date in UTC timezone ('Y-m-d')  
+    - `Locale::getLocale()`: return the store locale, for example, `en-US`.  
 
-  For details, please refer to [merge request #470](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/470).
+    For details, please refer to [merge request #470](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/470).
 
 - **Add an explanatory comment in the template for crossorigin attribute on script element**
 
-  For details, please refer to [merge request #473](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/473).
+    For details, please refer to [merge request #473](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/473).
 
-  Many Thanks to Alex Galdin (IT-Delight) for the contribution!
+    Many Thanks to Alex Galdin (IT-Delight) for the contribution!
 
 - **Allow overriding hyva.formatPrice grouping and decimal separator with custom options**
 
-  Previously, customizing the decimal or thousands separator character required overriding the `formatPrice` function.  
-  Now the `groupSeparator` or `decimalSeparator` options can be used instead. For example:  
-  ```js
+    Previously, customizing the decimal or thousands separator character required overriding the `formatPrice` function.  
+    Now the `groupSeparator` or `decimalSeparator` options can be used instead. For example:  
+    ```js
     hyva.formatPrice(price, false, {decimalSeparator: ' : '})
-  ```
+    ```
 
-  For details, please refer to [issue #378](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/378).
+    For details, please refer to [issue #378](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/378).
 
-  Many Thanks to Alex Galdin (IT-Delight) for the contribution!
+    Many Thanks to Alex Galdin (IT-Delight) for the contribution!
 
 - **Add Notice to Old CAPTCHA Config Area**
 
-  For details, please refer to [issue #415](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/415).
+    For details, please refer to [issue #415](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/415).
 
 - **Add customer attribute validate_rules frontend validations**
 
-  The new validation rules are used by Hyvä Enterprise but could be useful in a broader context.
+    The new validation rules are used by Hyvä Enterprise but could be useful in a broader context.
 
-  For details, please refer to [issue #357](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/357).
+    For details, please refer to [issue #357](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/357).
 
 - **Add config option to disable homepage demo content**
 
-  For details, please refer to [merge request #490](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/490).
+    For details, please refer to [merge request #490](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/490).
 
 - **Add Google Maps API view model**
 
-  The GoogleMapsApi view model provides all the public methods of the `Magento\PageBuilder\Block\GoogleMapsApi` core class.  
-  It allows rendering the PageBuilder Google Maps template using a generic Template block.
+    The GoogleMapsApi view model provides all the public methods of the `Magento\PageBuilder\Block\GoogleMapsApi` core class.  
+    It allows rendering the PageBuilder Google Maps template using a generic Template block.
 
-  For details, please refer to [merge request #495](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/495).
+    For details, please refer to [merge request #495](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/495).
 
 ### Changed
 
-- **Upgrade Alpine.js from 3.12.3 to 3.13.10**
+- **Upgrade Alpine.js from 3.12.3 to 3.14.6**
 
-  For details on what changed, please refer to the [Alpine.js release notes](https://github.com/alpinejs/alpine/releases).
+    For details on what changed, please refer to the [Alpine.js release notes](https://github.com/alpinejs/alpine/releases).
 
 - **Fix PageBuilder Products content-type admin preview**
 
-  Previously, the preview of product carousels or product grids in PageBuilder was broken, if a Hyvä frontend theme was used.
+    Previously, the preview of product carousels or product grids in PageBuilder was broken, if a Hyvä frontend theme was used.
 
-  For details, please refer to [merge request #478](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/478).
+    For details, please refer to [merge request #478](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/478).
 
 - **Bundle mollie payments integration**
 
-  For details, please refer to [merge request #497](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/497).
+    For details, please refer to [merge request #497](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/497).
 
 - **Allow SVG Icon titles containing ampersand**
 
-  Previously this caused an error to be thrown.
+    Previously this caused an error to be thrown.
 
-  For details, please refer to [issue #391](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/391).
+    For details, please refer to [issue #391](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/391).
 
 - **Fix PHP type error on `getConfiguredMaxCrosssellItemCount`**
 
-  For details, please refer to [issue #393](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/393).
+    For details, please refer to [issue #393](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/393).
 
-  Many thanks to Emils Malovka (magenbit) for the contribution!
+    Many thanks to Emils Malovka (magenbit) for the contribution!
 
 - **Improve browser speculation rules**
 
-  Speculation Rules no longer cause an error in Microsoft Edge.  
-  Also, the default speculation rules now include cached pages without a .html suffix.  
-  Finally, `type="speculationrules"` is used instead of JavaScript to render the rules.
+    Speculation Rules no longer cause an error in Microsoft Edge.  
+    Also, the default speculation rules now include cached pages without a .html suffix.  
+    Finally, `type="speculationrules"` is used instead of JavaScript to render the rules.
 
-  For details, please refer to [merge request #466](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/466).
+    For details, please refer to [merge request #466](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/466).
 
-  Many thanks to David Lambauer (run-as-root) for contributing to the improvements!
+    Many thanks to David Lambauer (run-as-root) for contributing to the improvements!
 
 - **Fix hyva-themes.json generation during setup:upgrade on Magento 2.4.7+**
 
-  For details, please refer to [issue #399](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/399).
+    For details, please refer to [issue #399](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/399).
 
-  Many thanks to Pieter Hoste (Baldwin) for the contribution!
+    Many thanks to Pieter Hoste (Baldwin) for the contribution!
 
 - **Use x-defer="idle" for cookie-banner to make it more reliable**
 
-  For details, please refer to [merge request #492](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/492).
+    For details, please refer to [merge request #492](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/492).
 
 - **Switch from getBaseUrl to getDirectUrl in LogoPathResolver**
 
-  This improvement allows for easier modifications via plugins.
+    This improvement allows for easier modifications via plugins.
 
-  For details, please refer to [merge request #476](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/476).
+    For details, please refer to [merge request #476](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/476).
 
-  Many thanks to Tjitse Efdé (Vendic) for the contribution!
+    Many thanks to Tjitse Efdé (Vendic) for the contribution!
 
 - **Fix SVG icon view model accidentally changing hex color values while disambiguating IDs**
 
-  For details, please refer to [issue #362](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/362).
+    For details, please refer to [issue #362](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/362).
 
 - **Skip CSS and JS minification for assets from Hyvä Themes**
 
-  The minification implementation in core Magento is not beneficial (as modern HTTP compression does a better job), and in some cases introduces incompatibilities with Hyvä code.
+    The minification implementation in core Magento is not beneficial (as modern HTTP compression does a better job), and in some cases introduces incompatibilities with Hyvä code.
 
-  For details, please refer to [merge request #482](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/482).
+    For details, please refer to [merge request #482](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/482).
 
 - **Change default-section-data script type so it does not confuse Chrome on Linux**
 
-  For details, please refer to [issue #409](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/409).
+    For details, please refer to [issue #409](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/409).
 
 - **Set version cookie to fix Login as customer from admin**
 
-  For details, please refer to [issue #413](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/413).
+    For details, please refer to [issue #413](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/413).
 
 - **Access cache_lifetime with the magic method in case it is implemented on a block**
 
-  For details, please refer to [issue #395](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/395).
+    For details, please refer to [issue #395](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/395).
 
 - **Merge records with duplicate src path in hyva-themes.json**
 
-  For details, please refer to [issue #382](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/382).
+    For details, please refer to [issue #382](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/382).
 
 - **Exclude tailwind container query classes from being masked**
 
-  For details, please refer to [issue #419](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/419).
+    For details, please refer to [issue #419](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/419).
 
 - **Allow specifying the product attribute to render using the attribute code as a string argument**
 
-  For details, please refer to [issue #424](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/424).
+    For details, please refer to [issue #424](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/424).
 
 - **Fix caching of block identities in block_html cache during ESI requests**
 
-  For details, please refer to [issue #418](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/418).
+    For details, please refer to [issue #418](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/418).
 
 - **Only apply page JavaScript dependencies to Hyvä themes**
 
-  Third-party extensions using the feature previously could cause side effects during email rendering.
+    Third-party extensions using the feature previously could cause side effects during email rendering.
 
-  For details, please refer to [issue #429](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/429).
+    For details, please refer to [issue #429](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/429).
 
 ### Removed
 
