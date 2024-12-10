@@ -71,27 +71,6 @@ class InlineScript implements ArgumentInterface
         }
     }
 
-    /**
-     * Extract the last script outerHTML from the partial page DOM.
-     *
-     * We don't use a regex because of expensive backtracking.
-     *
-     * The reason we don't use DOMDocument is that $pageContent is partial DOM tree consisting
-     * only of the nodes up to the script tag, that is, many elements are unclosed.
-     */
-    public function extractLastScript(string $trimmedPageContent): string
-    {
-        if (strtolower(substr($trimmedPageContent, -9)) !== '</script>') {
-            return '';
-        }
-        // Find <script> or <script type="text/javascript"> or possibly other attributes
-        $scriptStartPos = strripos($trimmedPageContent, '<script');
-        if ($scriptStartPos === false) {
-            return '';
-        }
-        return substr($trimmedPageContent, $scriptStartPos);
-    }
-
     private function generateHashValue(string $content): array
     {
         return [base64_encode(hash('sha256', $content, true)) => 'sha256'];
