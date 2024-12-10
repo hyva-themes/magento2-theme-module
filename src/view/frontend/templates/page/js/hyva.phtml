@@ -10,12 +10,14 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
+use Hyva\Theme\ViewModel\InlineScript;
 use Hyva\Theme\ViewModel\StoreConfig;
 use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
 use Magento\Cookie\Helper\Cookie;
 use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
+/** @var InlineScript $inlineScript */
 /** @var ViewModelRegistry $viewModels */
 /** @var Currency $currencyViewModel */
 $currencyViewModel = $viewModels->require(Currency::class);
@@ -429,4 +431,4 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
     }( window.hyva = window.hyva || {} ));
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
+<?php $inlineScript->registerWithCsp() ?>

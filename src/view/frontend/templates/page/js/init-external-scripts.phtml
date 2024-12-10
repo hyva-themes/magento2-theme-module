@@ -8,8 +8,10 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\ViewModel\InlineScript;
 use Magento\Framework\View\Element\Template;
 
+/** @var InlineScript $inlineScript */
 /** @var Template $block */
 
 // Dispatch event to load external scripts after the first user interaction
@@ -23,4 +25,4 @@ use Magento\Framework\View\Element\Template;
         events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true, passive: true}))
     })(['touchstart', 'mouseover', 'wheel', 'scroll', 'keydown'])
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
+<?php $inlineScript->registerWithCsp() ?>

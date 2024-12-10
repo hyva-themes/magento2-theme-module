@@ -8,6 +8,7 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\ViewModel\InlineScript;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -15,6 +16,7 @@ use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var InlineScript $inlineScript */
 
 ?>
 <script>
@@ -125,3 +127,4 @@ use Magento\Framework\View\Element\Template;
         }
     });
 </script>
+<?php $inlineScript->registerWithCsp() ?>

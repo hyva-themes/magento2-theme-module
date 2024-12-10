@@ -8,8 +8,10 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\ViewModel\InlineScript;
 use Magento\Framework\View\Element\Template;
 
+/** @var InlineScript $inlineScript */
 /** @var Template $block */
 
 // Bypass waiting for user interaction for pages where external script loading is critical.
@@ -18,4 +20,4 @@ use Magento\Framework\View\Element\Template;
 <script>
     window.dispatchEvent(new Event('init-external-scripts'));
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
+<?php $inlineScript->registerWithCsp() ?>

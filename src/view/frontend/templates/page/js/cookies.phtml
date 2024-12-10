@@ -8,7 +8,12 @@
 
 declare(strict_types=1);
 
-/** @var \Magento\Framework\View\Element\Template $block */
+use Hyva\Theme\ViewModel\InlineScript;
+use Magento\Framework\View\Element\Template;
+
+/** @var InlineScript $inlineScript */
+/** @var Template $block */
+
 ?>
 <script>
     'use strict';
@@ -71,4 +76,4 @@ declare(strict_types=1);
 
     }( window.hyva = window.hyva || {} ));
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
+<?php $inlineScript->registerWithCsp() ?>

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Cookie as CookieViewModel;
+use Hyva\Theme\ViewModel\InlineScript;
 use Hyva\Theme\ViewModel\Store as StoreViewModel;
 use Magento\Cookie\Helper\Cookie;
 use Magento\Framework\App\PageCache\FormKey;
@@ -22,6 +23,7 @@ use Magento\Theme\Controller\Result\MessagePlugin;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var InlineScript $inlineScript */
 /** @var ViewModelRegistry $viewModels */
 
 /** @var CookieViewModel $cookieViewModel */
@@ -67,4 +69,4 @@ $cookieRestriction = $cookieHelper->isCookieRestrictionModeEnabled();
         ]
     );
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
+<?php $inlineScript->registerWithCsp() ?>

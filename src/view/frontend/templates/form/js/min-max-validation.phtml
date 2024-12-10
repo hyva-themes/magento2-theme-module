@@ -8,11 +8,13 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\ViewModel\InlineScript;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var InlineScript $inlineScript */
 
 ?>
 <script>
@@ -32,3 +34,4 @@ use Magento\Framework\View\Element\Template;
         return !valid ? '<?= $escaper->escapeJs(__("The 'Min' value must be lower than the 'Max' value.")) ?>' : true;
     });
 </script>
+<?php $inlineScript->registerWithCsp() ?>

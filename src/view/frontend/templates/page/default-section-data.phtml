@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\CustomerSectionData;
+use Hyva\Theme\ViewModel\InlineScript;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -29,4 +30,3 @@ if (! $defaultSectionData) {
 <script type="text/json" id="default-section-data">
     <?= /** @noEscape */ json_encode($defaultSectionData) ?>
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>

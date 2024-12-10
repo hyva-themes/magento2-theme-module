@@ -10,11 +10,13 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\DeployMode;
+use Hyva\Theme\ViewModel\InlineScript;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var InlineScript $inlineScript */
 /** @var ViewModelRegistry $viewModels */
 
 if (! $viewModels->require(DeployMode::class)->isDeveloperMode()) {
@@ -26,8 +28,8 @@ if (! preg_match('/-v(?<requiredVersion>[0-9.]+)$/', $block->getNameInLayout(), 
 <script>
     console.error("Unable to parse required Alpine.js version from block name \"<?= $escaper->escapeJs($block->getNameInLayout()) ?>\"");
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
     <?php
+    $inlineScript->registerWithCsp();
     return;
 }
 
@@ -45,4 +47,4 @@ if (! $names) {
         }
     }, {once: true})
 </script>
-<?php $viewModels->require(\Hyva\Theme\ViewModel\InlineScript::class)->registerWithCsp() ?>
+<?php $inlineScript->registerWithCsp() ?>
