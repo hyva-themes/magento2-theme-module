@@ -8,9 +8,9 @@
 
 declare(strict_types=1);
 
-use Hyva\Theme\ViewModel\InlineScript;
+use Hyva\Theme\ViewModel\HyvaCsp;
 
-/** @var InlineScript $inlineScript */
+/** @var HyvaCsp $hyvaCsp */
 
 /** Replace %uenc% placeholders in action urls when submitting forms */
 ?>
@@ -19,4 +19,4 @@ use Hyva\Theme\ViewModel\InlineScript;
         document.addEventListener('submit', event => event.target.action = event.target.action.replace('%25uenc%25', hyva.getUenc()));
     })()
 </script>
-<?php $inlineScript->registerWithCsp() ?>
+<?php $hyvaCsp->registerInlineScript() ?>

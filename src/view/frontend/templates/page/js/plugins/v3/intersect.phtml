@@ -5,9 +5,9 @@
  * See https://hyva.io/license
  */
 
-use Hyva\Theme\ViewModel\InlineScript;
+use Hyva\Theme\ViewModel\HyvaCsp;
 
-/** @var InlineScript $inlineScript */
+/** @var HyvaCsp $hyvaCsp */
 
 ?>
 <script>
@@ -70,4 +70,4 @@ use Hyva\Theme\ViewModel\InlineScript;
         });
     })();
 </script>
-<?php $inlineScript->registerWithCsp() ?>
+<?php $hyvaCsp->registerInlineScript() ?>

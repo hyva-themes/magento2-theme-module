@@ -21,7 +21,7 @@ use Magento\PageCache\Model\Cache\Type as FullPageCache;
 
 // TODO: Do we maybe need 'strict-dynamic' for the mini-cart additional actions?
 // TODO: https://w3c.github.io/webappsec-csp/#strict-dynamic-usage
-class InlineScript implements ArgumentInterface
+class HyvaCsp implements ArgumentInterface
 {
     /**
      * @var DynamicCspCollector
@@ -62,7 +62,7 @@ class InlineScript implements ArgumentInterface
         $this->cacheState = $cacheState;
     }
 
-    public function registerWithCsp(): void
+    public function registerInlineScript(): void
     {
         if ($this->cacheState->isEnabled(FullPageCache::TYPE_IDENTIFIER) && $this->layout->isCacheable()) {
             $this->addInlineScriptHashToCspHeader();
