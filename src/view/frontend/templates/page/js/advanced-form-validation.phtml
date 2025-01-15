@@ -296,7 +296,19 @@ use Magento\Framework\View\Element\Template;
         // Alpine component start
         ?>
 
-        function formValidation(formElement, options) {
+        function formValidation() {
+            const
+                formElement = this.$el
+
+            let options = {}
+            if (formElement.dataset.options) {
+                try {
+                    options = JSON.parse(formElement.dataset.options || '{}')
+                } catch (e) {
+                    throw new Error('Cannot validate the form options from the data-options, this should be a JSON value')
+                }
+            }
+
             // Disable browser default validation
             if (formElement.tagName === 'FORM') {
                 formElement.setAttribute('novalidate', '');
@@ -590,15 +602,7 @@ use Magento\Framework\View\Element\Template;
     }(window.hyva = window.hyva || {}));
 
     (() => {
-        const initFn = () => {
-            Alpine.data('hyva.formValidation', function() {
-                    const formElement = this.$el,
-                        options = JSON.parse(formElement.dataset.options || '{}')
-
-                    return hyva.formValidation(formElement, options);
-                }
-            )
-        }
+        const initFn = () => Alpine.data('hyva.formValidation', hyva.formValidation);
         window.Alpine ? initFn() : window.addEventListener('alpine:init', initFn, {once: true})
     })()
 </script>

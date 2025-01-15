@@ -125,7 +125,16 @@ $deployMode = $viewModels->require(DeployMode::class);
             return overflowDisabled.length === modals.length;
         }
 
-        window.hyva.modal = function(options) {
+        window.hyva.modal = function() {
+
+            let options = {}
+            if (this.$el.dataset.options) {
+                try {
+                    options = JSON.parse(this.$el.dataset.options || '{}')
+                } catch (e) {
+                    throw new Error('Cannot validate the form options from the data-options, this should be a JSON value')
+                }
+            }
 
             const config = Object.assign({
                 dialog: '<?= /* @noEscape */ Modal::DEFAULT_NAME ?>', <?php /* default dialog ref name */ ?>
@@ -271,9 +280,7 @@ $deployMode = $viewModels->require(DeployMode::class);
     })();
 
     (() => {
-        const initFn = () => {
-            Alpine.data('hyva.modal', hyva.modal);
-        }
+        const initFn = () => Alpine.data('hyva.modal', window.hyva.modal);
         window.Alpine ? initFn() : window.addEventListener('alpine:init', initFn, {once: true})
     })()
 </script>
