@@ -588,5 +588,18 @@ use Magento\Framework\View\Element\Template;
         hyva.formValidation.setInputTypeRuleName = (typeName, ruleName) => INPUT_TYPE_RULES[typeName] = ruleName || typeName;
         hyva.formValidation.addRule = (name, validator) => formValidationRules[name] = validator;
     }(window.hyva = window.hyva || {}));
+
+    (() => {
+        const initFn = () => {
+            Alpine.data('hyva.formValidation', function() {
+                    const formElement = this.$el,
+                        options = JSON.parse(formElement.dataset.options || '{}')
+
+                    return hyva.formValidation(formElement, options);
+                }
+            )
+        }
+        window.Alpine ? initFn() : window.addEventListener('alpine:init', initFn, {once: true})
+    })()
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
