@@ -296,9 +296,8 @@ use Magento\Framework\View\Element\Template;
         // Alpine component start
         ?>
 
-        function formValidation() {
-            const
-                formElement = this.$el
+        function formValidation(form) {
+            const formElement = this.$el || form
 
             let options = {}
             if (formElement.dataset.options) {
