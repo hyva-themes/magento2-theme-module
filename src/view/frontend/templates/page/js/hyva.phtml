@@ -450,8 +450,67 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             return Array.isArray(number) || isNaN(number) ? rawValue : number;
         }
 
+<?php
+        /**
+         * In Alpine we use many booleans which are either true or false via methods or toggles
+         * This helper creates all setters like toggle, show/hide, enable/disable, check/uncheck
+         * and getters visible/hidden, enabled/disabled, checked/unchecked
+         *
+         * register as a re-usable Alpine components
+         *
+         * Alpine.data('something', () => hyva.createBooleanValue(false, {method() {}})) to create a initial state
+         * <div x-data="something>
+         *     <template x-if="hidden">
+         *         <div>Show if hidden</div>
+         *     </template>
+         *     <template x-if="visible">
+         *         <div>Show if visible</div>
+         *     </template>
+         *     <input type="checkbox" :checked="checked" @change="toggle" />
+         * </div>
+         *
+         * customization:
+         * - add extra methods to interact with the boolean
+         *
+         * :type="textOrPassword" (binding)
+         * {textOrPassword() {return this.checked() ? 'text':'password'}}
+         *
+         * :classs="inputClasses" (binding)
+         * {inputClasses() {return {hidden: this.hidden()}}}
+         *
+         * x-text="text" (inner text)
+         * {text() {return this.unchecked() ? 'Show password' : 'Hide password'}}
+         */
+?>
+        hyva.createBooleanValue = (initialValue = true, additionalMethods = {}) => Object.assign(
+            additionalMethods,
+            {
+                value: !!initialValue,
 
-    <?php if ((int) $alpineVersion === 2): ?>
+                /* generic toggle */
+                toggle() {this.value = !this.value},
+
+                /* for visibility */
+                show() {this.value = true},
+                hide() {this.value = false},
+                visible() { return this.value },
+                hidden() { return !this.value },
+
+                /* for activity */
+                enable() {this.value = true},
+                disable() {this.value = false},
+                enabled() { return this.value },
+                disabled() { return !this.value },
+
+                /* for boxes */
+                check() {this.value = true},
+                uncheck() {this.value = false},
+                checked() { return this.value },
+                unchecked() { return !this.value },
+            }
+        )
+
+        <?php if ((int) $alpineVersion === 2): ?>
         hyva.alpineInitialized = (fn) => {
             const initAlpine = window.deferLoadingAlpine || ((callback) => callback())
             window.deferLoadingAlpine = (callback) => {
