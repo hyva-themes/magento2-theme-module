@@ -328,7 +328,12 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                 return;
             }
 
-            hyva.activateScripts(contentNode)
+            const isCsp = document.querySelector('script[nonce]');
+            if (isCsp) {
+                hyva.removeScripts(contentNode);
+            } else {
+                hyva.activateScripts(contentNode);
+            }
 
             // Replace the old DOM node with the new content
             document.querySelector(targetSelector).replaceWith(contentNode);
@@ -336,6 +341,20 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             // Reload customerSectionData and display cookie-messages if present
             window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
             hyva.initMessages();
+        }
+
+        hyva.removeScripts = (contentNode) => {
+            const scripts = contentNode.getElementsByTagName('script');
+            for (let i = 0; i < scripts.length; i++) {
+                scripts[i].parentNode.removeChild(scripts[i]);
+            }
+            const templates = contentNode.getElementsByTagName('template');
+            for (let i = 0; i < templates.length; i++) {
+                const container = document.createElement('div');
+                container.innerHTML = templates[i].innerHTML;
+                hyva.removeScripts(container);
+                templates[i].innerHTML = container.innerHTML;
+            }
         }
 
         hyva.activateScripts = (contentNode) => {
@@ -416,7 +435,23 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             firstElement && firstElement.focus()
         }
 
-        <?php if ((int) $alpineVersion === 2): ?>
+        <?php
+        /**
+         * With CSP the Alpine x-model directive can't be used, and input or change events have
+         * to be used instead to set the value.
+         * The x-model.number allows enforcing the value to be a number. To maintain this functionality,
+         * We included the function here, so it can be used in the event callback.
+         * See .number modifier in packages/alpinejs/src/directives/x-model.js
+         */
+        ?>
+        hyva.safeParseNumber = (rawValue) => {
+            const number = rawValue ? parseFloat(rawValue) : null;
+
+            return Array.isArray(number) || isNaN(number) ? rawValue : number;
+        }
+
+
+    <?php if ((int) $alpineVersion === 2): ?>
         hyva.alpineInitialized = (fn) => {
             const initAlpine = window.deferLoadingAlpine || ((callback) => callback())
             window.deferLoadingAlpine = (callback) => {
