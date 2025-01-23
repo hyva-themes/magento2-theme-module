@@ -504,17 +504,18 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
         hyva.createBooleanObject = (name, value = false, additionalMethods = {}) => Object.assign(
             additionalMethods,
             {
-                [name]() {return !!value},
-                ['!' + name]() {return !value},
+                __value: !!value,
+                [name]() {return !!this.__value},
+                ['!' + name]() {return !this.__value},
 
-                toggle() {value = !value},
+                toggle() {this.__value = !this.__value},
 <?php
                 // this is right, right?!?
                 // maybe() {value = !Math.round(Math.random())},
                 // disabled when weird bugs appeared
 ?>
-                setTrue() {value = true},
-                setFalse() {value = false},
+                setTrue() {this.__value = true},
+                setFalse() {this.__value = false},
             }
         )
 
