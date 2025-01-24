@@ -452,8 +452,8 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
 <?php
         /**
-         * In Alpine.js we often use booleans to toggle the state of some UI component.
-         * This method provides an object that can be used for such cases so we don't
+         * In Alpine.js we often use booleans to toggle the state of a component.
+         * This method provides an object that can be used for such cases, so we don't
          * have to write almost identical code again and again.
          *
          * hyva.createBooleanObject(name, value, {...additionalMethods})
@@ -462,8 +462,12 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          *   {...additionalMethods}: you can extend the object with additional custom methods
          *
          * There also are three additional methods to enforce the state (replace NAME with your property name)
-         *  - NAMETtoggle(): flips the state
-         *  - NAMETrue|NAMEFalse(): force state to true or false
+         *  - toggleName(): flips the state
+         *  - setNameTrue|setNameFalse(): force state to true or false
+         *
+         * If the propery contains underscores, the setters and the toggle methods will use CamelCase.
+         * For example, hyva.createBooleanObject('is_hidden'), will result in the method names
+         * toggleIsHidden(), setIsHiddenTrue(), and setIsHiddenFalse().
          *
          * Example:
          *  <script>
@@ -476,16 +480,16 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          *      <template x-if="!hidden">
          *          <div>Show if visible</div>
          *      </template>
-         *      <input type="checkbox" :checked="!hidden" @change="hiddenToggle" />
+         *      <input type="checkbox" :checked="!hidden" @change="toggleHidden" />
          *  </div>
          *
          * More examples:
          * - hyva.createBooleanObject('hidden', true)
-         *   {hidden(): true, !hidden(): false, hiddenToggle(), hiddenTrue(), hiddenFalse()}
+         *   {hidden(): true, !hidden(): false, toggleHidden(), setHiddenTrue(), setHiddenFalse()}
          * - hyva.createBooleanObject('visible')
-         *   {visible(): false, !visible(): true, visibleToggle(), visibleTrue(), visibleFalse()}
+         *   {visible(): false, !visible(): true, toggleVisible(), setVisibleTrue(), setVisibleFalse()}
          * - hyva.createBooleanObject('checked', true)
-         *   {checked(): true, !checked(): false, checkedToggle(), checkedTrue(), checkedFalse()}
+         *   {checked(): true, !checked(): false, toggleChecked(), setCheckedTrue(), setCheckedFalse()}
          **
          * Additional custom methods:
          * - add extra methods to interact with the boolean
@@ -507,8 +511,11 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          *    <button type="button" x-text="innerText">
          */
 ?>
+        const toCamelCase = s => s.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
         hyva.createBooleanObject = (name, value = false, additionalMethods = {}) => {
-            const key = '__hyva_boolean_' + name // Need to expose this to AlpineJS so watchers will trigger correctly
+
+            const camelCase = toCamelCase(name);
+            const key = '__hyva_bool_' + name // Has to be an object property so AlpineJS observes changes
 
             return Object.assign(
                 additionalMethods,
@@ -517,14 +524,14 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                     [name]() {return !!this[key]},
                     ['!' + name]() {return !this[key]},
 
-                    [name + 'Toggle']() {this[key] = !this[key]},
+                    ['toggle' + camelCase]() {this[key] = !this[key]},
 <?php
                     // this is right, right?!?
-                    // [name + 'Maybe']() {value = !Math.round(Math.random())},
+                    // ['maybe' + camelCaseName]() {value = !Math.round(Math.random())},
                     // disabled when weird bugs appeared
 ?>
-                    [name + 'True']() {this[key] = true},
-                    [name + 'False']() {this[key] = false},
+                    [`set${camelCase}True`]() {this[key] = true},
+                    [`set${camelCase}False`]() {this[key] = false},
                 }
             )
         }
