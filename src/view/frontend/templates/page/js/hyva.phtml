@@ -452,72 +452,83 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
 <?php
         /**
-         * In Alpine we use many booleans which are either true or false via methods or toggles
-         * This helper creates all setters like toggle, show/hide, enable/disable, check/uncheck
-         * and getters visible/hidden, enabled/disabled, checked/unchecked
+         * In Alpine.js we often use booleans to toggle the state of some UI component.
+         * This method provides an object that can be used for such cases so we don't
+         * have to write almost identical code again and again.
          *
          * hyva.createBooleanObject(name, value, {...additionalMethods})
-         *                     name: dynamic naming, you can dynamic name the property you want to use (FI: hidden, visible, checked)
-         *                    value: initial value (true|false) - defaults to false
-         *   {...additionalMethods}: you can extend the original object with your own methods
-         *                           if you want to change the value, use the default methods this.(toggle|setTrue|setFalse)
-         *                           to read the value use the name you gave during creation this.visible() || !this.visible()
+         *   name: the name of the property, for example "hidden", "open", "active" - whatever suits your component
+         *   value: the initial value (true|false) - defaults to false
+         *   {...additionalMethods}: you can extend the object with additional custom methods
          *
-         * examples:
+         * There also are three additional methods to enforce the state (replace NAME with your property name)
+         *  - toggleNAME(): flips the state
+         *  - setNAMETrue|setNAMEFalse(): force state to true or false
+         *
+         * Example:
+         *  <script>
+         *  Alpine.data('example', () => hyva.createBooleanObject('hidden', true))
+         *  </script>
+         *  <div x-data="example>
+         *      <template x-if="hidden">
+         *          <div>Show if hidden</div>
+         *      </template>
+         *      <template x-if="!hidden">
+         *          <div>Show if visible</div>
+         *      </template>
+         *      <input type="checkbox" :checked="!hidden" @change="togglHiddene" />
+         *  </div>
+         *
+         * More examples:
          * - hyva.createBooleanObject('hidden', true)
-         *   {hidden(): true, !hidden(): false, toggle(), setTrue(), setFalse()}
-         * - hyva.createBooleanObject('visible', false)
-         *   {visible(): false, !visible(): true, toggle(), setTrue(), setFalse()}
+         *   {hidden(): true, !hidden(): false, toggleHidden(), setHiddenTrue(), setHiddenFalse()}
+         * - hyva.createBooleanObject('visible')
+         *   {visible(): false, !visible(): true, toggleVisible(), setVisibleTrue(), setVisibleFalse()}
          * - hyva.createBooleanObject('checked', true)
-         *   {checked(): true, !checked(): false, toggle(), setTrue(), setFalse()}
-         *
-         * - toggle(): changes the state to the opposite of the first one
-         * - setTrue|setFalse(): change the state to the given boolean
-         * - maybe(): didn't make it to production
-         *
-         * register as a re-usable Alpine components
-         *
-         * Alpine.data('something', () => hyva.createBooleanObject('hidden', true, {method() {}})) to create a initial state
-         * <div x-data="something>
-         *     <template x-if="hidden">
-         *         <div>Show if hidden</div>
-         *     </template>
-         *     <template x-if="!hidden">
-         *         <div>Show if visible</div>
-         *     </template>
-         *     <input type="checkbox" :checked="!hidden" @change="toggle" />
-         * </div>
-         *
-         * customization:
+         *   {checked(): true, !checked(): false, toggleChecked(), setCheckedTrue(), setCheckedFalse()}
+         **
+         * Additional custom methods:
          * - add extra methods to interact with the boolean
          *
-         * :type="textOrPassword" (binding)
-         * {textOrPassword() {return !this.password() ? 'text':'password'}}
+         *   hyva.createBooleanObject('showPassword', false, {textOrPassword() {return !this.showPassword() ? 'text' : 'password'}})
          *
-         * :classs="inputClasses" (binding)
-         * {inputClasses() {return {hidden: this.hidden()}}}
+         *   <input :type="textOrPassword">
          *
-         * x-text="innerText" (inner text)
-         * {innerText() {return !this.password() ? 'Show password' : 'Hide password'}}
+         * - use with class bindings:
+         *
+         *   hyva.createBooleanObject('hidden', false, {inputClasses() {return {hidden: this.hidden()}}})
+         *
+         *   <div :class="inputClasses">
+         *
+         *  - use to compute the text content of an element
+         *
+         *    hyva.createBooleanObject('password', false, {innerText() {return !this.password() ? 'Show password' : 'Hide password'}})
+         *
+         *    <button type="button" x-text="innerText">
          */
 ?>
-        hyva.createBooleanObject = (name, value = false, additionalMethods = {}) => Object.assign(
-            additionalMethods,
-            {
-                __value: !!value,
-                [name]() {return !!this.__value},
-                ['!' + name]() {return !this.__value},
+        hyva.createBooleanObject = (name, value = false, additionalMethods = {}) => {
+            const key = '__hyva_boolean_' + name, // Needs to be exposed so Alpine watchers will trigger correctly
+                method = name[0].toUpperCase() + name.substring(1) // transform hidden -> Hidden, checked to Checked
 
-                toggle() {this.__value = !this.__value},
+            return Object.assign(
+                additionalMethods,
+                {
+                    [key]: !!value,
+                    [name]() {return !!this[key]},
+                    ['!' + name]() {return !this[key]},
+
+                    ['toggle' + method]() {this[key] = !this[key]},
 <?php
-                // this is right, right?!?
-                // maybe() {value = !Math.round(Math.random())},
-                // disabled when weird bugs appeared
+                    // this is right, right?!?
+                    // ['maybe' + method]() {value = !Math.round(Math.random())},
+                    // disabled when weird bugs appeared
 ?>
-                setTrue() {this.__value = true},
-                setFalse() {this.__value = false},
-            }
-        )
+                    ['set' + method + 'True']() {this[key] = true},
+                    ['set' + method + 'False']() {this[key] = false},
+                }
+            )
+        }
 
         <?php if ((int) $alpineVersion === 2): ?>
         hyva.alpineInitialized = (fn) => {
