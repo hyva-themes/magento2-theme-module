@@ -462,8 +462,8 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          *   {...additionalMethods}: you can extend the object with additional custom methods
          *
          * There also are three additional methods to enforce the state (replace NAME with your property name)
-         *  - toggleNAME(): flips the state
-         *  - setNAMETrue|setNAMEFalse(): force state to true or false
+         *  - NAMETtoggle(): flips the state
+         *  - NAMETrue|NAMEFalse(): force state to true or false
          *
          * Example:
          *  <script>
@@ -476,16 +476,16 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          *      <template x-if="!hidden">
          *          <div>Show if visible</div>
          *      </template>
-         *      <input type="checkbox" :checked="!hidden" @change="togglHiddene" />
+         *      <input type="checkbox" :checked="!hidden" @change="hiddenToggle" />
          *  </div>
          *
          * More examples:
          * - hyva.createBooleanObject('hidden', true)
-         *   {hidden(): true, !hidden(): false, toggleHidden(), setHiddenTrue(), setHiddenFalse()}
+         *   {hidden(): true, !hidden(): false, hiddenToggle(), hiddenTrue(), hiddenFalse()}
          * - hyva.createBooleanObject('visible')
-         *   {visible(): false, !visible(): true, toggleVisible(), setVisibleTrue(), setVisibleFalse()}
+         *   {visible(): false, !visible(): true, visibleToggle(), visibleTrue(), visibleFalse()}
          * - hyva.createBooleanObject('checked', true)
-         *   {checked(): true, !checked(): false, toggleChecked(), setCheckedTrue(), setCheckedFalse()}
+         *   {checked(): true, !checked(): false, checkedToggle(), checkedTrue(), checkedFalse()}
          **
          * Additional custom methods:
          * - add extra methods to interact with the boolean
@@ -508,8 +508,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          */
 ?>
         hyva.createBooleanObject = (name, value = false, additionalMethods = {}) => {
-            const key = '__hyva_boolean_' + name, // Needs to be exposed so Alpine watchers will trigger correctly
-                method = name[0].toUpperCase() + name.substring(1) // transform hidden -> Hidden, checked to Checked
+            const key = '__hyva_boolean_' + name // Need to expose this to AlpineJS so watchers will trigger correctly
 
             return Object.assign(
                 additionalMethods,
@@ -518,14 +517,14 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                     [name]() {return !!this[key]},
                     ['!' + name]() {return !this[key]},
 
-                    ['toggle' + method]() {this[key] = !this[key]},
+                    [name + 'Toggle']() {this[key] = !this[key]},
 <?php
                     // this is right, right?!?
-                    // ['maybe' + method]() {value = !Math.round(Math.random())},
+                    // [name + 'Maybe']() {value = !Math.round(Math.random())},
                     // disabled when weird bugs appeared
 ?>
-                    ['set' + method + 'True']() {this[key] = true},
-                    ['set' + method + 'False']() {this[key] = false},
+                    [name + 'True']() {this[key] = true},
+                    [name + 'False']() {this[key] = false},
                 }
             )
         }
