@@ -297,7 +297,7 @@ use Magento\Framework\View\Element\Template;
         ?>
 
         function formValidation(form) {
-            const formElement = this.$el || form
+            const formElement = form || this.$el;
 
             let options = {}
             if (formElement.dataset.options) {
