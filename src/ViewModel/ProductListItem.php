@@ -60,16 +60,17 @@ class ProductListItem implements ArgumentInterface
     }
 
     public function getProductPriceHtml(
-        Product $product
+        Product $product,
+        array $priceRendererBlockArgs = []
     ) {
         $priceType = FinalPrice::PRICE_CODE;
 
-        $arguments = [
+        $arguments = array_merge([
             'include_container'     => true,
             'display_minimal_price' => true,
             'list_category_page'    => true,
             'zone'                  => Render::ZONE_ITEM_LIST,
-        ];
+        ], $priceRendererBlockArgs);
 
         return $this->getPriceRendererBlock()->render($priceType, $product, $arguments);
     }
