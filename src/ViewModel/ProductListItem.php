@@ -17,6 +17,7 @@ use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
+use Magento\Framework\App\Http\Context as HttpContext;
 
 class ProductListItem implements ArgumentInterface
 {
@@ -45,18 +46,25 @@ class ProductListItem implements ArgumentInterface
      */
     private $customerSession;
 
+    /**
+     * @var HttpContext
+     */
+    private $httpContext;
+
     public function __construct(
         LayoutInterface $layout,
         ProductPage $productViewModel,
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
-        CustomerSession $customerSession
+        CustomerSession $customerSession,
+        HttpContext $httpContext
     ) {
         $this->layout           = $layout;
         $this->productViewModel = $productViewModel;
         $this->currentCategory  = $currentCategory;
         $this->blockCache       = $blockCache;
         $this->customerSession  = $customerSession;
+        $this->httpContext      = $httpContext;
     }
 
     public function getProductPriceHtml(
@@ -119,6 +127,7 @@ class ProductListItem implements ArgumentInterface
             (int) $this->customerSession->getCustomerGroupId(),
             (string) $block->getData('image_display_area'),
             json_encode($product->getData('image_custom_attributes') ?? []),
+            json_encode($this->httpContext->getValue('tax_rates') ?? []),
         ];
     }
 
