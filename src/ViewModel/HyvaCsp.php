@@ -19,8 +19,6 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\Cache\Type as FullPageCache;
 
-// TODO: Do we maybe need 'strict-dynamic' for the mini-cart additional actions?
-// TODO: https://w3c.github.io/webappsec-csp/#strict-dynamic-usage
 class HyvaCsp implements ArgumentInterface
 {
     /**
