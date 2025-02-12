@@ -465,7 +465,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          *  - toggleName(): flips the state
          *  - setNameTrue|setNameFalse(): force state to true or false
          *
-         * If the propery contains underscores, the setters and the toggle methods will use CamelCase.
+         * If the property contains underscores, the setters and the toggle methods will use CamelCase.
          * For example, hyva.createBooleanObject('is_hidden'), will result in the method names
          * toggleIsHidden(), setIsHiddenTrue(), and setIsHiddenFalse().
          *
@@ -473,7 +473,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          *  <script>
          *  Alpine.data('example', () => hyva.createBooleanObject('hidden', true))
          *  </script>
-         *  <div x-data="example>
+         *  <div x-data="example">
          *      <template x-if="hidden">
          *          <div>Show if hidden</div>
          *      </template>
