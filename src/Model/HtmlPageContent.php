@@ -14,6 +14,7 @@ use function array_keys as keys;
 use function array_reduce as reduce;
 use function array_slice as slice;
 
+// phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
 
 class HtmlPageContent
 {
@@ -75,9 +76,10 @@ class HtmlPageContent
         }
         $parts = slice(preg_split('/\s+/', trim($trimmedTag, '<>'), -1, PREG_SPLIT_NO_EMPTY), 1);
         return reduce($parts, function (array $acc, string $part): array {
-            if (strpos($part, '=')) {
-                $key = substr($part, 0, strpos($part, '='));
-                $value = substr($part, strpos($part, '=') + 1);
+            $pos = strpos($part, '=');
+            if (false !== $pos && 0 !== $pos) {
+                $key = substr($part, 0, $pos);
+                $value = substr($part, $pos + 1);
                 if (in_array($value[0], ['"', "'"], true) && mb_substr($value, -1) === $value[0]) {
                     $value = stripslashes(mb_substr($value, 1, -1));
                 }
