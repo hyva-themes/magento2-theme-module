@@ -19,6 +19,9 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\Cache\Type as FullPageCache;
 
+// phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
+// phpcs:disable Magento2.Security.LanguageConstruct.DirectOutput
+
 class HyvaCsp implements ArgumentInterface
 {
     /**

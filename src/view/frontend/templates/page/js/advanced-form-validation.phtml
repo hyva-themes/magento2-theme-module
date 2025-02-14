@@ -600,9 +600,6 @@ use Magento\Framework\View\Element\Template;
         hyva.formValidation.addRule = (name, validator) => formValidationRules[name] = validator;
     }(window.hyva = window.hyva || {}));
 
-    (() => {
-        const initFn = () => Alpine.data('hyva.formValidation', hyva.formValidation);
-        window.Alpine ? initFn() : window.addEventListener('alpine:init', initFn, {once: true})
-    })()
+    window.addEventListener('alpine:init', () => Alpine.data('hyva.formValidation', hyva.formValidation), {once: true});
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
