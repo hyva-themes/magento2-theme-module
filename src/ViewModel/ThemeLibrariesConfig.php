@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Csp\Api\PolicyCollectorInterface as CspPolicyCollector;
+use Magento\Csp\Model\Policy\FetchPolicy;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\DriverInterface as FilesystemDriver;
 use Magento\Framework\Filesystem\DriverPool as FilesystemDriverPool;
 use Magento\Framework\View\Design\Fallback\RulePool;
@@ -37,14 +40,21 @@ class ThemeLibrariesConfig implements ArgumentInterface
      */
     private $fileSystem;
 
+    /**
+     * @var CspPolicyCollector
+     */
+    private $cspPolicyCollector;
+
     public function __construct(
         DesignInterface $design,
         ThemeFallbackResolver $themeFallbackResolver,
-        FilesystemDriverPool $filesystemDriverPool
+        FilesystemDriverPool $filesystemDriverPool,
+        CspPolicyCollector $cspPolicyCollector = null
     ) {
-        $this->design            = $design;
+        $this->design = $design;
         $this->themeFileResolver = $themeFallbackResolver;
-        $this->fileSystem        = $filesystemDriverPool->getDriver(RulePool::TYPE_FILE);
+        $this->fileSystem = $filesystemDriverPool->getDriver(RulePool::TYPE_FILE);
+        $this->cspPolicyCollector = $cspPolicyCollector ?? ObjectManager::getInstance()->get(CspPolicyCollector::class);
     }
 
     private function getThemeLibrariesConfigFile(ThemeInterface $theme): ?string
@@ -63,6 +73,30 @@ class ThemeLibrariesConfig implements ArgumentInterface
 
     public function getVersionIdFor(string $library): ?string
     {
-        return $this->getThemeLibrariesConfig()[$library] ?? null;
+        $version = $this->getThemeLibrariesConfig()[$library] ?? null;
+        if ('alpine' === $library && $version) {
+            $policies = $this->cspPolicyCollector->collect();
+            if ($policy = $this->findPolicy($policies, 'script-src') ?? $this->findPolicy($policies, 'default-src') ?? null) {
+                if (! $policy->isEvalAllowed()) {
+                    return $version . '-csp';
+                }
+            }
+        }
+        return $version;
+    }
+
+    /**
+     * @param FetchPolicy[] $policies
+     * @param string $policyToFind
+     * @return FetchPolicy
+     */
+    private function findPolicy(array $policies, string $policyToFind): ?FetchPolicy
+    {
+        foreach ($policies as $policy) {
+            if ($policy->getId() === $policyToFind) {
+                return $policy;
+            }
+        }
+        return null;
     }
 }
