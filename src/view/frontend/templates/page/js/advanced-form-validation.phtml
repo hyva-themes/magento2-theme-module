@@ -296,15 +296,14 @@ use Magento\Framework\View\Element\Template;
         // Alpine component start
         ?>
 
-        function formValidation(form) {
+        function formValidation(form, options = {}) {
             const formElement = form || this.$el;
 
-            let options = {}
-            if (formElement.dataset.options) {
+            if (formElement.dataset && formElement.dataset.options) {
                 try {
-                    options = JSON.parse(formElement.dataset.options || '{}')
+                    options = Object.assign(options, JSON.parse(formElement.dataset.options || '{}'));
                 } catch (e) {
-                    throw new Error('Cannot validate the form options from the data-options, this should be a JSON value')
+                    throw new Error('Cannot read the form options from the data-options attribute: not valid JSON');
                 }
             }
 
@@ -600,6 +599,9 @@ use Magento\Framework\View\Element\Template;
         hyva.formValidation.addRule = (name, validator) => formValidationRules[name] = validator;
     }(window.hyva = window.hyva || {}));
 
-    window.addEventListener('alpine:init', () => Alpine.data('hyva.formValidation', hyva.formValidation), {once: true});
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('hyva.formValidation', hyva.formValidation);
+        Alpine.data('hyva.formValidation($el)', hyva.formValidation);
+    }, {once: true});
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>

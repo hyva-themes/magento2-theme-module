@@ -125,14 +125,13 @@ $deployMode = $viewModels->require(DeployMode::class);
             return overflowDisabled.length === modals.length;
         }
 
-        window.hyva.modal = function() {
+        window.hyva.modal = function(options = {}) {
 
-            let options = {}
-            if (this.$el.dataset.options) {
+            if (this.$el.dataset && this.$el.dataset.options) {
                 try {
-                    options = JSON.parse(this.$el.dataset.options || '{}')
+                    options = Object.assign(options, JSON.parse(this.$el.dataset.options || '{}'));
                 } catch (e) {
-                    throw new Error('Cannot validate the form options from the data-options, this should be a JSON value')
+                    throw new Error('Cannot read the dialog options from the data-options attribute: not valid JSON');
                 }
             }
 
@@ -202,10 +201,10 @@ $deployMode = $viewModels->require(DeployMode::class);
                     lastHide = Date.now();
 
                     const modal = modals.pop() || {};
-                    // only valid modals are allowed
                     if (! modal.instance) {
-                        return
+                        return;
                     }
+
                     const name = modal.name;
                     this.opened[name] = false;
                     hyva.releaseFocus(modal.instance.$refs[modal.name])
@@ -223,10 +222,9 @@ $deployMode = $viewModels->require(DeployMode::class);
 
                     modal.resolve(value);
                 },
-                overlay() {
-                    const
-                        dialog = this.$el.dataset.dialogRefName,
-                        name = typeof dialog === 'string' ? dialog : config.dialog;
+                overlay(dialog) {
+                    dialog = this.$el.dataset.dialogRefName || dialog;
+                    const name = typeof dialog === 'string' ? dialog : config.dialog;
                     return {
                         ['x-show']() {
                             return this.opened[name]
@@ -284,6 +282,9 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         document.addEventListener('click', window.hyva.modal.eventListeners.click);
     })();
-    window.addEventListener('alpine:init', () => Alpine.data('hyva.modal', window.hyva.modal), {once: true});
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('hyva.modal', window.hyva.modal);
+        Alpine.data('hyva.modal()', window.hyva.modal);
+    }, {once: true});
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>

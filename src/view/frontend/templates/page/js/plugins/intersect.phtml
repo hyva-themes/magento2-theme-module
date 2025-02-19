@@ -20,11 +20,9 @@ $version = $themeLibrary->getVersionIdFor('intersect-plugin')
     ?: $themeLibrary->getVersionIdFor('alpine')
     ?: '2';
 
-$templateIdentifier = 'Hyva_Theme::page/js/plugins/v%s/intersect.phtml';
-$template = $block->getTemplateFile(sprintf($templateIdentifier, $version));
-if (! $template && substr($version, -4) === '-csp') {
-    $template = $block->getTemplateFile(sprintf($templateIdentifier, substr($version, 0, -4)));
+if (substr($version, -4) === '-csp') {
+    $version = substr($version, 0, -4);
 }
 
 ?>
-<?= /** @noEscape */ $block->fetchView($template) ?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile(sprintf('Hyva_Theme::page/js/plugins/v%s/intersect.phtml', $version))) ?>
