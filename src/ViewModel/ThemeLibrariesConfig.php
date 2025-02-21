@@ -74,7 +74,7 @@ class ThemeLibrariesConfig implements ArgumentInterface
     public function getVersionIdFor(string $library): ?string
     {
         $version = $this->getThemeLibrariesConfig()[$library] ?? null;
-        if ('alpine' === $library && $version) {
+        if ('alpine' === $library && $version && !str_ends_with($version, '-csp')) {
             $policies = $this->cspPolicyCollector->collect();
             if ($policy = $this->findPolicy($policies, 'script-src') ?? $this->findPolicy($policies, 'default-src') ?? null) {
                 if (! $policy->isEvalAllowed()) {
