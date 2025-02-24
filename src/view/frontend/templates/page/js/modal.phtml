@@ -126,8 +126,8 @@ $deployMode = $viewModels->require(DeployMode::class);
         }
 
         window.hyva.modal = function(options = {}) {
-
-            if (this.$el.dataset && this.$el.dataset.options) {
+            <?php /* $el is not defined when hyva.modal is called within Object.assign() for example */ ?>
+            if (this.$el && this.$el.dataset && this.$el.dataset.options) {
                 try {
                     options = Object.assign(options, JSON.parse(this.$el.dataset.options || '{}'));
                 } catch (e) {
