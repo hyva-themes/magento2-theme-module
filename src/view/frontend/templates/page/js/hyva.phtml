@@ -319,27 +319,27 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          */
         hyva.replaceDomElement = (targetSelector, content) => {
             // Parse the content and extract the DOM node using the `targetSelector`
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(content, 'text/html');
-            const contentNode = doc.querySelector(targetSelector);
+            const parser = new DOMParser(),
+                doc = parser.parseFromString(content, 'text/html'),
+                contentNode = doc.querySelector(targetSelector),
+                target = document.querySelector(targetSelector);
 
             // Bail if content can't be found
-            if (!contentNode) {
+            // or target is nowhere to be found
+            if (!contentNode || !target) {
                 return;
             }
 
             <?php
             /**
-             * If the CSP unsafe-inline is not set, scripts must not be injected into the page.
-             * We remove them, and assume they are already present in the original page content.
-             **/
+             * Only allow script to dynamically be added if allowed by policies
+             */
             ?>
-            const isCsp = document.querySelector('script[nonce]');
-            if (isCsp) {
-                hyva.removeScripts(contentNode);
-            } else {
-                hyva.activateScripts(contentNode);
-            }
+            <?php if ($hyvaCsp->getScriptSrcPolicy()->isInlineAllowed()): ?>
+            hyva.activateScripts(contentNode);
+            <?php else: ?>
+            hyva.removeScripts(contentNode);
+            <?php endif; ?>
 
             // Replace the old DOM node with the new content
             document.querySelector(targetSelector).replaceWith(contentNode);
@@ -367,27 +367,26 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             // Extract all the script tags from the content.
             // Script tags won't execute when inserted into a dom-element directly,
             // therefore we need to inject them to the head of the document.
-            const tmpScripts = contentNode.getElementsByTagName('script');
+            const scripts = Array.from(contentNode.getElementsByTagName('script'));
 
-            if (tmpScripts.length > 0) {
-                // Push all script tags into an array
-                // (to prevent dom manipulation while iterating over dom nodes)
-                const scripts = [];
-                for (let i = 0; i < tmpScripts.length; i++) {
-                    scripts.push(tmpScripts[i]);
-                }
-
-                // Iterate over all script tags and duplicate+inject each into the head
-                for (let i = 0; i < scripts.length; i++) {
-                    let script = document.createElement('script');
-                    script.innerHTML = scripts[i].innerHTML;
-
-                    document.head.appendChild(script);
-
-                    // Remove the original (non-executing) node from the content
-                    scripts[i].parentNode.removeChild(scripts[i]);
-                }
+            // No scripts found
+            if (scripts.length < 1) {
+                return contentNode;
             }
+
+            // Create one script and add that to the head to initialize all javascript
+            // Iterate over all script tags and duplicate+inject each into the head
+            scripts.forEach(original => {
+                const script = document.createElement('script');
+                script.innerHTML = original.innerHTML;
+
+                // Add script to head
+                document.head.appendChild(script);
+
+                // Remove the original script from the contentNode
+                original.parentNode.removeChild(original)
+            })
+
             return contentNode;
         }
 

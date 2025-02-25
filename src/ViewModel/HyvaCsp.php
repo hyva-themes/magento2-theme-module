@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Hyva\Theme\Model\HtmlPageContent;
+use Magento\Csp\Api\Data\PolicyInterface;
+use Magento\Csp\Api\PolicyCollectorInterface;
 use Magento\Csp\Helper\CspNonceProvider;
 use Magento\Csp\Model\Collector\DynamicCollector as DynamicCspCollector;
 use Magento\Csp\Model\Policy\FetchPolicy;
@@ -49,25 +51,39 @@ class HyvaCsp implements ArgumentInterface
      */
     private $cacheState;
 
+    /**
+     * @var PolicyCollectorInterface
+     */
+    private PolicyCollectorInterface $policyCollector;
+
     public function __construct(
         DynamicCspCollector $dynamicCspCollector,
+        PolicyCollectorInterface $policyCollector,
         CspNonceProvider $cspNonceProvider,
         HtmlPageContent $htmlPageContent,
         LayoutInterface $layout,
         CacheState $cacheState
     ) {
         $this->dynamicCspCollector = $dynamicCspCollector;
-        $this->layout = $layout;
-        $this->htmlPageContent = $htmlPageContent;
+        $this->policyCollector = $policyCollector;
         $this->cspNonceProvider = $cspNonceProvider;
+        $this->htmlPageContent = $htmlPageContent;
+        $this->layout = $layout;
         $this->cacheState = $cacheState;
     }
 
     public function registerInlineScript(): void
     {
+        // Scripts are allowed, no need to update scripts
+        if ($this->getScriptSrcPolicy()->isInlineAllowed()) {
+            return;
+        }
+
         if ($this->cacheState->isEnabled(FullPageCache::TYPE_IDENTIFIER) && $this->layout->isCacheable()) {
+            // Page is cached, add a sha hash belonging to the script
             $this->addInlineScriptHashToCspHeader();
         } else {
+            // Add a csp nonce tag to the script
             $this->addCspNonceToInlineScript();
         }
     }
@@ -116,5 +132,48 @@ class HyvaCsp implements ArgumentInterface
             // Add the script content and the closing script tag to the output buffer
             echo substr($script, strlen($openingScriptTag));
         }
+    }
+
+    /**
+     * Lookup script-src with fallback on default-src policy
+     *
+     * @return FetchPolicy
+     */
+    public function getScriptSrcPolicy(): FetchPolicy
+    {
+        return $this->findPolicy('script-src') ?? $this->findPolicy('default-src');
+    }
+
+    /**
+     * Search within the fetch policies, if no policy is found, return a default empty policy
+     *
+     * @param string $policyToFind
+     * @return FetchPolicy
+     */
+    private function findPolicy(string $policyToFind): FetchPolicy
+    {
+        $policies = $this->collectFetchPolicies();
+        foreach ($policies as $policy) {
+            if ($policy->getId() === $policyToFind) {
+                return $policy;
+            }
+        }
+
+        // Return a default policy with default settings
+        // Everything should be blocked if nothing is defined
+        return new FetchPolicy($policyToFind);
+    }
+
+    /**
+     * We only need to collect fetch policies
+     *
+     * @return FetchPolicy[]
+     */
+    private function collectFetchPolicies(): array
+    {
+        return array_filter(
+            $this->policyCollector->collect(),
+            fn(PolicyInterface $policy) => $policy instanceof FetchPolicy
+        );
     }
 }

@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Magento\Csp\Api\PolicyCollectorInterface as CspPolicyCollector;
-use Magento\Csp\Model\Policy\FetchPolicy;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\DriverInterface as FilesystemDriver;
 use Magento\Framework\Filesystem\DriverPool as FilesystemDriverPool;
@@ -41,20 +39,20 @@ class ThemeLibrariesConfig implements ArgumentInterface
     private $fileSystem;
 
     /**
-     * @var CspPolicyCollector
+     * @var HyvaCsp
      */
-    private $cspPolicyCollector;
+    private HyvaCsp $hyvaCsp;
 
     public function __construct(
-        DesignInterface $design,
+        DesignInterface       $design,
         ThemeFallbackResolver $themeFallbackResolver,
-        FilesystemDriverPool $filesystemDriverPool,
-        CspPolicyCollector $cspPolicyCollector = null
+        FilesystemDriverPool  $filesystemDriverPool,
+        ?HyvaCsp              $hyvaCsp
     ) {
         $this->design = $design;
         $this->themeFileResolver = $themeFallbackResolver;
         $this->fileSystem = $filesystemDriverPool->getDriver(RulePool::TYPE_FILE);
-        $this->cspPolicyCollector = $cspPolicyCollector ?? ObjectManager::getInstance()->get(CspPolicyCollector::class);
+        $this->hyvaCsp = $hyvaCsp ?? ObjectManager::getInstance()->get(HyvaCsp::class);
     }
 
     private function getThemeLibrariesConfigFile(ThemeInterface $theme): ?string
@@ -74,29 +72,39 @@ class ThemeLibrariesConfig implements ArgumentInterface
     public function getVersionIdFor(string $library): ?string
     {
         $version = $this->getThemeLibrariesConfig()[$library] ?? null;
-        if ('alpine' === $library && $version && !str_ends_with($version, '-csp')) {
-            $policies = $this->cspPolicyCollector->collect();
-            if ($policy = $this->findPolicy($policies, 'script-src') ?? $this->findPolicy($policies, 'default-src') ?? null) {
-                if (! $policy->isEvalAllowed()) {
-                    return $version . '-csp';
-                }
-            }
+        if (null === $version) {
+            return null;
         }
+
+        if ('alpine' === $library) {
+            return $this->getAlpineCspVersion($version);
+        }
+
         return $version;
     }
 
-    /**
-     * @param FetchPolicy[] $policies
-     * @param string $policyToFind
-     * @return FetchPolicy
-     */
-    private function findPolicy(array $policies, string $policyToFind): ?FetchPolicy
+    private function getAlpineCspVersion(string $version): string
     {
-        foreach ($policies as $policy) {
-            if ($policy->getId() === $policyToFind) {
-                return $policy;
-            }
+        // No CSP version exist for v2
+        if ('2' === $version) {
+            return $version;
         }
-        return null;
+
+        // Already running csp forced from library config
+        if (str_ends_with($version, '-csp') ) {
+            return $version;
+        }
+
+        // Inline scripts and evaluations are allowed, no need for alpine-csp
+        if (
+            $this->hyvaCsp->getScriptSrcPolicy()->isEvalAllowed() &&
+            $this->hyvaCsp->getScriptSrcPolicy()->isInlineAllowed()
+        ) {
+            return $version;
+        }
+
+        // Alpine CSP is required for this page
+        return $version . '-csp';
     }
+
 }
