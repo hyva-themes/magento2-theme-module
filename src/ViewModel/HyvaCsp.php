@@ -54,7 +54,7 @@ class HyvaCsp implements ArgumentInterface
     /**
      * @var PolicyCollectorInterface
      */
-    private PolicyCollectorInterface $policyCollector;
+    private $policyCollector;
 
     public function __construct(
         DynamicCspCollector $dynamicCspCollector,
@@ -80,10 +80,8 @@ class HyvaCsp implements ArgumentInterface
         }
 
         if ($this->cacheState->isEnabled(FullPageCache::TYPE_IDENTIFIER) && $this->layout->isCacheable()) {
-            // Page is cached, add a sha hash belonging to the script
             $this->addInlineScriptHashToCspHeader();
         } else {
-            // Add a csp nonce tag to the script
             $this->addCspNonceToInlineScript();
         }
     }

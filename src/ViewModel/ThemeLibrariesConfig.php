@@ -41,13 +41,13 @@ class ThemeLibrariesConfig implements ArgumentInterface
     /**
      * @var HyvaCsp
      */
-    private HyvaCsp $hyvaCsp;
+    private $hyvaCsp;
 
     public function __construct(
         DesignInterface       $design,
         ThemeFallbackResolver $themeFallbackResolver,
         FilesystemDriverPool  $filesystemDriverPool,
-        ?HyvaCsp              $hyvaCsp
+        HyvaCsp               $hyvaCsp = null
     ) {
         $this->design = $design;
         $this->themeFileResolver = $themeFallbackResolver;
@@ -77,13 +77,13 @@ class ThemeLibrariesConfig implements ArgumentInterface
         }
 
         if ('alpine' === $library) {
-            return $this->getAlpineCspVersion($version);
+            return $this->appendCspIfRequired($version);
         }
 
         return $version;
     }
 
-    private function getAlpineCspVersion(string $version): string
+    private function appendCspIfRequired(string $version): string
     {
         // No CSP version exist for v2
         if ('2' === $version) {
@@ -91,15 +91,12 @@ class ThemeLibrariesConfig implements ArgumentInterface
         }
 
         // Already running csp forced from library config
-        if (str_ends_with($version, '-csp') ) {
+        if (strrpos($version, '-csp') === 0) {
             return $version;
         }
 
-        // Inline scripts and evaluations are allowed, no need for alpine-csp
-        if (
-            $this->hyvaCsp->getScriptSrcPolicy()->isEvalAllowed() &&
-            $this->hyvaCsp->getScriptSrcPolicy()->isInlineAllowed()
-        ) {
+        // Evaluations are allowed, no need for Alpine CSP
+        if ($this->hyvaCsp->getScriptSrcPolicy()->isEvalAllowed()) {
             return $version;
         }
 
