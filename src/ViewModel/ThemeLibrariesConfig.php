@@ -90,8 +90,8 @@ class ThemeLibrariesConfig implements ArgumentInterface
             return $version;
         }
 
-        // Already running csp forced from library config
-        if (strrpos($version, '-csp') === 0) {
+        // CSP already specified by library config
+        if (substr($version, -4) === '-csp') {
             return $version;
         }
 

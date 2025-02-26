@@ -319,20 +319,20 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
          */
         hyva.replaceDomElement = (targetSelector, content) => {
             // Parse the content and extract the DOM node using the `targetSelector`
-            const parser = new DOMParser(),
-                doc = parser.parseFromString(content, 'text/html'),
-                contentNode = doc.querySelector(targetSelector),
-                target = document.querySelector(targetSelector);
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const contentNode = doc.querySelector(targetSelector);
 
-            // Bail if content can't be found
-            // or target is nowhere to be found
-            if (!contentNode || !target) {
+            // Bail if content or target can't be found
+            if (!contentNode || !document.querySelector(targetSelector)) {
                 return;
             }
 
             <?php
             /**
-             * Only allow script to dynamically be added if allowed by policies
+             * Only add scripts dynamically if allowed by CSP.
+             * If not, they are removed to avoid errors in the browser console.
+             * In that case they should already be present on the page when it is initially loaded.
              */
             ?>
             <?php if ($hyvaCsp->getScriptSrcPolicy()->isInlineAllowed()): ?>
@@ -364,28 +364,27 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
         }
 
         hyva.activateScripts = (contentNode) => {
-            // Extract all the script tags from the content.
-            // Script tags won't execute when inserted into a dom-element directly,
-            // therefore we need to inject them to the head of the document.
+            <?php
+            /**
+             * Extract all the script tags from the content.
+             * Script tags won't execute when inserted into a dom-element directly,
+             * therefore we need to inject them to the head of the document.
+             */
+            ?>
+            // Create new array from HTMLCollection to avoid mutation of collection while manipulating the DOM.
             const scripts = Array.from(contentNode.getElementsByTagName('script'));
 
-            // No scripts found
-            if (scripts.length < 1) {
-                return contentNode;
-            }
-
-            // Create one script and add that to the head to initialize all javascript
-            // Iterate over all script tags and duplicate+inject each into the head
-            scripts.forEach(original => {
+            // Iterate over all script tags to duplicate+inject each into the head
+            for (const original of scripts) {
                 const script = document.createElement('script');
                 script.innerHTML = original.innerHTML;
 
+                // Remove the original (non-executing) script from the contentNode
+                original.parentNode.removeChild(original)
+
                 // Add script to head
                 document.head.appendChild(script);
-
-                // Remove the original script from the contentNode
-                original.parentNode.removeChild(original)
-            })
+            }
 
             return contentNode;
         }

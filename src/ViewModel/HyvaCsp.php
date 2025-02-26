@@ -74,7 +74,6 @@ class HyvaCsp implements ArgumentInterface
 
     public function registerInlineScript(): void
     {
-        // Scripts are allowed, no need to update scripts
         if ($this->getScriptSrcPolicy()->isInlineAllowed()) {
             return;
         }
@@ -132,27 +131,14 @@ class HyvaCsp implements ArgumentInterface
         }
     }
 
-    /**
-     * Lookup script-src with fallback on default-src policy
-     *
-     * @return FetchPolicy
-     */
     public function getScriptSrcPolicy(): FetchPolicy
     {
-        return
-            $this->findPolicy('script-src') ??
-            $this->findPolicy('default-src') ??
-            // Return a default policy with default settings
-            // Everything is blocked if nothing is defined
-            new FetchPolicy('default-src');
+        // Default to policy blocking everything
+        return $this->findPolicy('script-src')
+            ?? $this->findPolicy('default-src')
+            ?? new FetchPolicy('default-src');
     }
 
-    /**
-     * Search within the fetch policies, if no policy is found, return a default empty policy
-     *
-     * @param string $policyToFind
-     * @return ?FetchPolicy
-     */
     private function findPolicy(string $policyToFind): ?FetchPolicy
     {
         $policies = $this->collectFetchPolicies();
@@ -165,11 +151,6 @@ class HyvaCsp implements ArgumentInterface
         return null;
     }
 
-    /**
-     * We only need to collect fetch policies
-     *
-     * @return FetchPolicy[]
-     */
     private function collectFetchPolicies(): array
     {
         return array_filter(
