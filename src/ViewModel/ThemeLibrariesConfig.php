@@ -103,5 +103,4 @@ class ThemeLibrariesConfig implements ArgumentInterface
         // Alpine CSP is required for this page
         return $version . '-csp';
     }
-
 }

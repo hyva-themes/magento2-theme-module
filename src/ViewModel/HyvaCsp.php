@@ -174,7 +174,7 @@ class HyvaCsp implements ArgumentInterface
     {
         return array_filter(
             $this->policyCollector->collect(),
-            static function(PolicyInterface $policy) {
+            static function (PolicyInterface $policy) {
                 return $policy instanceof FetchPolicy;
             }
         );
