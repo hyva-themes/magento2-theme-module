@@ -139,16 +139,21 @@ class HyvaCsp implements ArgumentInterface
      */
     public function getScriptSrcPolicy(): FetchPolicy
     {
-        return $this->findPolicy('script-src') ?? $this->findPolicy('default-src');
+        return
+            $this->findPolicy('script-src') ??
+            $this->findPolicy('default-src') ??
+            // Return a default policy with default settings
+            // Everything is blocked if nothing is defined
+            new FetchPolicy('default-src');
     }
 
     /**
      * Search within the fetch policies, if no policy is found, return a default empty policy
      *
      * @param string $policyToFind
-     * @return FetchPolicy
+     * @return ?FetchPolicy
      */
-    private function findPolicy(string $policyToFind): FetchPolicy
+    private function findPolicy(string $policyToFind): ?FetchPolicy
     {
         $policies = $this->collectFetchPolicies();
         foreach ($policies as $policy) {
@@ -157,9 +162,7 @@ class HyvaCsp implements ArgumentInterface
             }
         }
 
-        // Return a default policy with default settings
-        // Everything should be blocked if nothing is defined
-        return new FetchPolicy($policyToFind);
+        return null;
     }
 
     /**
@@ -171,7 +174,9 @@ class HyvaCsp implements ArgumentInterface
     {
         return array_filter(
             $this->policyCollector->collect(),
-            fn(PolicyInterface $policy) => $policy instanceof FetchPolicy
+            static function(PolicyInterface $policy) {
+                return $policy instanceof FetchPolicy;
+            }
         );
     }
 }
