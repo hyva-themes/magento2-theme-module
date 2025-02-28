@@ -10,9 +10,13 @@ declare(strict_types=1);
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var Cookie $cookieSettings */
 
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\Cookie;
+
+$cookieSettings = $block->getCookieSettings();
 
 ?>
 <script>
@@ -25,7 +29,7 @@ use Magento\Framework\View\Element\Template;
         const mage_cache_session_id_key = 'mage-cache-sessid';
         const last_visited_store_key = 'last_visited_store';
 
-        const ttl = 3600;
+        const ttl =  <?= $cookieSettings->getLifetime() ?: 3600 ?>;
 
 <?php
         /**
