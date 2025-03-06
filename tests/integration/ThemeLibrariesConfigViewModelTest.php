@@ -97,7 +97,7 @@ class ThemeLibrariesConfigViewModelTest extends TestCase
     /**
      * @dataProvider unsafeEvalAllowedDataProvider
      */
-    public function testReturnsVersionIfConfigPresentForGivenKey_UnsafeEvalAllowed(bool $isUnsafeEvalAllowed, string $expectedAlpineVersion): void
+    public function testReturnsVersionIfConfigPresentForGivenKeyDependingOnUnsafeEval(bool $isUnsafeEvalAllowed, string $expectedAlpineVersion): void
     {
         $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
         $filesystemDriverPoolMock = $this->mockFilesystemDriverPool();
