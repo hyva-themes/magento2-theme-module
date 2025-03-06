@@ -10,12 +10,14 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Hyva\Theme\ViewModel\StoreConfig;
 use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
 use Magento\Cookie\Helper\Cookie;
 use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
 /** @var ViewModelRegistry $viewModels */
 /** @var Currency $currencyViewModel */
 $currencyViewModel = $viewModels->require(Currency::class);
@@ -321,12 +323,23 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             const doc = parser.parseFromString(content, 'text/html');
             const contentNode = doc.querySelector(targetSelector);
 
-            // Bail if content can't be found
-            if (!contentNode) {
+            // Bail if content or target can't be found
+            if (!contentNode || !document.querySelector(targetSelector)) {
                 return;
             }
 
-            hyva.activateScripts(contentNode)
+<?php
+            /**
+             * Only add scripts dynamically if allowed by CSP.
+             * If not, they are removed to avoid errors in the browser console.
+             * In that case they should already be present on the page when it is initially loaded.
+             */
+?>
+            <?php if ($hyvaCsp->getScriptSrcPolicy()->isInlineAllowed()): ?>
+            hyva.activateScripts(contentNode);
+            <?php else: ?>
+            hyva.removeScripts(contentNode);
+            <?php endif; ?>
 
             // Replace the old DOM node with the new content
             document.querySelector(targetSelector).replaceWith(contentNode);
@@ -336,31 +349,43 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             hyva.initMessages();
         }
 
-        hyva.activateScripts = (contentNode) => {
-            // Extract all the script tags from the content.
-            // Script tags won't execute when inserted into a dom-element directly,
-            // therefore we need to inject them to the head of the document.
-            const tmpScripts = contentNode.getElementsByTagName('script');
-
-            if (tmpScripts.length > 0) {
-                // Push all script tags into an array
-                // (to prevent dom manipulation while iterating over dom nodes)
-                const scripts = [];
-                for (let i = 0; i < tmpScripts.length; i++) {
-                    scripts.push(tmpScripts[i]);
-                }
-
-                // Iterate over all script tags and duplicate+inject each into the head
-                for (let i = 0; i < scripts.length; i++) {
-                    let script = document.createElement('script');
-                    script.innerHTML = scripts[i].innerHTML;
-
-                    document.head.appendChild(script);
-
-                    // Remove the original (non-executing) node from the content
-                    scripts[i].parentNode.removeChild(scripts[i]);
-                }
+        hyva.removeScripts = (contentNode) => {
+            const scripts = contentNode.getElementsByTagName('script');
+            for (let i = 0; i < scripts.length; i++) {
+                scripts[i].parentNode.removeChild(scripts[i]);
             }
+            const templates = contentNode.getElementsByTagName('template');
+            for (let i = 0; i < templates.length; i++) {
+                const container = document.createElement('div');
+                container.innerHTML = templates[i].innerHTML;
+                hyva.removeScripts(container);
+                templates[i].innerHTML = container.innerHTML;
+            }
+        }
+
+        hyva.activateScripts = (contentNode) => {
+<?php
+            /**
+             * Extract all the script tags from the content.
+             * Script tags won't execute when inserted into a dom-element directly,
+             * therefore we need to inject them to the head of the document.
+             */
+?>
+            // Create new array from HTMLCollection to avoid mutation of collection while manipulating the DOM.
+            const scripts = Array.from(contentNode.getElementsByTagName('script'));
+
+            // Iterate over all script tags to duplicate+inject each into the head
+            for (const original of scripts) {
+                const script = document.createElement('script');
+                script.innerHTML = original.innerHTML;
+
+                // Remove the original (non-executing) script from the contentNode
+                original.parentNode.removeChild(original)
+
+                // Add script to head
+                document.head.appendChild(script);
+            }
+
             return contentNode;
         }
 
@@ -414,6 +439,41 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             firstElement && firstElement.focus()
         }
 
+<?php
+        /**
+         * With CSP the Alpine x-model directive can't be used, and input or change events have to be used instead to set the value.
+         * The x-model.number allows enforcing the value to be a number.
+         * To maintain this functionality the function here is included, so it can be used in the event callback.
+         * The original implementation can be found in .number modifier in Alpine packages/alpinejs/src/directives/x-model.js
+         */
+?>
+        hyva.safeParseNumber = (rawValue) => {
+            const number = rawValue ? parseFloat(rawValue) : null;
+
+            return Array.isArray(number) || isNaN(number) ? rawValue : number;
+        }
+
+<?php /** Convenience method for "toggle" alpine components */ ?>
+        const toCamelCase = s => s.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+        hyva.createBooleanObject = (name, value = false, additionalMethods = {}) => {
+
+            const camelCase = toCamelCase(name);
+<?php /** Has to be an object property so AlpineJS observes changes */ ?>
+            const key = '__hyva_bool_' + name
+
+            return Object.assign(
+                additionalMethods,
+                {
+                    [key]: !!value,
+                    [name]() {return !!this[key]},
+                    ['!' + name]() {return !this[key]},
+                    ['toggle' + camelCase]() {this[key] = !this[key]},
+                    [`set${camelCase}True`]() {this[key] = true},
+                    [`set${camelCase}False`]() {this[key] = false},
+                }
+            )
+        }
+
         <?php if ((int) $alpineVersion === 2): ?>
         hyva.alpineInitialized = (fn) => {
             const initAlpine = window.deferLoadingAlpine || ((callback) => callback())
@@ -429,3 +489,4 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 
     }( window.hyva = window.hyva || {} ));
 </script>
+<?php $hyvaCsp->registerInlineScript() ?>

@@ -8,8 +8,10 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\View\Element\Template;
 
+/** @var HyvaCsp $hyvaCsp */
 /** @var Template $block */
 
 // Dispatch event to load external scripts after the first user interaction
@@ -23,3 +25,4 @@ use Magento\Framework\View\Element\Template;
         events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true, passive: true}))
     })(['touchstart', 'mousemove', 'wheel', 'scroll', 'keydown'])
 </script>
+<?php $hyvaCsp->registerInlineScript() ?>

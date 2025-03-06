@@ -17,7 +17,10 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class RadioPriceRenderer implements ArgumentInterface
 {
-    private Option $option;
+    /**
+     * @var Option
+     */
+    private $option;
 
     public function __construct(
         Option $option

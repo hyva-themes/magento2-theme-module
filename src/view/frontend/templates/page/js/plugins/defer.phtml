@@ -23,6 +23,10 @@ $version = $themeLibrary->getVersionIdFor('defer-plugin')
     ?: $themeLibrary->getVersionIdFor('alpine')
     ?: '2';
 
+if (substr($version, -4) === '-csp') {
+    $version = substr($version, 0, -4);
+}
+
 ?>
 <?= $block->getChildHtml('alpine-defer-rules') ?>
-<?= /** @noEscape */ $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/defer.phtml")) ?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile(sprintf('Hyva_Theme::page/js/plugins/v%s/defer.phtml', $version))) ?>

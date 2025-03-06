@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace Hyva\Theme;
 
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
+use Magento\Csp\Model\Policy\FetchPolicy;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Filesystem\DriverPool;
@@ -48,7 +50,7 @@ class ThemeLibrariesConfigViewModelTest extends TestCase
 
     public function testReturnsThemeConfigAsArray(): void
     {
-        $themeFallbackMock        = $this->createMock(ThemeFallbackResolver::class);
+        $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
         $filesystemDriverPoolMock = $this->mockFilesystemDriverPool();
 
         $sut = ObjectManager::getInstance()->create(ThemeLibrariesConfig::class, [
@@ -67,7 +69,7 @@ class ThemeLibrariesConfigViewModelTest extends TestCase
 
     public function testReturnsNullIfConfigPresentButNoSettingForGivenKey(): void
     {
-        $themeFallbackMock        = $this->createMock(ThemeFallbackResolver::class);
+        $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
         $filesystemDriverPoolMock = $this->mockFilesystemDriverPool();
 
         $sut = ObjectManager::getInstance()->create(ThemeLibrariesConfig::class, [
@@ -84,14 +86,30 @@ class ThemeLibrariesConfigViewModelTest extends TestCase
         $this->assertNull($sut->getVersionIdFor('foo'));
     }
 
-    public function testReturnsVersionIfConfigPresentButNoSettingForGivenKey(): void
+    public function unsafeEvalAllowedDataProvider(): array
     {
-        $themeFallbackMock        = $this->createMock(ThemeFallbackResolver::class);
+        return [
+            'unsafe eval allowed' => [true, '3'],
+            'unsafe eval forbidden' => [false, '3-csp'],
+        ];
+    }
+
+    /**
+     * @dataProvider unsafeEvalAllowedDataProvider
+     */
+    public function testReturnsVersionIfConfigPresentForGivenKey_UnsafeEvalAllowed(bool $isUnsafeEvalAllowed, string $expectedAlpineVersion): void
+    {
+        $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
         $filesystemDriverPoolMock = $this->mockFilesystemDriverPool();
+        $hyvaCspMock = $this->createMock(HyvaCsp::class);
+        $unsafeEvalFetchPolicyMock = $this->createMock(FetchPolicy::class);
+        $unsafeEvalFetchPolicyMock->expects($this->any())->method('isEvalAllowed')->willReturn($isUnsafeEvalAllowed);
+        $hyvaCspMock->expects($this->any())->method('getScriptSrcPolicy')->willReturn($unsafeEvalFetchPolicyMock);
 
         $sut = ObjectManager::getInstance()->create(ThemeLibrariesConfig::class, [
             'filesystemDriverPool'  => $filesystemDriverPoolMock,
             'themeFallbackResolver' => $themeFallbackMock,
+            'hyvaCsp'               => $hyvaCspMock,
         ]);
 
         $config = ['alpine' => '3'];
@@ -100,6 +118,6 @@ class ThemeLibrariesConfigViewModelTest extends TestCase
         $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('fileGetContents')->willReturn(json_encode($config));
         $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('isExists')->willReturn(true);
 
-        $this->assertSame('3', $sut->getVersionIdFor('alpine'));
+        $this->assertSame($expectedAlpineVersion, $sut->getVersionIdFor('alpine'));
     }
 }
