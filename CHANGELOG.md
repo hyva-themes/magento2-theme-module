@@ -7,7 +7,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.10...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.11...main
+
+## [1.3.11] - 2025-03-06
+[1.3.11]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.10...1.3.11
+
+### Added
+
+- **Support strict CSP mode**
+
+    These changes support using a Hyvä theme or other Hyvä products like the checkout without the Content-Security-Policies
+    `unsafe-eval` and `unsafe-inline`. However, the required changes to the theme or other products are not part of this release.  
+
+    Most notably, this release will use Alpine-CSP if the unsafe-eval script-src CSP is not present.
+
+    For more information, please refer to the Hyvä CSP Developer documentation for [theme](https://docs.hyva.io/hyva-themes/writing-code/csp/index.html) and the [checkout](https://docs.hyva.io/checkout/hyva-checkout/devdocs/csp/index.html).
+
+### Changed
+
+- **Change init-external-scripts event trigger**
+  
+    Replaced mouseover with mousemoved event as one of the triggers for the init-external-scripts event, since the other one was triggered on page-load in page speed insights tests now.
+
+    For details, please refer to [merge request #512](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/512).
+
+    Many thanks to Sergiy Pikhterev (Transform-Agency) for the contribution!
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.10] - 2024-12-06
 [1.3.10]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10

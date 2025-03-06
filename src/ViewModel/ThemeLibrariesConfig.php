@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\DriverInterface as FilesystemDriver;
 use Magento\Framework\Filesystem\DriverPool as FilesystemDriverPool;
 use Magento\Framework\View\Design\Fallback\RulePool;
@@ -37,14 +38,21 @@ class ThemeLibrariesConfig implements ArgumentInterface
      */
     private $fileSystem;
 
+    /**
+     * @var HyvaCsp
+     */
+    private $hyvaCsp;
+
     public function __construct(
-        DesignInterface $design,
+        DesignInterface       $design,
         ThemeFallbackResolver $themeFallbackResolver,
-        FilesystemDriverPool $filesystemDriverPool
+        FilesystemDriverPool  $filesystemDriverPool,
+        HyvaCsp               $hyvaCsp = null
     ) {
-        $this->design            = $design;
+        $this->design = $design;
         $this->themeFileResolver = $themeFallbackResolver;
-        $this->fileSystem        = $filesystemDriverPool->getDriver(RulePool::TYPE_FILE);
+        $this->fileSystem = $filesystemDriverPool->getDriver(RulePool::TYPE_FILE);
+        $this->hyvaCsp = $hyvaCsp ?? ObjectManager::getInstance()->get(HyvaCsp::class);
     }
 
     private function getThemeLibrariesConfigFile(ThemeInterface $theme): ?string
@@ -63,6 +71,36 @@ class ThemeLibrariesConfig implements ArgumentInterface
 
     public function getVersionIdFor(string $library): ?string
     {
-        return $this->getThemeLibrariesConfig()[$library] ?? null;
+        $version = $this->getThemeLibrariesConfig()[$library] ?? null;
+        if (null === $version) {
+            return null;
+        }
+
+        if ('alpine' === $library) {
+            return $this->appendCspIfRequired($version);
+        }
+
+        return $version;
+    }
+
+    private function appendCspIfRequired(string $version): string
+    {
+        // No CSP version exist for v2
+        if ('2' === $version) {
+            return $version;
+        }
+
+        // CSP already specified by library config
+        if (substr($version, -4) === '-csp') {
+            return $version;
+        }
+
+        // Evaluations are allowed, no need for Alpine CSP
+        if ($this->hyvaCsp->getScriptSrcPolicy()->isEvalAllowed()) {
+            return $version;
+        }
+
+        // Alpine CSP is required for this page
+        return $version . '-csp';
     }
 }
