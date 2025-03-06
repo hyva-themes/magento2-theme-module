@@ -21,5 +21,5 @@ use Magento\Framework\View\Element\Template;
             window.dispatchEvent(new Event('init-external-scripts'))
         };
         events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true, passive: true}))
-    })(['touchstart', 'mouseover', 'wheel', 'scroll', 'keydown'])
+    })(['touchstart', 'mousemove', 'wheel', 'scroll', 'keydown'])
 </script>
