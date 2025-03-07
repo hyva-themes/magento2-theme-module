@@ -461,7 +461,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
 <?php /** Has to be an object property so AlpineJS observes changes */ ?>
             const key = '__hyva_bool_' + name
 
-            return Object.assign(
+            return new Proxy(Object.assign(
                 additionalMethods,
                 {
                     [key]: !!value,
@@ -471,7 +471,13 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                     [`set${camelCase}True`]() {this[key] = true},
                     [`set${camelCase}False`]() {this[key] = false},
                 }
-            )
+            ), {
+                set(target, prop, value) {
+                    return prop === name
+                        ? (target[key] = !!value)
+                        : Reflect.set(...arguments);
+                }
+            })
         }
 
         <?php if ((int) $alpineVersion === 2): ?>
