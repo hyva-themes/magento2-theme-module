@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\DeployMode;
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Hyva\Theme\ViewModel\Modal;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
@@ -18,6 +19,7 @@ use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
 /** @var ViewModelRegistry $viewModels */
 
 $deployMode = $viewModels->require(DeployMode::class);
@@ -123,7 +125,15 @@ $deployMode = $viewModels->require(DeployMode::class);
             return overflowDisabled.length === modals.length;
         }
 
-        window.hyva.modal = function(options) {
+        window.hyva.modal = function(options = {}) {
+            <?php /* $el is not defined when hyva.modal is called within Object.assign() for example */ ?>
+            if (this.$el && this.$el.dataset && this.$el.dataset.options) {
+                try {
+                    options = Object.assign(options, JSON.parse(this.$el.dataset.options || '{}'));
+                } catch (e) {
+                    throw new Error('Cannot read the dialog options from the data-options attribute: not valid JSON');
+                }
+            }
 
             const config = Object.assign({
                 dialog: '<?= /* @noEscape */ Modal::DEFAULT_NAME ?>', <?php /* default dialog ref name */ ?>
@@ -191,6 +201,10 @@ $deployMode = $viewModels->require(DeployMode::class);
                     lastHide = Date.now();
 
                     const modal = modals.pop() || {};
+                    if (! modal.instance) {
+                        return;
+                    }
+
                     const name = modal.name;
                     this.opened[name] = false;
                     hyva.releaseFocus(modal.instance.$refs[modal.name])
@@ -209,6 +223,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     modal.resolve(value);
                 },
                 overlay(dialog) {
+                    dialog = this.$el.dataset.dialogRefName || dialog;
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
                     return {
                         ['x-show']() {
@@ -267,4 +282,9 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         document.addEventListener('click', window.hyva.modal.eventListeners.click);
     })();
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('hyva.modal', window.hyva.modal);
+        Alpine.data('hyva.modal()', window.hyva.modal);
+    }, {once: true});
 </script>
+<?php $hyvaCsp->registerInlineScript() ?>

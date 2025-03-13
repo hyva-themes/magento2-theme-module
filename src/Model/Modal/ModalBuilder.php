@@ -274,7 +274,8 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
 
     public function getShowJs(?string $focusAfterHide = null): string
     {
-        return sprintf("show('%s', %s)", $this->getDialogRefName(), $focusAfterHide ? "'" . $this->escaper->escapeJs($focusAfterHide) . "'" : '$event');
+        $focusAfterHideJs = $focusAfterHide ? "'" . $this->escaper->escapeJs($focusAfterHide) . "'" : 'this.$event || $event';
+        return sprintf("show('%s', %s)", $this->getDialogRefName(), $focusAfterHideJs);
     }
 
     // --- modal interface methods ---

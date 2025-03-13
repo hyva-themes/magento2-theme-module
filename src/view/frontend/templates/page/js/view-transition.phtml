@@ -9,6 +9,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -24,6 +25,7 @@ use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
 /** @var ViewModelRegistry $viewModels */
 ?>
 
@@ -57,6 +59,7 @@ use Magento\Framework\View\Element\Template;
         setTransitionNameBetweenGallery(fromUrl.href, e.viewTransition.ready);
     });
 </script>
+<?php $hyvaCsp->registerInlineScript() ?>
 
 <style>
     @view-transition {

@@ -15,9 +15,14 @@ use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
 use Magento\Framework\View\Element\Template;
 
 $themeLibrary = $viewModels->require(ThemeLibrariesConfig::class);
+
 $version = $themeLibrary->getVersionIdFor('intersect-plugin')
     ?: $themeLibrary->getVersionIdFor('alpine')
     ?: '2';
 
+if (substr($version, -4) === '-csp') {
+    $version = substr($version, 0, -4);
+}
+
 ?>
-<?= /** @noEscape */ $block->fetchView($block->getTemplateFile("Hyva_Theme::page/js/plugins/v{$version}/intersect.phtml")) ?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile(sprintf('Hyva_Theme::page/js/plugins/v%s/intersect.phtml', $version))) ?>

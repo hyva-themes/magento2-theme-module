@@ -7,12 +7,14 @@
 
 declare(strict_types=1);
 
-/** @var Template $block */
-/** @var ViewModelRegistry $viewModels */
-
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
 
 $storeConfig = $viewModels->require(StoreConfig::class);
 $deferred = $block->getData('deferred_components') ?? [];
@@ -32,3 +34,4 @@ if ($deferredComponentsConfig = $storeConfig->getStoreConfig('hyva_theme_general
     }
 </script>
 <?php endif ?>
+<?php $hyvaCsp->registerInlineScript() ?>

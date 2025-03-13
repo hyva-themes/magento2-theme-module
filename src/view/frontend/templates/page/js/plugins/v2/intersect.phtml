@@ -4,6 +4,11 @@
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
  * See https://hyva.io/license
  */
+
+use Hyva\Theme\ViewModel\HyvaCsp;
+
+/** @var HyvaCsp $hyvaCsp */
+
 ?>
 <script>
     (function () {
@@ -125,3 +130,4 @@
         };
     })();
 </script>
+<?php $hyvaCsp->registerInlineScript() ?>
