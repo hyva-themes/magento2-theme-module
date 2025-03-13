@@ -1,12 +1,22 @@
 <?php
 /**
  * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2022-present. All rights reserved.
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
 
 declare(strict_types=1);
+
+
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\View\Element\Template;
+
+/**
+ * @var HyvaCsp $hyvaCsp
+ * @var Template $block 
+ */
+
 
 /**
  * @experimental
@@ -45,3 +55,4 @@ declare(strict_types=1);
     }]
 }
 </script>
+<?php $hyvaCsp->registerInlineScript() ?>
