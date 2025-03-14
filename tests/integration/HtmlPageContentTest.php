@@ -130,9 +130,11 @@ EOT;
     public function testReturnsAttributesAsDict(): void
     {
         $sut = ObjectManager::getInstance()->create(HtmlPageContent::class);
+        $this->assertSame(['async' => true, 'foo' => 'bar buz'], $sut->getAttributes('<script async foo="bar buz">'));
         $this->assertSame(['data-foo' => 'bar', 'data-buz' => 'foo'], $sut->getAttributes('<script data-foo="bar" data-buz=\'foo\'>'));
         $this->assertSame(['data-qux' => 'bob', 'data-mux' => 'will'], $sut->getAttributes('<script  data-qux="bob"     data-mux=\'will\'>'));
         $this->assertSame([], $sut->getAttributes('script data-foo="bar" data-buz=\'foo\''));
+        $this->assertSame(['foo' => 'bar'], $sut->getAttributes('<div foo=bar>'));
     }
 
     public function testInjectsStringAttributeValues(): void
@@ -141,9 +143,15 @@ EOT;
         $this->assertSame('<div data-foo="bar">', $sut->injectAttribute('<div>', 'data-foo', 'bar'));
         $this->assertSame('<div class="test" data-foo="bar">', $sut->injectAttribute('<div class="test">', 'data-foo', 'bar'));
         $this->assertSame('<div data-foo="bar"/>', $sut->injectAttribute('<div/>', 'data-foo', 'bar'));
+        $this->assertSame('<div a="b&nbsp;" data-foo="bar"/>', $sut->injectAttribute('<div a=\'b"\'/>', 'data-foo', 'bar'));
         $this->assertSame('<input required/>', $sut->injectAttribute('<input/>', 'required'));
         $this->assertSame('<input disabled/>', $sut->injectAttribute('<input/>', 'disabled', true));
         $this->assertSame('<input/>', $sut->injectAttribute('<input/>', 'required', false));
+        $this->assertSame('<input/>', $sut->injectAttribute('<input/>', 'required', false));
+        $this->assertSame(
+            '<script type="text/plain" data-usercentrics="Google Tag Manager" nonce="abcdefg">',
+            $sut->injectAttribute('<script type="text/plain" data-usercentrics="Google Tag Manager">', 'nonce', 'abcdefg')
+        );
     }
 
     public function testReturnsTagName(): void
