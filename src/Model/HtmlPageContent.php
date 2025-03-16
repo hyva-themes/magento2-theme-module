@@ -158,7 +158,7 @@ class HtmlPageContent
 
     public function getTagName(string $tag): string
     {
-        $trimmedTag = mb_trim($tag);
+        $trimmedTag = trim($tag);
         if ($trimmedTag[0] !== '<' || $tag[strlen($trimmedTag) -1] !== '>') {
             return '';
         }
