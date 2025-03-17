@@ -124,10 +124,19 @@ use Magento\Framework\View\Element\Template;
         hyva.alpineInitialized(loadSectionData)
         window.addEventListener('reload-customer-section-data', loadSectionData);
 
+<?php
+        /**
+         * Extension point: custom scripts and modules can use a Proxy to intercept and mutate section data before it is dispatched.
+         * Don't do expensive operations during the call. It can be called multiple times on a page.
+         */
+?>
+        window.processSectionDataBeforeDispatch = window.processSectionDataBeforeDispatch || (data => data);
+
         function dispatchPrivateContent(data) {
+
             const privateContentEvent = new CustomEvent("private-content-loaded", {
                 detail: {
-                    data: data
+                    data: window.processSectionDataBeforeDispatch(data)
                 }
             });
             window.dispatchEvent(privateContentEvent);
