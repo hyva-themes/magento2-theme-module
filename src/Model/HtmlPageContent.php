@@ -70,30 +70,95 @@ class HtmlPageContent
      */
     public function getAttributes(string $tag): array
     {
-        $trimmedTag = mb_trim($tag);
+        $trimmedTag = trim($tag);
         if ($trimmedTag[0] !== '<' || $tag[strlen($trimmedTag) -1] !== '>') {
             return [];
         }
-        $parts = slice(preg_split('/\s+/', trim($trimmedTag, '<>'), -1, PREG_SPLIT_NO_EMPTY), 1);
-        return reduce($parts, function (array $acc, string $part): array {
-            $pos = strpos($part, '=');
-            if (false !== $pos && 0 !== $pos) {
-                $key = substr($part, 0, $pos);
-                $value = substr($part, $pos + 1);
-                if (in_array($value[0], ['"', "'"], true) && mb_substr($value, -1) === $value[0]) {
-                    $value = stripslashes(mb_substr($value, 1, -1));
+
+        $attributes = [];
+        $charStream = $this->toCharStream(trim($trimmedTag, '<> '));
+
+        // move past tag name
+        do {
+            $c = $charStream->next();
+        } while ($c !== '' && ! $charStream->isWhitespaceChar($c));
+
+        // states: out, name, value
+        for ($state = 'out', $buffer = '', $currentAttr = '', $quote = ''; $c !== ''; $c = $charStream->next()) {
+
+            if ($state === 'out') {
+                if ($charStream->isWhitespaceChar($c)) {
+                    continue;
+                };
+
+                // start of attribute name
+                $buffer .= $c;
+                $state = 'name';
+                continue;
+            } // end out
+
+            if ($state === 'name') {
+                if ($charStream->isAtEnd() || $charStream->isWhitespaceChar($c)) {
+                    if ($charStream->isAtEnd()) {
+                        $buffer .= $c;
+                    }
+
+                    if ($charStream->lookAheadToNextNonWhitespaceChar() !== '=') {
+                        // end of boolean attribute
+                        $attributes[$buffer] = true;
+                        $state = 'out';
+                        $buffer = '';
+                    }
+                    continue;
                 }
-                $acc[$key] = $value;
-            } else {
-                $acc[$part] = true;
+
+                if ($c === '=') {
+                    $state = 'value';
+                    $currentAttr = $buffer;
+                    // move to start of value
+                    do {
+                        $c = $charStream->next();
+                    } while (! $charStream->isAtEnd() && $charStream->isWhitespaceChar($c));
+
+                    // set buffer to first char of attribute value
+                    $buffer = $c;
+
+                    // set type of quote that ends the attribute value
+                    if (in_array($c, ['"', "'"], true)) {
+                        $quote = $c;
+                    }
+                    continue;
+                }
+
+                // continuation of attribute name
+                $buffer .= $c;
+                continue;
+            } // end name
+
+            if ($state === 'value') {
+                if (! $charStream->isWhitespaceChar($c) || $quote) {
+                    $buffer .= $c;
+                }
+
+                if ($charStream->isAtEnd() || // unquoted attribute value at end of string
+                    ($charStream->isWhitespaceChar($c) && ! $quote) || // end of unquoted attr value
+                    ($quote && $c === $quote) // end of quoted attribute value
+                ) {
+                    $attributes[$currentAttr] = $quote ? stripslashes(mb_substr($buffer, 1, -1)) : $buffer;
+                    $currentAttr = '';
+                    $state = 'out';
+                    $buffer = '';
+                    continue;
+                }
             }
-            return $acc;
-        }, []);
+        } // end value
+
+        return $attributes;
     }
 
     public function getTagName(string $tag): string
     {
-        $trimmedTag = mb_trim($tag);
+        $trimmedTag = trim($tag);
         if ($trimmedTag[0] !== '<' || $tag[strlen($trimmedTag) -1] !== '>') {
             return '';
         }
@@ -116,7 +181,7 @@ class HtmlPageContent
             if ($value === true) {
                 $acc[] = $attributeName;
             } elseif ($value !== false) {
-                $acc[] = sprintf('%s="%s"', $attributeName, addslashes($value));
+                $acc[] = sprintf('%s="%s"', $attributeName, str_replace('"', '&nbsp;', $value));
             }
             return $acc;
         }, [$this->getTagName($tag)]));
@@ -130,5 +195,55 @@ class HtmlPageContent
             return '';
         }
         return substr($element, 0, strpos($element, '>') + 1);
+    }
+
+    private function toCharStream(string $str): object
+    {
+        return new class($str) {
+            private $s = '';
+            private $i = 0;
+
+            public function __construct(string $str)
+            {
+                $this->s = $str;
+            }
+
+            public function current(): string
+            {
+                return ! $this->isAtEnd()
+                    ? mb_substr($this->s, $this->i, 1)
+                    : '';
+            }
+
+            public function next(): string
+            {
+                $c = $this->current();
+                $this->i++;
+
+                return $c;
+            }
+
+            public function isAtEnd(): bool
+            {
+                return $this->i >= mb_strlen($this->s);
+            }
+
+            public function isWhitespaceChar(string $c): bool
+            {
+                return in_array($c, [" ", "\n", "\t"], true);
+            }
+
+            public function lookAheadToNextNonWhitespaceChar(): string
+            {
+                $i = $this->i;
+                do {
+                    $c = $this->next();
+                } while ($c !== '' && ! $this->isWhitespaceChar($c));
+
+                $this->i = $i;
+
+                return $c;
+            }
+        };
     }
 }
