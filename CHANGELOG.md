@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
     Many thanks to Christoph Hendreich (In Session) for the contribution!
 
+- **Add frontend extension point for section data**
+
+    A new method `window.processSectionDataBeforeDispatch` can be intercepted by extensions to mutate section data before it is dispatched.
+
+    For more information, please refer to [merge request #523](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/523)
+
 ### Changed
 
 - **Fix error handling existing script tag attributes with spaces in the value when injecting a nonce attribute**
