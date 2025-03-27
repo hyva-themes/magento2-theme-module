@@ -459,24 +459,23 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
         hyva.createBooleanObject = (name, value = false, additionalMethods = {}) => {
 
             const camelCase = toCamelCase(name);
-<?php /** Has to be an object property so AlpineJS observes changes */ ?>
-            const key = '__hyva_bool_' + name
 
             return new Proxy(Object.assign(
                 additionalMethods,
                 {
-                    [key]: !!value,
-                    [name]() {return !!this[key]},
-                    ['!' + name]() {return !this[key]},
-                    ['toggle' + camelCase]() {this[key] = !this[key]},
-                    [`set${camelCase}True`]() {this[key] = true},
-                    [`set${camelCase}False`]() {this[key] = false},
+                    [name]: !!value,
+                    ['!' + name]() {return !this[name]},
+                    ['toggle' + camelCase]() {this[name] = !this[name]},
+                    [`set${camelCase}True`]() {this[name] = true},
+                    [`set${camelCase}False`]() {this[name] = false},
                 }
             ), {
                 set(target, prop, value) {
-                    return prop === name
-                        ? (target[key] = !!value)
-                        : Reflect.set(...arguments);
+                    if (prop === name) {
+                        value = !!value
+                    }
+
+                    return Reflect.set(...arguments);
                 }
             })
         }
