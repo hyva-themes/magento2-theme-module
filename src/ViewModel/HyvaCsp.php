@@ -17,6 +17,9 @@ use Magento\Csp\Helper\CspNonceProvider;
 use Magento\Csp\Model\Collector\DynamicCollector as DynamicCspCollector;
 use Magento\Csp\Model\Policy\FetchPolicy;
 use Magento\Framework\App\Cache\StateInterface as CacheState;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\State as AppState;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\Cache\Type as FullPageCache;
@@ -56,13 +59,24 @@ class HyvaCsp implements ArgumentInterface
      */
     private $policyCollector;
 
+    /**
+     * @var AppState
+     */
+    private $appState;
+
+    /**
+     * @var string|null
+     */
+    private $memoizedAreaCode;
+
     public function __construct(
         DynamicCspCollector $dynamicCspCollector,
         PolicyCollectorInterface $policyCollector,
         CspNonceProvider $cspNonceProvider,
         HtmlPageContent $htmlPageContent,
         LayoutInterface $layout,
-        CacheState $cacheState
+        CacheState $cacheState,
+        AppState $appState = null
     ) {
         $this->dynamicCspCollector = $dynamicCspCollector;
         $this->policyCollector = $policyCollector;
@@ -70,11 +84,12 @@ class HyvaCsp implements ArgumentInterface
         $this->htmlPageContent = $htmlPageContent;
         $this->layout = $layout;
         $this->cacheState = $cacheState;
+        $this->appState = $appState ?? ObjectManager::getInstance()->get(AppState::class);
     }
 
     public function registerInlineScript(): void
     {
-        if ($this->getScriptSrcPolicy()->isInlineAllowed()) {
+        if (! $this->isAreaCodeSet() || $this->getScriptSrcPolicy()->isInlineAllowed()) {
             return;
         }
 
@@ -83,6 +98,22 @@ class HyvaCsp implements ArgumentInterface
         } else {
             $this->addCspNonceToInlineScript();
         }
+    }
+
+    private function isAreaCodeSet(): bool
+    {
+        if ($this->memoizedAreaCode) {
+            return true;
+        }
+
+        try {
+            $this->memoizedAreaCode = $this->appState->getAreaCode();
+        } catch (LocalizedException $exception) {
+            if ($exception->getMessage() === 'Area code is not set') {
+                return false;
+            }
+        }
+        return true;
     }
 
     private function generateHashValue(string $content): array
