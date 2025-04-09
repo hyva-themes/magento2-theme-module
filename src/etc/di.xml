@@ -80,4 +80,11 @@
 
     <preference for="Hyva\Theme\Block\SortableItemInterface" type="Hyva\Theme\Block\SortableItem"/>
 
+    <!-- Avoid Area Code is not set exception in some CLI commands in production mode -->
+    <type name="Hyva\Theme\ViewModel\HyvaCsp">
+        <arguments>
+            <argument name="layout" xsi:type="object">Magento\Framework\View\LayoutInterface\Proxy</argument>
+        </arguments>
+    </type>
+
 </config>
