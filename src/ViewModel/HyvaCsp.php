@@ -20,6 +20,7 @@ use Magento\Framework\App\Cache\StateInterface as CacheState;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\State as AppState;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\Cache\Type as FullPageCache;
@@ -43,6 +44,11 @@ class HyvaCsp implements ArgumentInterface
      * @var LayoutInterface
      */
     private $layout;
+
+    /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
 
     /**
      * @var HtmlPageContent
@@ -74,7 +80,7 @@ class HyvaCsp implements ArgumentInterface
         PolicyCollectorInterface $policyCollector,
         CspNonceProvider $cspNonceProvider,
         HtmlPageContent $htmlPageContent,
-        LayoutInterface $layout,
+        ObjectManagerInterface  $objectManager,
         CacheState $cacheState,
         AppState $appState = null
     ) {
@@ -82,9 +88,27 @@ class HyvaCsp implements ArgumentInterface
         $this->policyCollector = $policyCollector;
         $this->cspNonceProvider = $cspNonceProvider;
         $this->htmlPageContent = $htmlPageContent;
-        $this->layout = $layout;
+        $this->objectManager = $objectManager;
         $this->cacheState = $cacheState;
         $this->appState = $appState ?? ObjectManager::getInstance()->get(AppState::class);
+    }
+
+    /**
+     * Return the layout instance, lazily instantiating it if it doesn't exist yet.
+     *
+     * In production mode, instantiating the layout triggers an Area Code not set error in CLI commands.
+     * This is triggered for example by "bin/magento events:generate:module".
+     * Other possible solutions that were ruled out:
+     * Because the layout is a widely used object, declaring a Proxy preference in di.xml  is not a good
+     * option. Only proxying it for this class constructor is also not an option, since we want the
+     * shared state with the regular layout instance.
+     */
+    private function getLayout(): LayoutInterface
+    {
+        if (! $this->layout) {
+            $this->layout = $this->objectManager->get(LayoutInterface::class);
+        }
+        return $this->layout;
     }
 
     public function registerInlineScript(): void
@@ -93,7 +117,7 @@ class HyvaCsp implements ArgumentInterface
             return;
         }
 
-        if ($this->cacheState->isEnabled(FullPageCache::TYPE_IDENTIFIER) && $this->layout->isCacheable()) {
+        if ($this->cacheState->isEnabled(FullPageCache::TYPE_IDENTIFIER) && $this->getLayout()->isCacheable()) {
             $this->addInlineScriptHashToCspHeader();
         } else {
             $this->addCspNonceToInlineScript();
