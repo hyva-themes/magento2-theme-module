@@ -50,7 +50,7 @@ use Magento\Framework\View\Element\Template;
         </div>
     </div>
     <?php if (! $modal->isInitiallyHidden()): ?>
-    <div x-data x-cloak x-init="$dispatch('hyva-modal-show', {dialog: '<?= $escaper->escapeJs($modal->getDialogRefName()) ?>'})"></div>
+    <div x-data x-cloak x-init="showDialogOnInit"></div>
     <?php endif; ?>
 </div>
 <?php if ($selectors = $modal->getFocusTrapExcludeSelectors()): ?>

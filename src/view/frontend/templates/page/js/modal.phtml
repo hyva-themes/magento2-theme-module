@@ -239,6 +239,12 @@ $deployMode = $viewModels->require(DeployMode::class);
                             event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide)
                         }
                     };
+                },
+                showDialogOnInit() {
+                    const parent = this.$el.closest('[data-dialog-ref-name]');
+                    if (parent && parent.dataset.dialogRefName) {
+                        this.$dispatch('hyva-modal-show', {dialog: parent.dataset.dialogRefName})
+                    }
                 }
             };
         }
@@ -283,8 +289,7 @@ $deployMode = $viewModels->require(DeployMode::class);
         document.addEventListener('click', window.hyva.modal.eventListeners.click);
     })();
     window.addEventListener('alpine:init', () => {
-        Alpine.data('hyva.modal', window.hyva.modal);
-        Alpine.data('hyva.modal()', window.hyva.modal);
+        Alpine.data('hyvaModal', window.hyva.modal);
     }, {once: true});
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
