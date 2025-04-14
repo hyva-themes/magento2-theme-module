@@ -62,7 +62,7 @@ class RegisterPageJsDependencies implements ObserverInterface
         LayoutInterface $layout,
         CacheState $cacheState,
         CacheInterface $cache,
-        CurrentTheme $currentTheme = null
+        ?CurrentTheme $currentTheme = null
     ) {
         $this->jsDependencyRegistry = $jsDependencyRegistry;
         $this->layout = $layout;

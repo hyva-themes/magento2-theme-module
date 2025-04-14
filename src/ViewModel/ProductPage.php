@@ -203,7 +203,7 @@ class ProductPage implements ArgumentInterface, IdentityInterface
      * @param string|null $imageId
      * @param string[]|null $attributes
      */
-    public function getImage(Product $product = null, string $imageId = null, array $attributes = null): Image
+    public function getImage(?Product $product = null, ?string $imageId = null, ?array $attributes = null): Image
     {
         return $this->productImageFactory->create($product, $imageId, $attributes);
     }

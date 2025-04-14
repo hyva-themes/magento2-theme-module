@@ -62,7 +62,7 @@ class ProductAttributes implements ArgumentInterface, IdentityInterface
         ProductResource $productResource,
         PriceCurrencyInterface $priceCurrency,
         ProductOutputHelper $productOutputHelper,
-        EavConfig $eavConfig = null
+        ?EavConfig $eavConfig = null
     ) {
         $this->coreRegistry        = $registry;
         $this->priceCurrency       = $priceCurrency;
