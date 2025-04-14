@@ -288,8 +288,9 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         document.addEventListener('click', window.hyva.modal.eventListeners.click);
     })();
+    function hyvaModal = window.hyva.modal;
     window.addEventListener('alpine:init', () => {
-        Alpine.data('hyvaModal', window.hyva.modal);
+        Alpine.data('hyvaModal', hyvaModal);
     }, {once: true});
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
