@@ -377,6 +377,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             // Iterate over all script tags to duplicate+inject each into the head
             for (const original of scripts) {
                 const script = document.createElement('script');
+                original.type && (script.type = original.type);
                 script.innerHTML = original.innerHTML;
 
                 // Remove the original (non-executing) script from the contentNode
