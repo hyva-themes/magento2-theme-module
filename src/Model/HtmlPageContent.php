@@ -186,6 +186,7 @@ class HtmlPageContent
                 $acc[] = $attributeName;
             } elseif ($value !== false) {
                 // Ensure the attribute value is safely encoded to prevent XSS vulnerabilities.
+                // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative
                 $acc[] = sprintf('%s="%s"', $attributeName, htmlspecialchars($value, ENT_QUOTES | ENT_HTML5));
             }
             return $acc;
