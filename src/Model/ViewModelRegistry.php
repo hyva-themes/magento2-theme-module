@@ -52,7 +52,7 @@ class ViewModelRegistry
     /**
      * Returns view model instance for given FQN
      *
-     * @template T
+     * @template T of ArgumentInterface
      * @param class-string<T> $viewModelClass Fully qualified class name (FQN)
      * @param AbstractBlock|null $block Only required if view model is used within a template cached in ESI (ttl="n" in layout XML)
      * @return T
