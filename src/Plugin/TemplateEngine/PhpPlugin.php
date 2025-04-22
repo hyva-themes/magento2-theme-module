@@ -56,7 +56,7 @@ class PhpPlugin
         ProductMetadata $productMetadata,
         LocaleFormatterFactory $hyvaLocaleFormatterFactory,
         CurrentTheme $currentTheme,
-        HyvaCsp $hyvaCsp = null
+        ?HyvaCsp $hyvaCsp = null
     ) {
         $this->viewModelRegistry = $viewModelRegistry;
         $this->productMetadata = $productMetadata;

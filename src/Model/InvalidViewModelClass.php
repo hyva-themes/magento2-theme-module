@@ -16,8 +16,8 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class InvalidViewModelClass extends \OutOfBoundsException
 {
-    
-    public static function notFound(string $viewModelClass, \Exception $previous = null): self
+
+    public static function notFound(string $viewModelClass, ?\Exception $previous = null): self
     {
         return new self("Class $viewModelClass not found.", 0, $previous);
     }

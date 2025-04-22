@@ -86,7 +86,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
      */
     private $escaper;
 
-    public function __construct(LayoutInterface $layout, array $data = null, Escaper $escaper = null)
+    public function __construct(LayoutInterface $layout, ?array $data = null, ?Escaper $escaper = null)
     {
         $this->layout  = $layout;
         $this->escaper = $escaper ?? ObjectManager::getInstance()->get(Escaper::class);

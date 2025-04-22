@@ -47,7 +47,7 @@ class ThemeLibrariesConfig implements ArgumentInterface
         DesignInterface       $design,
         ThemeFallbackResolver $themeFallbackResolver,
         FilesystemDriverPool  $filesystemDriverPool,
-        HyvaCsp               $hyvaCsp = null
+        ?HyvaCsp              $hyvaCsp = null
     ) {
         $this->design = $design;
         $this->themeFileResolver = $themeFallbackResolver;
@@ -60,7 +60,7 @@ class ThemeLibrariesConfig implements ArgumentInterface
         return $this->themeFileResolver->resolve(RulePool::TYPE_FILE, self::CONFIG_FILE_PATH, $theme->getArea(), $theme) ?: null;
     }
 
-    public function getThemeLibrariesConfig(ThemeInterface $theme = null): array
+    public function getThemeLibrariesConfig(?ThemeInterface $theme = null): array
     {
         $file = $this->getThemeLibrariesConfigFile($theme ?? $this->design->getDesignTheme());
 
