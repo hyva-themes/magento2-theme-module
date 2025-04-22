@@ -32,7 +32,7 @@ class HtmlPageContent
     {
         $trimmedPageContent = rtrim($pageContent);
         $tagName = mb_strtolower($tagName);
-        if (mb_strtolower(mb_substr($trimmedPageContent, -9)) !== "</$tagName>") {
+        if (mb_strtolower(mb_substr($trimmedPageContent, - (strlen($tagName) + 3))) !== "</$tagName>") {
             return '';
         }
         // Find <tag> or <tag data-foo="bar"> or possibly other attributes
@@ -71,7 +71,8 @@ class HtmlPageContent
     public function getAttributes(string $tag): array
     {
         $trimmedTag = trim($tag);
-        if ($trimmedTag[0] !== '<' || $tag[strlen($trimmedTag) -1] !== '>') {
+        // Prevent errors for very short strings (avoid undefined offset issues)
+        if (strlen($trimmedTag) < 2 || $trimmedTag[0] !== '<' || $trimmedTag[strlen($trimmedTag) - 1] !== '>') {
             return [];
         }
 
@@ -144,7 +145,9 @@ class HtmlPageContent
                     ($charStream->isWhitespaceChar($c) && ! $quote) || // end of unquoted attr value
                     ($quote && $c === $quote) // end of quoted attribute value
                 ) {
-                    $attributes[$currentAttr] = $quote ? stripslashes(mb_substr($buffer, 1, -1)) : $buffer;
+                    $attributes[$currentAttr] = $quote
+                        ? html_entity_decode(mb_substr($buffer, 1, -1))
+                        : $buffer;
                     $currentAttr = '';
                     $state = 'out';
                     $buffer = '';
@@ -159,11 +162,12 @@ class HtmlPageContent
     public function getTagName(string $tag): string
     {
         $trimmedTag = trim($tag);
-        if ($trimmedTag[0] !== '<' || $tag[strlen($trimmedTag) -1] !== '>') {
+        // Ensure string length before accessing indices to prevent out-of-bounds errors
+        if (strlen($trimmedTag) < 2 || $trimmedTag[0] !== '<' || $trimmedTag[strlen($trimmedTag) - 1] !== '>') {
             return '';
         }
-
-        return preg_split('/\s+/', trim($trimmedTag, '</>'), 2)[0];
+        $parts = preg_split('/\s+/', trim($trimmedTag, '</>'), 2);
+        return $parts ? $parts[0] : '';
     }
 
     private function isSelfClosing(string $tag): bool
@@ -181,7 +185,9 @@ class HtmlPageContent
             if ($value === true) {
                 $acc[] = $attributeName;
             } elseif ($value !== false) {
-                $acc[] = sprintf('%s="%s"', $attributeName, str_replace('"', '&nbsp;', $value));
+                // Ensure the attribute value is safely encoded to prevent XSS vulnerabilities.
+                // phpcs:ignore Magento2.Functions.DiscouragedFunction.DiscouragedWithAlternative
+                $acc[] = sprintf('%s="%s"', $attributeName, htmlspecialchars($value, ENT_QUOTES | ENT_HTML5));
             }
             return $acc;
         }, [$this->getTagName($tag)]));
@@ -191,7 +197,7 @@ class HtmlPageContent
 
     public function getFirstTag(string $element): string
     {
-        if ($element[0] !== '<') {
+        if ($element === '' || $element[0] !== '<') {
             return '';
         }
         return substr($element, 0, strpos($element, '>') + 1);
