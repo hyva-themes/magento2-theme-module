@@ -9,6 +9,49 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.12...main
 
+## [1.3.13] - 2025-04-22
+[1.3.13]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.12...1.3.13
+
+### Added
+
+- **Script type to `hyva.activateScripts`**
+
+  For more information, please refer to [issue #445](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/445)
+
+### Changed
+
+- **Explicitly mark nullable parameters for PHP 8.4 compatibility**
+
+  For more information, please refer to [issue #459](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/459)
+
+- **Make code to initially show modal dialogs CSP compatible**
+
+  For more information, please refer to [issue #458](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/458)
+
+- **Improve HtmlPageContent class**
+
+  For more information, please refer to [issue #457](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/457)
+
+  Many thanks to Christoph Hendreich (In Session) for the contribution!
+
+- **Downgrade AlpineJS to v3.14.3**
+
+  For more information, please refer to [merge request #457](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/527) and [Alpinejs merge request #4509](https://github.com/alpinejs/alpine/pull/4509)
+
+- **Fix Area code is not set error in CLI commands instantiating HyvaCsp template variable**
+
+  For more information, please refer to [issue #455](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/455)
+
+- **Fix phpdoc in `src/Model/ViewModelRegistry.php`**
+
+  For more information, please refer to [merge request #483](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/483)
+
+  Many thanks to Frederik Rommel (WEBiDEA) for the contribution!
+
+### Removed
+
+- Nothing removed
+
 ## [1.3.12] - 2025-03-17
 [1.3.12]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.11...1.3.12
 
