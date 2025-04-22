@@ -491,6 +491,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
         }
         <?php else: /* Alpine >= v3 */ ?>
         hyva.alpineInitialized = (fn) => window.addEventListener('alpine:initialized', fn, {once: true})
+        window.addEventListener('alpine:init', () => Alpine.data('{}', () => ({})), {once: true});
         <?php endif; ?>
         window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
 
