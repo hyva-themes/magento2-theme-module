@@ -58,7 +58,7 @@ class ViewModelRegistry
      * @return T
      * @throws InvalidViewModelClass if class not found or not a view model
      */
-    public function require(string $viewModelClass, AbstractBlock $block = null): ArgumentInterface
+    public function require(string $viewModelClass, ?AbstractBlock $block = null): ArgumentInterface
     {
         try {
             $object = $this->objectManager->get($viewModelClass);

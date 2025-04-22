@@ -38,7 +38,7 @@ class PageBuilder implements ArgumentInterface
      * @param string $view
      * @return string|null
      */
-    private function getMediaQuery(string $view, string $defaultBreakpoint = null): ?string
+    private function getMediaQuery(string $view, ?string $defaultBreakpoint = null): ?string
     {
         $breakpoint = $this->viewConfig->getViewConfig()->getVarValue(
             'Magento_PageBuilder',

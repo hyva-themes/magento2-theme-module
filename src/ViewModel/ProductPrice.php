@@ -72,7 +72,7 @@ class ProductPrice implements ArgumentInterface
      * @param Product|null $product
      * @return float
      */
-    public function getPriceValue(string $priceType, Product $product = null): float
+    public function getPriceValue(string $priceType, ?Product $product = null): float
     {
         // Cast in case no price is set and $amount is null or a false
         return (float) $this->displayPriceIncludingTax()
@@ -80,12 +80,12 @@ class ProductPrice implements ArgumentInterface
             : $this->getPriceValueExclTax($priceType, $product ?? $this->getProduct());
     }
 
-    public function getPrice(string $priceType, Product $product = null): PriceInterface
+    public function getPrice(string $priceType, ?Product $product = null): PriceInterface
     {
         return $this->getPriceInfo($product)->getPrice($priceType);
     }
 
-    protected function getPriceInfo(Product $product = null): PriceInfoInterface
+    protected function getPriceInfo(?Product $product = null): PriceInfoInterface
     {
         $product = $product ?? $this->getProduct();
 
@@ -149,7 +149,7 @@ class ProductPrice implements ArgumentInterface
         return $this->priceCurrency->format($value, $includeContainer);
     }
 
-    public function getTierPrices($priceType, Product $product = null)
+    public function getTierPrices($priceType, ?Product $product = null)
     {
         $tierPrices = $this->getPrice($priceType, $product)->getTierPriceList();
         $displayTax = $this->displayPriceIncludingTax();
@@ -175,7 +175,7 @@ class ProductPrice implements ArgumentInterface
      * @param Product|null $product
      * @return float|mixed
      */
-    public function getCustomOptionPrice($option, string $priceType, Product $product = null)
+    public function getCustomOptionPrice($option, string $priceType, ?Product $product = null)
     {
         return $this->displayPriceIncludingTax()
             ? $this->getCustomOptionPriceInclTax($option, $priceType, $product)
@@ -188,7 +188,7 @@ class ProductPrice implements ArgumentInterface
      * @param Product|null $product
      * @return float|mixed
      */
-    public function getCustomOptionPriceInclTax($option, string $priceType, Product $product = null)
+    public function getCustomOptionPriceInclTax($option, string $priceType, ?Product $product = null)
     {
         return $this->calcCustomOptionPrice($option, $priceType, $product ?? $this->getProduct(), true);
     }
@@ -199,7 +199,7 @@ class ProductPrice implements ArgumentInterface
      * @param Product|null $product
      * @return float|mixed
      */
-    public function getCustomOptionPriceExclTax($option, string $priceType, Product $product = null)
+    public function getCustomOptionPriceExclTax($option, string $priceType, ?Product $product = null)
     {
         return $this->calcCustomOptionPrice($option, $priceType, $product ?? $this->getProduct(), false);
     }

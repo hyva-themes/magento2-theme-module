@@ -49,10 +49,10 @@ class Merge extends \Magento\Framework\View\Model\Layout\Merge
         LoggerInterface $logger,
         ReadFactory $readFactory,
         EventManager $eventManager,
-        ThemeInterface $theme = null,
+        ?ThemeInterface $theme = null,
         $cacheSuffix = '',
-        LayoutCacheKeyInterface $layoutCacheKey = null,
-        SerializerInterface $serializer = null,
+        ?LayoutCacheKeyInterface $layoutCacheKey = null,
+        ?SerializerInterface $serializer = null,
         ?int $cacheLifetime = null
     ) {
         // Call the parent constructor using the class name instead of the `parent::` keyword
