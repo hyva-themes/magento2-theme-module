@@ -17,6 +17,10 @@ use Magento\Csp\Helper\CspNonceProvider;
 use Magento\Csp\Model\Collector\DynamicCollector as DynamicCspCollector;
 use Magento\Csp\Model\Policy\FetchPolicy;
 use Magento\Framework\App\Cache\StateInterface as CacheState;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\State as AppState;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
 use Magento\PageCache\Model\Cache\Type as FullPageCache;
@@ -42,6 +46,11 @@ class HyvaCsp implements ArgumentInterface
     private $layout;
 
     /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
      * @var HtmlPageContent
      */
     private $htmlPageContent;
@@ -56,33 +65,79 @@ class HyvaCsp implements ArgumentInterface
      */
     private $policyCollector;
 
+    /**
+     * @var AppState
+     */
+    private $appState;
+
+    /**
+     * @var string|null
+     */
+    private $memoizedAreaCode;
+
     public function __construct(
         DynamicCspCollector $dynamicCspCollector,
         PolicyCollectorInterface $policyCollector,
         CspNonceProvider $cspNonceProvider,
         HtmlPageContent $htmlPageContent,
-        LayoutInterface $layout,
-        CacheState $cacheState
+        ObjectManagerInterface  $objectManager,
+        CacheState $cacheState,
+        AppState $appState = null
     ) {
         $this->dynamicCspCollector = $dynamicCspCollector;
         $this->policyCollector = $policyCollector;
         $this->cspNonceProvider = $cspNonceProvider;
         $this->htmlPageContent = $htmlPageContent;
-        $this->layout = $layout;
+        $this->objectManager = $objectManager;
         $this->cacheState = $cacheState;
+        $this->appState = $appState ?? ObjectManager::getInstance()->get(AppState::class);
+    }
+
+    /**
+     * Return the layout instance, lazily instantiating it if it doesn't exist yet.
+     *
+     * In production mode, instantiating the layout triggers an Area Code not set error in CLI commands.
+     * This is triggered for example by "bin/magento events:generate:module".
+     * Other possible solutions that were ruled out:
+     * Because the layout is a widely used object, declaring a Proxy preference in di.xml  is not a good
+     * option. Only proxying it for this class constructor is also not an option, since we want the
+     * shared state with the regular layout instance.
+     */
+    private function getLayout(): LayoutInterface
+    {
+        if (! $this->layout) {
+            $this->layout = $this->objectManager->get(LayoutInterface::class);
+        }
+        return $this->layout;
     }
 
     public function registerInlineScript(): void
     {
-        if ($this->getScriptSrcPolicy()->isInlineAllowed()) {
+        if (! $this->isAreaCodeSet() || $this->getScriptSrcPolicy()->isInlineAllowed()) {
             return;
         }
 
-        if ($this->cacheState->isEnabled(FullPageCache::TYPE_IDENTIFIER) && $this->layout->isCacheable()) {
+        if ($this->cacheState->isEnabled(FullPageCache::TYPE_IDENTIFIER) && $this->getLayout()->isCacheable()) {
             $this->addInlineScriptHashToCspHeader();
         } else {
             $this->addCspNonceToInlineScript();
         }
+    }
+
+    private function isAreaCodeSet(): bool
+    {
+        if ($this->memoizedAreaCode) {
+            return true;
+        }
+
+        try {
+            $this->memoizedAreaCode = $this->appState->getAreaCode();
+        } catch (LocalizedException $exception) {
+            if ($exception->getMessage() === 'Area code is not set') {
+                return false;
+            }
+        }
+        return true;
     }
 
     private function generateHashValue(string $content): array
