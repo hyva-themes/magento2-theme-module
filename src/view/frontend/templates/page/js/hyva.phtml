@@ -468,6 +468,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
                     [key]: !!value,
                     [name]() {return !!this[key]},
                     ['!' + name]() {return !this[key]},
+                    ['not' + camelCase]() {return !this[key]},
                     ['toggle' + camelCase]() {this[key] = !this[key]},
                     [`set${camelCase}True`]() {this[key] = true},
                     [`set${camelCase}False`]() {this[key] = false},
