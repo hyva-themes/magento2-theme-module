@@ -64,7 +64,7 @@ class PhpPlugin
         LocaleFormatterFactory $hyvaLocaleFormatterFactory,
         CurrentTheme $currentTheme,
         ?HyvaCsp $hyvaCsp = null,
-        ?AppState $appState = null,
+        ?AppState $appState = null
     ) {
         $this->viewModelRegistry = $viewModelRegistry;
         $this->productMetadata = $productMetadata;
