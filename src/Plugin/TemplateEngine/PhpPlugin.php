@@ -14,6 +14,8 @@ use Hyva\Theme\Model\LocaleFormatterFactory;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\Service\CurrentTheme;
 use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State as AppState;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ProductMetadata;
 use Magento\Framework\Locale\LocaleFormatter as MagentoLocaleFormatter;
@@ -51,18 +53,25 @@ class PhpPlugin
      */
     private $hyvaCsp;
 
+    /**
+     * @var AppState
+     */
+    private $appState;
+
     public function __construct(
         ViewModelRegistry $viewModelRegistry,
         ProductMetadata $productMetadata,
         LocaleFormatterFactory $hyvaLocaleFormatterFactory,
         CurrentTheme $currentTheme,
-        ?HyvaCsp $hyvaCsp = null
+        ?HyvaCsp $hyvaCsp = null,
+        ?AppState $appState = null,
     ) {
         $this->viewModelRegistry = $viewModelRegistry;
         $this->productMetadata = $productMetadata;
         $this->hyvaLocaleFormatterFactory = $hyvaLocaleFormatterFactory;
         $this->currentTheme = $currentTheme;
         $this->hyvaCsp = $hyvaCsp ?? ObjectManager::getInstance()->get(HyvaCsp::class);
+        $this->appState = $appState ?? ObjectManager::getInstance()->get(AppState::class);
     }
 
     /**
@@ -95,7 +104,7 @@ class PhpPlugin
 
     private function addHyvaOnlyTemplateVariables(array $dictionary): array
     {
-        if (! $this->currentTheme->isHyva()) {
+        if (!$this->currentTheme->isHyva() && $this->appState->getAreaCode() !== Area::AREA_ADMINHTML) {
             return $dictionary;
         }
 
