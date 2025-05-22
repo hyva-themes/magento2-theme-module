@@ -12,18 +12,31 @@ function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
     return $str;
 }
 
-$iconPath = "src/view/frontend/web/svg/heroicons/outline";
-$dir = dirname(__DIR__, 1) . "/" . $iconPath;
-$icons = array_diff(scandir($dir), array('..', '.'));
-$outputPath = dirname(__DIR__, 1) . "/src/ViewModel/Heroicons.php";
+$iconSets = [
+    'heroicons' => [
+        'path'      => "src/view/frontend/web/svg/heroicons/outline",
+        'namespace' => 'Hyva\Theme\ViewModel',
+        'interface' => 'Heroicons',
+    ],
+    'lucide'    => [
+        'path'      => "src/view/base/web/svg/lucide",
+        'namespace' => 'Hyva\Theme\ViewModel',
+        'interface' => 'LucideIconsInterface',
+    ],
+];
 
-// Clean up file first
-file_put_contents($outputPath, "");
+foreach ($iconSets as $iconSetKey => $iconSet) {
+    $dir        = dirname(__DIR__, 1) . "/" . $iconSet['path'];
+    $icons      = array_diff(scandir($dir), array('..', '.'));
+    $outputPath = dirname(__DIR__, 1) . "/src/ViewModel/" . $iconSet['interface'] . ".php";
 
-// Set Head
-file_put_contents(
-  $outputPath,
-  "<?php
+    // Clean up file first
+    file_put_contents($outputPath, "");
+
+    // Set Head
+    file_put_contents(
+      $outputPath,
+      "<?php
 /**
  * Hyvä Themes - https://hyva.io
  * Copyright © Hyvä Themes 2020-present. All rights reserved.
@@ -33,7 +46,7 @@ file_put_contents(
 
 declare(strict_types=1);
 
-namespace Hyva\Theme\ViewModel;
+namespace " . $iconSet['namespace'] . ";
 
 // phpcs:disable Magento2.NamingConvention.InterfaceName.WrongInterfaceName
 // phpcs:disable Generic.Files.LineLength.TooLong
@@ -43,20 +56,21 @@ namespace Hyva\Theme\ViewModel;
  *
 ");
 
-// Create interface code
-foreach ($icons as &$icon) {
-    $icon = str_replace('.svg', '', $icon);
+    // Create interface code
+    foreach ($icons as &$icon) {
+        $icon = str_replace('.svg', '', $icon);
 
-    $string = " * @method string "
-        . dashesToCamelCase($icon)
-        . "Html(string \$classnames = '', ?int \$width = 24, ?int \$height = 24, array \$attributes = [])";
+        $string = " * @method string "
+            . dashesToCamelCase($icon)
+            . "Html(string \$classnames = '', ?int \$width = 24, ?int \$height = 24, array \$attributes = [])";
 
-    file_put_contents($outputPath, $string . "\n", FILE_APPEND);
-}
+        file_put_contents($outputPath, $string . "\n", FILE_APPEND);
+    }
 
-// Set closing part of interface
-file_put_contents($outputPath, " */
-interface Heroicons
+    // Set closing part of interface
+    file_put_contents($outputPath, " */
+interface " . $iconSet['interface'] . "
 {
 }
 ", FILE_APPEND);
+}
