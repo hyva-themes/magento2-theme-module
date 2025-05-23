@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Hyva\Theme\Model\Media\MediaHtmlProviderInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -18,11 +19,14 @@ class Media implements ArgumentInterface
 {
     /** @var StoreManagerInterface */
     private $storeManager;
+    private MediaHtmlProviderInterface $mediaHtmlProvider;
 
     public function __construct(
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        MediaHtmlProviderInterface $mediaHtmlProvider
     ) {
         $this->storeManager = $storeManager;
+        $this->mediaHtmlProvider = $mediaHtmlProvider;
     }
 
     public function getMediaUrl(): string
@@ -32,5 +36,10 @@ class Media implements ArgumentInterface
         } catch (NoSuchEntityException $e) {
             return '';
         }
+    }
+
+    public function getPictureHtml(array $images, array $attributes = []): string
+    {
+        $this->mediaHtmlProvider->getPictureHtml($images, $attributes);;
     }
 }
