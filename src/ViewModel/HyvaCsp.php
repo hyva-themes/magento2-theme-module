@@ -82,7 +82,7 @@ class HyvaCsp implements ArgumentInterface
         HtmlPageContent $htmlPageContent,
         ObjectManagerInterface  $objectManager,
         CacheState $cacheState,
-        AppState $appState = null
+        ?AppState $appState = null
     ) {
         $this->dynamicCspCollector = $dynamicCspCollector;
         $this->policyCollector = $policyCollector;
