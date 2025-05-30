@@ -38,8 +38,22 @@ class Media implements ArgumentInterface
         }
     }
 
-    public function getPictureHtml(array $images, array $attributes = []): string
+    public function getPictureHtml(string $path, $width, $height, array $attributes = []): string
     {
-        $this->mediaHtmlProvider->getPictureHtml($images, $attributes);;
+        $images = [
+            'default' => [
+                'path' => $path,
+                'width' => $width,
+                'height' => $height,
+            ]
+        ];
+
+        return $this->mediaHtmlProvider->getPictureHtml($images, $attributes);
     }
+
+    public function getResponsivePictureHtml(array $images, array $attributes = []): string
+    {
+        return $this->mediaHtmlProvider->getPictureHtml($images, $attributes);
+    }
+
 }
