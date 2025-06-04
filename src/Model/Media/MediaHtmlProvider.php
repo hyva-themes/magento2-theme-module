@@ -16,8 +16,6 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class MediaHtmlProvider implements MediaHtmlProviderInterface
 {
-
-
     private ?string $mediaBaseUrl = null;
     private StoreManagerInterface $storeManager;
     private Escaper $escaper;
