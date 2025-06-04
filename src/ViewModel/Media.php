@@ -38,7 +38,18 @@ class Media implements ArgumentInterface
         }
     }
 
-    public function getPictureHtml(string $path, $width, $height, array $attributes = []): string
+    /**
+     * @param string $path
+     * @param int|null $width
+     * @param int|null $height
+     * @param array{
+     *     alt?: string,
+     *     lazy?: bool,
+     *     classes?: string,
+     *     fetch-priority?: string
+     * } $attributes
+     */
+    public function getPictureHtml(string $path, int $width, int $height, array $attributes = []): string
     {
         $images = [
             'default' => [
@@ -51,9 +62,24 @@ class Media implements ArgumentInterface
         return $this->mediaHtmlProvider->getPictureHtml($images, $attributes);
     }
 
+    /**
+     * @param array<string, array{
+     *     path: string,
+     *     type?: string,
+     *     width?: int,
+     *     height?: int,
+     *     media-query?: string,
+     * }> $images
+     *
+     * @param array{
+     *     alt?: string,
+     *     lazy?: bool,
+     *     classes?: string,
+     *     fetch-priority?: string,
+     * } $attributes
+     */
     public function getResponsivePictureHtml(array $images, array $attributes = []): string
     {
         return $this->mediaHtmlProvider->getPictureHtml($images, $attributes);
     }
-
 }

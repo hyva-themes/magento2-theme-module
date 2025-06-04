@@ -16,16 +16,18 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class MediaHtmlProvider implements MediaHtmlProviderInterface
 {
-    public const FETCH_PRIORITY_AUTO = 'auto';
-    public const FETCH_PRIORITY_HIGH = 'high';
-    public const FETCH_PRIORITY_LOW = 'low';
+
 
     private ?string $mediaBaseUrl = null;
+    private StoreManagerInterface $storeManager;
+    private Escaper $escaper;
 
     public function __construct(
-        private readonly StoreManagerInterface $storeManager,
-        private readonly Escaper $escaper
+        StoreManagerInterface $storeManager,
+        Escaper $escaper
     ) {
+        $this->storeManager = $storeManager;
+        $this->escaper = $escaper;
     }
 
     /**
