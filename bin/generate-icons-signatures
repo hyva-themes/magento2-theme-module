@@ -21,7 +21,7 @@ $iconSets = [
     'lucide'    => [
         'path'      => "src/view/base/web/svg/lucide",
         'namespace' => 'Hyva\Theme\ViewModel',
-        'interface' => 'LucideIconsInterface',
+        'interface' => 'LucideIcons',
     ],
 ];
 
@@ -68,9 +68,9 @@ namespace " . $iconSet['namespace'] . ";
     }
 
     // Set closing part of interface
-    file_put_contents($outputPath, " */
-interface " . $iconSet['interface'] . "
-{
-}
-", FILE_APPEND);
+    if ($iconSetKey === "lucide") {
+        file_put_contents($outputPath, " */\nclass " . $iconSet['interface'] . " extends SvgIcons\n{\n}\n", FILE_APPEND);
+    } else {
+        file_put_contents($outputPath, " */\ninterface " . $iconSet['interface'] . "\n{\n}\n", FILE_APPEND);
+    }
 }
