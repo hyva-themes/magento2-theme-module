@@ -89,6 +89,7 @@ class PhpPlugin
     {
         $dictionary = $this->addAllThemesTemplateVariables($dictionary);
         $dictionary = $this->addHyvaOnlyTemplateVariables($dictionary);
+        $dictionary = $this->addAdminTemplateVariables($dictionary);
 
         return [$block, $filename, $dictionary];
     }
@@ -104,12 +105,23 @@ class PhpPlugin
 
     private function addHyvaOnlyTemplateVariables(array $dictionary): array
     {
-        if (!$this->currentTheme->isHyva() && $this->appState->getAreaCode() !== Area::AREA_ADMINHTML) {
+        if (!$this->currentTheme->isHyva()) {
             return $dictionary;
         }
 
         if (!class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
             $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
+        }
+
+        $dictionary['hyvaCsp'] = $this->hyvaCsp;
+
+        return $dictionary;
+    }
+
+    private function addAdminTemplateVariables(array $dictionary): array
+    {
+        if ($this->appState->getAreaCode() !== Area::AREA_ADMINHTML) {
+            return $dictionary;
         }
 
         $dictionary['hyvaCsp'] = $this->hyvaCsp;
