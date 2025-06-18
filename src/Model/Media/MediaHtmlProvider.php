@@ -17,23 +17,14 @@ use Magento\Store\Model\StoreManagerInterface;
 class MediaHtmlProvider implements MediaHtmlProviderInterface
 {
     private ?string $mediaBaseUrl = null;
-    private StoreManagerInterface $storeManager;
-    private Escaper $escaper;
 
     public function __construct(
-        StoreManagerInterface $storeManager,
-        Escaper $escaper
+        private readonly StoreManagerInterface $storeManager,
+        private readonly Escaper $escaper
     ) {
-        $this->storeManager = $storeManager;
-        $this->escaper = $escaper;
     }
 
-    /**
-     * @param array $images Array of image configurations
-     * @param array $attributes Common HTML attributes for the img tag
-     * @return string
-     */
-    public function getPictureHtml(array $images, array $attributes = []): string
+    public function getPictureHtml(array $images, array $imgAttributes = [], array $pictureAttributes = []): string
     {
         $sourceTags = [];
         $fallbackImage = null;
@@ -43,9 +34,9 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
                 continue;
             }
 
-            if (isset($image['media-query'])) {
+            if (isset($image['media'])) {
                 $sourceTags[] = $this->buildSourceTag([
-                    'media' => $image['media-query'],
+                    'media' => $image['media'],
                     'srcset' => $this->getMediaUrl($image['path'])
                 ]);
             }
@@ -59,30 +50,33 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
             throw new InvalidArgumentException('No valid images provided');
         }
 
-        $imgAttributes = $this->buildImageAttributes($fallbackImage, $attributes);
-        $imgTag = $this->buildImgTag($imgAttributes);
+        $finalImgAttributes = $this->buildImageAttributes($fallbackImage, $imgAttributes);
+        $imgTag = $this->buildImgTag($finalImgAttributes);
 
-        return '<picture>' . implode('', array_reverse($sourceTags)) . $imgTag . '</picture>';
+        return $this->buildPictureTag($sourceTags, $imgTag, $pictureAttributes);
     }
 
-    private function buildImageAttributes(array $image, array $attributes): array
+    private function buildImageAttributes(array $image, array $imgAttributes): array
     {
-        $imgAttributes = [
-            'src' => $this->getMediaUrl($image['path']),
-            'width' => $image['width'] ?? null,
-            'height' => $image['height'] ?? null,
-            'loading' => $attributes['lazy'] ?? true ? 'lazy' : null,
-            'fetchpriority' => $attributes['fetch-priority'] ?? self::FETCH_PRIORITY_AUTO,
-            'alt' => $attributes['alt'] ?? '',
-        ];
+        $attributes = [];
 
-        if (!empty($attributes['classes'])) {
-            $imgAttributes['class'] = $this->escaper->escapeHtmlAttr($attributes['classes']);
+        if (isset($image['path'])) {
+            $attributes['src'] = $this->getMediaUrl($image['path']);
         }
 
-        return array_filter($imgAttributes, function ($value) {
-            return $value !== null && $value !== '';
-        });
+        if (isset($image['width'])) {
+            $attributes['width'] = (string)$image['width'];
+        }
+
+        if (isset($image['height'])) {
+            $attributes['height'] = (string)$image['height'];
+        }
+
+        foreach ($imgAttributes as $name => $value) {
+            $attributes[$name] = $value;
+        }
+
+        return $attributes;
     }
 
     private function getMediaUrl(string $path): string
@@ -104,12 +98,20 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
         return '<source ' . $this->buildHtmlAttributes($attributes) . '>';
     }
 
+    private function buildPictureTag(array $sourceTags, string $imgTag, array $pictureAttributes): string
+    {
+        $pictureAttributesHtml = $this->buildHtmlAttributes($pictureAttributes);
+        $pictureOpenTag = $pictureAttributesHtml ? '<picture ' . $pictureAttributesHtml . '>' : '<picture>';
+
+        return $pictureOpenTag . implode('', array_reverse($sourceTags)) . $imgTag . '</picture>';
+    }
+
     private function buildHtmlAttributes(array $attributes): string
     {
-        $attributeString = '';
+        $attributeParts = [];
         foreach ($attributes as $name => $value) {
-            $attributeString .= sprintf('%s="%s" ', $name, $this->escaper->escapeHtmlAttr($value));
+            $attributeParts[] = sprintf('%s="%s"', $name, $this->escaper->escapeHtmlAttr((string)$value));
         }
-        return trim($attributeString);
+        return implode(' ', $attributeParts);
     }
 }

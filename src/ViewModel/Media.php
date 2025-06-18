@@ -17,16 +17,10 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class Media implements ArgumentInterface
 {
-    /** @var StoreManagerInterface */
-    private $storeManager;
-    private MediaHtmlProviderInterface $mediaHtmlProvider;
-
     public function __construct(
-        StoreManagerInterface $storeManager,
-        MediaHtmlProviderInterface $mediaHtmlProvider
+        private readonly StoreManagerInterface $storeManager,
+        private readonly MediaHtmlProviderInterface $mediaHtmlProvider
     ) {
-        $this->storeManager = $storeManager;
-        $this->mediaHtmlProvider = $mediaHtmlProvider;
     }
 
     public function getMediaUrl(): string
@@ -42,15 +36,19 @@ class Media implements ArgumentInterface
      * @param string $path
      * @param int|null $width
      * @param int|null $height
-     * @param array{
-     *     alt?: string,
-     *     lazy?: bool,
-     *     classes?: string,
-     *     fetch-priority?: string
-     * } $attributes
+     * @param array<string, string> $imgAttributes Suggested attributes: alt, loading (lazy|eager),
+     *                                              fetchpriority (auto|high|low), class, id, style,
+     *                                              decoding (sync|async|auto)
+     * @param array<string, string> $pictureAttributes Suggested attributes: class, id, style,
+     *                                                 data-* attributes
      */
-    public function getPictureHtml(string $path, int $width, int $height, array $attributes = []): string
-    {
+    public function getPictureHtml(
+        string $path,
+        ?int $width = null,
+        ?int $height = null,
+        array $imgAttributes = [],
+        array $pictureAttributes = []
+    ): string {
         $images = [
             'default' => [
                 'path' => $path,
@@ -59,7 +57,7 @@ class Media implements ArgumentInterface
             ]
         ];
 
-        return $this->mediaHtmlProvider->getPictureHtml($images, $attributes);
+        return $this->mediaHtmlProvider->getPictureHtml($images, $imgAttributes, $pictureAttributes);
     }
 
     /**
@@ -68,18 +66,20 @@ class Media implements ArgumentInterface
      *     type?: string,
      *     width?: int,
      *     height?: int,
-     *     media-query?: string,
+     *     media?: string,
      * }> $images
      *
-     * @param array{
-     *     alt?: string,
-     *     lazy?: bool,
-     *     classes?: string,
-     *     fetch-priority?: string,
-     * } $attributes
+     * @param array<string, string> $imgAttributes Suggested attributes: alt, loading (lazy|eager),
+     *                                              fetchpriority (auto|high|low), class, id, style,
+     *                                              decoding (sync|async|auto), sizes, srcset
+     * @param array<string, string> $pictureAttributes Suggested attributes: class, id, style,
+     *                                                 data-* attributes
      */
-    public function getResponsivePictureHtml(array $images, array $attributes = []): string
-    {
-        return $this->mediaHtmlProvider->getPictureHtml($images, $attributes);
+    public function getResponsivePictureHtml(
+        array $images,
+        array $imgAttributes = [],
+        array $pictureAttributes = []
+    ): string {
+        return $this->mediaHtmlProvider->getPictureHtml($images, $imgAttributes, $pictureAttributes);
     }
 }

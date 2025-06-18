@@ -21,17 +21,16 @@ interface MediaHtmlProviderInterface
      *     type?: string,
      *     width?: int,
      *     height?: int,
-     *     media-query?: string,
+     *     media?: string,
      * }> $images
      *
-     * @param array{
-     *     alt?: string,
-     *     lazy?: bool,
-     *     classes?: string,
-     *     fetch-priority?: string,
-     * } $attributes
+     * @param array<string, string> $imgAttributes Suggested attributes: alt, loading (lazy|eager),
+     *                                              fetchpriority (auto|high|low), class, id, style,
+     *                                              decoding (sync|async|auto), sizes, srcset
+     * @param array<string, string> $pictureAttributes Suggested attributes: class, id, style,
+     *                                                 data-* attributes
      *
      * @return string
      */
-    public function getPictureHtml(array $images, array $attributes = []): string;
+    public function getPictureHtml(array $images, array $imgAttributes = [], array $pictureAttributes = []): string;
 }
