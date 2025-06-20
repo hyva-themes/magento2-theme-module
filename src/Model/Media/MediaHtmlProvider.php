@@ -35,10 +35,16 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
             }
 
             if (isset($image['media'])) {
-                $sourceTags[] = $this->buildSourceTag([
+                $sourceAttributes = [
                     'media' => $image['media'],
                     'srcset' => $this->getMediaUrl($image['path'])
-                ]);
+                ];
+
+                if (isset($image['sizes'])) {
+                    $sourceAttributes['sizes'] = $image['sizes'];
+                }
+
+                $sourceTags[] = $this->buildSourceTag($sourceAttributes);
             }
 
             if ($fallbackImage === null) {
@@ -48,6 +54,18 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
 
         if ($fallbackImage === null) {
             throw new InvalidArgumentException('No valid images provided');
+        }
+
+        if (!isset($fallbackImage['media'])) {
+            $fallbackSourceAttributes = [
+                'srcset' => $this->getMediaUrl($fallbackImage['path'])
+            ];
+
+            if (isset($fallbackImage['sizes'])) {
+                $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
+            }
+
+            $sourceTags[] = $this->buildSourceTag($fallbackSourceAttributes);
         }
 
         $finalImgAttributes = $this->buildImageAttributes($fallbackImage, $imgAttributes);
@@ -64,12 +82,14 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
             $attributes['src'] = $this->getMediaUrl($image['path']);
         }
 
-        if (isset($image['width'])) {
-            $attributes['width'] = (string)$image['width'];
-        }
+        if (!isset($imgAttributes['sizes'])) {
+            if (isset($image['width'])) {
+                $attributes['width'] = (string)$image['width'];
+            }
 
-        if (isset($image['height'])) {
-            $attributes['height'] = (string)$image['height'];
+            if (isset($image['height'])) {
+                $attributes['height'] = (string)$image['height'];
+            }
         }
 
         foreach ($imgAttributes as $name => $value) {
