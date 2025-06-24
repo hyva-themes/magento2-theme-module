@@ -47,7 +47,11 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
                 $sourceTags[] = $this->buildSourceTag($sourceAttributes);
             }
 
-            if ($fallbackImage === null) {
+            if (!isset($image['fallback'])) {
+                $image['fallback'] = false;
+            }
+
+            if ($fallbackImage === null || $image['fallback'] === true) {
                 $fallbackImage = $image;
             }
         }
@@ -56,14 +60,12 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
             throw new InvalidArgumentException('No valid images provided');
         }
 
-        if (!isset($fallbackImage['media'])) {
+        if (!isset($fallbackImage['media']) && isset($fallbackImage['sizes'])) {
             $fallbackSourceAttributes = [
                 'srcset' => $this->getMediaUrl($fallbackImage['path'])
             ];
 
-            if (isset($fallbackImage['sizes'])) {
-                $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
-            }
+            $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
 
             $sourceTags[] = $this->buildSourceTag($fallbackSourceAttributes);
         }
