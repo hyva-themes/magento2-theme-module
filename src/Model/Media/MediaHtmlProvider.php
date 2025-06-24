@@ -17,11 +17,15 @@ use Magento\Store\Model\StoreManagerInterface;
 class MediaHtmlProvider implements MediaHtmlProviderInterface
 {
     private ?string $mediaBaseUrl = null;
+    private StoreManagerInterface $storeManager;
+    private Escaper $escaper;
 
     public function __construct(
-        private readonly StoreManagerInterface $storeManager,
-        private readonly Escaper $escaper
+        StoreManagerInterface $storeManager,
+        Escaper $escaper
     ) {
+        $this->storeManager = $storeManager;
+        $this->escaper = $escaper;
     }
 
     public function getPictureHtml(array $images, array $imgAttributes = [], array $pictureAttributes = []): string

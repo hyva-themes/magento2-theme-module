@@ -17,10 +17,15 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class Media implements ArgumentInterface
 {
+    private StoreManagerInterface $storeManager;
+    private MediaHtmlProviderInterface $mediaHtmlProvider;
+
     public function __construct(
-        private readonly StoreManagerInterface $storeManager,
-        private readonly MediaHtmlProviderInterface $mediaHtmlProvider
+        StoreManagerInterface $storeManager,
+        MediaHtmlProviderInterface $mediaHtmlProvider
     ) {
+        $this->storeManager = $storeManager;
+        $this->mediaHtmlProvider = $mediaHtmlProvider;
     }
 
     public function getMediaUrl(): string
@@ -67,6 +72,7 @@ class Media implements ArgumentInterface
      *     width?: int,
      *     height?: int,
      *     media?: string,
+     *     fallback?: bool,
      * }> $images
      *
      * @param array<string, string> $imgAttributes Suggested attributes: alt, loading (lazy|eager),
