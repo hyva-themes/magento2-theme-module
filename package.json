@@ -8,7 +8,7 @@
     "build:icons:solid": "cp -r ./node_modules/heroicons/solid/*.svg ./src/view/frontend/web/svg/heroicons/solid",
     "build:icons:lucide": "rm -f ./src/view/base/web/svg/lucide/*.svg && cp -r ./node_modules/lucide-static/icons/*.svg ./src/view/base/web/svg/lucide",
     "build:optimize:heroicons": "./bin/optimize-heroicons",
-    "build:optimize:lucideicons": "npx svgo -f ./src/view/base/web/svg/lucide -o ./src/view/base/web/svg/lucide",
+    "build:optimize:lucideicons": "./bin/optimize-lucideicons && npx svgo -f ./src/view/base/web/svg/lucide -o ./src/view/base/web/svg/lucide",
     "build:signature": "./bin/generate-icons-signatures",
     "build:heroicons": "npm run build:icons:outline && npm run build:icons:solid && npm run build:optimize:heroicons",
     "build:lucideicons": "npm run build:icons:lucide && npm run build:optimize:lucideicons",

@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+
+<?php
+
+function replaceStrokeWidthInSvg($svgFilePath)
+{
+    $svgContent = file_get_contents($svgFilePath);
+    $modifiedSvg = preg_replace('/(stroke-width\s*=\s*")[^"]*(")/i', '${1}1.5${2}', $svgContent);
+    file_put_contents($svgFilePath, $modifiedSvg);
+}
+
+function processSvgFiles($folderPath)
+{
+    $files = scandir($folderPath);
+
+    foreach ($files as $file) {
+        if (in_array($file, ['.', '..'])) continue;
+
+        $filePath = realpath($folderPath . DIRECTORY_SEPARATOR . $file);
+
+        if (pathinfo($filePath, PATHINFO_EXTENSION) === 'svg') {
+            replaceStrokeWidthInSvg($filePath);
+        }
+    }
+}
+
+processSvgFiles('src/view/base/web/svg/lucide');
