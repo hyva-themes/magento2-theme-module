@@ -30,12 +30,21 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
 
     public function getPictureHtml(array $images, array $imgAttributes = [], array $pictureAttributes = []): string
     {
-        $sourceTags = [];
+        $nonFallbackSourceTags = [];
+        $fallbackSourceTags = [];
         $fallbackImage = null;
 
         foreach ($images as $image) {
             if (!isset($image['path'])) {
                 continue;
+            }
+
+            if (!isset($image['fallback'])) {
+                $image['fallback'] = false;
+            }
+
+            if ($fallbackImage === null || $image['fallback'] === true) {
+                $fallbackImage = $image;
             }
 
             if (isset($image['media'])) {
@@ -48,36 +57,34 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
                     $sourceAttributes['sizes'] = $image['sizes'];
                 }
 
-                $sourceTags[] = $this->buildSourceTag($sourceAttributes);
-            }
+                $sourceTag = $this->buildSourceTag($sourceAttributes);
 
-            if (!isset($image['fallback'])) {
-                $image['fallback'] = false;
-            }
-
-            if ($fallbackImage === null || $image['fallback'] === true) {
-                $fallbackImage = $image;
+                if ($image['fallback'] === true) {
+                    $fallbackSourceTags[] = $sourceTag;
+                } else {
+                    $nonFallbackSourceTags[] = $sourceTag;
+                }
             }
         }
 
-        if ($fallbackImage === null) {
-            throw new InvalidArgumentException('No valid images provided');
-        }
+        if (!isset($fallbackImage['media'])) {
+          $fallbackSourceAttributes = [
+              'srcset' => $this->getMediaUrl($fallbackImage['path'])
+          ];
 
-        if (!isset($fallbackImage['media']) && isset($fallbackImage['sizes'])) {
-            $fallbackSourceAttributes = [
-                'srcset' => $this->getMediaUrl($fallbackImage['path'])
-            ];
+          if (isset($fallbackImage['sizes'])) {
+              $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
+          }
 
-            $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
-
-            $sourceTags[] = $this->buildSourceTag($fallbackSourceAttributes);
+          $fallbackSourceTags[] = $this->buildSourceTag($fallbackSourceAttributes);
         }
 
         $finalImgAttributes = $this->buildImageAttributes($fallbackImage, $imgAttributes);
         $imgTag = $this->buildImgTag($finalImgAttributes);
 
-        return $this->buildPictureTag($sourceTags, $imgTag, $pictureAttributes);
+        $allSourceTags = array_merge($nonFallbackSourceTags, $fallbackSourceTags);
+
+        return $this->buildPictureTag($allSourceTags, $imgTag, $pictureAttributes);
     }
 
     private function buildImageAttributes(array $image, array $imgAttributes): array
@@ -129,7 +136,7 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
         $pictureAttributesHtml = $this->buildHtmlAttributes($pictureAttributes);
         $pictureOpenTag = $pictureAttributesHtml ? '<picture ' . $pictureAttributesHtml . '>' : '<picture>';
 
-        return $pictureOpenTag . implode('', array_reverse($sourceTags)) . $imgTag . '</picture>';
+        return $pictureOpenTag . implode('', $sourceTags) . $imgTag . '</picture>';
     }
 
     private function buildHtmlAttributes(array $attributes): string
