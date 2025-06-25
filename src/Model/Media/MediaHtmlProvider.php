@@ -68,15 +68,15 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
         }
 
         if (!isset($fallbackImage['media'])) {
-          $fallbackSourceAttributes = [
+            $fallbackSourceAttributes = [
               'srcset' => $this->getMediaUrl($fallbackImage['path'])
-          ];
+            ];
 
-          if (isset($fallbackImage['sizes'])) {
-              $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
-          }
+            if (isset($fallbackImage['sizes'])) {
+                $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
+            }
 
-          $fallbackSourceTags[] = $this->buildSourceTag($fallbackSourceAttributes);
+            $fallbackSourceTags[] = $this->buildSourceTag($fallbackSourceAttributes);
         }
 
         $finalImgAttributes = $this->buildImageAttributes($fallbackImage, $imgAttributes);
