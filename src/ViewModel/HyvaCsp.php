@@ -75,6 +75,11 @@ class HyvaCsp implements ArgumentInterface
      */
     private $memoizedAreaCode;
 
+    /**
+     * @var array
+     */
+    private array $policies;
+    
     public function __construct(
         DynamicCspCollector $dynamicCspCollector,
         PolicyCollectorInterface $policyCollector,
@@ -208,11 +213,17 @@ class HyvaCsp implements ArgumentInterface
 
     private function collectFetchPolicies(): array
     {
-        return array_filter(
+        if (isset($this->policies)) {
+            return $this->policies;
+        }
+
+        $this->policies = array_filter(
             $this->policyCollector->collect(),
             static function (PolicyInterface $policy) {
                 return $policy instanceof FetchPolicy;
             }
         );
+
+        return $this->policies;
     }
 }
