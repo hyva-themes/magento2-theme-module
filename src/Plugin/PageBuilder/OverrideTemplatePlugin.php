@@ -47,7 +47,7 @@ class OverrideTemplatePlugin
     public function __construct(
         CurrentTheme $theme,
         MathRandom $mathRandom,
-        InjectImageDimensions $injectImageDimensions = null
+        ?InjectImageDimensions $injectImageDimensions = null
     ) {
         $this->theme = $theme;
         $this->mathRandom = $mathRandom;

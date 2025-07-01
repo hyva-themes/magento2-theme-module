@@ -10,11 +10,13 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\Modal\ModalInterface;
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
 /** @var ViewModelRegistry $viewModels */
 /** @var ModalInterface $modal */
 
@@ -31,8 +33,8 @@ use Magento\Framework\View\Element\Template;
  */
 ?>
 <div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?>
-    x-bind="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
-    x-spread="overlay('<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>')"
+    data-dialog-ref-name="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>"
+    x-bind="overlay"
     class="<?= /** @noEscape  */ $modal->getOverlayClasses() ?>">
     <div class="<?= /** @noEscape  */ $modal->getContainerClasses() ?>">
         <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog" aria-modal="true"
@@ -48,7 +50,7 @@ use Magento\Framework\View\Element\Template;
         </div>
     </div>
     <?php if (! $modal->isInitiallyHidden()): ?>
-    <div x-data x-cloak x-init="$dispatch('hyva-modal-show', {dialog: '<?= $escaper->escapeJs($modal->getDialogRefName()) ?>'})"></div>
+    <div x-data x-cloak x-init="showDialogOnInit"></div>
     <?php endif; ?>
 </div>
 <?php if ($selectors = $modal->getFocusTrapExcludeSelectors()): ?>
@@ -57,4 +59,5 @@ use Magento\Framework\View\Element\Template;
         hyva.modal.excludeSelectorsFromFocusTrap(<?= /** @noEscape */ json_encode($selectors) ?>);
     });
 </script>
+    <?php $hyvaCsp->registerInlineScript() ?>
 <?php endif; ?>

@@ -13,6 +13,8 @@ namespace Hyva\Theme\Plugin\TemplateEngine;
 use Hyva\Theme\Model\LocaleFormatterFactory;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\Service\CurrentTheme;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ProductMetadata;
 use Magento\Framework\Locale\LocaleFormatter as MagentoLocaleFormatter;
 use Magento\Framework\View\Element\BlockInterface;
@@ -44,16 +46,23 @@ class PhpPlugin
      */
     private $currentTheme;
 
+    /**
+     * @var HyvaCsp
+     */
+    private $hyvaCsp;
+
     public function __construct(
         ViewModelRegistry $viewModelRegistry,
         ProductMetadata $productMetadata,
         LocaleFormatterFactory $hyvaLocaleFormatterFactory,
-        CurrentTheme $currentTheme
+        CurrentTheme $currentTheme,
+        ?HyvaCsp $hyvaCsp = null
     ) {
         $this->viewModelRegistry = $viewModelRegistry;
         $this->productMetadata = $productMetadata;
         $this->hyvaLocaleFormatterFactory = $hyvaLocaleFormatterFactory;
         $this->currentTheme = $currentTheme;
+        $this->hyvaCsp = $hyvaCsp ?? ObjectManager::getInstance()->get(HyvaCsp::class);
     }
 
     /**
@@ -93,6 +102,8 @@ class PhpPlugin
         if (!class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
             $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
         }
+
+        $dictionary['hyvaCsp'] = $this->hyvaCsp;
 
         return $dictionary;
     }

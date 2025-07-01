@@ -8,9 +8,11 @@
 
 declare(strict_types=1);
 
-use Hyva\Theme\Model\ViewModelRegistry;
-use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\View\Element\Template;
+
+/** @var HyvaCsp $hyvaCsp */
+/** @var Template $block */
 
 /**
  * @experimental
@@ -22,9 +24,6 @@ use Magento\Framework\View\Element\Template;
  * @link https://caniuse.com/mdn-html_elements_script_type_speculationrules
  */
 
-/** @var Template $block */
-/** @var Escaper $escaper */
-/** @var ViewModelRegistry $viewModels */
 ?>
 <script type="speculationrules">
 {
@@ -52,3 +51,4 @@ use Magento\Framework\View\Element\Template;
     }]
 }
 </script>
+<?php $hyvaCsp->registerInlineScript() ?>

@@ -7,7 +7,127 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.10...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.14...main
+
+## [1.3.14] - 2025-05-26
+[1.3.14]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.13...1.3.14
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Fixed one more usage of implicit nullable param which is deprecated since PHP 8.4**
+    For more information, please refer to [merge request #535](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/535)
+
+    Many thanks to Pieter Hoste (Baldwin) for the contribution!
+
+- **Resolve a minor difference between Alpine CSP and non Alpine CSP**
+    For more information, please refer to [merge request #525](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/525)
+
+### Removed
+
+- Nothing removed
+
+## [1.3.13] - 2025-04-22
+[1.3.13]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.12...1.3.13
+
+### Added
+
+- **Script type to `hyva.activateScripts`**
+    For more information, please refer to [issue #445](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/445)
+
+### Changed
+
+- **Explicitly mark nullable parameters for PHP 8.4 compatibility**
+    For more information, please refer to [issue #459](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/459)
+
+- **Make code to initially show modal dialogs CSP compatible**
+    For more information, please refer to [issue #458](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/458)
+
+- **Improve HtmlPageContent class**
+    For more information, please refer to [issue #457](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/457)
+
+    Many thanks to Christoph Hendreich (In Session) for the contribution!
+
+- **Downgrade AlpineJS to v3.14.3**
+    For more information, please refer to [merge request #457](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/527) and [Alpinejs merge request #4509](https://github.com/alpinejs/alpine/pull/4509)
+
+- **Fix Area code is not set error in CLI commands instantiating HyvaCsp template variable**
+    For more information, please refer to [issue #455](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/455)
+
+- **Fix phpdoc in `src/Model/ViewModelRegistry.php`**
+    For more information, please refer to [merge request #483](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/483)
+
+    Many thanks to Frederik Rommel (WEBiDEA) for the contribution!
+
+### Removed
+
+- Nothing removed
+
+## [1.3.12] - 2025-03-17
+[1.3.12]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.11...1.3.12
+
+### Added
+
+- **Authorize speculation rules script tag on page without unsafe-inline policy**
+
+    The `<?php $hyvaCsp->registerInlineScript() ?>` call was previously missing.  
+    For more information, please refer to [issue #449](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/449)
+
+    Many thanks to Christoph Hendreich (In Session) for the contribution!
+
+- **Add frontend extension point for section data**
+
+    A new method `window.processSectionDataBeforeDispatch` can be intercepted by extensions to mutate section data before it is dispatched.
+
+    For more information, please refer to [merge request #523](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/523)
+
+### Changed
+
+- **Fix error handling existing script tag attributes with spaces in the value when injecting a nonce attribute**
+
+    For more information, please refer to [issue #450](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/450)
+
+- **Improve hyva.createBooleanObject resilience**
+
+    When migrating non-csp alpine components, it could happen that the value property was accidentally overwritten using the `=` operator.
+    This change protects against this and will assign the value to the internal value property instead.
+
+    For more information, please refer to [issue #448](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/448)
+
+### Removed
+
+- Nothing removed
+
+## [1.3.11] - 2025-03-06
+[1.3.11]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.10...1.3.11
+
+### Added
+
+- **Support strict CSP mode**
+
+    These changes support using a Hyvä theme or other Hyvä products like the checkout without the Content-Security-Policies
+    `unsafe-eval` and `unsafe-inline`. However, the required changes to the theme or other products are not part of this release.  
+
+    Most notably, this release will use Alpine-CSP if the unsafe-eval script-src CSP is not present.
+
+    For more information, please refer to the Hyvä CSP Developer documentation for [theme](https://docs.hyva.io/hyva-themes/writing-code/csp/index.html) and the [checkout](https://docs.hyva.io/checkout/hyva-checkout/devdocs/csp/index.html).
+
+### Changed
+
+- **Change init-external-scripts event trigger**
+  
+    Replaced mouseover with mousemoved event as one of the triggers for the init-external-scripts event, since the other one was triggered on page-load in page speed insights tests now.
+
+    For details, please refer to [merge request #512](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/512).
+
+    Many thanks to Sergiy Pikhterev (Transform-Agency) for the contribution!
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.10] - 2024-12-06
 [1.3.10]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.9...1.3.10
