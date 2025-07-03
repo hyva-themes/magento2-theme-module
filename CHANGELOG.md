@@ -30,6 +30,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Nothing removed
 
+### Added
+
+- **Lucide Icons**
+
+    To transition all Hyvä Commerce and Hyvä Projects to a unified icon set,
+    we're now introducing Lucide Icons as an alternative to Heroicons.  
+    New projects will begin using them immediately,
+    and we plan to update the default Hyvä theme with this new icon set in an upcoming release.
+
+    A huge thank you to [Siteation](https://siteation.dev/) for their valuable contribution in creating and sharing this icon pack with us.  
+    We also recommend checking out their dedicated [Hyvä Lucide Icons](https://github.com/Siteation/magento2-hyva-icons-lucide) and their other excellent Hyvä icon options.
+
+    For more information, please refer to [issue #460](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/460)
+
 ## [1.3.13] - 2025-04-22
 [1.3.13]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.12...1.3.13
 

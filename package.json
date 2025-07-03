@@ -1,16 +1,22 @@
 {
   "name": "@hyva-themes/magento2-theme-module",
   "version": "1.0.0",
-  "description": "The npm pkg is here just here to update the Heroicons for Hyvä",
+  "description": "The npm pkg is here just here to update the NPM dependencies for Hyvä",
   "private": true,
   "scripts": {
     "build:icons:outline": "cp -r ./node_modules/heroicons/outline/*.svg ./src/view/frontend/web/svg/heroicons/outline",
     "build:icons:solid": "cp -r ./node_modules/heroicons/solid/*.svg ./src/view/frontend/web/svg/heroicons/solid",
-    "build:optimize-icons": "./bin/optimize-icons",
+    "build:icons:lucide": "rm -f ./src/view/base/web/svg/lucide/*.svg && cp -r ./node_modules/lucide-static/icons/*.svg ./src/view/base/web/svg/lucide",
+    "build:optimize:heroicons": "./bin/optimize-heroicons",
+    "build:optimize:lucideicons": "./bin/optimize-lucideicons && npx svgo -f ./src/view/base/web/svg/lucide -o ./src/view/base/web/svg/lucide",
     "build:signature": "./bin/generate-icons-signatures",
-    "build": "npm run build:icons:outline && npm run build:icons:solid && npm run build:optimize-icons && npm run build:signature"
+    "build:heroicons": "npm run build:icons:outline && npm run build:icons:solid && npm run build:optimize:heroicons",
+    "build:lucideicons": "npm run build:icons:lucide && npm run build:optimize:lucideicons",
+    "build": "npm run build:heroicons && npm run build:lucideicons && npm run build:signature"
   },
   "devDependencies": {
-    "heroicons": "1.0.6"
+    "heroicons": "1.0.6",
+    "lucide-static": "^0.511.0",
+    "svgo": "^3.3.2"
   }
 }
