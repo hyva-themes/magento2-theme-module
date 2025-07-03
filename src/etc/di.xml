@@ -77,7 +77,12 @@
             <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/outline</argument>
         </arguments>
     </type>
+    <type name="Hyva\Theme\ViewModel\LucideIcons">
+        <arguments>
+            <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/lucide</argument>
+        </arguments>
+    </type>
 
     <preference for="Hyva\Theme\Block\SortableItemInterface" type="Hyva\Theme\Block\SortableItem"/>
-
+    <preference for="Hyva\Theme\Model\Media\MediaHtmlProviderInterface" type="Hyva\Theme\Model\Media\MediaHtmlProvider"/>
 </config>

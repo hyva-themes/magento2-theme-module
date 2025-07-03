@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Hyva\Theme\Model\Media\MediaHtmlProviderInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -16,13 +17,15 @@ use Magento\Store\Model\StoreManagerInterface;
 
 class Media implements ArgumentInterface
 {
-    /** @var StoreManagerInterface */
-    private $storeManager;
+    private StoreManagerInterface $storeManager;
+    private MediaHtmlProviderInterface $mediaHtmlProvider;
 
     public function __construct(
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        MediaHtmlProviderInterface $mediaHtmlProvider
     ) {
         $this->storeManager = $storeManager;
+        $this->mediaHtmlProvider = $mediaHtmlProvider;
     }
 
     public function getMediaUrl(): string
@@ -32,5 +35,57 @@ class Media implements ArgumentInterface
         } catch (NoSuchEntityException $e) {
             return '';
         }
+    }
+
+    /**
+     * @param string $path
+     * @param int|null $width
+     * @param int|null $height
+     * @param array<string, string> $imgAttributes Suggested attributes: alt, loading (lazy|eager),
+     *                                              fetchpriority (auto|high|low), class, id, style,
+     *                                              decoding (sync|async|auto)
+     * @param array<string, string> $pictureAttributes Suggested attributes: class, id, style,
+     *                                                 data-* attributes
+     */
+    public function getPictureHtml(
+        string $path,
+        ?int $width = null,
+        ?int $height = null,
+        array $imgAttributes = [],
+        array $pictureAttributes = []
+    ): string {
+        $images = [
+            'default' => [
+                'path' => $path,
+                'width' => $width,
+                'height' => $height,
+            ]
+        ];
+
+        return $this->mediaHtmlProvider->getPictureHtml($images, $imgAttributes, $pictureAttributes);
+    }
+
+    /**
+     * @param array<string, array{
+     *     path: string,
+     *     type?: string,
+     *     width?: int,
+     *     height?: int,
+     *     media?: string,
+     *     fallback?: bool,
+     * }> $images
+     *
+     * @param array<string, string> $imgAttributes Suggested attributes: alt, loading (lazy|eager),
+     *                                              fetchpriority (auto|high|low), class, id, style,
+     *                                              decoding (sync|async|auto), sizes, srcset
+     * @param array<string, string> $pictureAttributes Suggested attributes: class, id, style,
+     *                                                 data-* attributes
+     */
+    public function getResponsivePictureHtml(
+        array $images,
+        array $imgAttributes = [],
+        array $pictureAttributes = []
+    ): string {
+        return $this->mediaHtmlProvider->getPictureHtml($images, $imgAttributes, $pictureAttributes);
     }
 }

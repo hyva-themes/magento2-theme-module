@@ -14,6 +14,8 @@ use Hyva\Theme\Model\LocaleFormatterFactory;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\Service\CurrentTheme;
 use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State as AppState;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ProductMetadata;
 use Magento\Framework\Locale\LocaleFormatter as MagentoLocaleFormatter;
@@ -51,18 +53,25 @@ class PhpPlugin
      */
     private $hyvaCsp;
 
+    /**
+     * @var AppState
+     */
+    private $appState;
+
     public function __construct(
         ViewModelRegistry $viewModelRegistry,
         ProductMetadata $productMetadata,
         LocaleFormatterFactory $hyvaLocaleFormatterFactory,
         CurrentTheme $currentTheme,
-        ?HyvaCsp $hyvaCsp = null
+        ?HyvaCsp $hyvaCsp = null,
+        ?AppState $appState = null
     ) {
         $this->viewModelRegistry = $viewModelRegistry;
         $this->productMetadata = $productMetadata;
         $this->hyvaLocaleFormatterFactory = $hyvaLocaleFormatterFactory;
         $this->currentTheme = $currentTheme;
         $this->hyvaCsp = $hyvaCsp ?? ObjectManager::getInstance()->get(HyvaCsp::class);
+        $this->appState = $appState ?? ObjectManager::getInstance()->get(AppState::class);
     }
 
     /**
@@ -80,6 +89,7 @@ class PhpPlugin
     {
         $dictionary = $this->addAllThemesTemplateVariables($dictionary);
         $dictionary = $this->addHyvaOnlyTemplateVariables($dictionary);
+        $dictionary = $this->addAdminTemplateVariables($dictionary);
 
         return [$block, $filename, $dictionary];
     }
@@ -95,12 +105,23 @@ class PhpPlugin
 
     private function addHyvaOnlyTemplateVariables(array $dictionary): array
     {
-        if (! $this->currentTheme->isHyva()) {
+        if (!$this->currentTheme->isHyva()) {
             return $dictionary;
         }
 
         if (!class_exists(MagentoLocaleFormatter::class) || version_compare($this->productMetadata->getVersion(), '2.4.5', '<')) {
             $dictionary['localeFormatter'] = $this->hyvaLocaleFormatterFactory->create();
+        }
+
+        $dictionary['hyvaCsp'] = $this->hyvaCsp;
+
+        return $dictionary;
+    }
+
+    private function addAdminTemplateVariables(array $dictionary): array
+    {
+        if ($this->appState->getAreaCode() !== Area::AREA_ADMINHTML) {
+            return $dictionary;
         }
 
         $dictionary['hyvaCsp'] = $this->hyvaCsp;
