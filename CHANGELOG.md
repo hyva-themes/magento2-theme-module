@@ -7,7 +7,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.14...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.15...main
+
+## [1.3.15] - 2025-07-03
+[1.3.15]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.14...1.3.15
+
+### Added
+
+- **Some new methods to the Media viewmodel that allow more advanced features when the Hyva Commerce media optimization module is installed**  
+  For more information, please refer to [merge request #543](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/543)
+
+- **HyvaCSP View Model to Admin Block Dictionary**  
+  For more information, please refer to [merge request #540](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/540)
+
+- **Add Lucide Icons for Hyvä Commerce**  
+  For more information, please refer to [issue #460](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/460)  
+
+### Changed
+
+- **Fixed getPriceDisplayType can return string as config values could also be returned as strings "1", "2", "3" and this would end up with exception**  
+  For more information, please refer to [merge request #544](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/544)
+
+- **Move Alpine Files to Base Area**  
+  For more information, please refer to [merge request #538](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/538)
+
+### Removed
+
+- **Remove private TTL hardcode**  
+  For more information, please refer to [issue #441](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/441)
 
 ## [1.3.14] - 2025-05-26
 [1.3.14]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.13...1.3.14
