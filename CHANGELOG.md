@@ -7,7 +7,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.13...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.14...main
+
+## [1.3.14] - 2025-05-26
+[1.3.14]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.13...1.3.14
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Fixed one more usage of implicit nullable param which is deprecated since PHP 8.4**
+    For more information, please refer to [merge request #535](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/535)
+
+    Many thanks to Pieter Hoste (Baldwin) for the contribution!
+
+- **Resolve a minor difference between Alpine CSP and non Alpine CSP**
+    For more information, please refer to [merge request #525](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/525)
+
+### Removed
+
+- Nothing removed
 
 ### Added
 

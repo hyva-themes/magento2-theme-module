@@ -84,4 +84,5 @@
     </type>
 
     <preference for="Hyva\Theme\Block\SortableItemInterface" type="Hyva\Theme\Block\SortableItem"/>
+    <preference for="Hyva\Theme\Model\Media\MediaHtmlProviderInterface" type="Hyva\Theme\Model\Media\MediaHtmlProvider"/>
 </config>
