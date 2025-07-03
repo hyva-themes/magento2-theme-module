@@ -134,7 +134,7 @@ class ProductPrice implements ArgumentInterface
      */
     public function getPriceDisplayType($store = null): int
     {
-        return $this->taxConfig->getPriceDisplayType($store);
+        return (int) $this->taxConfig->getPriceDisplayType($store);
     }
 
     public function currency($value, $format = true, $includeContainer = true)
