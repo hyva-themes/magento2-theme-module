@@ -45,18 +45,31 @@ class ProductListItem implements ArgumentInterface
      */
     private $customerSession;
 
+    /**
+     * @var int|bool
+     *
+     * Set to false in di.xml to disable the block level caching of product items.
+     */
+    private $productItemBlockCacheLifetime = 3600;
+
     public function __construct(
         LayoutInterface $layout,
         ProductPage $productViewModel,
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
-        CustomerSession $customerSession
+        CustomerSession $customerSession,
+        $productItemBlockCacheLifetime = null
     ) {
-        $this->layout           = $layout;
+        $this->layout = $layout;
         $this->productViewModel = $productViewModel;
-        $this->currentCategory  = $currentCategory;
-        $this->blockCache       = $blockCache;
-        $this->customerSession  = $customerSession;
+        $this->currentCategory = $currentCategory;
+        $this->blockCache = $blockCache;
+        $this->customerSession = $customerSession;
+        if (isset($productItemBlockCacheLifetime)
+            && (false === $productItemBlockCacheLifetime || is_int($productItemBlockCacheLifetime))
+        ) {
+            $this->productItemBlockCacheLifetime = $productItemBlockCacheLifetime;
+        }
     }
 
     public function getProductPriceHtml(
@@ -145,7 +158,6 @@ class ProductListItem implements ArgumentInterface
     ): string {
         // Careful! Temporal coupling!
         // First the values on the block need to be set, then the cache key info array can be created.
-
         $itemRendererBlock->setData('product', $product)
                           ->setData('view_mode', $viewMode)
                           ->setData('item_relation_type', $parentBlock->getData('item_relation_type'))
@@ -154,7 +166,7 @@ class ProductListItem implements ArgumentInterface
                           ->setData('position', $parentBlock->getPositioned())
                           ->setData('pos', $parentBlock->getPositioned())
                           ->setData('template_type', $templateType)
-                          ->setData('cache_lifetime', 3600)
+                          ->setData('cache_lifetime', $this->productItemBlockCacheLifetime)
                           ->setData('cache_tags', $product->getIdentities())
                           ->setData('hideDetails', $parentBlock->getData('hideDetails'))
                           ->setData('hide_rating_summary', $parentBlock->getData('hide_rating_summary'));
@@ -209,7 +221,7 @@ class ProductListItem implements ArgumentInterface
         /** @var AbstractBlock $itemRendererBlock */
         $itemRendererBlock = $this->layout->getBlock('product_list_item');
 
-        if (! $itemRendererBlock) {
+        if (!$itemRendererBlock) {
             return '';
         }
 
