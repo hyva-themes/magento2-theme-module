@@ -34,11 +34,17 @@ use Magento\Framework\View\Element\Template;
                 { "href_matches": "/*" },
                 { "not": {
                     "href_matches": [
-                        "*/customer/*",
-                        "*/search/*",
-                        "*/sales/*",
-                        "*/checkout/*",
-                        "*.pdf"
+                        '/customer/*',
+                        '*/customer/*',
+                        '/search/*',
+                        '*/search/*',
+                        '/wishlist/*',
+                        '*/wishlist/*',
+                        '/checkout/*',
+                        '*/checkout/*',
+                        '/paypal/*',
+                        '*/paypal/*',
+                        '*.pdf'
                     ]
                 }},
                 { "not": { "selector_matches": ".do-not-prerender" } },
