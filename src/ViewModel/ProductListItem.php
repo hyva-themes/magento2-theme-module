@@ -13,11 +13,11 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
-use Magento\Framework\App\Http\Context as HttpContext;
 
 class ProductListItem implements ArgumentInterface
 {
