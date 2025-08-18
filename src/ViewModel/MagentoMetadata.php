@@ -45,6 +45,9 @@ class MagentoMetadata implements ArgumentInterface
         return $this->productMetadata->getEdition();
     }
 
+    /**
+     * Returns "Magento" for magento/project-*-edition, or a name like "Mage-OS" for other distributions.
+     */
     public function getDistributionName(): string
     {
         return method_exists($this->productMetadata, 'getDistributionName')
