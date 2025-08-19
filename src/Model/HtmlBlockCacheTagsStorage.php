@@ -91,7 +91,8 @@ class HtmlBlockCacheTagsStorage
      */
     private function isDoubleCachedBlock(AbstractBlock $block): bool
     {
-        return $block->getData('ttl') > 0 && $block->getData('cache_lifetime') !== null;
+
+        return $block->getData('ttl') > 0 && ! in_array($block->getData('cache_lifetime'), [null, false], true);
     }
 
     private function saveBlockCacheTags(AbstractBlock $block): void

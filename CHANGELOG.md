@@ -7,9 +7,63 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.15...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.16...main
+
+## [1.3.16] - 2025-08-19
+
+[1.3.16]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.15...1.3.16
+
+### Added
+
+- **Add addPriceData option to ProductList view model**  
+  For more information, please refer to [issue #446](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/446)
+
+- **Add ViewModel to expose Magento versions**  
+  For more information, please refer to [issue #476](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/476)
+
+- **Add optional arguments for ProductListItem view model pricerenderer**  
+  For more information, please refer to [merge request #513](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/513)
+
+  Many thanks to Akif Gumussu (Aquive) for the contribution!
+
+### Changed
+
+- **Avoid duplicate queries to load CSP fetch policies**  
+  For more information, please refer to [merge request #547](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/547)
+
+  Many thanks to Igor Wulff (Youwe) for the contribution!
+
+- **Improve Speculation rules exclude list for none subdomains**  
+  For more information, please refer to [merge request #554](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/554)
+
+- **Allow disabling block level caching of product list item templates**  
+  For more information, please refer to [issue #466](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/466)
+
+- **Fix error in Safari 18 for missing Navigation Api**  
+  For more information, please refer to [issue #469](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/469)
+
+- **Fix check if block is cached in RegisterPageJsDependencies**  
+  For more information, please refer to [merge request #468](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/468)
+
+- **Fix CLI command events:generate:module by not checking app state code**  
+  For more information, please refer to [issue #467](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/467)
+
+- **Fix issue with missing tax rates from http context**  
+  For more information, please refer to [issue #443](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/443)
+
+  Many thanks to Jakub Idziak (Macopedia) for the contribution!
+
+- **Improve in-memory path IDs**  
+  For more information, please refer to [issue #443](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/443)
+
+  Many thanks to Thomas Klein (ATI4 Group) for the contribution!
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.15] - 2025-07-03
+
 [1.3.15]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.14...1.3.15
 
 ### Added
@@ -21,7 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   For more information, please refer to [merge request #540](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/540)
 
 - **Add Lucide Icons for Hyvä Commerce**  
-  For more information, please refer to [issue #460](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/460)  
+  For more information, please refer to [issue #460](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/460)
 
 ### Changed
 

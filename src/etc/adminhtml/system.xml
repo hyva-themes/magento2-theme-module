@@ -106,6 +106,24 @@
                     <validate>integer no-whitespace</validate>
                 </field>
             </group>
+            <group id="developer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="500" translate="label">
+                <label>Developer</label>
+                <group id="cache" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+                    <label>Cache Options</label>
+                    <field id="product_list_item_block_cache_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                        <label>Enable Product List Item block_html Caching</label>
+                        <comment>Disable to reduce the load on the cache storage backend (for example Redis).</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="product_list_item_block_cache_lifetime" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                        <label>Product List Item Block Cache Lifetime</label>
+                        <comment>Time to Live in Seconds</comment>
+                        <depends>
+                            <field id="product_list_item_block_cache_enabled">1</field>
+                        </depends>
+                    </field>
+                </group>
+            </group>
         </section>
 
         <section id="hyva_theme_general" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="0" translate="label">
@@ -119,25 +137,25 @@
                     <comment>The number of milliseconds, after which success messages disappear by default. Leave empty to disable automatic hiding.</comment>
                 </field>
             </group>
-            <group id="alpine_defer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="20" translate="label">
-                <label>Deferred Alpine.js Components</label>
-                <field id="defer_idle_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Defer until idle timeout</label>
-                    <comment>The number of milliseconds after which Alpine components deferred until the browser is idle will be initialized at the latest.</comment>
-                </field>
-                <field id="deferred_components" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label,comment">
-                    <label>Defer components</label>
-                    <comment><![CDATA[Valid defer until values: <strong>interact</strong>, <strong>intersect</strong>, <strong>idle</strong>, <strong>event:eventname</strong>.<br/>Configuring many deferred components here may increase the Total Blocking Time. Consider defering components by changing the PHTML templates instead.]]></comment>
-                    <frontend_model>Hyva\Theme\Block\Adminhtml\Form\Field\DeferredAlpineComponents</frontend_model>
-                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
-                </field>
-            </group>
             <group id="demo_content" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
                 <label>Hyvä Demo Content</label>
                 <field id="show_homepage_demo_content" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"  canRestore="1">
                     <label>Show Homepage Content</label>
                     <comment>When disabled, this will remove the demo content from the Homepage.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="alpine_defer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+                <label>Deferred Alpine.js Components</label>
+                <field id="defer_idle_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Defer until idle timeout</label>
+                    <comment>The number of milliseconds after which Alpine components deferred until the browser is idle will be initialized at the latest.</comment>
+                </field>
+                <field id="deferred_components" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label comment" canRestore="1">
+                    <label>Defer components</label>
+                    <comment><![CDATA[Valid defer until values: <strong>interact</strong>, <strong>intersect</strong>, <strong>idle</strong>, <strong>event:eventname</strong>.<br/>Configuring many deferred components here may increase the Total Blocking Time. Consider defering components by changing the PHTML templates instead.]]></comment>
+                    <frontend_model>Hyva\Theme\Block\Adminhtml\Form\Field\DeferredAlpineComponents</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
             </group>
         </section>

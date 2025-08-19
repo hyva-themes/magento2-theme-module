@@ -13,6 +13,8 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Config\ScopeConfigInterface as StoreConfig;
+use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -45,31 +47,46 @@ class ProductListItem implements ArgumentInterface
      */
     private $customerSession;
 
+    /**
+     * @var StoreConfig
+     */
+    private $storeConfig;
+
+    /**
+     * @var HttpContext
+     */
+    private $httpContext;
+
     public function __construct(
         LayoutInterface $layout,
         ProductPage $productViewModel,
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
-        CustomerSession $customerSession
+        CustomerSession $customerSession,
+        StoreConfig $storeConfig,
+        HttpContext $httpContext
     ) {
-        $this->layout           = $layout;
+        $this->layout = $layout;
         $this->productViewModel = $productViewModel;
-        $this->currentCategory  = $currentCategory;
-        $this->blockCache       = $blockCache;
-        $this->customerSession  = $customerSession;
+        $this->currentCategory = $currentCategory;
+        $this->blockCache = $blockCache;
+        $this->customerSession = $customerSession;
+        $this->storeConfig = $storeConfig;
+        $this->httpContext = $httpContext;
     }
 
     public function getProductPriceHtml(
-        Product $product
+        Product $product,
+        array $priceRendererBlockArgs = []
     ) {
         $priceType = FinalPrice::PRICE_CODE;
 
-        $arguments = [
+        $arguments = array_merge([
             'include_container'     => true,
             'display_minimal_price' => true,
             'list_category_page'    => true,
             'zone'                  => Render::ZONE_ITEM_LIST,
-        ];
+        ], $priceRendererBlockArgs);
 
         return $this->getPriceRendererBlock()->render($priceType, $product, $arguments);
     }
@@ -119,6 +136,7 @@ class ProductListItem implements ArgumentInterface
             (int) $this->customerSession->getCustomerGroupId(),
             (string) $block->getData('image_display_area'),
             json_encode($product->getData('image_custom_attributes') ?? []),
+            json_encode($this->httpContext->getValue('tax_rates') ?? []),
         ];
     }
 
@@ -143,9 +161,13 @@ class ProductListItem implements ArgumentInterface
         string $imageDisplayArea,
         bool $showDescription
     ): string {
+
+        $cacheLifetime = ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_enabled') ?? true)
+            ? (int) ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_lifetime') ?? 3600)
+            : false;
+
         // Careful! Temporal coupling!
         // First the values on the block need to be set, then the cache key info array can be created.
-
         $itemRendererBlock->setData('product', $product)
                           ->setData('view_mode', $viewMode)
                           ->setData('item_relation_type', $parentBlock->getData('item_relation_type'))
@@ -154,7 +176,7 @@ class ProductListItem implements ArgumentInterface
                           ->setData('position', $parentBlock->getPositioned())
                           ->setData('pos', $parentBlock->getPositioned())
                           ->setData('template_type', $templateType)
-                          ->setData('cache_lifetime', 3600)
+                          ->setData('cache_lifetime', $cacheLifetime)
                           ->setData('cache_tags', $product->getIdentities())
                           ->setData('hideDetails', $parentBlock->getData('hideDetails'))
                           ->setData('hide_rating_summary', $parentBlock->getData('hide_rating_summary'));
@@ -209,7 +231,7 @@ class ProductListItem implements ArgumentInterface
         /** @var AbstractBlock $itemRendererBlock */
         $itemRendererBlock = $this->layout->getBlock('product_list_item');
 
-        if (! $itemRendererBlock) {
+        if (!$itemRendererBlock) {
             return '';
         }
 
