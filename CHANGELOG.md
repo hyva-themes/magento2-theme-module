@@ -59,6 +59,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
+- Nothing removed
+
 ## [1.3.15] - 2025-07-03
 [1.3.15]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.14...1.3.15
 
