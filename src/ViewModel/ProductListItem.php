@@ -14,6 +14,7 @@ use Magento\Catalog\Model\Product;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Config\ScopeConfigInterface as StoreConfig;
+use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -51,13 +52,19 @@ class ProductListItem implements ArgumentInterface
      */
     private $storeConfig;
 
+    /**
+     * @var HttpContext
+     */
+    private $httpContext;
+
     public function __construct(
         LayoutInterface $layout,
         ProductPage $productViewModel,
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
         CustomerSession $customerSession,
-        StoreConfig $storeConfig
+        StoreConfig $storeConfig,
+        HttpContext $httpContext
     ) {
         $this->layout = $layout;
         $this->productViewModel = $productViewModel;
@@ -65,19 +72,21 @@ class ProductListItem implements ArgumentInterface
         $this->blockCache = $blockCache;
         $this->customerSession = $customerSession;
         $this->storeConfig = $storeConfig;
+        $this->httpContext = $httpContext;
     }
 
     public function getProductPriceHtml(
-        Product $product
+        Product $product,
+        array $priceRendererBlockArgs = []
     ) {
         $priceType = FinalPrice::PRICE_CODE;
 
-        $arguments = [
+        $arguments = array_merge([
             'include_container'     => true,
             'display_minimal_price' => true,
             'list_category_page'    => true,
             'zone'                  => Render::ZONE_ITEM_LIST,
-        ];
+        ], $priceRendererBlockArgs);
 
         return $this->getPriceRendererBlock()->render($priceType, $product, $arguments);
     }
@@ -127,6 +136,7 @@ class ProductListItem implements ArgumentInterface
             (int) $this->customerSession->getCustomerGroupId(),
             (string) $block->getData('image_display_area'),
             json_encode($product->getData('image_custom_attributes') ?? []),
+            json_encode($this->httpContext->getValue('tax_rates') ?? []),
         ];
     }
 

@@ -67,6 +67,11 @@ class ProductList implements ArgumentInterface
     private $categoryIdFilter;
 
     /**
+     * @var bool
+     */
+    private $shouldLoadPriceData = false;
+
+    /**
      * @var FilterBuilder
      */
     private $filterBuilder;
@@ -259,11 +264,18 @@ class ProductList implements ArgumentInterface
     private function applyCriteria(SearchCriteriaInterface $criteria, AbstractDb $collection): void
     {
         $this->collectionProcessor->process($criteria, $collection);
-        if ($this->categoryIdFilter && $collection instanceof ProductCollection) {
-            $category = $this->getCategory();
-            $collection->addCategoryFilter($category);
+        if ($collection instanceof ProductCollection) {
+            if ($this->categoryIdFilter) {
+                $category = $this->getCategory();
+                $collection->addCategoryFilter($category);
+            }
+            if ($this->shouldLoadPriceData) {
+                $collection->addPriceData();
+            }
         }
+
         $this->categoryIdFilter = null;
+        $this->shouldLoadPriceData = false;
     }
 
     private function extractProductId($item)
@@ -513,6 +525,13 @@ class ProductList implements ArgumentInterface
     public function excludeChildCategoryProducts(): self
     {
         $this->useAnchorAttribute = false;
+
+        return $this;
+    }
+
+    public function addPriceData(): self
+    {
+        $this->shouldLoadPriceData = true;
 
         return $this;
     }

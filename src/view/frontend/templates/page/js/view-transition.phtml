@@ -53,8 +53,8 @@ use Magento\Framework\View\Element\Template;
     });
 
     window.addEventListener('pagereveal', async (e) => {
-        if (!e.viewTransition || !navigation.activation.from) return;
-        const fromUrl = new URL(navigation.activation.from.url);
+        if (!e.viewTransition || (window.navigation && !window.navigation.activation.from)) return;
+        const fromUrl = new URL(window.navigation.activation.from.url);
         // const entryURL = new URL(navigation.activation.entry.url);
         setTransitionNameBetweenGallery(fromUrl.href, e.viewTransition.ready);
     });
