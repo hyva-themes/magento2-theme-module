@@ -15,6 +15,8 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\Service\CurrentTheme;
 use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\App\Area;
+use Magento\Framework\App\AreaList as AppAreaList;
+use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\App\State as AppState;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ProductMetadata;
@@ -54,9 +56,11 @@ class PhpPlugin
     private $hyvaCsp;
 
     /**
-     * @var AppState
+     * @var HttpRequest
      */
-    private $appState;
+    private $httpRequest;
+
+    private ?AppAreaList $appAreaList;
 
     public function __construct(
         ViewModelRegistry $viewModelRegistry,
@@ -64,14 +68,17 @@ class PhpPlugin
         LocaleFormatterFactory $hyvaLocaleFormatterFactory,
         CurrentTheme $currentTheme,
         ?HyvaCsp $hyvaCsp = null,
-        ?AppState $appState = null
+        ?AppState $appState = null, // keep for BC
+        ?AppAreaList $appAreaList = null,
+        ?HttpRequest $httpRequest = null
     ) {
         $this->viewModelRegistry = $viewModelRegistry;
         $this->productMetadata = $productMetadata;
         $this->hyvaLocaleFormatterFactory = $hyvaLocaleFormatterFactory;
         $this->currentTheme = $currentTheme;
         $this->hyvaCsp = $hyvaCsp ?? ObjectManager::getInstance()->get(HyvaCsp::class);
-        $this->appState = $appState ?? ObjectManager::getInstance()->get(AppState::class);
+        $this->appAreaList = $appAreaList ?? ObjectManager::getInstance()->get(AppAreaList::class);
+        $this->httpRequest = $httpRequest ?? ObjectManager::getInstance()->get(HttpRequest::class);
     }
 
     /**
@@ -120,7 +127,7 @@ class PhpPlugin
 
     private function addAdminTemplateVariables(array $dictionary): array
     {
-        if ($this->appState->getAreaCode() !== Area::AREA_ADMINHTML) {
+        if ($this->appAreaList->getCodeByFrontName($this->httpRequest->getFrontName()) !== Area::AREA_ADMINHTML) {
             return $dictionary;
         }
 
