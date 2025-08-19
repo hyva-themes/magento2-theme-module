@@ -13,6 +13,7 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Config\ScopeConfigInterface as StoreConfig;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -46,11 +47,9 @@ class ProductListItem implements ArgumentInterface
     private $customerSession;
 
     /**
-     * @var int|bool
-     *
-     * Set to false in di.xml to disable the block level caching of product items.
+     * @var StoreConfig
      */
-    private $productItemBlockCacheLifetime = 3600;
+    private $storeConfig;
 
     public function __construct(
         LayoutInterface $layout,
@@ -58,18 +57,14 @@ class ProductListItem implements ArgumentInterface
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
         CustomerSession $customerSession,
-        $productItemBlockCacheLifetime = null
+        StoreConfig $storeConfig
     ) {
         $this->layout = $layout;
         $this->productViewModel = $productViewModel;
         $this->currentCategory = $currentCategory;
         $this->blockCache = $blockCache;
         $this->customerSession = $customerSession;
-        if (isset($productItemBlockCacheLifetime)
-            && (false === $productItemBlockCacheLifetime || is_int($productItemBlockCacheLifetime))
-        ) {
-            $this->productItemBlockCacheLifetime = $productItemBlockCacheLifetime;
-        }
+        $this->storeConfig = $storeConfig;
     }
 
     public function getProductPriceHtml(
@@ -156,6 +151,11 @@ class ProductListItem implements ArgumentInterface
         string $imageDisplayArea,
         bool $showDescription
     ): string {
+
+        $cacheLifetime = ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_enabled') ?? true)
+            ? (int) ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_lifetime') ?? 3600)
+            : false;
+
         // Careful! Temporal coupling!
         // First the values on the block need to be set, then the cache key info array can be created.
         $itemRendererBlock->setData('product', $product)
@@ -166,7 +166,7 @@ class ProductListItem implements ArgumentInterface
                           ->setData('position', $parentBlock->getPositioned())
                           ->setData('pos', $parentBlock->getPositioned())
                           ->setData('template_type', $templateType)
-                          ->setData('cache_lifetime', $this->productItemBlockCacheLifetime)
+                          ->setData('cache_lifetime', $cacheLifetime)
                           ->setData('cache_tags', $product->getIdentities())
                           ->setData('hideDetails', $parentBlock->getData('hideDetails'))
                           ->setData('hide_rating_summary', $parentBlock->getData('hide_rating_summary'));

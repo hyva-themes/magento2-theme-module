@@ -33,6 +33,14 @@
                 <background_lazy_load_default>0</background_lazy_load_default>
             </images>
         </hyva_theme_pagebuilder>
+        <hyva_theme_catalog>
+            <developer>
+                <cache>
+                    <product_list_item_block_cache_enabled>1</product_list_item_block_cache_enabled>
+                    <product_list_item_block_cache_lifetime>3600</product_list_item_block_cache_lifetime>
+                </cache>
+            </developer>
+        </hyva_theme_catalog>
         <catalog>
             <frontend>
                 <show_add_to_compare_in_list>1</show_add_to_compare_in_list>
