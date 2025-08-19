@@ -27,6 +27,7 @@ use Magento\Framework\View\Element\Template;
 ?>
 <script type="speculationrules">
 {
+    "tag": "hyva",
     "prerender": [{
         "source": "document",
         "where": {
@@ -34,10 +35,18 @@ use Magento\Framework\View\Element\Template;
                 { "href_matches": "/*" },
                 { "not": {
                     "href_matches": [
+                        "/customer/*",
                         "*/customer/*",
+                        "/search/*",
                         "*/search/*",
+                        "/sales/*",
                         "*/sales/*",
+                        "/wishlist/*",
+                        "*/wishlist/*",
+                        "/checkout/*",
                         "*/checkout/*",
+                        "/paypal/*",
+                        "*/paypal/*",
                         "*.pdf"
                     ]
                 }},
