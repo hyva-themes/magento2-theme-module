@@ -75,12 +75,17 @@ class HyvaCsp implements ArgumentInterface
      */
     private $memoizedAreaCode;
 
+    /**
+     * @var array
+     */
+    private $memoizedPolicies;
+
     public function __construct(
         DynamicCspCollector $dynamicCspCollector,
         PolicyCollectorInterface $policyCollector,
         CspNonceProvider $cspNonceProvider,
         HtmlPageContent $htmlPageContent,
-        ObjectManagerInterface  $objectManager,
+        ObjectManagerInterface $objectManager,
         CacheState $cacheState,
         ?AppState $appState = null
     ) {
@@ -97,7 +102,7 @@ class HyvaCsp implements ArgumentInterface
      * Return the layout instance, lazily instantiating it if it doesn't exist yet.
      *
      * In production mode, instantiating the layout triggers an Area Code not set error in CLI commands.
-     * This is triggered for example by "bin/magento events:generate:module".
+     * This is triggered, for example, by "bin/magento events:generate:module".
      * Other possible solutions that were ruled out:
      * Because the layout is a widely used object, declaring a Proxy preference in di.xml  is not a good
      * option. Only proxying it for this class constructor is also not an option, since we want the
@@ -105,7 +110,7 @@ class HyvaCsp implements ArgumentInterface
      */
     private function getLayout(): LayoutInterface
     {
-        if (! $this->layout) {
+        if (!$this->layout) {
             $this->layout = $this->objectManager->get(LayoutInterface::class);
         }
         return $this->layout;
@@ -113,7 +118,7 @@ class HyvaCsp implements ArgumentInterface
 
     public function registerInlineScript(): void
     {
-        if (! $this->isAreaCodeSet() || $this->getScriptSrcPolicy()->isInlineAllowed()) {
+        if (!$this->isAreaCodeSet() || $this->getScriptSrcPolicy()->isInlineAllowed()) {
             return;
         }
 
@@ -208,11 +213,17 @@ class HyvaCsp implements ArgumentInterface
 
     private function collectFetchPolicies(): array
     {
-        return array_filter(
+        if (isset($this->memoizedPolicies)) {
+            return $this->memoizedPolicies;
+        }
+
+        $this->memoizedPolicies = array_filter(
             $this->policyCollector->collect(),
             static function (PolicyInterface $policy) {
                 return $policy instanceof FetchPolicy;
             }
         );
+
+        return $this->memoizedPolicies;
     }
 }
