@@ -82,7 +82,7 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
         $finalImgAttributes = $this->buildImageAttributes($fallbackImage, $imgAttributes);
         $imgTag = $this->buildImgTag($finalImgAttributes);
 
-        $allSourceTags = array_merge($nonFallbackSourceTags, $fallbackSourceTags);
+        $allSourceTags = array_merge(array_reverse($nonFallbackSourceTags), $fallbackSourceTags);
 
         return $this->buildPictureTag($allSourceTags, $imgTag, $pictureAttributes);
     }
