@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.17...main
 
-## [1.3.17] - 2025-08-19
+## [1.3.17] - 2025-09-02
 
 [1.3.17]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.16...1.3.17
 
