@@ -7,7 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.16...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.17...main
+
+## [1.3.17] - 2025-08-19
+
+[1.3.17]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.16...1.3.17
+
+### Added
+
+- Nothing removed
+
+### Changed
+
+- **Move Alpine Plugin Files to Base Area**  
+  For more information, please refer to [merge request #560](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/560)
+
+- **Reverse picture tag source inclusion for MediaHtmlProvider**  
+  For more information, please refer to [issue #477](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/477)
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.16] - 2025-08-19
 
