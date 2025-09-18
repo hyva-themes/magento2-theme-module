@@ -10,75 +10,51 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Block\Page;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Filesystem;
+use Magento\Framework\App\CacheInterface;
+use Magento\Framework\Composer\ComposerInformation;
 use Magento\Framework\View\Element\Template;
 
 class HyvaVersion extends Template
 {
-    private ?string $version = null;
-    private Filesystem $filesystem;
+    const CACHE_TAG = 'hyva-version';
+
+    private ComposerInformation $composerInfo;
 
     public function __construct(
         Template\Context $context,
-        Filesystem $filesystem,
+        CacheInterface $cache,
+        ComposerInformation $composerInfo,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->filesystem = $filesystem;
+        $this->cache = $cache;
+        $this->composerInfo = $composerInfo;
     }
 
-    private function getComposerLockData(): ?array
+    public function getHyvaPackageVersion(): ?string
     {
-        try {
-            $rootDirectory = $this->filesystem->getDirectoryRead(DirectoryList::ROOT);
-
-            if (!$rootDirectory->isReadable('composer.lock')) {
-                return null;
-            }
-
-            $composerLockContents = $rootDirectory->readFile('composer.lock');
-            $composerLockData = json_decode($composerLockContents, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                return null;
-            }
-
-            return $composerLockData;
-        } catch (FileSystemException $e) {
-            return null;
-        }
+        return $this->composerInfo->getInstalledMagentoPackages()['hyva-themes/magento2-theme-module']['version'] ?? null;
     }
 
-    private function loadHyvaVersion(): ?string
+    public function getVersion(): ?string
     {
-        $composerLock = $this->getComposerLockData();
-
-        if ($composerLock === null) {
-            return null;
+        $cachedValue = $this->cache->load(self::CACHE_TAG);
+        if ($cachedValue !== false) {
+            return $cachedValue;
         }
 
-        foreach ($composerLock['packages'] ?? [] as $package) {
-            if (($package['name'] ?? null) === 'hyva-themes/magento2-theme-module') {
-                return $package['version'] ?? null;
-            }
+        $version = $this->getHyvaPackageVersion();
+        if ($version) {
+            $this->cache->save($version, self::CACHE_TAG, [self::CACHE_TAG]);
+            return $version;
         }
 
         return null;
     }
 
-    public function getHyvaVersion(): ?string
-    {
-        if ($this->version === null) {
-            $this->version = $this->loadHyvaVersion();
-        }
-        return $this->version;
-    }
-
     protected function _toHtml(): string
     {
-        if ($this->getHyvaVersion() === null) {
+        if ($this->getVersion() === null) {
             return '';
         }
         return parent::_toHtml();
