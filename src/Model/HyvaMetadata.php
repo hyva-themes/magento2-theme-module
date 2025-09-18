@@ -32,9 +32,7 @@ class HyvaMetadata
 
     public function getHyvaPackageVersion(): ?string
     {
-        $version = $this->composerInfo->getInstalledMagentoPackages()['hyva-themes/magento2-theme-module']['version'] ?? null;
-        ray($version);
-        return $version;
+        return $this->composerInfo->getInstalledMagentoPackages()['hyva-themes/magento2-theme-module']['version'] ?? null;
     }
 
     public function getName(): string
