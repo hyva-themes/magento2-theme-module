@@ -17,6 +17,6 @@ use Hyva\Theme\Block\Adminhtml\HyvaVersion;
 ?>
 
 <p class="hyva-version">
-    <strong><?= $block->escapeHtml(__('Hyvä Theme Module')) ?></strong>
-    <?= $block->escapeHtml(__('ver. %1', $block->getHyvaVersion())) ?>
+    <strong><?= $escaper->escapeHtml(__('Hyvä Theme Module')) ?></strong>
+    <?= $escaper->escapeHtml(__('ver. %1', $block->getHyvaVersion())) ?>
 </p>
