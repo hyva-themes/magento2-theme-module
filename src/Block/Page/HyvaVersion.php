@@ -16,7 +16,7 @@ use Magento\Framework\View\Element\Template;
 
 class HyvaVersion extends Template
 {
-    const CACHE_TAG = 'hyva-version';
+    public const CACHE_TAG = 'hyva-version';
 
     private ComposerInformation $composerInfo;
 
