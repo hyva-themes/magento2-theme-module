@@ -7,7 +7,7 @@
         <referenceContainer name="legal.system">
             <block
                 name="hyva-version"
-                class="Hyva\Theme\Block\Page\HyvaVersion"
+                class="Hyva\Theme\Block\Adminhtml\Page\Footer"
                 template="Hyva_Theme::page/hyva-version.phtml"
                 after="version"
             />
