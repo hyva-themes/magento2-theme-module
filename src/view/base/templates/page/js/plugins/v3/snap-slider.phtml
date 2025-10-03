@@ -292,11 +292,7 @@ use Hyva\Theme\ViewModel\HyvaCsp;
             if (targetSlide.tagName.toLowerCase() === "template") {
                 targetSlide = isPrev ? targetSlide?.previousElementSibling : targetSlide?.nextElementSibling;
             }
-            targetSlide.scrollIntoView({
-                block: "nearest",
-                inline: isPrev ? "end" : "start",
-                behavior: "smooth"
-            });
+            targetSlide.scrollIntoView({ block: "nearest", inline: isPrev ? "end" : "start" });
         }
         pagerToSlide(event) {
             if (!event.target.closest("[data-pager]")) return;
@@ -305,11 +301,7 @@ use Hyva\Theme\ViewModel\HyvaCsp;
             event.preventDefault();
             const slideId = marker.getAttribute("href")?.slice(1) || marker.getAttribute(this.markerIdName);
             const targetSlide = this.track.querySelector(`#${slideId}`);
-            targetSlide?.scrollIntoView({
-                block: "nearest",
-                inline: "start",
-                behavior: "smooth"
-            });
+            targetSlide?.scrollIntoView({ block: "nearest", inline: "start" });
         }
         eventHandler(event) {
             const target = event.target.closest(
