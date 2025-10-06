@@ -17,7 +17,7 @@ use Magento\Framework\View\Element\Template;
 <script>
     let SnapSlider = class {
         constructor(el, {
-            labelSepparator = '<?= $escaper->escapeJS(__('of')) ?>',
+            labelSepparator = '<?= $escaper->escapeHtmlAttr(__('of')) ?>',
             autoPager,
             groupPager
         } = {}) {
