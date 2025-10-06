@@ -13,7 +13,7 @@ use Hyva\Theme\ViewModel\HyvaCsp;
 <script>
     var SnapSlider = class {
         constructor(el, {
-            labelSepparator = "of",
+            labelSepparator = '<?= $escaper->escapeJS(__('of')) ?>',
             autoPager,
             groupPager
         } = {}) {
