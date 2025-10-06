@@ -6,12 +6,16 @@
  */
 
 use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
 
 /** @var HyvaCsp $hyvaCsp */
+/** @var Template $block */
+/** @var Escaper $escaper */
 
 ?>
 <script>
-    var SnapSlider = class {
+    let SnapSlider = class {
         constructor(el, {
             labelSepparator = '<?= $escaper->escapeJS(__('of')) ?>',
             autoPager,
