@@ -16,6 +16,11 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 
 /**
+ * @deprecated
+ *
+ * The PHP ViewModel-based slider is deprecated in favor of a progressively enhanced CSS slider.
+ * The new implementation uses only child blocks, CSS, and the Alpine Snap Slider plugin.
+ *
  * @SuppressWarnings(PHPMD.ShortVariable)
  */
 class Slider implements ArgumentInterface
