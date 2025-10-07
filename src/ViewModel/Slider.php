@@ -17,6 +17,7 @@ use Magento\Framework\View\LayoutInterface;
 
 /**
  * @deprecated
+ * @see hyva-themes/magento2-default-theme/Hyva_Theme/templates/elements/slider.phtml
  *
  * The PHP ViewModel-based slider is deprecated in favor of a progressively enhanced CSS slider.
  * The new implementation uses only child blocks, CSS, and the Alpine Snap Slider plugin.
