@@ -19,6 +19,7 @@
 
         <referenceContainer name="before.body.end">
             <block name="script-alpine-js" template="Hyva_Theme::page/js/alpinejs.phtml">
+                <block name="alpine-plugin-snap-slider" template="Hyva_Theme::page/js/plugins/snap-slider.phtml"/>
                 <block name="alpine-plugin-intersect" template="Hyva_Theme::page/js/plugins/intersect.phtml"/>
                 <block name="alpine-plugin-ignore" template="Hyva_Theme::page/js/plugins/ignore.phtml"/>
                 <block name="alpine-plugin-defer" template="Hyva_Theme::page/js/plugins/defer.phtml">
