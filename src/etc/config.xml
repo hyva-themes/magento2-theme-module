@@ -56,7 +56,7 @@
         </google>
         <system>
             <full_page_cache>
-                <bfcache>1</bfcache>
+                <bfcache>0</bfcache>
             </full_page_cache>
         </system>
     </default>
