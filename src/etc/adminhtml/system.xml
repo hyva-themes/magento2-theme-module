@@ -160,6 +160,23 @@
             </group>
         </section>
 
+        <section id="hyva_theme_system" translate="label" type="text" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>System</label>
+            <tab>hyva_themes</tab>
+            <resource>Magento_Config::config_system</resource>
+            <group id="cache" translate="label comment" type="text" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cache Options</label>
+                <comment>(These settings can also be found in Advanced > System > Full Page Cache)</comment>
+                <field id="bfcache" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Bfcache</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>system/full_page_cache/bfcache</config_path>
+                    <comment><![CDATA[Allow users to navigate back and forward through their browser history instantly. By caching pages directly in the browser, this feature creates a faster, smoother browsing experience.
+                        <br><br><strong>Compatibility Note:</strong> This feature works automatically with Magento's native cache. Additional configuration is required when using Varnish, Fastly, or other reverse proxies.]]></comment>
+                </field>
+            </group>
+        </section>
+
         <section id="hyva_theme_pagebuilder" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
             <label>PageBuilder</label>
             <tab>hyva_themes</tab>
@@ -276,6 +293,16 @@
             <group id="captcha">
                 <comment><![CDATA[These CAPTCHA options are unsupported by Hyvä.<br>
                 See the <a href="https://docs.hyva.io/hyva-themes/view-utilities/recaptcha-in-custom-forms.html#captcha-support-in-hyva" target="_blank">Hyvä documentation for supported CAPTCHA versions</a>.]]></comment>
+            </group>
+        </section>
+
+        <section id="system">
+            <group id="full_page_cache">
+                <field id="bfcache" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Bfcache</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[<strong>Compatibility Note:</strong> This feature works automatically with Magento's native cache. Additional configuration is required when using Varnish, Fastly, or other reverse proxies.]]></comment>
+                </field>
             </group>
         </section>
     </system>

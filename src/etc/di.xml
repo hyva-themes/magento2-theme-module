@@ -67,6 +67,10 @@
         <plugin name="hyva_theme" type="\Hyva\Theme\Plugin\Theme\DisableHtmlMinifierForHyvaPlugin"/>
     </type>
 
+    <type name="Magento\Framework\App\Response\Http">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\RemoveNoStoreHeaderPlugin"/>
+    </type>
+
     <type name="Hyva\Theme\ViewModel\HeroiconsSolid">
         <arguments>
             <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/solid</argument>
