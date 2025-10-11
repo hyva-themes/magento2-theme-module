@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Hyva\Theme\Plugin\Theme;
 
 use Laminas\Http\Header\CacheControl;
-use Laminas\Http\Header\HeaderInterface;
 use Magento\Framework\App\Response\Http as HttpResponse;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -19,16 +18,8 @@ use Magento\Store\Model\ScopeInterface;
 class RemoveNoStoreHeaderPlugin
 {
     private const CONFIG_PATH_BFCACHE = 'system/full_page_cache/bfcache';
-
-    /**
-     * @var bool
-     */
-    private $isRequestCacheable = false;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
+    private $isCacheable = false;
+    private ScopeConfigInterface $scopeConfig;
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -36,51 +27,40 @@ class RemoveNoStoreHeaderPlugin
         $this->scopeConfig = $scopeConfig;
     }
 
-    private function isEnabled(): bool
+    public function isEnabled(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::CONFIG_PATH_BFCACHE, ScopeInterface::SCOPE_STORE);
-    }
-
-    private function isRequestCacheable(HeaderInterface $header): bool
-    {
-        $value = $header->getFieldValue();
-        return (bool) preg_match('/public.*s-maxage=(\d+)/', $value);
+        return $this->scopeConfig->isSetFlag(
+            self::CONFIG_PATH_BFCACHE,
+            ScopeInterface::SCOPE_STORE
+        );
     }
 
     public function beforeSetNoCacheHeaders(HttpResponse $subject): void
     {
-        if (!$this->isEnabled()) {
-            return;
-        }
-
+        /** @var CacheControl */
         $cacheHeader = $subject->getHeader('Cache-Control');
-        if (!$cacheHeader) {
+
+        if (!$this->isEnabled() || !$cacheHeader) {
             return;
         }
 
-        $this->isRequestCacheable = $this->isRequestCacheable($cacheHeader);
+        $hasCacheHeaderValue = (bool) preg_match('/public.*s-maxage=(\d+)/', $cacheHeader->getFieldValue());
+        $this->isCacheable = $hasCacheHeaderValue;
     }
 
-    public function afterSetNoCacheHeaders(HttpResponse $subject, $result)
+    public function afterSetNoCacheHeaders(HttpResponse $subject): void
     {
-        if (!$this->isEnabled()) {
-            return $result;
-        }
-
-        /**
-         * @var CacheControl
-         */
+        /** @var CacheControl */
         $cacheHeader = $subject->getHeader('Cache-Control');
-        if (!$cacheHeader) {
-            return $result;
+
+        if (!$this->isEnabled() || !$cacheHeader) {
+            return;
         }
 
-        if ($this->isRequestCacheable) {
+        if ($this->isCacheable) {
             $cacheHeader->removeDirective('no-store');
         }
 
-        $this->isRequestCacheable = false;
-
-        return $result;
+        $this->isCacheable = false;
     }
 }
