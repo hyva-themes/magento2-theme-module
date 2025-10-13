@@ -18,12 +18,11 @@ use Magento\Store\Model\ScopeInterface;
 class RemoveNoStoreHeaderPlugin
 {
     private const CONFIG_PATH_BFCACHE = 'system/full_page_cache/bfcache';
-    private $isCacheable = false;
+    private bool $isCacheable = false;
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
     ) {
-        //
     }
 
     public function isEnabled(): bool
