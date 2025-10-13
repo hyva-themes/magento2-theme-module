@@ -19,12 +19,11 @@ class RemoveNoStoreHeaderPlugin
 {
     private const CONFIG_PATH_BFCACHE = 'system/full_page_cache/bfcache';
     private $isCacheable = false;
-    private ScopeConfigInterface $scopeConfig;
 
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
+        private readonly ScopeConfigInterface $scopeConfig
     ) {
-        $this->scopeConfig = $scopeConfig;
+        //
     }
 
     public function isEnabled(): bool
