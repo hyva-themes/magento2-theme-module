@@ -125,7 +125,7 @@ class RegisterPageJsDependencies implements ObserverInterface
 
     private function applyBlockOutputPatternJsDependencyRules(Event $event): void
     {
-        $blockHtml = (string) $event->getData('transport')->getData('html');
+        $blockHtml = (string) $event->getData('transport')->getData('html') ?? '';
         /** @var Template $jsDependenciesBlock */
         $jsDependenciesBlock = $this->layout->getBlock('page-js-dependencies');
 
