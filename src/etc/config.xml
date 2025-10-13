@@ -54,6 +54,11 @@
                 <lazyload>0</lazyload>
             </gtag>
         </google>
+        <system>
+            <full_page_cache>
+                <bfcache>0</bfcache>
+            </full_page_cache>
+        </system>
     </default>
 </config>
 
