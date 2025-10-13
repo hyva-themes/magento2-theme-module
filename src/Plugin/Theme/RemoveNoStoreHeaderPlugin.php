@@ -37,7 +37,7 @@ class RemoveNoStoreHeaderPlugin
 
     public function beforeSetNoCacheHeaders(HttpResponse $subject): void
     {
-        /** @var CacheControl */
+        /** @var CacheControl $cacheHeader */
         $cacheHeader = $subject->getHeader('Cache-Control');
 
         if (!$this->isEnabled() || !$cacheHeader) {
