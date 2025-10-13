@@ -15,7 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Nothing added
+- **Add Support for bfcache**  
+  For more information, please refer to [merge request #567](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/567)
+
+- **Add Theme Module version in the footer next to the Magento version**  
+  For more information, please refer to [issue #358](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/358)
 
 ### Changed
 
@@ -24,6 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - **Reverse picture tag source inclusion for MediaHtmlProvider**  
   For more information, please refer to [issue #477](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/477)
+
+- **TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
+  For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
 
 ### Removed
 
