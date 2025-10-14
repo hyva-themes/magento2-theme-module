@@ -635,7 +635,7 @@ use Magento\Framework\View\Element\Template;
                 || document.querySelector(`label[for="${field.element?.id}"]`)?.innerText;
 
             return fieldName
-                ? `"${fieldName.trim()}"`
+                ? fieldName.trim()
                 : '';
         }
 
