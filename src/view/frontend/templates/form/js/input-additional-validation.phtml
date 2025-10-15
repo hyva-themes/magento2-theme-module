@@ -24,7 +24,10 @@ use Magento\Framework\View\Element\Template;
         <?php /* The same alpha validation regex is also used in the Magento backend */ ?>
         const rule = /^[a-zA-Z]+$/;
         if (value.length > 0 && !rule.test(value)) {
-            return '<?= $escaper->escapeJs(__('Please use letters only (a-z or A-Z) in this field.')) ?>';
+            const fieldName = hyva.formValidation.getFieldName(field);
+            return fieldName
+                ? hyva.str('<?= $escaper->escapeJs(__('%1 field must contain letters only (a-z or A-Z).')) ?>', fieldName)
+                : '<?= $escaper->escapeJs(__('Please use letters only (a-z or A-Z) in this field.')) ?>';
         }
 
         return true;
@@ -34,9 +37,14 @@ use Magento\Framework\View\Element\Template;
         <?php /* The same alphanum validation regex is also used in the Magento backend */ ?>
         const rule = /^[a-zA-Z0-9]+$/;
         if (value.length > 0 && !rule.test(value)) {
-            return '<?= $escaper->escapeJs(
-                __('Please use only letters (a-z or A-Z) or numbers (0-9) in this field. No spaces or other characters are allowed.')
-            ) ?>';
+            const fieldName = hyva.formValidation.getFieldName(field);
+            return fieldName
+                ? hyva.str('<?= $escaper->escapeJs(
+                    __('%1 field must contain only letters (a-z or A-Z) or numbers (0-9). No spaces or special characters are allowed.')
+                ) ?>', fieldName)
+                : '<?= $escaper->escapeJs(
+                    __('Please use only letters (a-z or A-Z) or numbers (0-9) in this field. No spaces or other characters are allowed.')
+                ) ?>';
         }
 
         return true;
@@ -46,9 +54,14 @@ use Magento\Framework\View\Element\Template;
         <?php /* The same alphanum-with-spaces validation regex is also used in the Magento backend */ ?>
         const rule = /^[a-zA-Z0-9 ]+$/;
         if (value.length > 0 && !rule.test(value)) {
-            return '<?= $escaper->escapeJs(
-                __('Please use only letters (a-z or A-Z), numbers (0-9) or spaces only in this field.')
-            ) ?>';
+            const fieldName = hyva.formValidation.getFieldName(field);
+            return fieldName
+                ? hyva.str('<?= $escaper->escapeJs(
+                    __('%1 field must contain only letters (a-z or A-Z), numbers (0-9), or spaces.')
+                ) ?>', fieldName)
+                : '<?= $escaper->escapeJs(
+                    __('Please use only letters (a-z or A-Z), numbers (0-9) or spaces only in this field.')
+                ) ?>';
         }
 
         return true;
@@ -59,7 +72,10 @@ use Magento\Framework\View\Element\Template;
         <?php /* The same URL validation regex is also used in the Magento backend */ ?>
         const rule = /^(http|https|ftp):\/\/(([A-Z0-9]([A-Z0-9_-]*[A-Z0-9]|))(\.[A-Z0-9]([A-Z0-9_-]*[A-Z0-9]|))*)(:(\d+))?(\/[A-Z0-9~](([A-Z0-9_~-]|\.)*[A-Z0-9~]|))*\/?(.*)?$/i;
         if (value.length > 0 && !rule.test(value)) {
-            return '<?= $escaper->escapeJs(__('Please enter a valid URL.')) ?>';
+            const fieldName = hyva.formValidation.getFieldName(field);
+            return fieldName
+                ? hyva.str('%1 field must contain a valid URL.', fieldName)
+                : '<?= $escaper->escapeJs(__('Please enter a valid URL.')) ?>';
         }
 
         return true;

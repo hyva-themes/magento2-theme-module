@@ -29,7 +29,10 @@ use Magento\Framework\View\Element\Template;
         const formValidationRules = {
             required(value, options, field, context) {
                 const el = field.element.type === 'hidden' ? createTextInputFrom(field.element) : field.element,
-                    msg = '<?= $escaper->escapeJs(__('This is a required field.')) ?>';
+                    fieldName = getFieldName(field),
+                    msg = fieldName
+                        ? hyva.str('<?= $escaper->escapeJs(__('%1 field is required.')) ?>', fieldName)
+                        : '<?= $escaper->escapeJs(__('This is a required field.')) ?>';
 
                 if (el.type === 'radio' || el.type === 'checkbox') {
                     return (value === undefined || value.length === 0) ? msg : true;
@@ -43,18 +46,28 @@ use Magento\Framework\View\Element\Template;
             maxlength(value, options, field, context) {
                 const n = Number(options)
                 if (value.length > n) {
-                    return n === 1
-                        ? hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than 1 character.')) ?>')
-                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than %0 characters.')) ?>', options)
+                    const fieldName = getFieldName(field);
+                    return fieldName
+                        ? n === 1
+                            ? hyva.str('<?= $escaper->escapeJs(__('%1 field cannot be longer than 1 character.')) ?>', fieldName)
+                            : hyva.str('<?= $escaper->escapeJs(__('%1 field cannot be longer than %2 characters.')) ?>', fieldName, options)
+                        : n === 1
+                            ? '<?= $escaper->escapeJs(__('Please enter no more than 1 character.')) ?>'
+                            : hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than %0 characters.')) ?>', options);
                 }
                 return true;
             },
             minlength(value, options, field, context) {
                 const n = Number(options)
                 if (value.length > 0 && value.length < n) {
-                    return n === 1
-                        ? hyva.strf('<?= $escaper->escapeJs(__('Please enter at least 1 character.')) ?>')
-                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter at least %0 characters.')) ?>', options)
+                    const fieldName = getFieldName(field);
+                    return fieldName
+                        ? n === 1
+                            ? hyva.str('<?= $escaper->escapeJs(__('%1 field must be at least 1 character long.')) ?>', fieldName)
+                            : hyva.str('<?= $escaper->escapeJs(__('%1 field must be at least %2 characters long.')) ?>', fieldName, options)
+                        : n === 1
+                            ? '<?= $escaper->escapeJs(__('Please enter at least 1 character.')) ?>'
+                            : hyva.strf('<?= $escaper->escapeJs(__('Please enter at least %0 characters.')) ?>', options);
                 }
                 return true;
             },
@@ -62,7 +75,10 @@ use Magento\Framework\View\Element\Template;
                 field.element.setAttribute('max', options);
                 field.element.checkValidity();
                 if (field.element.validity.rangeOverflow) {
-                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter a value less than or equal to "%0".')) ?>', options);
+                    const fieldName = getFieldName(field);
+                    return fieldName
+                        ? hyva.str('<?= $escaper->escapeJs(__('%1 field must contain a value less than or equal to "%2".')) ?>', fieldName, options)
+                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter a value less than or equal to "%0".')) ?>', options);
                 }
                 return true;
             },
@@ -70,7 +86,10 @@ use Magento\Framework\View\Element\Template;
                 field.element.setAttribute('min', options);
                 field.element.checkValidity();
                 if (field.element.validity.rangeUnderflow) {
-                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter a value greater than or equal to "%0".')) ?>', options);
+                    const fieldName = getFieldName(field);
+                    return fieldName
+                        ? hyva.str('<?= $escaper->escapeJs(__('%1 field must contain a value greater than or equal to "%2".')) ?>', fieldName, options)
+                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter a value greater than or equal to "%0".')) ?>', options);
                 }
                 return true;
             },
@@ -78,10 +97,14 @@ use Magento\Framework\View\Element\Template;
                 field.element.setAttribute('step', options);
                 field.element.checkValidity();
                 if (field.element.validity.stepMismatch) {
-                    const val = Number(value);
-                    const step = Number(options);
-                    const msg = '<?= $escaper->escapeJs(__('Please enter a valid value. The two nearest valid values are "%0" and "%1".')) ?>';
-                    return hyva.strf(msg, Math.floor(val / step) * step, Math.ceil(val / step) * step);
+                    const val = Number(value),
+                        step = Number(options),
+                        fieldName = getFieldName(field),
+                        nearestLowerValue = Math.floor(val / step) * step,
+                        nearestUpperValue = Math.ceil(val / step) * step;
+                    return fieldName
+                        ? hyva.str('<?= $escaper->escapeJs(__('%1 field is invalid. The two nearest valid values are "%2" and "%3".')) ?>', fieldName, nearestLowerValue, nearestUpperValue)
+                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter a valid value. The two nearest valid values are "%0" and "%1".')) ?>', nearestLowerValue, nearestUpperValue);
                 }
                 return true;
             },
@@ -89,9 +112,14 @@ use Magento\Framework\View\Element\Template;
                 field.element.setAttribute('pattern', options);
                 field.element.checkValidity();
                 if (field.element.validity.patternMismatch) {
-                    return field.element.title
-                        ? hyva.strf('<?= $escaper->escapeJs(__('Please match the requested format: %0.')) ?>', field.element.title)
-                        : '<?= $escaper->escapeJs(__('Please match the requested format.')) ?>'
+                    const fieldName = getFieldName(field);
+                    return fieldName
+                        ? field.element.pattern
+                            ? hyva.str('<?= $escaper->escapeJs(__('%1 field must match the requested format: %2.')) ?>', fieldName, field.element.pattern)
+                            : hyva.str('<?= $escaper->escapeJs(__('%1 field must match the requested format.')) ?>', fieldName)
+                        : field.element.pattern
+                            ? hyva.strf('<?= $escaper->escapeJs(__('Please match the requested format: %0.')) ?>', field.element.pattern)
+                            : '<?= $escaper->escapeJs(__('Please match the requested format.')) ?>';
                 }
                 return true;
             },
@@ -99,14 +127,20 @@ use Magento\Framework\View\Element\Template;
                 <?php /* The same email validation regex is also used in the Magento backend */ ?>
                 const rule = /^([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*@([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*\.(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]){2,})$/i;
                 if (value.length > 0 && !rule.test(value)) {
-                    return '<?= $escaper->escapeJs(__('Please enter a valid email address.')) ?>';
+                    const fieldName = getFieldName(field);
+                    return fieldName
+                        ? hyva.str('<?= $escaper->escapeJs(__('%1 field must contain a valid email address (Ex: johndoe@domain.com).')) ?>', fieldName)
+                        : '<?= $escaper->escapeJs(__('Please enter a valid email address (Ex: johndoe@domain.com).')) ?>';
                 }
                 return true;
             },
             password(value, options, field, context) {
                 const rule = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
                 if (value.length > 0 && !rule.test(value)) {
-                    return '<?= $escaper->escapeJs(__('Please provide at least one upper case, one lower case, one digit and one special character (#?!@$%^&*-)')) ?>';
+                    const fieldName = getFieldName(field);
+                    return fieldName
+                        ? hyva.str('<?= $escaper->escapeJs(__('%1 field must contain at least one upper case, one lower case, one digit and one special character (#?!@$%^&*-)')) ?>', fieldName)
+                        : '<?= $escaper->escapeJs(__('Please provide at least one upper case, one lower case, one digit and one special character (#?!@$%^&*-)')) ?>';
                 }
                 return true;
             },
@@ -117,8 +151,11 @@ use Magento\Framework\View\Element\Template;
                         dependencyField.label ||
                         dependencyField.title ||
                         (dependencyField.labels && dependencyField.labels[0] && dependencyField.labels[0].innerText) ||
-                        dependencyField.name;
-                    return hyva.strf('<?= $escaper->escapeJs(__('This field value must be the same as "%0".')) ?>', dependencyFieldName);
+                        dependencyField.name,
+                        fieldName = getFieldName(field);
+                    return fieldName
+                        ? hyva.str('<?= $escaper->escapeJs(__('%1 field value must be the same as "%2".')) ?>', fieldName, dependencyFieldName)
+                        : hyva.strf('<?= $escaper->escapeJs(__('This field value must be the same as "%0".')) ?>', dependencyFieldName);
                 }
                 return true;
             }
@@ -591,12 +628,23 @@ use Magento\Framework\View\Element\Template;
                 }
             }
         }
+        
+        function getFieldName(field) {
+            <?php /* Sometimes label are abbreviated or contain additional instructions, the title usually does not */ ?>
+            const fieldName = field.element?.getAttribute('title')
+                || document.querySelector(`label[for="${field.element?.id}"]`)?.innerText;
+
+            return fieldName
+                ? fieldName.trim()
+                : '';
+        }
 
         hyva.formValidation = formValidation;
         hyva.formValidation.rules = formValidationRules;
         hyva.formValidation.setInputAttributeRuleName = (attrName, ruleName) => INPUT_ATTRIBUTE_RULES[attrName] = ruleName || attrName;
         hyva.formValidation.setInputTypeRuleName = (typeName, ruleName) => INPUT_TYPE_RULES[typeName] = ruleName || typeName;
         hyva.formValidation.addRule = (name, validator) => formValidationRules[name] = validator;
+        hyva.formValidation.getFieldName = getFieldName;
     }(window.hyva = window.hyva || {}));
 
     window.addEventListener('alpine:init', () => {
