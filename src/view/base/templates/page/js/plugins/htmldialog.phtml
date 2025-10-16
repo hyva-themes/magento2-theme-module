@@ -1,0 +1,28 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+$themeLibrary = $viewModels->require(ThemeLibrariesConfig::class);
+
+$version = $themeLibrary->getVersionIdFor('htmldialog-plugin')
+    ?: $themeLibrary->getVersionIdFor('alpine')
+    ?: '2';
+
+if (substr($version, -4) === '-csp') {
+    $version = substr($version, 0, -4);
+}
+
+?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile(sprintf('Hyva_Theme::page/js/plugins/v%s/htmldialog.phtml', $version))) ?>
