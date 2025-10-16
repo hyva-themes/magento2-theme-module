@@ -11,12 +11,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Nothing added
+- **Add new AlpineJS Slider**  
+  This also replaces the Slider viewmodal for this simpler AlpineJS plugin and in so the slider viewmodal has been marked for deprecation.
+
+  For more information, please refer to [issue #98](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/98)
+
+- **Add AlpineJs based HTML Dialog**  
+  For more information, please refer to [issue #481](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/481)
+
+- **Add Support for bfcache**  
+  For more information, please refer to [merge request #567](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/567)
+
+- **Add Theme Module version in the footer next to the Magento version**  
+  For more information, please refer to [issue #358](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/358)
 
 ### Changed
 
-- Nothing changed
-
+- **Fixed TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
+  For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
+  
 ### Removed
 
 - Nothing removed
@@ -27,11 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- **Add Support for bfcache**  
-  For more information, please refer to [merge request #567](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/567)
-
-- **Add Theme Module version in the footer next to the Magento version**  
-  For more information, please refer to [issue #358](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/358)
+- Nothing added
 
 ### Changed
 
@@ -40,9 +49,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - **Reverse picture tag source inclusion for MediaHtmlProvider**  
   For more information, please refer to [issue #477](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/477)
-
-- **TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
-  For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
 
 ### Removed
 
