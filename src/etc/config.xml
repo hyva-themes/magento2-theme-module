@@ -20,6 +20,10 @@
             <demo_content>
                 <show_homepage_demo_content>1</show_homepage_demo_content>
             </demo_content>
+            <speculation_rules>
+                <method>prefetch</method>
+                <eagerness>moderate</eagerness>
+            </speculation_rules>
         </hyva_theme_general>
         <hyva_theme_pagebuilder>
             <images>
