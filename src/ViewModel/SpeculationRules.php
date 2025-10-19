@@ -27,7 +27,8 @@ class SpeculationRules implements ArgumentInterface
 
     public function __construct(
         private ScopeConfigInterface $scopeConfig
-    ) {}
+    ) {
+    }
 
     protected function getSpeculationConfig(string $attribute): mixed
     {
