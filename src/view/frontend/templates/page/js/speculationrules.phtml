@@ -23,7 +23,7 @@ $speculationRules = $viewModels->require(SpeculationRules::class);
 
 $method = $speculationRules->getMethod();
 if ($method === 'disabled') {
-    return '';
+    return;
 }
 
 $eagerness = $speculationRules->getEagerness();
