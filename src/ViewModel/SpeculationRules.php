@@ -13,24 +13,31 @@ namespace Hyva\Theme\ViewModel;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\ScopeInterface;
+use function array_filter as filter;
+use function array_keys as keys;
+use function array_merge as merge;
 
 class SpeculationRules implements ArgumentInterface
 {
-    public const DEFAULT_EXCLUDE_LIST = [
-        'customer',
-        'search',
-        'sales',
-        'wishlist',
-        'checkout',
-        'paypal',
-    ];
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @var array
+     */
+    private $excludeList;
 
     public function __construct(
-        private ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        array $excludeFromPreloading = []
     ) {
+        $this->scopeConfig = $scopeConfig;
+        $this->excludeList = $excludeFromPreloading;
     }
 
-    protected function getSpeculationConfig(string $attribute): mixed
+    protected function getSpeculationConfig(string $attribute)
     {
         $path = sprintf('hyva_theme_general/speculation_rules/%s', $attribute);
         return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE);
@@ -56,19 +63,19 @@ class SpeculationRules implements ArgumentInterface
      */
     public function getExcludeRules(array $excludes): array
     {
-        $defaultExcludes = self::DEFAULT_EXCLUDE_LIST;
-        $excludes = array_merge($defaultExcludes, $excludes);
+        $defaultExcludes = keys(filter($this->excludeList));
+        $allExcludes = merge($defaultExcludes, $excludes);
 
         $excludePatterns = [];
 
-        foreach ($excludes as $value) {
+        foreach ($allExcludes as $value) {
             if (empty(trim((string) $value))) {
                 continue;
             }
 
-            if (str_contains($value, '/') || str_contains($value, '*')) {
+            if (strpos($value, '/') !== false || strpos($value, '*') !== false) {
                 $excludePatterns[] = $value;
-            } elseif (str_starts_with($value, '.')) {
+            } elseif (substr($value, 0, 1) === '.') {
                 $excludePatterns[] = '*' . $value;
             } else {
                 $excludePatterns[] = '/' . $value . '/*';
