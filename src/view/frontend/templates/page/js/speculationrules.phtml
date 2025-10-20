@@ -27,7 +27,7 @@ if ($method === 'disabled') {
 }
 
 $eagerness = $speculationRules->getEagerness();
-$extraExcludes = (array)$block->getExcludeList() ?? [];
+$extraExcludes = (array)$block->getExcludeList();
 $excludeListJson = $speculationRules->getExcludeRules($extraExcludes);
 
 ?>
