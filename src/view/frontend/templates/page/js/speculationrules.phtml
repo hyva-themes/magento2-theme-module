@@ -43,7 +43,7 @@ $excludeListJson = $speculationRules->getExcludeRules($extraExcludes);
                     "href_matches": <?= /* @noEscape */ json_encode($excludeListJson, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES) ?>
                 }},
                 { "not": {
-                    "selector_matches": [".no-preload", "[download]", "[rel~=nofollow]", "[target]"]
+                    "selector_matches": [".no-preload", ".do-not-prerender", "[download]", "[rel~=nofollow]", "[target]"]
                 }}
             ]
         },
