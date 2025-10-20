@@ -10,19 +10,16 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
-use Hyva\Theme\Model\SpecialPriceBulkResolver;
 use Magento\Catalog\Block\Product\ListProduct as MagentoProductListBlock;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Config\ScopeConfigInterface as StoreConfig;
 use Magento\Framework\App\Http\Context as HttpContext;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Pricing\Render;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Framework\View\LayoutInterface;
-use Magento\Store\Model\StoreManagerInterface;
 
 class ProductListItem implements ArgumentInterface
 {
@@ -61,16 +58,6 @@ class ProductListItem implements ArgumentInterface
      */
     private $httpContext;
 
-    /**
-     * @var SpecialPriceBulkResolver|null
-     */
-    private $specialPriceBulkResolver;
-
-    /**
-     * @var StoreManagerInterface|null
-     */
-    private $storeManager;
-
     public function __construct(
         LayoutInterface $layout,
         ProductPage $productViewModel,
@@ -78,9 +65,7 @@ class ProductListItem implements ArgumentInterface
         BlockCache $blockCache,
         CustomerSession $customerSession,
         StoreConfig $storeConfig,
-        HttpContext $httpContext,
-        ?StoreManagerInterface $storeManager = null,
-        ?SpecialPriceBulkResolver $specialPriceBulkResolver = null
+        HttpContext $httpContext
     ) {
         $this->layout = $layout;
         $this->productViewModel = $productViewModel;
@@ -89,8 +74,6 @@ class ProductListItem implements ArgumentInterface
         $this->customerSession = $customerSession;
         $this->storeConfig = $storeConfig;
         $this->httpContext = $httpContext;
-        $this->storeManager = $storeManager ?? ObjectManager::getInstance()->get(StoreManagerInterface::class);
-        $this->specialPriceBulkResolver = $specialPriceBulkResolver ?? ObjectManager::getInstance()->get(SpecialPriceBulkResolver::class);
     }
 
     public function getProductPriceHtml(
@@ -115,23 +98,8 @@ class ProductListItem implements ArgumentInterface
     private function getPriceRendererBlock()
     {
         /** @var Render $priceRender */
-        $priceRender = $this->layout->getBlock('product.price.render.default') ?: $this->createPriceRendererBlock();
-        $productListBlock = $this->layout->getBlock('category.products.list');
-        if ($priceRender->getData('special_price_map') === null && $productListBlock instanceof MagentoProductListBlock) {
-            $priceRender->setData(
-                'special_price_map',
-                $this->specialPriceBulkResolver->generateSpecialPriceMap(
-                    (int) $this->storeManager->getWebsite()->getId(),
-                    $productListBlock->getLoadedProductCollection()
-                )
-            );
-        }
-        return $priceRender;
-    }
-
-    public function createPriceRendererBlock(): Render
-    {
-        return $this->layout->createBlock(
+        $priceRender = $this->layout->getBlock('product.price.render.default');
+        return $priceRender ?: $this->layout->createBlock(
             Render::class,
             'product.price.render.default',
             ['data' => ['price_render_handle' => 'catalog_product_prices']]
@@ -194,6 +162,10 @@ class ProductListItem implements ArgumentInterface
         string $imageDisplayArea,
         bool $showDescription
     ): string {
+
+        // Initialise the special price map in Magento 2.4.8 and newer (no need to check the parent block type).
+        /** @var MagentoProductListBlock $parentBlock */
+        $parentBlock->getProductPrice($product);
 
         $cacheLifetime = ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_enabled') ?? true)
             ? (int) ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_lifetime') ?? 3600)
