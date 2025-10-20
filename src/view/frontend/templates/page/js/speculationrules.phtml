@@ -5,59 +5,50 @@
  * This product is licensed per Magento install
  * See https://hyva.io/license
  */
-
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\SpeculationRules;
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
-/** @var HyvaCsp $hyvaCsp */
+/** @var Escaper $escaper */
 /** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
 
-/**
- * @experimental
- *
- * This template may change in backward incompatible ways without notice,
- * since the speculation-rules browser API it depends on is experimental, too.
- *
- * @link https://developer.chrome.com/docs/web-platform/prerender-pages
- * @link https://caniuse.com/mdn-html_elements_script_type_speculationrules
- */
+/** @var SpeculationRules $speculationRules */
+$speculationRules = $viewModels->require(SpeculationRules::class);
+
+$method = $speculationRules->getMethod();
+if ($method === 'disabled') {
+    return;
+}
+
+$eagerness = $speculationRules->getEagerness();
+$extraExcludes = (array)$block->getExcludeList();
+$excludeListJson = $speculationRules->getExcludeRules($extraExcludes);
 
 ?>
 <script type="speculationrules">
 {
-    "tag": "hyva",
-    "prerender": [{
+    "tag": "Hyva Theme",
+    "<?= $escaper->escapeHtmlAttr($method) ?>": [{
         "source": "document",
         "where": {
             "and": [
                 { "href_matches": "/*" },
                 { "not": {
-                    "href_matches": [
-                        "/customer/*",
-                        "*/customer/*",
-                        "/search/*",
-                        "*/search/*",
-                        "/sales/*",
-                        "*/sales/*",
-                        "/wishlist/*",
-                        "*/wishlist/*",
-                        "/checkout/*",
-                        "*/checkout/*",
-                        "/paypal/*",
-                        "*/paypal/*",
-                        "*.pdf"
-                    ]
+                    "href_matches": <?= /* @noEscape */ json_encode($excludeListJson, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES) ?>
                 }},
-                { "not": { "selector_matches": ".do-not-prerender" } },
-                { "not": { "selector_matches": "[download]" } },
-                { "not": { "selector_matches": "[rel~=nofollow]" } }
-
+                { "not": {
+                    "selector_matches": [".no-preload", ".do-not-prerender", "[download]", "[rel~=nofollow]", "[target]"]
+                }}
             ]
         },
-        "eagerness": "moderate"
+        "eagerness": "<?= $escaper->escapeHtmlAttr($eagerness) ?>"
     }]
 }
 </script>
-<?php $hyvaCsp->registerInlineScript() ?>
+<?php $hyvaCsp->registerInlineScript();

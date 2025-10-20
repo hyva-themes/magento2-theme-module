@@ -22,22 +22,20 @@
             <group id="gtag" translate="label comment" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Google GTag</label>
                 <comment>(These settings can also be found in Sales > Google API > Google GTag)</comment>
+                <field id="anonymize" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Anonymize IP</label>
+                    <comment>Only works on Hyvä Storefronts!</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>google/gtag/anonymize</config_path>
+                </field>
 
-                    <field id="anonymize" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Anonymize IP</label>
-                        <comment>Only works on Hyvä Storefronts!</comment>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <config_path>google/gtag/anonymize</config_path>
-                    </field>
-
-                    <field id="lazyload" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Lazyload Tag Manager</label>
-                        <comment><![CDATA[Tagmanager will only load after user interaction. This improves performance, but makes your analytics less accurate!
-                            <br><br>Only works on Hyvä Storefronts!]]></comment>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <config_path>google/gtag/lazyload</config_path>
-                    </field>
-
+                <field id="lazyload" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Lazyload Tag Manager</label>
+                    <comment><![CDATA[Tagmanager will only load after user interaction. This improves performance, but makes your analytics less accurate!
+                        <br><br>Only works on Hyvä Storefronts!]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>google/gtag/lazyload</config_path>
+                </field>
             </group>
         </section>
 
@@ -137,7 +135,8 @@
                     <comment>The number of milliseconds, after which success messages disappear by default. Leave empty to disable automatic hiding.</comment>
                 </field>
             </group>
-            <group id="demo_content" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+
+            <group id="demo_content" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="20" translate="label">
                 <label>Hyvä Demo Content</label>
                 <field id="show_homepage_demo_content" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"  canRestore="1">
                     <label>Show Homepage Content</label>
@@ -145,7 +144,8 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="alpine_defer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+
+            <group id="alpine_defer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label">
                 <label>Deferred Alpine.js Components</label>
                 <field id="defer_idle_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Defer until idle timeout</label>
@@ -156,6 +156,30 @@
                     <comment><![CDATA[Valid defer until values: <strong>interact</strong>, <strong>intersect</strong>, <strong>idle</strong>, <strong>event:eventname</strong>.<br/>Configuring many deferred components here may increase the Total Blocking Time. Consider defering components by changing the PHTML templates instead.]]></comment>
                     <frontend_model>Hyva\Theme\Block\Adminhtml\Form\Field\DeferredAlpineComponents</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+
+            <group id="speculation_rules" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Speculation Rules</label>
+                <field id="method" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Method</label>
+                    <options>
+                        <option label="Prefetch">prefetch</option>
+                        <option label="Prerender">prerender</option>
+                        <option label="Disabled (no speculative loading)">disabled</option>
+                    </options>
+                    <comment>Controls the speculation method. prerender offers instant page loads but uses more resources and can impact analytics. prefetch is lighter, only downloading the file for a smaller speed boost.</comment>
+                </field>
+
+                <field id="eagerness" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Eagerness</label>
+                    <options>
+                        <option label="Immediate">immediate</option>
+                        <option label="Eager">eager</option>
+                        <option label="Moderate">moderate</option>
+                        <option label="Conservative">conservative</option>
+                    </options>
+                    <comment>Defines when to speculate on links, from as soon as possible (immediate) to on user interaction (conservative).</comment>
                 </field>
             </group>
         </section>
@@ -191,23 +215,13 @@
             </group>
         </section>
 
-        <section id="hyva_theme_experimental" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="25" translate="label">
+        <section id="hyva_theme_experimental" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="999" translate="label">
             <label>Experimental</label>
             <tab>hyva_themes</tab>
             <resource>Magento_Catalog::config_catalog</resource>
             <group id="feature_flag" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
                 <label>Experimental Features</label>
                 <comment>Because of the reliance on experimental browser APIs, the Hyvä implementations may change or be removed entierly in future without notice.</comment>
-                <field id="speculationrules" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enable Prerender Speculation Rules</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[More information: <a href="https://developer.chrome.com/docs/web-platform/prerender-pages">developer.chrome.com/docs/web-platform/prerender-pages</a> and <a href="https://nitropack.io/blog/post/speculation-rules-api">nitropack.io/blog/post/speculation-rules-api</a>.<br/>Browser support: <a href="https://caniuse.com/mdn-html_elements_script_type_speculationrules">caniuse.com/mdn-html_elements_script_type_speculationrules</a>]]></comment>
-                </field>
-                <field id="view_transition" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Enable View Transitions</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[More information: <a href="https://developer.chrome.com/docs/web-platform/view-transitions/cross-document">developer.chrome.com/docs/web-platform/view-transitions/cross-document</a>.<br/>Browser support: <a href="https://caniuse.com/mdn-css_at-rules_view-transition">caniuse.com/mdn-css_at-rules_view-transition</a>]]></comment>
-                </field>
             </group>
         </section>
 
