@@ -23,22 +23,18 @@ use Magento\Framework\View\Element\Template;
 
 ?>
 <?php if ($block->hasData('title')): ?>
-    <div class="font-bold text-xl"><?= $escaper->escapeHtml($block->getData('title')) ?></div>
+    <p id="clearShoppingCartModal" class="text-xl">
+        <strong><?= $escaper->escapeHtml($block->getData('title')) ?></strong>
+    </p>
 <?php endif; ?>
+
 <?php if ($block->hasData('details')): ?>
     <div>
         <?= /** @noEscape */ $block->getData('details') ?>
     </div>
 <?php endif; ?>
-<div class="<?php
-if ($block->hasData('details') || $block->hasData('title')) {
-    echo 'mt-10 ';
-}
-?>flex justify-between gap-2">
-    <button @click="cancel" type="button" class="btn">
-        <?= $escaper->escapeHtml($block->getData('cancel') ?: __('Cancel')) ?>
-    </button>
-    <button x-focus-first @click="ok" type="button" class="btn btn-primary">
-        <?= $escaper->escapeHtml($block->getData('ok') ?: __('OK')) ?>
-    </button>
+
+<div class="actions-toolbar">
+    <button type="button" class="btn btn-primary" @click="ok"><?= $escaper->escapeHtml(__('OK')) ?></button>
+    <button type="button" class="btn" @click="cancel"><?= $escaper->escapeHtml(__('Cancel')) ?></button>
 </div>

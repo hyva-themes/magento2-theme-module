@@ -51,7 +51,7 @@ class HyvaModulesConfig
 
     public function getJson(): string
     {
-        return json_encode($this->gatherConfigData(), \JSON_PRETTY_PRINT);
+        return json_encode($this->gatherConfigData(), \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES);
     }
 
     private function validatePath(string $fullPath): void
