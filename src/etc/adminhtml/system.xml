@@ -158,6 +158,17 @@
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
             </group>
+            <group id="developer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="500" translate="label">
+                <label>Developer</label>
+                <group id="cache" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+                    <label>Cache Options</label>
+                    <field id="enable_svg_icon_caching" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                        <label>Enable SVG Icon Caching</label>
+                        <comment>Enable at the cost of increased use of the cache storage backend (for example Redis).</comment>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                </group>
+            </group>
         </section>
 
         <section id="hyva_theme_pagebuilder" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">

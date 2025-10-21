@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Math\Random as MathRandom;
 use Magento\Framework\View\Asset;
@@ -117,6 +118,16 @@ class SvgIcons implements ArgumentInterface
     private $design;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @var bool
+     */
+    private $isSvgIconCacheEnabled;
+
+    /**
      * Global counter for how many times SVG internal IDs is rendered.
      *
      * @var  int[]
@@ -130,7 +141,8 @@ class SvgIcons implements ArgumentInterface
         DesignInterface $design,
         string $iconPathPrefix = 'Hyva_Theme::svg',
         string $iconSet = '',
-        array $pathPrefixMapping = []
+        array $pathPrefixMapping = [],
+        ?ScopeConfigInterface $scopeConfig = null
     ) {
         $this->assetRepository = $assetRepository;
         $this->cache = $cache;
@@ -138,6 +150,7 @@ class SvgIcons implements ArgumentInterface
         $this->iconPathPrefix = rtrim($iconPathPrefix, '/');
         $this->iconSet = $iconSet;
         $this->pathPrefixMapping = $pathPrefixMapping;
+        $this->scopeConfig = $scopeConfig ?? ObjectManager::getInstance()->get(ScopeConfigInterface::class);
     }
 
     /**
@@ -166,15 +179,13 @@ class SvgIcons implements ArgumentInterface
 
         $iconPath = $this->applyPathPrefixAndIconSet($icon);
 
-        $cacheKey = $this->design->getDesignTheme()->getCode() .
-            '/' . $iconPath .
-            '/' . $classNames .
-            '#' . $width .
-            '#' . $height .
-            '#' . hash('md5', json_encode($attributes));
+        $cacheKey = $this->getCacheKey($iconPath, $classNames, $width, $height, $attributes);
 
-        if ($result = $this->cache->load($cacheKey)) {
-            return $this->withMaskedAlpineAttributes($result, [$this, 'disambiguateSvgIds']);
+        if ($this->isSvgCacheEnabled()) {
+            $cacheKey = $this->getCacheKey($iconPath, $classNames, $width, $height, $attributes);
+            if ($result = $this->cache->load($cacheKey)) {
+                return $this->withMaskedAlpineAttributes($result, [$this, 'disambiguateSvgIds']);
+            }
         }
 
         try {
@@ -182,14 +193,23 @@ class SvgIcons implements ArgumentInterface
             $result = $this->withMaskedAlpineAttributes($rawIconSvg, function (string $rawIconSvg) use ($icon, $attributes, $height, $width, $classNames): string {
                 return $this->applySvgArguments($rawIconSvg, $classNames, $width, $height, $attributes, $icon);
             });
-
-            $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
+            if ($this->isSvgCacheEnabled()) {
+                $this->cache->save($result, $cacheKey, [self::CACHE_TAG]);
+            }
 
             return $this->withMaskedAlpineAttributes($result, [$this, 'disambiguateSvgIds']);
         } catch (Asset\File\NotFoundException $exception) {
             $error = (string) __('Unable to find the SVG icon "%1"', $icon);
             throw new Asset\File\NotFoundException($error, 0, $exception);
         }
+    }
+
+    private function isSvgCacheEnabled(): bool
+    {
+        if (! isset($this->isSvgIconCacheEnabled)) {
+            $this->isSvgIconCacheEnabled = (bool) $this->scopeConfig->getValue('hyva_theme_general/developer/cache/enable_svg_icon_caching');
+        }
+        return $this->isSvgIconCacheEnabled;
     }
 
     private function disambiguateSvgIds(string $svgContent): string
@@ -344,5 +364,15 @@ class SvgIcons implements ArgumentInterface
         $content = $fn($content);
 
         return str_replace(array_keys($maskedAttributes), array_values($maskedAttributes), $content);
+    }
+
+    private function getCacheKey(string $iconPath, string $classNames, ?int $width, ?int $height, array $attributes): string
+    {
+        return $this->design->getDesignTheme()->getCode() .
+            '/' . $iconPath .
+            '/' . $classNames .
+            '#' . $width .
+            '#' . $height .
+            '#' . hash('md5', json_encode($attributes));
     }
 }
