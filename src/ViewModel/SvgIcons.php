@@ -207,7 +207,7 @@ class SvgIcons implements ArgumentInterface
     private function isSvgCacheEnabled(): bool
     {
         if (! isset($this->isSvgIconCacheEnabled)) {
-            $this->isSvgIconCacheEnabled = (bool) $this->scopeConfig->getValue('hyva_theme_general/developer/cache/enable_svg_icon_caching');
+            $this->isSvgIconCacheEnabled = (bool) $this->scopeConfig->getValue('hyva_theme_dev/cache/enable_svg_icon_caching');
         }
         return $this->isSvgIconCacheEnabled;
     }
