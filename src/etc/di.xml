@@ -74,7 +74,6 @@
         <plugin name="platform_meta_data_v10" type="\Hyva\Theme\Plugin\Platform\AddPlatformMetaData"/>
     </type>
 
-
     <type name="Hyva\Theme\ViewModel\HeroiconsSolid">
         <arguments>
             <argument name="iconPathPrefix" xsi:type="string">Hyva_Theme::svg/heroicons/solid</argument>
