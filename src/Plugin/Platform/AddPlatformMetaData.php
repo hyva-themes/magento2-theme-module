@@ -14,16 +14,7 @@ class AddPlatformMetaData
 {
     public function afterGetModuleName($subject, string $result): string
     {
-        return $result . '-' . strtolower($this->getSuffix());
-    }
-
-    private function getSuffix(): string
-    {
-        $className = get_class($this);
-        $parts = explode('\\', $className);
-        if (count($parts) >= 1) {
-            return $parts[0];
-        }
-        return '';
+        // allow Adyen support to identify Hyvä Theme
+        return $result . '-hyva';
     }
 }
