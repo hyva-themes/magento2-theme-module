@@ -44,14 +44,16 @@ class CurrentThemeServiceTest extends AbstractController
     /** @test */
     public function hyva_default_theme_is_hyva()
     {
-        $this->givenCurrentTheme('Hyva/default');
+        $defaultTheme = ThemeFixture::getInstalledHyvaDefaultThemeCode();
+        $this->givenCurrentTheme($defaultTheme);
         $this->assertTrue($this->themeService->isHyva(), 'Hyvä default theme should be recognized as Hyvä theme');
     }
 
     /** @test */
     public function custom_theme_extending_hyva_default_is_hyva()
     {
-        $this->givenCurrentTheme('Custom/extend');
+        $defaultTheme = ThemeFixture::getInstalledHyvaDefaultThemeCode();
+        $this->givenCurrentTheme(substr($defaultTheme, -4) === '-csp' ? 'Custom/extend-csp' : 'Custom/extend');
         $this->assertTrue(
             $this->themeService->isHyva(),
             'Custom theme extending Hyvä default theme should be recognized as Hyvä theme'

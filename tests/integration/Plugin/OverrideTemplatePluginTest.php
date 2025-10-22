@@ -26,7 +26,7 @@ class OverrideTemplatePluginTest extends TestCase
     protected function setUp(): void
     {
         ThemeFixture::registerTestThemes();
-        ThemeFixture::setCurrentTheme('Hyva/default');
+        ThemeFixture::setHyvaDefaultAsCurrentTheme();
     }
 
     private function executeSutWithContent(string $content): string

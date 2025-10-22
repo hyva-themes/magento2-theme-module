@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.17...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.0-beta...main
+
+## [1.4.0-beta] - 2025-10-23
+
+[1.4.0-beta]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18-beta...1.4.0-beta
 
 ### Added
 
@@ -33,6 +37,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Fixed TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
   For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
   
+### Removed
+
+- Nothing removed
+
+## [1.3.18-beta] - 2025-10-23
+
+[1.3.18-beta]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.17...1.3.18-beta
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Disable SVG icon caching by default**  
+  For more information, please refer to [issue #462](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/462)
+
+- **Fix integration tests with default-theme-csp installed**  
+  For more information, please refer to [issue #482](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/482)
+
+- **Fixed Regular and Special Pricing does not work on Product List with Magento 2.4.8**  
+  For more information, please refer to [issue #470](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/470)
+
+  Many thanks to Pieter Hoste (Baldwin) for the contribution!
+
+- **Removed Hard dependency on Magento's PageBuilder module**  
+  It is now possible to remove the Magento's PageBuilder using a composer replace.
+
+  For more information, please refer to [issue #478](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/478)
+
+- **Fixed Auto-deferred Alpine components selector causes issues with nested custom option components**  
+  For more information, please refer to [issue #473](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/473)
+
 ### Removed
 
 - Nothing removed
