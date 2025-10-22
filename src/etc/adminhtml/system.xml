@@ -174,7 +174,6 @@
             </group>
         </section>
 
-
         <section id="hyva_theme_pagebuilder" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
             <label>PageBuilder</label>
             <tab>hyva_themes</tab>
