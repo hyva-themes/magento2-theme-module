@@ -32,17 +32,17 @@ class CurrentProductTest extends TestCase
      * @var CurrentProduct
      */
     private $currentProduct;
-    
+
     /**
      * @var ProductFixturePool
      */
     private $products;
-    
+
     /**
      * @var CollectionFactory
      */
     private $productCollectionFactory;
-    
+
     /**
      * @var ProductRepositoryInterface
      */
@@ -99,7 +99,7 @@ class CurrentProductTest extends TestCase
             $tags[] = $product->getIdentities();
         }
         $expected = array_unique(array_merge(...$tags));
-        $actual   = $this->currentProduct->getIdentities();
+        $actual = $this->currentProduct->getIdentities();
         sort($expected);
         sort($actual);
         $this->assertGreaterThan(

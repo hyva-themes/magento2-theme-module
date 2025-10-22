@@ -72,7 +72,7 @@ class LayoutUpdateHandlesTest extends AbstractController
     /** @test */
     public function added_with_hyva_prefix_if_hyva_theme()
     {
-        $this->givenCurrentTheme('Hyva/default');
+        $this->givenCurrentTheme(ThemeFixture::getInstalledHyvaDefaultThemeCode());
         $this->dispatch('/');
 
         /** @var Layout $layout */
@@ -100,7 +100,7 @@ class LayoutUpdateHandlesTest extends AbstractController
      */
     public function loads_layout_handles_added_with_update_xml_directive()
     {
-        $this->givenCurrentTheme('Hyva/default');
+        $this->givenCurrentTheme(ThemeFixture::getInstalledHyvaDefaultThemeCode());
         $this->_objectManager->get(Session::class)->loginById(/* fixture customer id */ 1);
         $this->dispatch('customer/account/index');
         /** @var Layout $layout */
