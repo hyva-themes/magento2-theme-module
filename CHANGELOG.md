@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- **Disable SVG icon caching by default**  
+  For more information, please refer to [issue #462](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/462)
+
 - **Fix integration tests with default-theme-csp installed**  
   For more information, please refer to [issue #482](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/482)
 
