@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Catalog\Block\Product\ListProduct as MagentoProductListBlock;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -161,6 +162,10 @@ class ProductListItem implements ArgumentInterface
         string $imageDisplayArea,
         bool $showDescription
     ): string {
+
+        // Initialise the special price map in Magento 2.4.8 and newer (no need to check the parent block type).
+        /** @var MagentoProductListBlock $parentBlock */
+        $parentBlock->getProductPrice($product);
 
         $cacheLifetime = ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_enabled') ?? true)
             ? (int) ($this->storeConfig->getValue('hyva_theme_catalog/developer/cache/product_list_item_block_cache_lifetime') ?? 3600)
