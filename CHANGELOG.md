@@ -30,8 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
   Many thanks to Pieter Hoste (Baldwin) for the contribution!
 
-- **Removed Hard dependency on Magento's PageBuilder module**  
-  It is now possible to remove the Magento's PageBuilder using a composer replace.
+- **Removed Hard dependency on Magento PageBuilder modules**  
+  It is now possible to remove Magento PageBuilder modules using composer replace without di compilation breaking.
 
   For more information, please refer to [issue #478](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/478)
 
