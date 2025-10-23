@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Add Theme Module version in the footer next to the Magento version**  
   For more information, please refer to [issue #358](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/358)
 
-- **Add speculation rules to the theme as a stable feature**
+- **Add speculation rules to the theme as a stable feature**  
   For more information, please refer to [merge request #571](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/571)
 
 ### Changed
