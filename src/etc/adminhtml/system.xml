@@ -216,7 +216,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>system/full_page_cache/bfcache</config_path>
                     <comment><![CDATA[Allow users to navigate back and forward through their browser history instantly. By caching pages directly in the browser, this feature creates a faster, smoother browsing experience.
-                        <br><br><strong>Compatibility Note:</strong> This feature works automatically with Magento's native cache. Additional configuration is required when using Varnish, Fastly, or other reverse proxies.
+                        <br><br><strong>Compatibility Note:</strong> Additional configuration is required in Varnish, Fastly, or other reverse proxies.
                         <a href="https://docs.hyva.io/hyva-themes/advanced-topics/bfcache.html">See our docs for how to add this</a>]]></comment>
                 </field>
             </group>
