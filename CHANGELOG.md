@@ -7,7 +7,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18-beta...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.0-beta...main
+
+## [1.4.0-beta] - 2025-10-23
+
+[1.4.0-beta]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18-beta...1.4.0-beta
+
+### Added
+
+- **Add new AlpineJS Slider**  
+  This also replaces the Slider viewmodal for this simpler AlpineJS plugin and in so the slider viewmodal has been marked for deprecation.
+
+  For more information, please refer to [issue #98](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/98)
+
+- **Add AlpineJs based HTML Dialog**  
+  For more information, please refer to [issue #481](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/481)
+
+- **Add Support for bfcache**  
+  For more information, please refer to [merge request #567](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/567)
+
+- **Add Theme Module version in the footer next to the Magento version**  
+  For more information, please refer to [issue #358](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/358)
+
+- **Add speculation rules to the theme as a stable feature**  
+  For more information, please refer to [merge request #571](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/571)
+
+### Changed
+
+- **Fixed TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
+  For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
+  
+### Removed
+
+- Nothing removed
 
 ## [1.3.18-beta] - 2025-10-23
 

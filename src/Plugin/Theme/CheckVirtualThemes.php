@@ -71,7 +71,8 @@ class CheckVirtualThemes
     private function checkVirtualThemes(): void
     {
         $themes = $this->dbThemesFactory->create()->addTypeFilter(ThemeInterface::TYPE_VIRTUAL);
-        /** @var $theme ThemeModel|ThemeInterface */
+
+        /** @var ThemeModel|ThemeInterface $theme */
         foreach ($themes as $theme) {
             if ($this->fsThemes->hasTheme($theme)) {
                 $theme->setType(ThemeInterface::TYPE_PHYSICAL);

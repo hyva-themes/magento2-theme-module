@@ -91,6 +91,19 @@
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\LoginAsCustomer\ImplyFrontendPostRequestPlugin" sortOrder="30"/>
     </type>
 
+    <type name="Hyva\Theme\ViewModel\SpeculationRules">
+        <arguments>
+            <argument name="excludeFromPreloading" xsi:type="array">
+                <item name="customer" xsi:type="boolean">true</item>
+                <item name="search" xsi:type="boolean">true</item>
+                <item name="sales" xsi:type="boolean">true</item>
+                <item name="wishlist" xsi:type="boolean">true</item>
+                <item name="checkout" xsi:type="boolean">true</item>
+                <item name="paypal" xsi:type="boolean">true</item>
+            </argument>
+        </arguments>
+    </type>
+
     <type name="Hyva\Theme\ViewModel\CustomerSectionData">
         <arguments>
             <!-- Specifying `true` will allow the section to be cached in the FPC. Only use it with sections without PII. -->

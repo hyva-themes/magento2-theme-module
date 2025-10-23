@@ -1,0 +1,22 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2022-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Block\Adminhtml\Page\Footer;
+use Magento\Framework\Escaper;
+
+/** @var Footer $block */
+/** @var Escaper $escaper */
+
+?>
+
+<p class="magento-version hyva-version">
+    <strong><?= $escaper->escapeHtml(__('Hyvä Theme Module')) ?></strong>
+    <?= $escaper->escapeHtml(__('ver. %1', $block->getVersion())) ?>
+</p>

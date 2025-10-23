@@ -7,18 +7,30 @@
  * See https://hyva.io/license
  */
 -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"
+>
     <body>
         <referenceContainer name="head.additional">
             <block name="head.js" class="Magento\Framework\View\Element\Template" template="Hyva_Theme::page/js/variables.phtml"/>
             <block name="head.hyva-scripts" template="Hyva_Theme::page/js/hyva.phtml"/>
             <block name="head.intersection-observer-polyfill" template="Hyva_Theme::page/js/intersection-observer-polyfill.phtml"/>
-            <block name="view-transition" template="Hyva_Theme::page/js/view-transition.phtml" ifconfig="hyva_theme_experimental/feature_flag/view_transition"/>
-            <block name="speculationrules" template="Hyva_Theme::page/js/speculationrules.phtml" ifconfig="hyva_theme_experimental/feature_flag/speculationrules"/>
+            <block name="speculationrules" template="Hyva_Theme::page/js/speculationrules.phtml">
+                <!--
+                <arguments>
+                    <argument name="exclude_list" xsi:type="array">
+                        <item name="pdf" xsi:type="string">*.pdf</item>
+                    </argument>
+                </arguments>
+                -->
+            </block>
         </referenceContainer>
 
         <referenceContainer name="before.body.end">
             <block name="script-alpine-js" template="Hyva_Theme::page/js/alpinejs.phtml">
+                <block name="alpine-plugin-snap-slider" template="Hyva_Theme::page/js/plugins/snap-slider.phtml"/>
+                <block name="alpine-plugin-htmldialog" template="Hyva_Theme::page/js/plugins/htmldialog.phtml"/>
                 <block name="alpine-plugin-intersect" template="Hyva_Theme::page/js/plugins/intersect.phtml"/>
                 <block name="alpine-plugin-ignore" template="Hyva_Theme::page/js/plugins/ignore.phtml"/>
                 <block name="alpine-plugin-defer" template="Hyva_Theme::page/js/plugins/defer.phtml">
@@ -42,6 +54,5 @@
             <block name="page-js-dependencies" template="Hyva_Theme::page/page-js-dependencies.phtml"/>
             <block name="default-section-data" template="Hyva_Theme::page/default-section-data.phtml" after="-"/>
         </referenceContainer>
-
     </body>
 </page>
