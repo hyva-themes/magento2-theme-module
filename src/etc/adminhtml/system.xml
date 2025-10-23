@@ -8,7 +8,7 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="hyva_themes" sortOrder="999" translate="label">
             <label>Hyva Themes</label>
@@ -46,7 +46,8 @@
             <group id="hyva_breadcrumbs" translate="label comment" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Hyvä Client-Side Breadcrumbs Rendering</label>
                 <comment>Enabling client side breadcrumb rendering can impact frontend performance for large category trees.</comment>
-                <field id="client_side_enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="client_side_enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Enable on Product Detail Pages</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>catalog/hyva_breadcrumbs/client_side_enable</config_path>
@@ -55,17 +56,20 @@
             <group id="frontend" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Compare Products</label>
                 <comment>(These settings can also be found in Catalog > Catalog > Storefront)</comment>
-                <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="100" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Add To Compare On Product Page</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>catalog/frontend/show_add_to_compare_on_product_page</config_path>
                 </field>
-                <field id="show_add_to_compare_in_list" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_add_to_compare_in_list" translate="label comment" type="select" sortOrder="110" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Add To Compare In Product List</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>catalog/frontend/show_add_to_compare_in_list</config_path>
                 </field>
-                <field id="show_sidebar_in_list" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_sidebar_in_list" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Show Compare Sidebar On Product List</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>catalog/frontend/show_sidebar_in_list</config_path>
@@ -74,12 +78,14 @@
             <group id="recently_products" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Recently Viewed Products</label>
                 <comment>(These settings can also be found in Catalog > Catalog > Recently Viewed/Compared Products)</comment>
-                <field id="recently_viewed_enabled" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="recently_viewed_enabled" translate="label comment" type="select" sortOrder="100" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable Recently Viewed Products</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>catalog/recently_products/recently_viewed_enabled</config_path>
                 </field>
-                <field id="show_on_pdp" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_on_pdp" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Show Recently Viewed on Product Detail Pages</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>catalog/recently_products/show_on_pdp</config_path>
@@ -87,7 +93,8 @@
                         <field id="recently_viewed_enabled">1</field>
                     </depends>
                 </field>
-                <field id="show_on_plp" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_on_plp" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Show Recently Viewed on Product Listing Pages</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>catalog/recently_products/show_on_plp</config_path>
@@ -98,7 +105,8 @@
             </group>
             <group id="crosssell_products" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Crosssell Products</label>
-                <field id="limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"
+                    canRestore="1">
                     <label>Max Product Count for Crosssell list</label>
                     <comment>(By default the limit is 4)</comment>
                     <validate>integer no-whitespace</validate>
@@ -108,12 +116,14 @@
                 <label>Developer</label>
                 <group id="cache" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
                     <label>Cache Options</label>
-                    <field id="product_list_item_block_cache_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <field id="product_list_item_block_cache_enabled" translate="label comment" type="select" sortOrder="10"
+                        showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                         <label>Enable Product List Item block_html Caching</label>
                         <comment>Disable to reduce the load on the cache storage backend (for example Redis).</comment>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     </field>
-                    <field id="product_list_item_block_cache_lifetime" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <field id="product_list_item_block_cache_lifetime" translate="label comment" sortOrder="20" showInDefault="1"
+                        showInWebsite="1" showInStore="1" canRestore="1">
                         <label>Product List Item Block Cache Lifetime</label>
                         <comment>Time to Live in Seconds</comment>
                         <depends>
@@ -130,15 +140,18 @@
             <resource>Magento_Catalog::config_catalog</resource>
             <group id="messages" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
                 <label>Message Display</label>
-                <field id="success_message_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="success_message_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1"
+                    showInStore="1">
                     <label>Success Message Default Timeout</label>
-                    <comment>The number of milliseconds, after which success messages disappear by default. Leave empty to disable automatic hiding.</comment>
+                    <comment>The number of milliseconds, after which success messages disappear by default. Leave empty to disable automatic
+                        hiding.</comment>
                 </field>
             </group>
 
             <group id="demo_content" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="20" translate="label">
                 <label>Hyvä Demo Content</label>
-                <field id="show_homepage_demo_content" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"  canRestore="1">
+                <field id="show_homepage_demo_content" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Homepage Content</label>
                     <comment>When disabled, this will remove the demo content from the Homepage.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -147,11 +160,14 @@
 
             <group id="alpine_defer" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label">
                 <label>Deferred Alpine.js Components</label>
-                <field id="defer_idle_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="defer_idle_timeout" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"
+                    canRestore="1">
                     <label>Defer until idle timeout</label>
-                    <comment>The number of milliseconds after which Alpine components deferred until the browser is idle will be initialized at the latest.</comment>
+                    <comment>The number of milliseconds after which Alpine components deferred until the browser is idle will be initialized
+                        at the latest.</comment>
                 </field>
-                <field id="deferred_components" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label comment" canRestore="1">
+                <field id="deferred_components" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label comment"
+                    canRestore="1">
                     <label>Defer components</label>
                     <comment><![CDATA[Valid defer until values: <strong>interact</strong>, <strong>intersect</strong>, <strong>idle</strong>, <strong>event:eventname</strong>.<br/>Configuring many deferred components here may increase the Total Blocking Time. Consider defering components by changing the PHTML templates instead.]]></comment>
                     <frontend_model>Hyva\Theme\Block\Adminhtml\Form\Field\DeferredAlpineComponents</frontend_model>
@@ -161,17 +177,20 @@
 
             <group id="speculation_rules" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Speculation Rules</label>
-                <field id="method" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="method" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Method</label>
                     <options>
                         <option label="Prefetch">prefetch</option>
                         <option label="Prerender">prerender</option>
                         <option label="Disabled (no speculative loading)">disabled</option>
                     </options>
-                    <comment>Controls the speculation method. prerender offers instant page loads but uses more resources and can impact analytics. prefetch is lighter, only downloading the file for a smaller speed boost.</comment>
+                    <comment>Controls the speculation method. prerender offers instant page loads but uses more resources and can impact
+                        analytics. prefetch is lighter, only downloading the file for a smaller speed boost.</comment>
                 </field>
 
-                <field id="eagerness" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="eagerness" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Eagerness</label>
                     <options>
                         <option label="Immediate">immediate</option>
@@ -191,12 +210,14 @@
             <group id="cache" translate="label comment" type="text" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cache Options</label>
                 <comment>(These settings can also be found in Advanced > System > Full Page Cache)</comment>
-                <field id="bfcache" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="bfcache" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Enable Bfcache</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>system/full_page_cache/bfcache</config_path>
                     <comment><![CDATA[Allow users to navigate back and forward through their browser history instantly. By caching pages directly in the browser, this feature creates a faster, smoother browsing experience.
-                        <br><br><strong>Compatibility Note:</strong> This feature works automatically with Magento's native cache. Additional configuration is required when using Varnish, Fastly, or other reverse proxies.]]></comment>
+                        <br><br><strong>Compatibility Note:</strong> This feature works automatically with Magento's native cache. Additional configuration is required when using Varnish, Fastly, or other reverse proxies.
+                        <br><br><a href="https://docs.hyva.io/hyva-themes/advanced-topics/bfcache.html">See our docs for how to add this</a>]]></comment>
                 </field>
             </group>
         </section>
@@ -207,7 +228,8 @@
             <resource>Magento_Config::dev</resource>
             <group id="cache" translate="label" type="text" sortOrder="1000" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cache Options</label>
-                <field id="enable_svg_icon_caching" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="enable_svg_icon_caching" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable SVG Icon Caching</label>
                     <comment>Enable at the cost of increased use of the cache storage backend (for example Redis).</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -221,7 +243,8 @@
             <resource>Magento_Cms::config_cms</resource>
             <group id="images" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
                 <label>Images</label>
-                <field id="background_lazy_load_default" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="background_lazy_load_default" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="0" showInStore="0">
                     <label>Enable lazy-loading by default for background images</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[Enable only after all Hyvä child themes are updated to <strong>hyva-themes/magento2-default-theme 1.3.10</strong> or newer, otherwise the JavaScript to load the background images on intersect may be missing in the theme.]]></comment>
@@ -235,38 +258,45 @@
             <resource>Magento_Catalog::config_catalog</resource>
             <group id="feature_flag" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
                 <label>Experimental Features</label>
-                <comment>Because of the reliance on experimental browser APIs, the Hyvä implementations may change or be removed entierly in future without notice.</comment>
+                <comment>Because of the reliance on experimental browser APIs, the Hyvä implementations may change or be removed entierly in
+                    future without notice.</comment>
             </group>
         </section>
 
         <section id="catalog">
             <group id="frontend">
-                <field id="show_add_to_compare_in_list" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_add_to_compare_in_list" translate="label comment" type="select" sortOrder="100" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Add To Compare In Product List</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_sidebar_in_list" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_sidebar_in_list" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Show Compare Sidebar On Product List</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="115" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_add_to_compare_on_product_page" translate="label comment" type="select" sortOrder="115" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Add To Compare On Product Page</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
             <group id="recently_products">
-                <field id="recently_viewed_enabled" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="recently_viewed_enabled" translate="label comment" type="select" sortOrder="100" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable Recently Viewed Products</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_on_pdp" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_on_pdp" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Show Recently Viewed on Product Detail Pages</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="recently_viewed_enabled">1</field>
                     </depends>
                 </field>
-                <field id="show_on_plp" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="show_on_plp" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Show Recently Viewed on Product Listing Pages</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
@@ -326,7 +356,8 @@
 
         <section id="system">
             <group id="full_page_cache">
-                <field id="bfcache" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                <field id="bfcache" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1"
+                    showInStore="1" canRestore="1">
                     <label>Enable Bfcache</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[<strong>Compatibility Note:</strong> This feature works automatically with Magento's native cache. Additional configuration is required when using Varnish, Fastly, or other reverse proxies.]]></comment>
