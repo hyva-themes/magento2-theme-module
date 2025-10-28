@@ -24,9 +24,9 @@ class RecurringData implements InstallDataInterface
     {
         $setup->startSetup();
         foreach ([
-                     'Hyva/default'     => 'hyva-themes/magento2-default-theme',
-                     'Hyva/default-csp' => 'hyva-themes/magento2-default-theme-csp',
-                 ] as $themeCode => $packageName) {
+            'Hyva/default'     => 'hyva-themes/magento2-default-theme',
+            'Hyva/default-csp' => 'hyva-themes/magento2-default-theme-csp',
+        ] as $themeCode => $packageName) {
             if (Composer::isInstalled($packageName)) {
                 $this->ensureThemeHasTheCorrectParentId($setup, $themeCode, $packageName);
             }
