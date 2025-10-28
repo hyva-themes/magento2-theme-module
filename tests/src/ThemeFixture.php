@@ -35,7 +35,7 @@ class ThemeFixture
         $design->setDesignTheme($themePath);
     }
 
-    public static function setHyvaDefaultAsCurrentTheme  (): void
+    public static function setHyvaDefaultAsCurrentTheme(): void
     {
         self::setCurrentTheme(self::getInstalledHyvaDefaultThemeCode());
     }
