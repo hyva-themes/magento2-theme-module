@@ -67,6 +67,10 @@
         <plugin name="hyva_theme" type="\Hyva\Theme\Plugin\Theme\DisableHtmlMinifierForHyvaPlugin"/>
     </type>
 
+    <type name="Magento\Framework\App\Response\Http">
+        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\RemoveNoStoreHeaderPlugin"/>
+    </type>
+
     <type name="\Adyen\Payment\Helper\Data">
         <plugin name="platform_meta_data_v9" type="\Hyva\Theme\Plugin\Platform\AddPlatformMetaData"/>
     </type>
@@ -92,4 +96,15 @@
 
     <preference for="Hyva\Theme\Block\SortableItemInterface" type="Hyva\Theme\Block\SortableItem"/>
     <preference for="Hyva\Theme\Model\Media\MediaHtmlProviderInterface" type="Hyva\Theme\Model\Media\MediaHtmlProvider"/>
+
+    <type name="Hyva\Theme\Service\HyvaThemes">
+        <arguments>
+            <argument name="hyvaBaseThemes" xsi:type="array">
+                <!-- Keep Hyva/reset in this list to support older installations that use it. -->
+                <item name="Hyva/reset" xsi:type="boolean">true</item>
+                <item name="Hyva/default" xsi:type="boolean">true</item>
+                <item name="Hyva/default-csp" xsi:type="boolean">true</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

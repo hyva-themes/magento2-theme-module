@@ -10,52 +10,32 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Plugin\Theme;
 
-use Magento\Framework\App\Area;
+use Hyva\Theme\Service\HyvaThemes;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\Asset\PreProcessor\Chain as PreProcessorChain;
 use Magento\Framework\View\Asset\PreProcessor\Minify as MinifyPreProcessor;
 use Magento\Framework\View\Design\Theme\ThemeProviderInterface;
 
 class DisableJsAndCssMinifierForHyvaPlugin
 {
-    private $memoizedHyvaThemes = [];
-
     /**
-     * @var ThemeProviderInterface
+     * @var HyvaThemes
      */
-    private $themeProvider;
+    private $hyvaThemes;
 
     public function __construct(
-        ThemeProviderInterface $themeProvider
+        ThemeProviderInterface $themeProvider, // keep to preserve BC
+        ?HyvaThemes $hyvaThemes = null
     ) {
-        $this->themeProvider = $themeProvider;
+        $this->hyvaThemes = $hyvaThemes ?? ObjectManager::getInstance()->get(HyvaThemes::class);
     }
 
     public function aroundProcess(MinifyPreProcessor $subject, callable $proceed, PreProcessorChain $chain): void
     {
         $themePath = implode('/', array_slice(explode('/', $chain->getTargetAssetPath()), 0, 3));
-        if ($this->isHyva($themePath)) {
+        if ($this->hyvaThemes->isHyvaThemeCode($themePath)) {
             return;
         }
         $proceed($chain);
-    }
-
-    public function isHyva(string $themePath): bool
-    {
-        if (!isset($this->memoizedHyvaThemes[$themePath])) {
-            $this->memoizedHyvaThemes[$themePath] = $this->determineIfHyvaTheme($themePath);
-        }
-        return $this->memoizedHyvaThemes[$themePath];
-    }
-
-    private function determineIfHyvaTheme(string $themePath): bool
-    {
-        $theme = $this->themeProvider->getThemeByFullPath($themePath);
-        while ($theme && $theme->getArea() === Area::AREA_FRONTEND) {
-            if (strpos($theme->getCode(), 'Hyva/') === 0) {
-                return true;
-            }
-            $theme = $theme->getParentTheme();
-        }
-        return false;
     }
 }
