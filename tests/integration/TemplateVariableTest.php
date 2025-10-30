@@ -76,7 +76,7 @@ class TemplateVariableTest extends TestCase
     }
 
     /**
-     * Re-register themes from the magentoComponentsDir fixture and set current theme to Hyva/test
+     * Re-register themes from the magentoComponentsDir fixture and set current theme to Hyva/integration-test
      */
     private function registerTestTheme(): void
     {

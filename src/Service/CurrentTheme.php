@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Service;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\DesignInterface;
 
 /**
@@ -22,25 +23,27 @@ class CurrentTheme
      */
     protected $viewDesign;
 
-    public function __construct(DesignInterface $viewDesign)
-    {
+    /**
+     * @var HyvaThemes
+     */
+    private $hyvaThemes;
+
+    public function __construct(
+        DesignInterface $viewDesign,
+        ?HyvaThemes $hyvaThemes = null
+    ) {
         $this->viewDesign = $viewDesign;
+        $this->hyvaThemes = $hyvaThemes ?? ObjectManager::getInstance()->get(HyvaThemes::class);
     }
 
     /**
-     * Returns true if the current theme is a Hyva theme, i.e. a descendant of Hyva/reset (or any Hyva namespaced theme)
+     * Returns true if the current theme is a Hyva theme
      *
      * @return bool
      */
     public function isHyva(): bool
     {
         $theme = $this->viewDesign->getDesignTheme();
-        while ($theme) {
-            if (strpos($theme->getCode(), 'Hyva/') === 0) {
-                return true;
-            }
-            $theme = $theme->getParentTheme();
-        }
-        return false;
+        return $this->hyvaThemes->isHyvaTheme($theme);
     }
 }

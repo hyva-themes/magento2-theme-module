@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Plugin\Theme;
 
-use Magento\Framework\App\Area;
+use Hyva\Theme\Service\HyvaThemes;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\ReadFactory as DirectoryReadFactory;
@@ -51,16 +52,23 @@ class DisableHtmlMinifierForHyvaPlugin
      */
     private $memoizedHyvaThemePaths;
 
+    /**
+     * @var HyvaThemes
+     */
+    private $hyvaThemes;
+
     public function __construct(
         Filesystem $filesystem,
         DirectoryReadFactory $dirReadFactory,
         ComponentRegistrar $componentRegistrar,
-        ThemeProviderInterface $themeProvider
+        ThemeProviderInterface $themeProvider,
+        ?HyvaThemes $hyvaThemes = null
     ) {
         $this->filesystem = $filesystem;
         $this->dirReadFactory = $dirReadFactory;
         $this->componentRegistrar = $componentRegistrar;
         $this->themeProvider = $themeProvider;
+        $this->hyvaThemes = $hyvaThemes ?? ObjectManager::getInstance()->get(HyvaThemes::class);
     }
 
     private function getOutputDirectory(): DirectoryWrite
@@ -119,22 +127,10 @@ class DisableHtmlMinifierForHyvaPlugin
     {
         $hyvaThemePaths = [];
         foreach ($this->componentRegistrar->getPaths(ComponentRegistrar::THEME) as $themePath => $fsPath) {
-            if ($this->isHyvaTheme($themePath)) {
+            if ($this->hyvaThemes->isHyvaThemeCode($themePath)) {
                 $hyvaThemePaths[] = $fsPath;
             }
         }
         return $hyvaThemePaths;
-    }
-
-    private function isHyvaTheme(string $themePath): bool
-    {
-        $theme = $this->themeProvider->getThemeByFullPath($themePath);
-        while ($theme && $theme->getArea() === Area::AREA_FRONTEND) {
-            if (strpos($theme->getCode(), 'Hyva/') === 0) {
-                return true;
-            }
-            $theme = $theme->getParentTheme();
-        }
-        return false;
     }
 }
