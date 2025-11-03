@@ -67,10 +67,6 @@
         <plugin name="hyva_theme" type="\Hyva\Theme\Plugin\Theme\DisableHtmlMinifierForHyvaPlugin"/>
     </type>
 
-    <type name="Magento\Framework\App\Response\Http">
-        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\RemoveNoStoreHeaderPlugin"/>
-    </type>
-
     <type name="\Adyen\Payment\Helper\Data">
         <plugin name="platform_meta_data_v9" type="\Hyva\Theme\Plugin\Platform\AddPlatformMetaData"/>
     </type>
