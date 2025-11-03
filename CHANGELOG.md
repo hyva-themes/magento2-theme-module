@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18-beta...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18...main
 
 ## [1.3.18] - 2025-11-03
 
@@ -36,6 +36,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - **Fixed Auto-deferred Alpine components selector causes issues with nested custom option components**  
   For more information, please refer to [issue #473](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/473)
+
+- **Add Hyva\Theme\Service\HyvaThemes class**  
+  This class allows checking if a given theme is Hyvä based. This is important after the generated base layout reset
+  will be released as part of Hyvä 1.4.0.
+  
+  For more information, please refer to [the docs](https://docs.hyva.io/hyva-themes/advanced-topics/generated-base-layout-resets.html)
+  
 
 ### Removed
 
