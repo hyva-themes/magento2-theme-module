@@ -1,0 +1,55 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2022-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+namespace Hyva\Theme\Setup;
+
+use Composer\InstalledVersions as Composer;
+use Magento\Framework\Setup\InstallDataInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
+
+class RecurringData implements InstallDataInterface
+{
+    /**
+     * Unset or set the parent theme id for the Hyvä default themes after upgrading to 1.4.0 or newer
+     */
+    public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+    {
+        $setup->startSetup();
+        foreach ([
+                 'Hyva/default'     => 'hyva-themes/magento2-default-theme',
+                 'Hyva/default-csp' => 'hyva-themes/magento2-default-theme-csp',
+             ] as $themeCode => $packageName) {
+            if (Composer::isInstalled($packageName) && version_compare('1.4.0', Composer::getVersion($packageName), '>=')) {
+                // Ensure the default theme parent_id is NULL for default themes >= 1.4.0
+                $this->ensureThemeParentIdIsNull($setup, $themeCode);
+            }
+            // Do not set the parent theme ID to Hyva/reset since we want to allow manual migrations to the base layout reset
+        }
+        $setup->endSetup();
+    }
+
+    private function ensureThemeParentIdIsNull(ModuleDataSetupInterface $setup, string $themeCode): void
+    {
+        $parentId = $this->getParentId($setup, $themeCode);
+        if ($parentId !== null) {
+            $adapter = $setup->getConnection();
+            $adapter->update($adapter->getTableName('theme'), ['parent_id' => null], $adapter->quoteInto('code = ?', $themeCode));
+        }
+    }
+
+    private function getParentId(ModuleDataSetupInterface $setup, string $themeCode)
+    {
+        $adapter = $setup->getConnection();
+        $select = sprintf('SELECT parent_id FROM %s WHERE code = :code', $adapter->getTableName('theme'));
+
+        return $adapter->fetchOne($select, ['code' => $themeCode]);
+    }
+}
