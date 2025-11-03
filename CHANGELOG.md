@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [1.4.0-beta2] - 2025-11-03
 
-[1.4.0-beta2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18-beta...1.4.0-beta2
+[1.4.0-beta2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18...1.4.0-beta2
 
 ### Added
 
