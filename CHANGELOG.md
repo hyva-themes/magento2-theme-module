@@ -40,6 +40,43 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - Nothing removed
 
+## [1.3.20] - 2025-11-04
+
+[1.3.20]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.19...1.3.20
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Resolve critical bug in the `isHyvaTheme` function for static assets**  
+  The `isHyvaTheme` function, introduced in 1.3.18 for the Base Layout Reset used by Theme 1.4,
+  could cause a 500 error due to a `NULL` theme value.
+  This is now resolved by handling this condition.
+
+### Removed
+
+- Nothing removed
+
+## [1.3.19] - 2025-11-04
+
+[1.3.19]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18...1.3.19
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Resolve critical bug in setup script**  
+  In 1.3.18, the parent_id of the default theme was set to NULL when the theme was older than 1.4.0.  
+  This is now fixed and is only applied if the installed default theme has a version >= 1.4.0.
+
+### Removed
+
+- Nothing removed
+
 ## [1.3.18] - 2025-11-03
 
 [1.3.18]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.17...1.3.18
