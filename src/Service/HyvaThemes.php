@@ -69,7 +69,11 @@ class HyvaThemes
      */
     public function isHyvaTheme(ThemeInterface $theme): bool
     {
-        return $this->isHyvaThemeCode($theme->getFullPath());
+        if ($path = $theme->getFullPath()) {
+            return $this->isHyvaThemeCode($path);
+        } else {
+            return false;
+        }
     }
 
     /**
