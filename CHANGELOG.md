@@ -33,6 +33,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **Released under OSL 3.0**
+
 - **Fixed TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
   For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
   

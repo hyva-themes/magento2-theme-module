@@ -12,11 +12,19 @@ Compatible with Magento 2.4.0 and higher.
 Please refer to https://docs.hyva.io for instructions
 
 ## License
-Hyvä Themes - https://hyva.io
 
-Copyright © Hyvä Themes B.V 2020-present. All rights reserved.
+This package is primarily licensed under the **Open Software License (OSL 3.0)**.
 
-This product is licensed per Magento install. Please see [License File](LICENSE.md) for more information.
+* **Copyright:** Copyright © 2020-present Hyvä Themes. All rights reserved.
+* **License Text (OSL 3.0):** The full text of the OSL 3.0 license can be found in the `LICENSE.txt` file within this package, and is also available online at [http://opensource.org/licenses/osl-3.0.php](http://opensource.org/licenses/osl-3.0.php).
+
+### Additional Licenses for Included Assets
+
+This package also contains Alpine.js and SVG icons under separate licenses:
+
+* **Alpine.js:** Copyright © 2019-2025 Caleb Porzio and contributors and distributed under the MIT license. The full text of this license can be found in `src/view/base/web/js/ALPINE_LICENSE_MIT.txt` or online at [raw.githubusercontent.com/alpinejs/alpine/refs/heads/main/LICENSE.md](https://raw.githubusercontent.com/alpinejs/alpine/refs/heads/main/LICENSE.md)  
+* **Heroicons:** SVG icons from [https://heroicons.com/](https://heroicons.com/) are licensed under the MIT license. The full text of this license can be found in `src/view/frontend/web/svg/heroicons/HEROICONS_LICENSE_MIT.txt`.
+* **Lucide Icons:** SVG icons from [https://lucide.dev/](https://lucide.dev/) are licensed under the Lucide license. The full text of this license can be found in `src/view/base/web/svg/lucide/LUCIDEICONS_LICENSE.txt` and online at [https://lucide.dev/license](https://lucide.dev/license).
 
 ## Changelog
 Please see [The Changelog](CHANGELOG.md).
