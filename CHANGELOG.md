@@ -6,7 +6,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.19...main
+
+## [1.3.19] - 2025-11-04
+
+[1.3.19]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.18...1.3.19
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Resolve critical bug in setup script**  
+  In 1.3.18, the parent_id of the default theme was set to NULL when the theme was older than 1.4.0.  
+  This is now fixed and is only applied if the installed default theme has a version >= 1.4.0.
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.18] - 2025-11-03
 
