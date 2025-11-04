@@ -38,7 +38,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   
 ### Removed
 
-- Nothing removed
+- **Removed Intersection Observer Polyfill**  
+  For more information, please refer to [merge request #590](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/590)
 
 ## [1.3.18] - 2025-11-03
 
