@@ -18,8 +18,6 @@ use Magento\Framework\View\Element\Template;
 
 ?>
 <script>
-    'use strict';
-
     <?php /* Usage: apply rule on the 'min value' input and pass the 'max value' input ID to check against as the 'options' param */ ?>
     hyva.formValidation.addRule('minMax', (value, options, field, context) => {
         const min = field.element;

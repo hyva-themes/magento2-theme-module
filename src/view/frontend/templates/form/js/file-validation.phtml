@@ -20,8 +20,6 @@ use Magento\Framework\View\Element\Template;
 
 ?>
 <script>
-    'use strict';
-
     hyva.formValidation.setInputAttributeRuleName('accept', 'file-type'); <?php /* Apply to all input fields with 'accept' attribute */ ?>
     hyva.formValidation.addRule('file-type', function (value, options, field, context) {
         if (field.element.type !== 'file' || !field.element.files.length || !field.element.accept) {
