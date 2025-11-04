@@ -17,10 +17,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - **Add new AlpineJS Slider**  
   This also replaces the Slider viewmodal for this simpler AlpineJS plugin and in so the slider viewmodal has been marked for deprecation.
 
-  For more information, please refer to [issue #98](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/98)
+  For more information, please refer to [issue #98](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/98)
 
 - **Add AlpineJs based HTML Dialog**  
-  For more information, please refer to [issue #481](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/481)
+  For more information, please refer to [issue #481](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/481)
 
 - **Add Support for bfcache**  
   For more information, please refer to [merge request #567](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/567)
@@ -29,7 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   For more information, please refer to [issue #358](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/358)
 
 - **Add speculation rules to the theme as a stable feature**  
-  For more information, please refer to [merge request #571](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/571)
+  For more information, please refer to [merge request #571](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/571)
 
 ### Changed
 
@@ -39,7 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Removed
 
 - **Removed Intersection Observer Polyfill**  
-  For more information, please refer to [merge request #590](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/590)
+  For more information, please refer to [merge request #590](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/590)
 
 ## [1.3.18] - 2025-11-03
 
