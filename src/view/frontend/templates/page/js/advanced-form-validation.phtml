@@ -23,7 +23,6 @@ use Magento\Framework\View\Element\Template;
 ?>
 
 <script>
-    'use strict';
     (function(hyva) {
         <?php /* Built in validation rules start */ ?>
         const formValidationRules = {
@@ -628,7 +627,7 @@ use Magento\Framework\View\Element\Template;
                 }
             }
         }
-        
+
         function getFieldName(field) {
             <?php /* Sometimes label are abbreviated or contain additional instructions, the title usually does not */ ?>
             const fieldName = field.element?.getAttribute('title')
