@@ -142,14 +142,16 @@ use Magento\Framework\View\Element\Template;
             if (document.activeElement.parentElement.hasAttribute("data-pager")) {
                 const activeItems = this.pager.querySelectorAll('[tabindex="0"]');
                 if (activeItems.length) {
-                    activeItems[0].focus();
+                    activeItems[0].focus({
+                        preventScroll: true
+                    });
                 }
             }
         }
         getSlides() {
             if (!this.track) return [];
             return Array.from(this.track.children).filter(
-                (child) => child.tagName.toLowerCase() !== "template" && child.tagName.toLowerCase() !== "script"
+                (child) => child.tagName.toLowerCase() !== "template" && child.tagName.toLowerCase() !== "style" && child.tagName.toLowerCase() !== "script"
             );
         }
         refreshSlides() {
@@ -298,7 +300,10 @@ use Magento\Framework\View\Element\Template;
             if (targetSlide.tagName.toLowerCase() === "template") {
                 targetSlide = isPrev ? targetSlide?.previousElementSibling : targetSlide?.nextElementSibling;
             }
-            targetSlide.scrollIntoView({ block: "nearest", inline: isPrev ? "end" : "start" });
+            targetSlide.scrollIntoView({
+                block: "nearest",
+                inline: isPrev ? "end" : "start"
+            });
         }
         pagerToSlide(event) {
             if (!event.target.closest("[data-pager]")) return;
@@ -307,7 +312,10 @@ use Magento\Framework\View\Element\Template;
             event.preventDefault();
             const slideId = marker.getAttribute("href")?.slice(1) || marker.getAttribute(this.markerIdName);
             const targetSlide = this.track.querySelector(`#${slideId}`);
-            targetSlide?.scrollIntoView({ block: "nearest", inline: "start" });
+            targetSlide?.scrollIntoView({
+                block: "nearest",
+                inline: "start"
+            });
         }
         eventHandler(event) {
             const target = event.target.closest(
