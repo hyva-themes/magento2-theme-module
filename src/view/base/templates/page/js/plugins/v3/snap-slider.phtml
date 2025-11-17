@@ -93,7 +93,7 @@ use Magento\Framework\View\Element\Template;
             };
         }
         groupPagerMarkers() {
-            if (!this.pager || !this.useGroupPager) return;
+            if (this.slides.length === 0 || !this.pager || !this.useGroupPager) return;
             const totalVisibleSlides = this.roundUpIfGreaterThan(
                 this.track.offsetWidth / this.slides[0].offsetWidth
             );
@@ -142,14 +142,14 @@ use Magento\Framework\View\Element\Template;
             if (document.activeElement.parentElement.hasAttribute("data-pager")) {
                 const activeItems = this.pager.querySelectorAll('[tabindex="0"]');
                 if (activeItems.length) {
-                    activeItems[0].focus();
+                    activeItems[0].focus({ preventScroll: true });
                 }
             }
         }
         getSlides() {
             if (!this.track) return [];
             return Array.from(this.track.children).filter(
-                (child) => child.tagName.toLowerCase() !== "template" && child.tagName.toLowerCase() !== "script"
+                (child) => child.tagName.toLowerCase() !== "template" && child.tagName.toLowerCase() !== "style" && child.tagName.toLowerCase() !== "script"
             );
         }
         refreshSlides() {
