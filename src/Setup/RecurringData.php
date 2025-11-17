@@ -49,15 +49,14 @@ class RecurringData implements InstallDataInterface
         $parentId = $this->getParentId($setup, $themeCode);
         if ($parentId !== null) {
             $adapter = $setup->getConnection();
-            $adapter->update($adapter->getTableName('theme'), ['parent_id' => null], $adapter->quoteInto('code = ?', $themeCode));
+            $adapter->update($setup->getTable('theme'), ['parent_id' => null], $adapter->quoteInto('code = ?', $themeCode));
         }
     }
 
     private function getParentId(ModuleDataSetupInterface $setup, string $themeCode)
     {
-        $adapter = $setup->getConnection();
-        $select = sprintf('SELECT parent_id FROM %s WHERE code = :code', $adapter->getTableName('theme'));
+        $select = sprintf('SELECT parent_id FROM %s WHERE code = :code', $setup->getTable('theme'));
 
-        return $adapter->fetchOne($select, ['code' => $themeCode]);
+        return $setup->getConnection()->fetchOne($select, ['code' => $themeCode]);
     }
 }
