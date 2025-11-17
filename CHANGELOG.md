@@ -6,7 +6,40 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.0...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.1...main
+
+## [1.4.1] - 2025-11-17
+
+[1.4.1]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.0...1.4.1
+
+### Added
+
+- **Added installation instructions to README**
+
+- **Add notes about unsupported PageBilder slider features**
+  Autoplay is no longer supported for A11Y with the CSS SnapSlider introduced in Hyvä 1.4.0.
+  Also, Infinite Scroll is not supported by the CSS slider.
+
+### Changed
+
+- **Fix error when default-theme or default-theme-csp are composer replaced**  
+  For more information, please refer to [issue #488](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/488)
+
+- **Fix table name prefixing in recurring data setup script**  
+  Previously, the script was broken if global table name prefixes were configured.
+
+  For more information, please refer to [issue #489](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/489)
+
+- **Fix a number of minor bugs in the Snap Slider**
+  * Fix scroll-bounce edge case when there is not enough space available.  
+  * Exclude `<style>` tags from slider contents.
+  * Prevent error when group-pager is set and there are no slides
+
+  For more information, please refer to [issue #490](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/490)
+
+### Removed
+
+- Nothing removed
 
 ## [1.4.0] - 2025-11-10
 
