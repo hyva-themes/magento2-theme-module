@@ -15,5 +15,16 @@
                 <notice translate="true"><![CDATA[Not supported on Hyvä Themes storefronts for compatibility and performance reasons.]]></notice>
             </settings>
         </field>
+        <!-- The Snap Slider is a CSS slider and that does not support these features -->
+        <field name="autoplay">
+            <settings>
+                <notice translate="true"><![CDATA[Not supported on Hyvä Themes storefronts for A11Y.]]></notice>
+            </settings>
+        </field>
+        <field name="is_infinite">
+            <settings>
+                <notice translate="true"><![CDATA[Not supported on Hyvä Themes storefronts with the CSS Slider.]]></notice>
+            </settings>
+        </field>
     </fieldset>
 </form>
