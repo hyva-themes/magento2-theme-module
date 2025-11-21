@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HyvaCsp;
-use Hyva\Theme\ViewModel\DeployMode;
 use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
@@ -18,9 +17,6 @@ use Magento\Framework\View\Element\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 /** @var HyvaCsp $hyvaCsp */
-
-/** @var DeployMode $deployMode */
-$deployMode = $viewModels->require(DeployMode::class);
 
 /** @var StoreConfig $storeConfig */
 $storeConfig = $viewModels->require(StoreConfig::class);
@@ -40,9 +36,7 @@ if ($deferredComponentsConfig = $storeConfig->getStoreConfig('hyva_theme_general
     for (const [selector, deferUntil] of Object.entries(<?= /** @noEscape */ json_encode($deferred) ?>)) {
         document.querySelectorAll(selector).forEach(el => el.setAttribute('x-defer', `${deferUntil}`));
     }
-    <?php if ($deployMode->isDeveloperMode()): ?>
     //# sourceURL=alpine-defer-rules.js
-    <?php endif; ?>
 </script>
 <?php endif ?>
 <?php $hyvaCsp->registerInlineScript() ?>

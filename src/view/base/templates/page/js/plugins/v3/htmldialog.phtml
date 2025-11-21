@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HyvaCsp;
-use Hyva\Theme\ViewModel\DeployMode;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -20,9 +19,6 @@ use Magento\Framework\View\Element\Template;
 /** @var Template $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
-/** @var DeployMode $deployMode */
-$deployMode = $viewModels->require(DeployMode::class);
 
 /**
  * @version 2.2.3
@@ -125,8 +121,6 @@ $deployMode = $viewModels->require(DeployMode::class);
             window.Alpine.plugin(dialog_default);
         });
     })();
-    <?php if ($deployMode->isDeveloperMode()): ?>
     //# sourceURL=alpine-htmldialog.js
-    <?php endif; ?>
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
