@@ -32,4 +32,11 @@ interface MediaHtmlProviderInterface
      * @return string
      */
     public function getPictureHtml(array $images, array $imgAttributes = [], array $pictureAttributes = []): string;
+
+    /**
+     * @param string $imagePath
+     *
+     * @return string
+     */
+    public function getImageUrl(string $imagePath, int $width = null, int $height = null): string;
 }

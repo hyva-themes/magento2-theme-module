@@ -146,4 +146,9 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
         }
         return implode(' ', $attributeParts);
     }
+
+    public function getImageUrl(string $imagePath, int $width = null, int $height = null): string
+    {
+        return $this->getMediaUrl($imagePath);
+    }
 }
