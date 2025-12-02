@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\ViewModel;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\ScopeInterface;
 use function array_filter as filter;
@@ -24,15 +25,22 @@ class SpeculationRules implements ArgumentInterface
     private $scopeConfig;
 
     /**
+     * @var UrlInterface
+     */
+    private $urlBuilder;
+
+    /**
      * @var array
      */
     private $excludeList;
 
     public function __construct(
         ScopeConfigInterface $scopeConfig,
+        UrlInterface $urlBuilder,
         array $excludeFromPreloading = []
     ) {
         $this->scopeConfig = $scopeConfig;
+        $this->urlBuilder = $urlBuilder;
         $this->excludeList = $excludeFromPreloading;
     }
 
@@ -52,33 +60,40 @@ class SpeculationRules implements ArgumentInterface
         return (string)$this->getSpeculationConfig('eagerness');
     }
 
+    public function getStoreCodeUrlPrefix(): string
+    {
+        $baseUrl = $this->urlBuilder->getBaseUrl();
+        return rtrim(parse_url($baseUrl, PHP_URL_PATH) ?? '', '/');
+    }
+
     /**
      * Build the speculation rule structure for the 'not' condition based on a list of exclusion paths.
      *
      * This function processes an array of strings and converts them into valid 'href_matches' patterns.
-     * - Plain strings ('customer') are converted to path patterns ('/customer/\*' and '\*\/customer/\*').
+     * - Plain strings ('customer') are converted to path pattern ('/customer/*' or if the url has a suffix '/suffix/customer/*').
      * - Strings starting with a dot ('.pdf') are treated as file extensions and converted to wildcard patterns ('*.pdf').
-     * - Strings already containing a '/' or '*' are used as-is.
+     * - Strings already containing a '*' are used as-is.
      */
     public function getExcludeRules(array $excludes): array
     {
+        $urlPrefix = $this->getStoreCodeUrlPrefix();
         $defaultExcludes = keys(filter($this->excludeList));
         $allExcludes = merge($defaultExcludes, $excludes);
-
         $excludePatterns = [];
 
         foreach ($allExcludes as $value) {
-            if (empty(trim((string) $value))) {
+            $value = trim((string)$value);
+            if (empty($value)) {
                 continue;
             }
 
-            if (strpos($value, '/') !== false || strpos($value, '*') !== false) {
-                $excludePatterns[] = $value;
-            } elseif (substr($value, 0, 1) === '.') {
+            if (substr($value, 0, 1) === '.') {
                 $excludePatterns[] = '*' . $value;
+            } elseif (strpos($value, '*') !== false) {
+                $excludePatterns[] = $value;
             } else {
-                $excludePatterns[] = '/' . $value . '/*';
-                $excludePatterns[] = '*/' . $value . '/*';
+                $pattern = '/' . trim($value, '/') . '/*';
+                $excludePatterns[] = $urlPrefix . $pattern;
             }
         }
 
