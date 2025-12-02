@@ -99,6 +99,7 @@
                 <item name="wishlist" xsi:type="boolean">true</item>
                 <item name="checkout" xsi:type="boolean">true</item>
                 <item name="paypal" xsi:type="boolean">true</item>
+                <item name="newsletter" xsi:type="boolean">true</item>
                 <item name="stores/store/redirect" xsi:type="boolean">true</item>
             </argument>
         </arguments>
