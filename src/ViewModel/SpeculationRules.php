@@ -63,7 +63,7 @@ class SpeculationRules implements ArgumentInterface
     public function getStoreCodeUrlPrefix(): string
     {
         $baseUrl = $this->urlBuilder->getBaseUrl();
-        //phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         return rtrim(parse_url($baseUrl, PHP_URL_PATH) ?? '', '/');
     }
 
