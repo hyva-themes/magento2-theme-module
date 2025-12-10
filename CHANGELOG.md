@@ -6,7 +6,28 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.1...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.2...main
+
+## [1.4.2] - 2025-12-10
+
+[1.4.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.1...1.4.2
+
+### Added
+
+-   **Add a method to get single image URLs that will optimize with Hyvä Commerce**  
+    For more information, please refer to [merge request #601](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/601)
+
+-   **Add source urls for easier debugging**  
+    For more information, please refer to [merge request #600](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/600)
+
+### Changed
+
+-   **Fixed Speculation rules to take account for store codes in URL**  
+    For more information, please refer to [issue #494](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/494)
+
+### Removed
+
+-   Nothing removed
 
 ## [1.4.1] - 2025-11-17
 
@@ -16,7 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Added installation instructions to README**
 
--   **Add notes about unsupported PageBilder slider features**
+-   **Add notes about unsupported PageBilder slider features**  
     Autoplay is no longer supported for A11Y with the CSS SnapSlider introduced in Hyvä 1.4.0.
     Also, Infinite Scroll is not supported by the CSS slider.
 
@@ -30,7 +51,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     For more information, please refer to [issue #489](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/489)
 
--   **Fix a number of minor bugs in the Snap Slider**
+-   **Fix a number of minor bugs in the Snap Slider**  
     * Fix scroll-bounce edge case when there is not enough space available.  
     * Exclude `<style>` tags from slider contents.
     * Prevent error when group-pager is set and there are no slides
