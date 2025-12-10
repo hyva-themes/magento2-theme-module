@@ -12,15 +12,13 @@ use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
+/** @var HyvaCsp $hyvaCsp */
 /** @var Template $block */
 /** @var Escaper $escaper */
-/** @var HyvaCsp $hyvaCsp */
 /** @var ViewModelRegistry $viewModels */
 ?>
 <script>
     (function () {
-        "use strict";
-
         const initAlpine = window.deferLoadingAlpine || ((callback) => callback());
         window.deferLoadingAlpine = (callback) => {
             const origInitializeComponent = Alpine.initializeComponent;
@@ -31,6 +29,7 @@ use Magento\Framework\View\Element\Template;
             };
             initAlpine(callback);
         };
-    })()
+    })();
+    //# sourceURL=alpine-ignore.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>

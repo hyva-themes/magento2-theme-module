@@ -10,13 +10,15 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
-/** @var Escaper $escaper */
-/** @var Template $block */
 /** @var HyvaCsp $hyvaCsp */
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
 
 /**
  * @version 2.2.3
@@ -119,5 +121,6 @@ use Magento\Framework\View\Element\Template;
             window.Alpine.plugin(dialog_default);
         });
     })();
+    //# sourceURL=alpine-htmldialog.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>

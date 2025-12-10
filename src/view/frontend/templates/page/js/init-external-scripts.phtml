@@ -22,6 +22,7 @@ use Magento\Framework\View\Element\Template;
             window.dispatchEvent(new Event('init-external-scripts'))
         };
         events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true, passive: true}))
-    })(['touchstart', 'mousemove', 'wheel', 'scroll', 'keydown'])
+    })(['touchstart', 'mousemove', 'wheel', 'scroll', 'keydown']);
+    //# sourceURL=hyva-init-external-scripts.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>

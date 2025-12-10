@@ -5,10 +5,17 @@
  * See COPYING.txt for license details.
  */
 
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
 
 /** @var HyvaCsp $hyvaCsp */
-
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
 ?>
 <script>
     (() => {
@@ -69,5 +76,6 @@ use Hyva\Theme\ViewModel\HyvaCsp;
             window.Alpine.plugin(src_default);
         });
     })();
+    //# sourceURL=alpine-intersect.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
