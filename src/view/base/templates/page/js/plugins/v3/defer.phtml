@@ -12,15 +12,13 @@ use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
+/** @var HyvaCsp $hyvaCsp */
 /** @var Template $block */
 /** @var Escaper $escaper */
-/** @var HyvaCsp $hyvaCsp */
 /** @var ViewModelRegistry $viewModels */
 ?>
 <script>
-    (function () {
-        "use strict";
-
+    (() => {
         const hasAlpine = new Promise(resolve => {
             window.addEventListener('alpine:initialized', resolve, {once: true, passive: true});
         });
@@ -84,6 +82,7 @@ use Magento\Framework\View\Element\Template;
         }
 
         window.addEventListener('alpine:init', initDeferredComponents, {once: true, passive: true});
-    })()
+    })();
+    //# sourceURL=alpine-defer.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
