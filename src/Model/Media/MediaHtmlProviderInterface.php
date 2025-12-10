@@ -38,5 +38,5 @@ interface MediaHtmlProviderInterface
      *
      * @return string
      */
-    public function getImageUrl(string $imagePath, int $width = null, int $height = null): string;
+    public function getImageUrl(string $imagePath, ?int $width = null, ?int $height = null): string;
 }
