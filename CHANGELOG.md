@@ -6,7 +6,28 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.20...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.21...1.3.x-main
+
+## [1.3.21] - 2026-01-08
+
+[1.3.21]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.20...1.3.21
+
+### Added
+
+- Nothing added
+
+### Changed
+
+- **Changed licensing to be dual licensed under OSL and AFL**
+
+- **Updated `RecurringData::install` to reset-less theme logic starting 1.3.21**
+
+  The code originally assumed Hyvä Theme version 1.4.0 was the first version without a reset-theme.  
+  From 1.3.21 onward that will be the earliest version of the default-theme without reset-theme inheritance.
+
+### Removed
+
+- Nothing removed
 
 ## [1.3.20] - 2025-11-04
 
