@@ -2,12 +2,8 @@
 <!--
 /**
  * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- *
- * Send emails for orders which are created via GraphQl
- * See https://github.com/magento/magento2/pull/28352
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
