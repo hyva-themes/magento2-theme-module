@@ -4,43 +4,77 @@
 
 ## hyva-themes/magento2-theme-module
 
+Core Hyvä Themes framework module for Magento 2, providing shared theme infrastructure used by Hyvä storefront themes.
+
 ![Supported Magento Versions][ico-compatibility]
 
-Compatible with Magento 2.4.0 and higher.
- 
-## Installation
+## Requirements
 
-You need a valid Hyvä packagist.com key.
+Compatible with Magento 2.4.4-p9 and higher.
+
+## Scope
+
+This package provides the Hyvä theme framework module. It does not include a storefront theme; install `hyva-themes/magento2-default-theme` for the default frontend theme assets.
+ 
+## Hyvä Theme Module Installation
+
+The Hyvä Theme module is commonly installed as a dependency of the Hyvä default theme `hyva-themes/magento2-default-theme`.  
+The following instructions describe how to install the Hyvä Theme module explicitly.
+
+### Step 1: Configure composer repositories
+
+The recommended way to install the Hyvä Theme module is with a Hyvä Private Packagist key. This will make related Hyvä packages available.
+Alternatively, the module can be installed from GitHub.
+
+Choose one of the following options:
+
+#### Option 1: Installation from Hyvä Private Packagist (Recommended)
 
 Get a free key by registering an account at [www.hyva.io](https://www.hyva.io) and creating one from your account dashboard.
 
-You will receive instruction like the following after creating your packagist.com key:
+You will receive instructions like the following after creating your Packagist key:
 
-```
-# this command adds your key to your projects auth.json file
-# replace yourLicenseAuthentificationKey with your own key
-composer config --auth http-basic.hyva-themes.repo.packagist.com token yourLicenseAuthentificationKey
+```sh
+# this command adds your key to your project's auth.json file
+# replace yourLicenseAuthenticationKey with your own key
+composer config --auth http-basic.hyva-themes.repo.packagist.com token yourLicenseAuthenticationKey
 # replace yourProjectName with your project name
 composer config repositories.private-packagist composer https://hyva-themes.repo.packagist.com/yourProjectName/
 ```
 
-Run those commands, and then, install the theme and its dependencies with composer:
+#### Option 2: Installation from GitHub
+
+To install the module directly from GitHub, configure the repository as a composer repository.
 
 ```sh
-composer require hyva-themes/magento2-default-theme
+composer config repositories.hyva-themes/magento2-theme-module git https://github.com/hyva-themes/magento2-theme-module.git
+composer config repositories.hyva-themes/magento2-mollie-theme-bundle git https://github.com/hyva-themes/magento2-mollie-theme-bundle.git
 ```
-Next, run the Magento setup command:
+
+### Step 2: Install the module
+
+Install the module and its dependencies with composer:
 
 ```sh
-bin/magento setup:upgrade
+composer require hyva-themes/magento2-theme-module
 ```
-Navigate to the `Content > Design > Configuration` admin section and activate the hyva/default theme.
 
-Please see the [Getting Started](https://docs.hyva.io/hyva-themes/getting-started/index.html#getting-started) documentation for further information.
+### Step 3: Post-install actions
+
+- After installing the module, run the Magento setup command:
+
+  ```sh
+  bin/magento setup:upgrade
+  ```
+
+## Support / Docs
+
+- Documentation: [https://docs.hyva.io](https://docs.hyva.io)
+- Account and downloads: [https://www.hyva.io](https://www.hyva.io)
 
 ## License
 
-This package is primarily licensed under the **Open Software License (OSL 3.0)**.
+This package is licensed under the **Open Software License (OSL 3.0)**.
 
 * **Copyright:** Copyright © 2020-present Hyvä Themes. All rights reserved.
 * **License Text (OSL 3.0):** The full text of the OSL 3.0 license can be found in the `LICENSE.txt` file within this package, and is also available online at [http://opensource.org/licenses/osl-3.0.php](http://opensource.org/licenses/osl-3.0.php).
