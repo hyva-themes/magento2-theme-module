@@ -6,7 +6,34 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.2...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.3...main
+
+## [1.4.3] - 2026-01-09
+
+[1.4.3]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.2...1.4.3
+
+### Added
+
+- **Nothing Added**
+
+### Changed
+
+- **Update RecurringData to apply parent theme adjustments from 1.3.21**
+  Because the latest version of the theme-module is commonly installed with older
+  versions of the default theme, the logic has to be adjusted to handle the new 1.3.21 
+  release.
+
+- **Fix product list item cache key**
+  The block data property `hideDetails` now is correctly `hide_details`. The old version
+  also remains for backward compatibility.
+
+  Many thanks to Andreas Pointner (Copex) for the contribution!
+
+- **Improve README.md**
+
+### Removed
+
+- Nothing removed
 
 ## [1.4.2] - 2025-12-10
 
@@ -37,7 +64,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Added installation instructions to README**
 
--   **Add notes about unsupported PageBilder slider features**  
+-   **Add notes about unsupported PageBuilder slider features**  
     Autoplay is no longer supported for A11Y with the CSS SnapSlider introduced in Hyvä 1.4.0.
     Also, Infinite Scroll is not supported by the CSS slider.
 
@@ -704,7 +731,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Call IsCaptchaEnabledInterface::isCaptchaEnabledFor for extension compatibility**
 
     Previously the recaptcha implementation only accessed the system configuration values directly.  
-    By also using the interface compatiblity with related third party modules is improved.
+    By also using the interface compatibility with related third party modules is improved.
 
     For details, please refer to [issue 356](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/356).
 
@@ -743,7 +770,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Add hyva.activateScripts method**
 
-    The `hyva.activateScripts` method can be used to have a browser process scripts in HTML snippets from Ajax reponses.
+    The `hyva.activateScripts` method can be used to have a browser process scripts in HTML snippets from Ajax responses.
 
     For details, please refer to [merge request #434](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/434).
 
@@ -1279,7 +1306,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Add optional argument to allow skipping the uenc parameter in hyva.postForm**
 
-    Previously the `hyva.postForm` method always automatically added the `unec` parameter to the payload.  
+    Previously the `hyva.postForm` method always automatically added the `uenc` parameter to the payload.  
     Now it is possible to skip it by providing the key `unec: false` in the postParams argument.
 
     For more information, please refer to [merge request #340](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/340).
@@ -1315,7 +1342,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Adjusted workaround for PHP 8.1 core bug in Magento\Tax\Pricing\Render\Adjustment**
 
-    The previously applied fix was subtely different from the one introduced upstream by Magento.
+    The previously applied fix was subtly different from the one introduced upstream by Magento.
     Now the behavior of the backport in Hyvä behaves identically.  
 
     For more information, please refer to [merge request #326](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/326).
@@ -1337,7 +1364,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     For more information, please refer to [issue #256](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/256).
 
-    Many thansk to Matt Walsh for the detailed report!
+    Many thanks to Matt Walsh for the detailed report!
 
 -   **Fixed: PageBuilder HTML content processing**
 
@@ -1459,7 +1486,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Improve minlength and maxlength translations for advanced form validation**
 
-    Previously there was no distinction between singlular and plural numbers.
+    Previously there was no distinction between singular and plural numbers.
 
     For more information please refer to merge [request #288](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/288).
 
@@ -1904,7 +1931,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
--   **Guard against array to string conversion error if multipe attribute values can be specified**
+-   **Guard against array to string conversion error if multiple attribute values can be specified**
 
     This is relevant for extensions like elasticsuite.
 
@@ -2251,7 +2278,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Improve x-intersect Alpine.js v2 plugin**
 
-    The upstream Apline.js plugin received some improvements with regard to reliability and a new `margin` option.  
+    The upstream Alpine.js plugin received some improvements with regard to reliability and a new `margin` option.  
     These changes are now included in the Alpine.js v2 backport bundled with Hyvä.
 
     For more information see [merge request #197](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/197).
@@ -2327,7 +2354,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Centralize product list item block rendering**
 
-    Previously the logic to render a product list item was repeated in several templates. This requried updating multiple
+    Previously the logic to render a product list item was repeated in several templates. This required updating multiple
     files with the same change, and caused inconsistencies in regards to caching.
 
     More details can be found in [issue #154](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/154)
@@ -2454,7 +2481,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
--   **Updated Apline from 2.7.0 to 2.8.2**
+-   **Updated Alpine from 2.7.0 to 2.8.2**
 
     This change is related to the new Alpine x-intersect plugin backport and will help the future upgrade to Alpine v3
     will go smoother.
@@ -2468,7 +2495,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     This change allows setting data on the block to renders a modal template,  
     for example `$modal->getContentRenderer()->assign('foo', $foo)`.
 
-    More information can be cound in the [merge request #157](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/157)
+    More information can be found in the [merge request #157](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/157)
 
 -   **Bugfix: If set, use logo_file block argument to render logo like in Luma**
 
@@ -2997,7 +3024,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Add view model for easy use of generic slider**
   
-    A new `Slider` View Model was added that allows you to create more generic sliders in conjection with a generic slider phtml file in `Magento_Theme::elements/slider-php.phtml` and `Magento_Theme::elements/slider-gql.phtml`
+    A new `Slider` View Model was added that allows you to create more generic sliders in conjunction with a generic slider phtml file in `Magento_Theme::elements/slider-php.phtml` and `Magento_Theme::elements/slider-gql.phtml`
 
     See `src/ViewModel/Slider.php`
 
@@ -3049,9 +3076,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     Configurables are not yet included due to a core-bug that will be fixed in 2.4.3: https://github.com/magento/magento2/issues/31180
 
 
--   **customOptions viewModel** that allows to override the pthml file for customOptions of dropdown/multiselect/radio/checkbox types.
+-   **customOptions viewModel** that allows to override the phtml file for customOptions of dropdown/multiselect/radio/checkbox types.
 
-    By default, Magento renders `select` custom-options with a toHtml() method in `\Magento\Catalog\Block\Product\View\Options\Type\Select\Multiple`. This can now be replaced with a proper pthml file using this viewModel.
+    By default, Magento renders `select` custom-options with a toHtml() method in `\Magento\Catalog\Block\Product\View\Options\Type\Select\Multiple`. This can now be replaced with a proper phtml file using this viewModel.
 
     See `src/ViewModel/CustomOption.php`
 
@@ -3075,7 +3102,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **SwatchRenderer ViewModel**
 
-    Used to determine wheter an attribute should render as swatch: `isSwatchAttribute($attribute)`
+    Used to determine whether an attribute should render as swatch: `isSwatchAttribute($attribute)`
 
     See `src/ViewModel/SwatchRenderer.php`
 
