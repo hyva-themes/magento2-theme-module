@@ -17,7 +17,7 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 class RecurringData implements InstallDataInterface
 {
     /**
-     * Unset or set the parent theme id for the Hyvä default themes after upgrading to 1.4.0 or newer
+     * Unset or set the parent theme id for the Hyvä default themes after upgrading to 1.3.21 or newer
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
@@ -27,8 +27,8 @@ class RecurringData implements InstallDataInterface
                  'Hyva/default-csp' => 'hyva-themes/magento2-default-theme-csp',
              ] as $themeCode => $packageName) {
             $version = $this->getInstalledVersion($packageName);
-            if (null !== $version && version_compare('1.4.0', $version, '<=')) {
-                // Ensure the default theme parent_id is NULL for default themes >= 1.4.0
+            if (null !== $version && version_compare('1.3.21', $version, '<=')) {
+                // Ensure the default theme parent_id is NULL for default themes >= 1.3.21
                 $this->ensureThemeParentIdIsNull($setup, $themeCode);
             }
             // Do not set the parent theme ID to Hyva/reset since we want to allow manual migrations to the base layout reset
