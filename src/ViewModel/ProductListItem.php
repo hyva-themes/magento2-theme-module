@@ -128,7 +128,8 @@ class ProductListItem implements ArgumentInterface
             $block->getTemplate(),
             $product->getStoreId(),
             $this->getCurrencyCode(),
-            (int) $block->getData('hideDetails'),
+            (int) $block->getData('hideDetails'), // Keep for BC
+            (int) $block->getData('hide_details'),
             (int) $block->getData('hide_rating_summary'),
             $this->isCategoryInProductUrl()
                 ? $this->currentCategory->get()->getId()
@@ -182,7 +183,8 @@ class ProductListItem implements ArgumentInterface
                           ->setData('template_type', $templateType)
                           ->setData('cache_lifetime', $cacheLifetime)
                           ->setData('cache_tags', $product->getIdentities())
-                          ->setData('hideDetails', $parentBlock->getData('hideDetails'))
+                          ->setData('hideDetails', $parentBlock->getData('hideDetails')) // Keep for BC
+                          ->setData('hide_details', $parentBlock->getData('hide_details'))
                           ->setData('hide_rating_summary', $parentBlock->getData('hide_rating_summary'));
 
         $itemCacheKeyInfo = $this->getItemCacheKeyInfo($product, $itemRendererBlock, $viewMode, $templateType);
