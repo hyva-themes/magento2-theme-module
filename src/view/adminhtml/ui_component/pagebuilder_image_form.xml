@@ -34,6 +34,7 @@
                 </checkbox>
             </formElements>
         </field>
+
         <field name="native_dimensions" sortOrder="30" formElement="checkbox" component="Hyva_Theme/js/pagebuilder/form/element/image-dimensions-toggle">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -59,63 +60,7 @@
                 </checkbox>
             </formElements>
         </field>
-        <!-- TODO: Use the same naming as Magento for backward compatibility -->
-        <field name="desktop_image_width" sortOrder="31" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
-            <settings>
-                <label translate="true">Desktop Image Width</label>
-                <visible>true</visible>
-                <dataType>text</dataType>
-                <validation>
-                    <rule name="validate-string" xsi:type="boolean">true</rule>
-                </validation>
-                <imports>
-                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
-                </imports>
-            </settings>
-        </field>
-        <!-- TODO: Use the same naming as Magento for backward compatibility -->
-        <field name="desktop_image_height" sortOrder="32" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
-            <settings>
-                <label translate="true">Desktop Image Height</label>
-                <visible>true</visible>
-                <dataType>text</dataType>
-                <validation>
-                    <rule name="validate-string" xsi:type="boolean">true</rule>
-                </validation>
-                <imports>
-                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
-                </imports>
-            </settings>
-        </field>
-        <!-- TODO: Use the same naming as Magento for backward compatibility -->
-        <field name="mobile_image_width" sortOrder="33" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
-            <settings>
-                <label translate="true">Mobile Image Width</label>
-                <visible>true</visible>
-                <dataType>text</dataType>
-                <validation>
-                    <rule name="validate-string" xsi:type="boolean">true</rule>
-                </validation>
-                <imports>
-                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
-                </imports>
-            </settings>
-        </field>
-        <!-- TODO: Use the same naming as Magento for backward compatibility -->
-        <field name="mobile_image_height" sortOrder="34" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
-            <settings>
-                <label translate="true">Mobile Image Height</label>
-                <visible>true</visible>
-                <dataType>text</dataType>
-                <validation>
-                    <rule name="validate-string" xsi:type="boolean">true</rule>
-                </validation>
-                <imports>
-                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
-                </imports>
-            </settings>
-        </field>
-        <!-- Magento named fields, will be used in the futere update -->
+
         <field name="image_attribute_width" formElement="input" sortOrder="10">
             <settings>
                 <validation>
@@ -128,8 +73,9 @@
                     <class name="admin__field-small">true</class>
                 </additionalClasses>
                 <dataScope>image_attribute_width</dataScope>
-                <!-- Hide until support is added -->
-                <visible>false</visible>
+                <imports>
+                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
+                </imports>
             </settings>
         </field>
         <field name="image_attribute_height" formElement="input" sortOrder="11">
@@ -144,8 +90,9 @@
                     <class name="admin__field-small">true</class>
                 </additionalClasses>
                 <dataScope>image_attribute_height</dataScope>
-                <!-- Hide until support is added -->
-                <visible>false</visible>
+                <imports>
+                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
+                </imports>
             </settings>
         </field>
         <field name="mobile_image_attribute_width" formElement="input" sortOrder="12">
@@ -160,8 +107,9 @@
                     <class name="admin__field-small">true</class>
                 </additionalClasses>
                 <dataScope>mobile_image_attribute_width</dataScope>
-                <!-- Hide until support is added -->
-                <visible>false</visible>
+                <imports>
+                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
+                </imports>
             </settings>
         </field>
         <field name="mobile_image_attribute_height" formElement="input" sortOrder="13">
@@ -176,8 +124,9 @@
                     <class name="admin__field-small">true</class>
                 </additionalClasses>
                 <dataScope>mobile_image_attribute_height</dataScope>
-                <!-- Hide until support is added -->
-                <visible>false</visible>
+                <imports>
+                    <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
+                </imports>
             </settings>
         </field>
     </fieldset>
