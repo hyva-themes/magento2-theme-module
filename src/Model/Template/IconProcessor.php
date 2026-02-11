@@ -71,6 +71,11 @@ class IconProcessor implements ProcessorInterface
             $attributes['title'] = $title;
         }
 
+        // Allow aria-hidden to be forwarded for decorative icons
+        if (isset($parameters['aria-hidden'])) {
+            $attributes['aria-hidden'] = (string) $parameters['aria-hidden'];
+        }
+
         try {
             return $this->svgIcons->renderHtml($path, $classes, $width, $height, $attributes);
         } catch (NotFoundException $error) {
