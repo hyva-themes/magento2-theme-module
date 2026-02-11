@@ -173,8 +173,18 @@
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
             </group>
+            
+            <group id="animations" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Animations and Transistions</label>
+                <field id="enable_view_transition_gallery" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable View Transition Gallery</label>
+                    <comment>If enabled, the Product Gallery will use the View Transition API to animate the transition between the Product List Item</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
 
-            <group id="speculation_rules" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="speculation_rules" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Speculation Rules</label>
                 <field id="method" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1"
                     showInStore="1" canRestore="1">
