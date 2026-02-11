@@ -61,7 +61,7 @@
             </formElements>
         </field>
 
-        <field name="image_attribute_width" formElement="input" sortOrder="10">
+        <field name="image_attribute_width" formElement="input" sortOrder="10" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <validation>
                     <rule name="validate-digits" xsi:type="boolean">true</rule>
@@ -78,7 +78,7 @@
                 </imports>
             </settings>
         </field>
-        <field name="image_attribute_height" formElement="input" sortOrder="11">
+        <field name="image_attribute_height" formElement="input" sortOrder="11" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <validation>
                     <rule name="validate-digits" xsi:type="boolean">true</rule>
@@ -95,7 +95,7 @@
                 </imports>
             </settings>
         </field>
-        <field name="mobile_image_attribute_width" formElement="input" sortOrder="12">
+        <field name="mobile_image_attribute_width" formElement="input" sortOrder="12" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <validation>
                     <rule name="validate-digits" xsi:type="boolean">true</rule>
@@ -112,7 +112,7 @@
                 </imports>
             </settings>
         </field>
-        <field name="mobile_image_attribute_height" formElement="input" sortOrder="13">
+        <field name="mobile_image_attribute_height" formElement="input" sortOrder="13" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <validation>
                     <rule name="validate-digits" xsi:type="boolean">true</rule>
