@@ -59,6 +59,7 @@
                 </checkbox>
             </formElements>
         </field>
+        <!-- TODO: Use the same naming as Magento for backward compatibility -->
         <field name="desktop_image_width" sortOrder="31" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <label translate="true">Desktop Image Width</label>
@@ -72,6 +73,7 @@
                 </imports>
             </settings>
         </field>
+        <!-- TODO: Use the same naming as Magento for backward compatibility -->
         <field name="desktop_image_height" sortOrder="32" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <label translate="true">Desktop Image Height</label>
@@ -85,6 +87,7 @@
                 </imports>
             </settings>
         </field>
+        <!-- TODO: Use the same naming as Magento for backward compatibility -->
         <field name="mobile_image_width" sortOrder="33" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <label translate="true">Mobile Image Width</label>
@@ -98,6 +101,7 @@
                 </imports>
             </settings>
         </field>
+        <!-- TODO: Use the same naming as Magento for backward compatibility -->
         <field name="mobile_image_height" sortOrder="34" formElement="input" component="Hyva_Theme/js/pagebuilder/form/element/image-dimension-input">
             <settings>
                 <label translate="true">Mobile Image Height</label>
@@ -109,6 +113,71 @@
                 <imports>
                     <link name="visible">${$.parentName}.native_dimensions:useManualDimensions</link>
                 </imports>
+            </settings>
+        </field>
+        <!-- Magento named fields, will be used in the futere update -->
+        <field name="image_attribute_width" formElement="input" sortOrder="10">
+            <settings>
+                <validation>
+                    <rule name="validate-digits" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>number</dataType>
+                <label translate="true">Image Attribute Width</label>
+                <addAfter translate="true">px</addAfter>
+                <additionalClasses>
+                    <class name="admin__field-small">true</class>
+                </additionalClasses>
+                <dataScope>image_attribute_width</dataScope>
+                <!-- Hide until support is added -->
+                <visible>false</visible>
+            </settings>
+        </field>
+        <field name="image_attribute_height" formElement="input" sortOrder="11">
+            <settings>
+                <validation>
+                    <rule name="validate-digits" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>number</dataType>
+                <label translate="true">Image Attribute Height</label>
+                <addAfter translate="true">px</addAfter>
+                <additionalClasses>
+                    <class name="admin__field-small">true</class>
+                </additionalClasses>
+                <dataScope>image_attribute_height</dataScope>
+                <!-- Hide until support is added -->
+                <visible>false</visible>
+            </settings>
+        </field>
+        <field name="mobile_image_attribute_width" formElement="input" sortOrder="12">
+            <settings>
+                <validation>
+                    <rule name="validate-digits" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>number</dataType>
+                <label translate="true">Mobile Image Attribute Width</label>
+                <addAfter translate="true">px</addAfter>
+                <additionalClasses>
+                    <class name="admin__field-small">true</class>
+                </additionalClasses>
+                <dataScope>mobile_image_attribute_width</dataScope>
+                <!-- Hide until support is added -->
+                <visible>false</visible>
+            </settings>
+        </field>
+        <field name="mobile_image_attribute_height" formElement="input" sortOrder="13">
+            <settings>
+                <validation>
+                    <rule name="validate-digits" xsi:type="boolean">true</rule>
+                </validation>
+                <dataType>number</dataType>
+                <label translate="true">Mobile Image Attribute Height</label>
+                <addAfter translate="true">px</addAfter>
+                <additionalClasses>
+                    <class name="admin__field-small">true</class>
+                </additionalClasses>
+                <dataScope>mobile_image_attribute_height</dataScope>
+                <!-- Hide until support is added -->
+                <visible>false</visible>
             </settings>
         </field>
     </fieldset>
