@@ -30,7 +30,7 @@
 
                 <field id="lazyload" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Lazyload Tag Manager</label>
-                    <comment><![CDATA[Tagmanager will only load after user interaction. This improves performance, but makes your analytics less accurate!
+                    <comment><![CDATA[Tag Manager will only load after user interaction. This improves performance, but makes your analytics less accurate!
                         <br><br>Only works on Hyvä Storefronts!]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>google/gtag/lazyload</config_path>
@@ -103,10 +103,10 @@
                 </field>
             </group>
             <group id="crosssell_products" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Crosssell Products</label>
+                <label>Cross-sell Products</label>
                 <field id="limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"
                     canRestore="1">
-                    <label>Max Product Count for Crosssell list</label>
+                    <label>Max Product Count for Cross-sell List</label>
                     <comment>(By default the limit is 4)</comment>
                     <validate>integer no-whitespace</validate>
                 </field>
@@ -168,14 +168,14 @@
                 <field id="deferred_components" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="30" translate="label comment"
                     canRestore="1">
                     <label>Defer components</label>
-                    <comment><![CDATA[Valid defer until values: <strong>interact</strong>, <strong>intersect</strong>, <strong>idle</strong>, <strong>event:eventname</strong>.<br/>Configuring many deferred components here may increase the Total Blocking Time. Consider defering components by changing the PHTML templates instead.]]></comment>
+                    <comment><![CDATA[Valid defer until values: <strong>interact</strong>, <strong>intersect</strong>, <strong>idle</strong>, <strong>event:eventname</strong>.<br/>Configuring many deferred components here may increase the Total Blocking Time. Consider deferring components by changing the PHTML templates instead.]]></comment>
                     <frontend_model>Hyva\Theme\Block\Adminhtml\Form\Field\DeferredAlpineComponents</frontend_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
             </group>
             
             <group id="animations" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Animations and Transistions</label>
+                <label>Animations and Transitions</label>
                 <field id="enable_view_transition_gallery" translate="label comment" type="select" sortOrder="10" showInDefault="1"
                     showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable View Transition Gallery</label>
@@ -267,7 +267,7 @@
             <resource>Magento_Catalog::config_catalog</resource>
             <group id="feature_flag" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
                 <label>Experimental Features</label>
-                <comment>Because of the reliance on experimental browser APIs, the Hyvä implementations may change or be removed entierly in
+                <comment>Because of the reliance on experimental browser APIs, the Hyvä implementations may change or be removed entirely in
                     future without notice.</comment>
             </group>
         </section>
@@ -329,13 +329,13 @@
         <section id="google">
             <group id="analytics">
                 <field id="type">
-                    <comment>Warning: Account type "Google Tag Manager" is a Adobe Commerce Feature is not implemented in Hyvä Theme!</comment>
+                    <comment>Warning: Account type "Google Tag Manager" is an Adobe Commerce feature and is not implemented in Hyvä Theme!</comment>
                 </field>
             </group>
             <group id="gtag">
                 <group id="analytics4">
                     <field id="type">
-                        <comment>Warning: Account type "Google Tag Manager" is a Adobe Commerce Feature is not implemented in Hyvä Theme!</comment>
+                        <comment>Warning: Account type "Google Tag Manager" is an Adobe Commerce feature and is not implemented in Hyvä Theme!</comment>
                     </field>
                 </group>
 
@@ -348,7 +348,7 @@
 
                 <field id="lazyload" translate="label" type="select" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Lazyload Tag Manager</label>
-                    <comment><![CDATA[Tagmanager will only load after user interaction. This improves performance, but makes your analytics less accurate!
+                    <comment><![CDATA[Tag Manager will only load after user interaction. This improves performance, but makes your analytics less accurate!
                             <br><br>Only works on Hyvä Storefronts!]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>google/gtag/lazyload</config_path>
