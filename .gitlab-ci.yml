@@ -14,20 +14,17 @@ include:
     file: 'test/integration.yml'
     ref: main
   - project: 'hyva-themes/base-ci'
-    file: 'test/cypress.yml'
+    file: 'test/theme-playwright.yml'
     ref: main
 
 test:integration:
   extends: .test:integration
   parallel:
     matrix:
-      # Note: 2.4.0 fails due to a bug in dotmailer/dotmailer-magento2-extension integration tests
       - MAGEVERSION: ['2.4.7-p7']
 
-test:cypress:
-  extends: .test:cypress
+test:playwright:
+  extends: .test:theme_playwright
   parallel:
     matrix:
-      # Note: The cypress tests do not pass on 2.4.0 because the customer API is missing the login feature
-      # Note: The cypress tests do not pass on 2.4.1 because the missing add coupon success message
       - MAGEVERSION: ['2.4.7-p7']
