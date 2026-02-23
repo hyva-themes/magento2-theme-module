@@ -60,11 +60,6 @@ class CurrentProductTest extends TestCase
         $this->products->add(ProductBuilder::aSimpleProduct()->build());
     }
 
-    protected function tearDown(): void
-    {
-        $this->products->rollback();
-    }
-
     /**
      * @test
      */
