@@ -21,7 +21,7 @@ use TddWizard\Fixtures\Catalog\ProductFixturePool;
 
 /**
  * @magentoAppIsolation enabled
- * @magentoDbIsolation enabled
+ * @magentoDbIsolation disabled
  * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  * @SuppressWarnings(PHPMD.LongVariable)
  */
@@ -58,6 +58,11 @@ class CurrentProductTest extends TestCase
         $this->products->add(ProductBuilder::aSimpleProduct()->build());
         $this->products->add(ProductBuilder::aSimpleProduct()->build());
         $this->products->add(ProductBuilder::aSimpleProduct()->build());
+    }
+
+    protected function tearDown(): void
+    {
+        $this->products->rollback();
     }
 
     /**
