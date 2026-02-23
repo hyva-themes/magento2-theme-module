@@ -21,10 +21,10 @@ test:integration:
   extends: .test:integration
   parallel:
     matrix:
-      - MAGEVERSION: ['2.4.7-p7']
+      - MAGEVERSION: ['2.4.8-p3']
 
 test:playwright:
   extends: .test:theme_playwright
   parallel:
     matrix:
-      - MAGEVERSION: ['2.4.7-p7']
+      - MAGEVERSION: ['2.4.8-p3']
