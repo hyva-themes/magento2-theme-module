@@ -34,11 +34,14 @@ static:phpcs:
 
 test:integration:
   extends: .test:integration
+  needs:
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
   rules:
     - if: $RUN_ONLY != '' && $RUN_ONLY != "integration"
       when: never
-    - if: $RUN_ONLY == "integration"
-      needs: []
     - when: on_success
   parallel:
     matrix:
@@ -46,11 +49,14 @@ test:integration:
 
 test:playwright:
   extends: .test:theme_playwright
+  needs:
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
   rules:
     - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
       when: never
-    - if: $RUN_ONLY == "playwright"
-      needs: []
     - when: on_success
   parallel:
     matrix:
