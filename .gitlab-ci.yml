@@ -28,3 +28,11 @@ test:playwright:
   parallel:
     matrix:
       - MAGEVERSION: ['2.4.8-p3']
+
+test:integration:manual:
+  extends: .test:integration
+  when: manual
+
+test:playwright:manual:
+  extends: .test:theme_playwright
+  when: manual
