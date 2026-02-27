@@ -13,10 +13,7 @@ include:
     file: 'static/phpcs.yml'
     ref: main
   - project: 'hyva-themes/base-ci'
-    file: 'test/integration.yml'
-    ref: main
-  - project: 'hyva-themes/base-ci'
-    file: 'test/theme-playwright.yml'
+    file: 'test/integration-box.yml'
     ref: main
   - project: 'hyva-themes/base-ci'
     file: 'test/theme-playwright-box.yml'
@@ -35,8 +32,8 @@ static:phpcs:
       when: never
     - when: on_success
 
-test:integration:
-  extends: .test:integration
+test:integration:box:
+  extends: .test:integration_box
   needs:
     - job: static:lint
       optional: true
@@ -48,22 +45,7 @@ test:integration:
     - when: on_success
   parallel:
     matrix:
-      - MAGEVERSION: ['2.4.8-p3']
-
-test:playwright:
-  extends: .test:theme_playwright
-  needs:
-    - job: static:lint
-      optional: true
-    - job: static:phpcs
-      optional: true
-  rules:
-    - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
-      when: never
-    - when: on_success
-  parallel:
-    matrix:
-      - MAGEVERSION: ['2.4.8-p3']
+      - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p3']
 
 test:playwright:box:
   extends: .test:theme_playwright_box
