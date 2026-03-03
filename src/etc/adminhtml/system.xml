@@ -13,7 +13,7 @@
             <label>Hyva Themes</label>
         </tab>
 
-        <section id="hyva_theme_google" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+        <section id="hyva_theme_google" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="100" translate="label">
             <label>Google Tag Manager</label>
             <tab>hyva_themes</tab>
             <resource>Magento_GoogleAnalytics::google</resource>
@@ -34,6 +34,36 @@
                         <br><br>Only works on Hyvä Storefronts!]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>google/gtag/lazyload</config_path>
+                </field>
+            </group>
+        </section>
+
+        <section id="hyva_theme_recaptcha" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="120" translate="label">
+            <label>Google reCAPTCHA</label>
+            <tab>hyva_themes</tab>
+            <resource>Magento_ReCaptchaUi::config</resource>
+
+            <group id="recaptcha_storefront" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>reCAPTCHA Legal Notice</label>
+                <comment>(These settings can also be found in Security > Google reCAPTCHA Storefront > reCAPTCHA Legal Notice)</comment>
+                <field id="legal_notice_mode" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Legal Notice Mode</label>
+                    <comment><![CDATA[
+                    Default reCAPTCHA legal notice:<em>This form is protected by reCAPTCHA - the Google Privacy Policy and Terms of Service apply</em>.
+                    ]]></comment>
+                    <config_path>recaptcha_frontend/legal_notice/legal_notice_mode</config_path>
+                    <options>
+                        <option label="Default">default</option>
+                        <option label="Custom">custom</option>
+                    </options>
+                </field>
+                <field id="legal_notice" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Legal Notice</label>
+                    <config_path>recaptcha_frontend/legal_notice/notice</config_path>
+                    <comment>Only plain text and hyperlinks are permitted. If left blank, no notice will be displayed.</comment>
+                    <depends>
+                        <field id="legal_notice_mode">custom</field>
+                    </depends>
                 </field>
             </group>
         </section>
@@ -173,7 +203,7 @@
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
             </group>
-            
+
             <group id="animations" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Animations and Transitions</label>
                 <field id="enable_view_transition_gallery" translate="label comment" type="select" sortOrder="10" showInDefault="1"
@@ -246,7 +276,7 @@
             </group>
         </section>
 
-        <section id="hyva_theme_pagebuilder" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="10" translate="label">
+        <section id="hyva_theme_pagebuilder" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="14" translate="label">
             <label>PageBuilder</label>
             <tab>hyva_themes</tab>
             <resource>Magento_Cms::config_cms</resource>
@@ -261,7 +291,7 @@
             </group>
         </section>
 
-        <section id="hyva_theme_experimental" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="999" translate="label">
+        <section id="hyva_theme_experimental" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="1000" translate="label">
             <label>Experimental</label>
             <tab>hyva_themes</tab>
             <resource>Magento_Catalog::config_catalog</resource>
@@ -352,6 +382,29 @@
                             <br><br>Only works on Hyvä Storefronts!]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>google/gtag/lazyload</config_path>
+                </field>
+            </group>
+        </section>
+
+        <section id="recaptcha_frontend">
+            <group id="legal_notice" translate="label" type="text" sortOrder="960" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>reCAPTCHA Legal Notice (Hyvä only)</label>
+                <field id="legal_notice_mode" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Legal Notice Mode</label>
+                    <comment><![CDATA[
+                    Default reCAPTCHA legal notice:<em>This form is protected by reCAPTCHA - the Google Privacy Policy and Terms of Service apply</em>.
+                    ]]></comment>
+                    <options>
+                        <option label="Default">default</option>
+                        <option label="Custom">custom</option>
+                    </options>
+                </field>
+                <field id="legal_notice" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Legal Notice</label>
+                    <comment>Only plain text and hyperlinks are permitted. If left blank, no notice will be displayed.</comment>
+                    <depends>
+                        <field id="legal_notice_mode">custom</field>
+                    </depends>
                 </field>
             </group>
         </section>
