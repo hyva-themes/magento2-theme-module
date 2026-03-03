@@ -22,6 +22,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Use product title instead of meta title as page title**  
     For more information, please refer to [issue #513](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/513)
 
+-   **Fix intermittent Luma blocks appearing on Hyvä frontend**  
+    For more information, please refer to [issue #512](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/512)
+
+-   **Make the View Transition from the Product List to the Gallery optional and configurable**  
+    For more information, please refer to [issue #511](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/511)
+
+-   **Update Lucide Icons to v0.563**  
+    For more information, please refer to [issue #507](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/507)
+
 ### Removed
 
 -   Nothing removed
