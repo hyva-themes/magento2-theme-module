@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.21...1.3.x-main
 
+### Added
+
+-   Nothing added
+
+### Changed
+
+-   **Display the Theme Module version in the footer next to the Magento version**  
+    For more information, please refer to [issue #505](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/505)
+
+### Removed
+
+-   Nothing removed
+
 ## [1.3.21] - 2026-01-08
 
 [1.3.21]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.20...1.3.21
