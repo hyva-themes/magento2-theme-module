@@ -17,6 +17,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Display the Theme Module version in the footer next to the Magento version**  
     For more information, please refer to [issue #505](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/505)
 
+-   **Fix intermittent Luma blocks appearing on Hyvä frontend**  
+    For more information, please refer to [issue #512](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/512)
+
 ### Removed
 
 -   Nothing removed
