@@ -8,23 +8,32 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Model\Media;
 
-use InvalidArgumentException;
-use Magento\Framework\UrlInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Escaper;
+use Magento\Framework\Filesystem;
+use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class MediaHtmlProvider implements MediaHtmlProviderInterface
 {
     private ?string $mediaBaseUrl = null;
+    private ?string $mediaBaseDir = null;
     private StoreManagerInterface $storeManager;
     private Escaper $escaper;
+    private LoggerInterface $logger;
+    private Filesystem $filesystem;
 
     public function __construct(
         StoreManagerInterface $storeManager,
-        Escaper $escaper
+        Escaper $escaper,
+        LoggerInterface $logger,
+        Filesystem $filesystem
     ) {
         $this->storeManager = $storeManager;
         $this->escaper = $escaper;
+        $this->logger = $logger;
+        $this->filesystem = $filesystem;
     }
 
     public function getPictureHtml(array $images, array $imgAttributes = [], array $pictureAttributes = []): string
@@ -111,13 +120,47 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
         return $attributes;
     }
 
-    private function getMediaUrl(string $path): string
+    public function getMediaUrl(string $path): string
     {
         if ($this->mediaBaseUrl === null) {
             $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
         }
 
+        if (str_contains($path, '://')) {
+            $this->logger->warning(
+                sprintf('getMediaUrl() received a URL instead of a path: "%s". Returning as-is.', $path)
+            );
+            return $path;
+        }
+
+        if ($this->mediaBaseDir === null) {
+            $this->mediaBaseDir = rtrim(
+                $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath(),
+                '/'
+            ) . '/';
+        }
+
+        if (str_starts_with($path, $this->mediaBaseDir)) {
+            $path = substr($path, strlen($this->mediaBaseDir));
+        }
+
         return $this->mediaBaseUrl . ltrim($path, '/');
+    }
+
+    public function normalizePath(string $path): string
+    {
+        if ($this->mediaBaseDir === null) {
+            $this->mediaBaseDir = rtrim(
+                $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath(),
+                '/'
+            ) . '/';
+        }
+
+        if (str_starts_with($path, $this->mediaBaseDir)) {
+            return substr($path, strlen($this->mediaBaseDir));
+        }
+
+        return $path;
     }
 
     private function buildImgTag(array $attributes): string
