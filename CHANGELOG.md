@@ -17,6 +17,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Fix Modal Dialog getting behind the browser UI**  
     For more information, please refer to [issue #487](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/487)
 
+-   **Add missing catch to fetch in private content**  
+    For more information, please refer to [issue #509](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/509)
+
+-   **Replace DeploymentConfig\Writer plugin with Recurring.php + Status plugin**  
+    For more information, please refer to [issue #438](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/438)
+
 ### Removed
 
 -   Nothing Removed
