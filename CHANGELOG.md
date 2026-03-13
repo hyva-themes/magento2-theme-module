@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.4...main
 
+### Added
+
+-   Nothing Added
+
+### Changed
+
+-   **Fix Modal Dialog getting behind the browser UI**  
+    For more information, please refer to [issue #487](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/487)
+
+### Removed
+
+-   Nothing Removed
+
 ## [1.4.4] - 2026-03-03
 
 [1.4.4]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.3...1.4.4
