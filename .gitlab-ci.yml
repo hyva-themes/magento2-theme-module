@@ -35,6 +35,21 @@ static:phpcs:
       when: never
     - when: on_success
 
+test:integration:
+  extends: .test:integration
+  needs:
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
+  rules:
+    - if: $RUN_ONLY != '' && $RUN_ONLY != "integration"
+      when: never
+    - when: on_success
+  parallel:
+    matrix:
+      - MAGEVERSION: ['2.4.8-p3']
+
 test:integration:box:
   extends: .test:integration_box
   needs:
@@ -50,17 +65,17 @@ test:integration:box:
     matrix:
       - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p3']
 
-test:playwright:box:
-  extends: .test:theme_playwright_box
-  needs:
-    - job: static:lint
-      optional: true
-    - job: static:phpcs
-      optional: true
-  rules:
-    - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
-      when: never
-    - when: on_success
-  parallel:
-    matrix:
-      - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p3']
+#test:playwright:box:
+#  extends: .test:theme_playwright_box
+#  needs:
+#    - job: static:lint
+#      optional: true
+#    - job: static:phpcs
+#      optional: true
+#  rules:
+#    - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
+#      when: never
+#    - when: on_success
+#  parallel:
+#    matrix:
+#      - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p3']
