@@ -13,14 +13,11 @@ include:
     file: 'static/phpcs.yml'
     ref: main
   - project: 'hyva-themes/base-ci'
-    file: 'test/integration.yml'
-    ref: main
-  - project: 'hyva-themes/base-ci'
     file: 'test/integration-box.yml'
     ref: main
-#  - project: 'hyva-themes/base-ci'
-#    file: 'test/theme-playwright-box.yml'
-#    ref: main
+  - project: 'hyva-themes/base-ci'
+    file: 'test/theme-playwright-box.yml'
+    ref: main
 
 # Override static jobs from includes to skip when RUN_ONLY is set
 static:lint:
@@ -65,17 +62,17 @@ test:integration:box:
     matrix:
       - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p3']
 
-#test:playwright:box:
-#  extends: .test:theme_playwright_box
-#  needs:
-#    - job: static:lint
-#      optional: true
-#    - job: static:phpcs
-#      optional: true
-#  rules:
-#    - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
-#      when: never
-#    - when: on_success
-#  parallel:
-#    matrix:
-#      - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p3']
+test:playwright:box:
+  extends: .test:theme_playwright_box
+  needs:
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
+  rules:
+    - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
+      when: never
+    - when: on_success
+  parallel:
+    matrix:
+      - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p3']
