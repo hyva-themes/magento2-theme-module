@@ -32,7 +32,7 @@ static:phpcs:
       when: never
     - when: on_success
 
-test:integration:box:
+test:integration:
   extends: .test:integration_box
   needs:
     - job: static:lint
@@ -46,9 +46,26 @@ test:integration:box:
   parallel:
     matrix:
       - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p4']
-        HYVA_THEME_REF: ['main', '1.3.x-main', '1.2.x-main', '1.1.x-main']
+        HYVA_THEME_REF: ['main']
 
-test:playwright:box:
+test:integration:previous-releases:
+  extends: .test:integration_box
+  needs:
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
+  rules:
+    - if: $RUN_ONLY != '' && $RUN_ONLY != "integration"
+      when: never
+    - when: manual
+      allow_failure: true
+  parallel:
+    matrix:
+      - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p4']
+        HYVA_THEME_REF: ['1.3.x-main', '1.2.x-main', '1.1.x-main']
+
+test:playwright:
   extends: .test:theme_playwright_box
   needs:
     - job: static:lint
@@ -64,6 +81,21 @@ test:playwright:box:
       - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p4']
         HYVA_THEME_REF: 'main'
         HYVA_PLAYWRIGHT_REF: 'main'
+
+test:playwright:previous-releases:
+  extends: .test:theme_playwright_box
+  needs:
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
+  rules:
+    - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
+      when: never
+    - when: manual
+      allow_failure: true
+  parallel:
+    matrix:
       - BOX_IMAGE_TAG: ['php84-fpm-magento2.4.8-p4']
         HYVA_THEME_REF: '1.3.x-main'
         HYVA_PLAYWRIGHT_REF: 'hyva-1.3.x'
