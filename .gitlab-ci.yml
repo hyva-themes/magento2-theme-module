@@ -53,6 +53,18 @@ build:
       - CI_IMAGE_TAG: ['2.4.8-p4']
         HYVA_THEME_REF: ['main']
 
+build:older-magento:
+  extends: .build:hyva
+  rules:
+    - if: $RUN_ONLY != ''
+      when: never
+    - when: manual
+      allow_failure: true
+  parallel:
+    matrix:
+      - CI_IMAGE_TAG: ['2.4.4-p9']
+        HYVA_THEME_REF: ['main']
+
 build:previous-releases:
   extends: .build:hyva
   rules:
@@ -84,6 +96,28 @@ test:integration:
   parallel:
     matrix:
       - CI_IMAGE_TAG: ['2.4.8-p4']
+        HYVA_THEME_REF: ['main']
+
+test:integration:older-magento:
+  extends: .test:integration
+  needs:
+    - job: build:older-magento
+      parallel:
+        matrix:
+          - CI_IMAGE_TAG: ['2.4.4-p9']
+            HYVA_THEME_REF: ['main']
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
+  rules:
+    - if: $RUN_ONLY != '' && $RUN_ONLY != "integration"
+      when: never
+    - when: manual
+      allow_failure: true
+  parallel:
+    matrix:
+      - CI_IMAGE_TAG: ['2.4.4-p9']
         HYVA_THEME_REF: ['main']
 
 test:integration:previous-releases:
@@ -127,6 +161,29 @@ test:playwright:
   parallel:
     matrix:
       - CI_IMAGE_TAG: ['2.4.8-p4']
+        HYVA_THEME_REF: 'main'
+        HYVA_PLAYWRIGHT_REF: 'main'
+
+test:playwright:older-magento:
+  extends: .test:playwright
+  needs:
+    - job: build:older-magento
+      parallel:
+        matrix:
+          - CI_IMAGE_TAG: ['2.4.4-p9']
+            HYVA_THEME_REF: ['main']
+    - job: static:lint
+      optional: true
+    - job: static:phpcs
+      optional: true
+  rules:
+    - if: $RUN_ONLY != '' && $RUN_ONLY != "playwright"
+      when: never
+    - when: manual
+      allow_failure: true
+  parallel:
+    matrix:
+      - CI_IMAGE_TAG: ['2.4.4-p9']
         HYVA_THEME_REF: 'main'
         HYVA_PLAYWRIGHT_REF: 'main'
 
