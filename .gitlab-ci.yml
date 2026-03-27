@@ -122,6 +122,9 @@ test:integration:previous-releases:
 
 test:integration:older-magento:
   extends: .test:integration
+  variables:
+    # Suppress E_DEPRECATED — Magento 2.4.4 core triggers deprecations on PHP 8.x
+    PHP_TEST_ARGS: "-d error_reporting=E_ALL&~E_DEPRECATED"
   needs:
     - job: build:older-magento
       parallel:
