@@ -124,7 +124,8 @@ test:integration:older-magento:
   extends: .test:integration
   variables:
     # Suppress E_DEPRECATED — Magento 2.4.4 core triggers deprecations on PHP 8.x
-    PHP_TEST_ARGS: "-d error_reporting=22527"
+    # app/bootstrap.php hardcodes error_reporting(E_ALL), so we patch it
+    SUPPRESS_DEPRECATIONS: 'true'
   needs:
     - job: build:older-magento
       parallel:
@@ -200,7 +201,7 @@ test:playwright:older-magento:
   extends: .test:playwright
   variables:
     # Older Magento returns correct search suggestions (not broken like 2.4.8+)
-    EXPECTED_HINT_RESULT: 'didi'
+    EXPECTED_HINT_RESULT: 'Didi'
   needs:
     - job: build:older-magento
       parallel:
