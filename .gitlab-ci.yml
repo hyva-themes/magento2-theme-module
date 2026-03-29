@@ -18,16 +18,16 @@ variables:
 include:
   - project: 'hyva-themes/base-ci'
     file: 'lint/php.yml'
-    ref: magento-ci-images
+    ref: main
   - project: 'hyva-themes/base-ci'
     file: 'static/phpcs.yml'
-    ref: magento-ci-images
+    ref: main
   - project: 'hyva-themes/base-ci'
     file: 'test/integration.yml'
-    ref: magento-ci-images
+    ref: main
   - project: 'hyva-themes/base-ci'
     file: 'test/playwright.yml'
-    ref: magento-ci-images
+    ref: main
 
 # Override static jobs from includes to skip when RUN_ONLY is set
 static:lint:
