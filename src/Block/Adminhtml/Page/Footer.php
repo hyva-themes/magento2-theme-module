@@ -25,7 +25,7 @@ class Footer extends Template
         $this->hyvaMetadata = $hyvaMetadata;
     }
 
-    public function getVersion(): string
+    public function getVersion(): ?string
     {
         return $this->hyvaMetadata->getVersion();
     }
