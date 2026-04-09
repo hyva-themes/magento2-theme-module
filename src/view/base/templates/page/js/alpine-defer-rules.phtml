@@ -38,5 +38,7 @@ if ($deferredComponentsConfig = $storeConfig->getStoreConfig('hyva_theme_general
     }
     //# sourceURL=alpine-defer-rules.js
 </script>
-<?php endif ?>
-<?php $hyvaCsp->registerInlineScript() ?>
+<?php
+    if (isset($hyvaCsp)) $hyvaCsp->registerInlineScript();
+endif;
+?>

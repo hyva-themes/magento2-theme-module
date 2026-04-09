@@ -20,7 +20,7 @@ class RemoveNoStoreHeaderPlugin
     private bool $isCacheable = false;
 
     public function __construct(
-        private readonly ScopeConfigInterface $scopeConfig
+        private ScopeConfigInterface $scopeConfig
     ) {
     }
 
