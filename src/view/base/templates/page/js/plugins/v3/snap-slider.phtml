@@ -359,4 +359,5 @@ use Magento\Framework\View\Element\Template;
     })();
     //# sourceURL=alpine-snap-slider.js
 </script>
-<?php $hyvaCsp->registerInlineScript() ?>
+<?php if (isset($hyvaCsp)) $hyvaCsp->registerInlineScript(); ?>
+

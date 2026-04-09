@@ -145,7 +145,7 @@ class HtmlPageContent
                     ($quote && $c === $quote) // end of quoted attribute value
                 ) {
                     $attributes[$currentAttr] = $quote
-                        ? html_entity_decode(mb_substr($buffer, 1, -1))
+                        ? html_entity_decode(mb_substr($buffer, 1, -1), ENT_COMPAT)
                         : $buffer;
                     $currentAttr = '';
                     $state = 'out';
