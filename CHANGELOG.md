@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+-   Updated snap-slider plugin
+    -   Added `loop` modifier support (`data-loop`, `x-snap-slider.loop`)
+    -   Navigation now uses index-based logic with an `isNavigating` guard and `scrollend`/`scroll` fallback
+    -   `getInViewItems` filters results to direct slide children only
+    -   `getSlides` excludes elements with `display:none`
+    -   `setupMutationObserver` now watches subtree and `style` attribute changes
+    -   `setupSlides` no longer overwrites an existing `tabindex` on the track
+    -   Pager receives `inert` attribute when there is no overflow
+    -   Keyboard navigation handles `ArrowDown`/`ArrowUp` as aliases and calls `preventDefault`
+
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.5...main
 
 ## [1.4.5] - 2026-03-16
