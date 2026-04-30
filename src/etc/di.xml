@@ -52,11 +52,8 @@
         </arguments>
     </type>
 
-    <type name="Magento\Framework\App\DeploymentConfig\Writer">
-        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\HyvaModulesConfig\UpdateOnModuleStatusChange"/>
-    </type>
-    <type name="Magento\Deploy\Console\Command\App\ConfigImport\Processor">
-        <plugin name="hyva_theme" type="Hyva\Theme\Plugin\HyvaModulesConfig\UpdateOnModuleStatusChange"/>
+    <type name="Magento\Framework\Module\Status">
+        <plugin name="hyva_theme_module_status" type="Hyva\Theme\Plugin\HyvaModulesConfig\UpdateOnModuleStatusChange"/>
     </type>
 
     <type name="Magento\Framework\View\Asset\PreProcessor\Minify">

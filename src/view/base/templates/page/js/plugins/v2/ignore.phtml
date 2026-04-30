@@ -32,4 +32,5 @@ use Magento\Framework\View\Element\Template;
     })();
     //# sourceURL=alpine-ignore.js
 </script>
-<?php $hyvaCsp->registerInlineScript() ?>
+<?php if (isset($hyvaCsp)) $hyvaCsp->registerInlineScript(); ?>
+

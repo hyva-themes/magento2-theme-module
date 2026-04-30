@@ -28,7 +28,7 @@ if (! preg_match('/-v(?<requiredVersion>[0-9.]+)$/', $block->getNameInLayout(), 
     console.error("Unable to parse required Alpine.js version from block name \"<?= $escaper->escapeJs($block->getNameInLayout()) ?>\"");
 </script>
     <?php
-    $hyvaCsp->registerInlineScript();
+    if (isset($hyvaCsp)) $hyvaCsp->registerInlineScript();
     return;
 }
 
@@ -46,4 +46,4 @@ if (! $names) {
         }
     }, {once: true})
 </script>
-<?php $hyvaCsp->registerInlineScript() ?>
+<?php if (isset($hyvaCsp)) $hyvaCsp->registerInlineScript() ?>
