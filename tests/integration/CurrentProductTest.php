@@ -54,15 +54,10 @@ class CurrentProductTest extends TestCase
         $this->productCollectionFactory = $objectManager->get(CollectionFactory::class);
         $this->productRepository = $objectManager->get(ProductRepositoryInterface::class);
         $this->products = new ProductFixturePool();
-        $this->products->add(ProductBuilder::aSimpleProduct()->withSku('original')->build());
-        $this->products->add(ProductBuilder::aSimpleProduct()->build());
-        $this->products->add(ProductBuilder::aSimpleProduct()->build());
-        $this->products->add(ProductBuilder::aSimpleProduct()->build());
-    }
-
-    protected function tearDown(): void
-    {
-        $this->products->rollback();
+        $this->products->add(ProductBuilder::aSimpleProduct()->withSku('original')->withWebsiteIds([])->build());
+        $this->products->add(ProductBuilder::aSimpleProduct()->withWebsiteIds([])->build());
+        $this->products->add(ProductBuilder::aSimpleProduct()->withWebsiteIds([])->build());
+        $this->products->add(ProductBuilder::aSimpleProduct()->withWebsiteIds([])->build());
     }
 
     /**

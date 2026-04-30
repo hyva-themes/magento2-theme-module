@@ -78,6 +78,20 @@ class Merge extends \Magento\Framework\View\Model\Layout\Merge
         $this->eventManager = $eventManager;
     }
 
+    /**
+     * Differentiate the layout cache key from the standard Merge class.
+     *
+     * This Hyvä Merge preference is only active in frontend DI scope. When Magento core code calls
+     * emulateAreaCode('frontend') from admin or cron contexts, the standard Merge class is used instead
+     * (because emulateAreaCode does not switch the DI scope). Without this suffix, the standard Merge
+     * could populate the layout cache with non-reset base XML under the same key that real frontend
+     * requests read, causing Luma blocks to appear intermittently until the cache is flushed.
+     */
+    protected function generateCacheId($suffix = '')
+    {
+        return parent::generateCacheId($suffix) . '_hyva';
+    }
+
     protected function _loadFileLayoutUpdatesXml()
     {
         $layoutXml = parent::_loadFileLayoutUpdatesXml();

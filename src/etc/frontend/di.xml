@@ -79,6 +79,7 @@
     </type>
     <type name="Magento\Catalog\Helper\Product\View">
         <plugin name="update_canonical_page_param_product_review" type="Hyva\Theme\Plugin\Catalog\Helper\Product\ProductReviewPaginationCanonicalUrlFixPlugin" />
+        <plugin name="set_product_info_title" type="Hyva\Theme\Plugin\Catalog\Helper\Product\SetProductInfoTitlePlugin" />
     </type>
 
     <type name="Magento\Customer\Controller\Ajax\Login">

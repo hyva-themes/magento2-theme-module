@@ -57,6 +57,11 @@
                 <lazyload>0</lazyload>
             </gtag>
         </google>
+        <recaptcha_frontend>
+            <legal_notice>
+                <legal_notice_mode>default</legal_notice_mode>
+            </legal_notice>
+        </recaptcha_frontend>
         <system>
             <full_page_cache>
                 <bfcache>0</bfcache>

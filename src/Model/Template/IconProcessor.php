@@ -71,6 +71,10 @@ class IconProcessor implements ProcessorInterface
             $attributes['title'] = $title;
         }
 
+        if (isset($parameters['aria-hidden'])) {
+            $attributes['aria-hidden'] = $parameters['aria-hidden'];
+        }
+
         try {
             return $this->svgIcons->renderHtml($path, $classes, $width, $height, $attributes);
         } catch (NotFoundException $error) {
