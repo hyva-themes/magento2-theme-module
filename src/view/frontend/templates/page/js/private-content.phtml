@@ -113,7 +113,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
                     }
                 } else {
                     if (document.getElementById('default-section-data')) {
-                        const privateContent = JSON.parse(document.getElementById('default-section-data').innerText.trim());
+                        const privateContent = JSON.parse(document.getElementById('default-section-data').textContent.trim());
                         dispatchPrivateContent(privateContent);
                     } else {
                         dispatchPrivateContent({});
