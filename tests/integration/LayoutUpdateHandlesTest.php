@@ -22,6 +22,8 @@ use Magento\Theme\Model\ResourceModel\Theme as ThemeResourceModel;
 use Magento\Theme\Model\ResourceModel\Theme\CollectionFactory as ThemeCollectionFactory;
 use Magento\Theme\Model\Theme;
 use Magento\Theme\Model\Theme\Registration;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\LoggerInterface;
 
 // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
@@ -38,6 +40,7 @@ class LayoutUpdateHandlesTest extends AbstractController
     /**
      * @before
      */
+    #[Before]
     public function cleanViewCache()
     {
         /**
@@ -50,6 +53,7 @@ class LayoutUpdateHandlesTest extends AbstractController
     }
 
     /** @test */
+    #[Test]
     public function unchanged_if_not_hyva_theme()
     {
         $this->givenCurrentTheme('Magento/luma');
@@ -69,6 +73,7 @@ class LayoutUpdateHandlesTest extends AbstractController
     }
 
     /** @test */
+    #[Test]
     public function added_with_hyva_prefix_if_hyva_theme()
     {
         $this->givenCurrentTheme(ThemeFixture::getInstalledHyvaDefaultThemeCode());
@@ -97,6 +102,7 @@ class LayoutUpdateHandlesTest extends AbstractController
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoConfigFixture current_store customer/captcha/enable 0
      */
+    #[Test]
     public function loads_layout_handles_added_with_update_xml_directive()
     {
         $this->givenCurrentTheme(ThemeFixture::getInstalledHyvaDefaultThemeCode());
@@ -115,6 +121,7 @@ class LayoutUpdateHandlesTest extends AbstractController
      * @test
      * @magentoAppArea frontend
      */
+    #[Test]
     public function block_loaded_from_hyva_prefix_layout()
     {
         $this->givenCurrentTheme('Hyva/integration-test');

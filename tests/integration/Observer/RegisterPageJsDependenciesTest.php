@@ -18,6 +18,8 @@ use Magento\Framework\Event\Observer as Event;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 use Magento\TestFramework\ObjectManager;
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
 use function array_values as values;
@@ -30,6 +32,7 @@ class RegisterPageJsDependenciesTest extends TestCase
     /**
      * @before
      */
+    #[Before]
     public function emulateHyvaTheme(): void
     {
         /** @var ObjectManager $objectManager */
@@ -52,6 +55,7 @@ class RegisterPageJsDependenciesTest extends TestCase
     /**
      * @after
      */
+    #[After]
     public function stopHyvaThemeEmulation(): void
     {
 
