@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Fixed null array offset access for PHP 8.5 compatibility in ReCaptcha view
 model**
 
+-   **Make integration tests compatible with PHPUnit 12**
+
 ### Removed
 
 -   Nothing Removed
