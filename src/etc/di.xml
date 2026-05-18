@@ -59,8 +59,29 @@
     <type name="Magento\Framework\View\Asset\PreProcessor\Minify">
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Theme\DisableJsAndCssMinifierForHyvaPlugin"/>
     </type>
+    <!--
+        Force explicit injection of HyvaThemes into the next three types. Their constructors declare
+        `?HyvaThemes $hyvaThemes = null` for BC, which setup:di:compile records as null. The in-constructor
+        ObjectManager fallback can then return a misconfigured HyvaThemes inside forked static-content:deploy
+        workers. Declaring the argument here makes the compiler emit a shared-instance entry instead.
+    -->
+    <type name="Hyva\Theme\Plugin\Theme\DisableJsAndCssMinifierForHyvaPlugin">
+        <arguments>
+            <argument name="hyvaThemes" xsi:type="object">Hyva\Theme\Service\HyvaThemes</argument>
+        </arguments>
+    </type>
     <type name="\Magento\Framework\View\Template\Html\Minifier">
         <plugin name="hyva_theme" type="\Hyva\Theme\Plugin\Theme\DisableHtmlMinifierForHyvaPlugin"/>
+    </type>
+    <type name="Hyva\Theme\Plugin\Theme\DisableHtmlMinifierForHyvaPlugin">
+        <arguments>
+            <argument name="hyvaThemes" xsi:type="object">Hyva\Theme\Service\HyvaThemes</argument>
+        </arguments>
+    </type>
+    <type name="Hyva\Theme\Service\CurrentTheme">
+        <arguments>
+            <argument name="hyvaThemes" xsi:type="object">Hyva\Theme\Service\HyvaThemes</argument>
+        </arguments>
     </type>
 
     <type name="Magento\Framework\App\Response\Http">
