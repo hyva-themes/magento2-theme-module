@@ -23,7 +23,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
 
 ?>
 <script>
-    {
+    (() => {
         const private_content_key = 'mage-cache-storage';
         const private_content_expire_key = 'mage-cache-timeout';
         const private_content_version_key = 'private_content_version';
@@ -216,7 +216,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
                     console.warn("Couldn't fetch privateContent", error);
                 });
         }
-    }
+    })();
     //# sourceURL=hyva-private-content.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
