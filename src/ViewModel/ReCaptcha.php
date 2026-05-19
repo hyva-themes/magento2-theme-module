@@ -123,7 +123,7 @@ class ReCaptcha implements ArgumentInterface
     {
         $type = $this->getSelectedTypeForForm($formId);
 
-        return $this->resultFieldNames[$type] ?? 'g-recaptcha-response';
+        return $this->resultFieldNames[(string) $type] ?? 'g-recaptcha-response';
     }
 
     public function calcJsInstanceSuffix(string $formId): string

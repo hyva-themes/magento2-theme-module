@@ -39,7 +39,7 @@ class HyvaConfigGenerate extends Command
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'No effect, exists for backward compatibility');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): ?int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('info')) {
             return $this->help($output);

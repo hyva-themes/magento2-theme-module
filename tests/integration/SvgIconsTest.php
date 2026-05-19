@@ -16,6 +16,8 @@ use Magento\Framework\View\Asset\File\NotFoundException;
 use Magento\Framework\View\DesignInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Theme\Model\Theme\Registration;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps, Generic.Files.LineLength.TooLong
@@ -48,9 +50,7 @@ class SvgIconsTest extends TestCase
 
         $reflectedClass = new \ReflectionClass(SvgIcons::class);
         $prop = $reflectedClass->getProperty('internalIdUsageCounts');
-        $prop->setAccessible(true);
         $prop->setValue($reflectedClass, []);
-        $prop->setAccessible(false);
     }
 
     protected function tearDown(): void
@@ -81,7 +81,7 @@ class SvgIconsTest extends TestCase
         $this->testViewFiles[] = $viewFilePath;
     }
 
-    public function dataSvg()
+    public static function dataSvg()
     {
         return [
             'check'    => [
@@ -109,6 +109,8 @@ SVG,
      * @test
      * @dataProvider dataSvg
      */
+    #[Test]
+    #[DataProvider('dataSvg')]
     public function renders_svg_with_code(string $code, string $method, string $expectedSvg)
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -120,6 +122,8 @@ SVG,
      * @test
      * @dataProvider dataSvg
      */
+    #[Test]
+    #[DataProvider('dataSvg')]
     public function renders_svg_with_magic_method(string $code, string $method, string $expectedSvg)
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -133,6 +137,7 @@ SVG,
     /**
      * @test
      */
+    #[Test]
     public function svg_can_be_overridden_in_theme()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -153,6 +158,7 @@ SVG,
     /**
      * @test
      */
+    #[Test]
     public function can_use_arbitrary_icon_set_in_theme()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -173,6 +179,7 @@ SVG,
     /**
      * @test
      */
+    #[Test]
     public function can_be_used_without_icon_set_in_theme()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -197,6 +204,7 @@ SVG,
     /**
      * @test
      */
+    #[Test]
     public function adds_css_classes()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -212,6 +220,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function adds_width_and_height()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -227,6 +236,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function adds_role_attribute()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -246,6 +256,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function can_process_boolean_attribute_values()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -270,6 +281,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function adds_title_node()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -289,6 +301,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function adds_custom_title_node()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -308,6 +321,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function can_process_titles_with_umlauts()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $svgIcons */
@@ -327,6 +341,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function replaces_existing_attributes()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -352,6 +367,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function adds_classes_width_and_height_with_magic_method()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -367,6 +383,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function renders_repeated_icon_fast()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -382,6 +399,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function caches_icons_based_on_width_and_height()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -394,6 +412,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function caches_icons_based_on_attributes()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -406,6 +425,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function caches_icons_based_on_class_names()
     {
         /** @var \Hyva\Theme\ViewModel\HeroiconsOutline $svgIcons */
@@ -418,6 +438,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function caches_icons_based_on_icon_set()
     {
         /** @var \Hyva\Theme\ViewModel\SvgIcons $outlineIcons */
@@ -432,6 +453,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function caches_icons_based_on_icon_path_prefix()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -451,6 +473,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function applies_icon_path_prefix_di_config()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -481,6 +504,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function throws_beginner_friendly_error()
     {
         $icons = $this->objectManager->create(\Hyva\Theme\ViewModel\SvgIcons::class);
@@ -493,6 +517,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function does_not_disambiguate_single_use_internal_ids()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -518,6 +543,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function disambiguate_internal_ids_over_multiple_instances_of_the_same_icon()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -546,6 +572,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function disambiguate_internal_ids_over_instances_of_different_same_icons()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -576,6 +603,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function does_not_disambiguate_hex_colors_with_id_overlap()
     {
         $this->givenCurrentTheme('Hyva/integration-test');
@@ -604,6 +632,7 @@ SVG;
     /**
      * @test
      */
+    #[Test]
     public function can_process_alpine_attributes()
     {
         $this->givenCurrentTheme('Hyva/integration-test');

@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.6...main
+
 ### Changed
 
 -   Updated snap-slider plugin
@@ -18,7 +20,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     -   Pager receives `inert` attribute when there is no overflow
     -   Keyboard navigation handles `ArrowDown`/`ArrowUp` as aliases and calls `preventDefault`
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.5...main
+## [1.4.6] - 2026-05-12
+
+[1.4.6]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.5...1.4.6
+
+### Added
+
+-   Nothing Added
+
+### Changed
+
+-   **Fixed signature to match the PHP 8.5 compatible version of Symfony Console Command**
+
+-   **Fixed null array offset access for PHP 8.5 compatibility in ReCaptcha view
+model**
+
+-   **Make integration tests compatible with PHPUnit 12**
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.4.5] - 2026-03-16
 

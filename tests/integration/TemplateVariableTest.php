@@ -17,6 +17,8 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\ObjectManager;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
@@ -109,6 +111,7 @@ class TemplateVariableTest extends TestCase
     /**
      * @test
      */
+    #[Test]
     public function view_model_container_is_available_as_template_variable(): void
     {
         $this->createTemplate(
@@ -135,6 +138,7 @@ class TemplateVariableTest extends TestCase
     /**
      * @test
      */
+    #[Test]
     public function global_view_models_are_accessible_through_container_in_template(): void
     {
         $this->createTemplate(
@@ -175,6 +179,8 @@ class TemplateVariableTest extends TestCase
      * @test
      * @dataProvider magentoVersionProvider
      */
+    #[Test]
+    #[DataProvider('magentoVersionProvider')]
     public function locale_formatter_is_available_as_template_variable(string $targetMagentoVersion, string $expectedClass): void
     {
         $productMetadata = ObjectManager::getInstance()->get(ProductMetadata::class);
