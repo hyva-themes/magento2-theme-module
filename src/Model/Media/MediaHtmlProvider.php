@@ -9,11 +9,11 @@ declare(strict_types=1);
 namespace Hyva\Theme\Model\Media;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Escaper;
 use Magento\Framework\Filesystem;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Psr\Log\LoggerInterface;
 
 class MediaHtmlProvider implements MediaHtmlProviderInterface
 {
@@ -21,19 +21,16 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
     private ?string $mediaBaseDir = null;
     private StoreManagerInterface $storeManager;
     private Escaper $escaper;
-    private LoggerInterface $logger;
     private Filesystem $filesystem;
 
     public function __construct(
         StoreManagerInterface $storeManager,
         Escaper $escaper,
-        LoggerInterface $logger,
-        Filesystem $filesystem
+        ?Filesystem $filesystem = null
     ) {
         $this->storeManager = $storeManager;
         $this->escaper = $escaper;
-        $this->logger = $logger;
-        $this->filesystem = $filesystem;
+        $this->filesystem = $filesystem ?? ObjectManager::getInstance()->get(Filesystem::class);
     }
 
     public function getPictureHtml(array $images, array $imgAttributes = [], array $pictureAttributes = []): string
@@ -126,10 +123,7 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
             $this->mediaBaseUrl = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
         }
 
-        if (str_contains($path, '://')) {
-            $this->logger->warning(
-                sprintf('getMediaUrl() received a URL instead of a path: "%s". Returning as-is.', $path)
-            );
+        if (str_contains($path, '://') || str_starts_with($path, '//')) {
             return $path;
         }
 
