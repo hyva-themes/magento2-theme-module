@@ -17,6 +17,8 @@ use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Session;
 use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_merge as merge;
@@ -48,6 +50,7 @@ class ViewModelRegistryTest extends TestCase
     /**
      * @test
      */
+    #[Test]
     public function returns_view_model_by_fully_qualified_classname()
     {
         $this->assertInstanceOf(StoreConfig::class, $this->viewModelRegistry->require(StoreConfig::class));
@@ -56,6 +59,7 @@ class ViewModelRegistryTest extends TestCase
     /**
      * @test
      */
+    #[Test]
     public function throws_exception_if_class_does_not_exist()
     {
         $this->expectException(InvalidViewModelClass::class);
@@ -68,6 +72,7 @@ class ViewModelRegistryTest extends TestCase
     /**
      * @test
      */
+    #[Test]
     public function throws_exception_if_class_is_not_a_view_model()
     {
         $this->expectException(InvalidViewModelClass::class);
@@ -82,6 +87,8 @@ class ViewModelRegistryTest extends TestCase
      * @test
      * @dataProvider viewModelIdentityDataProvider
      */
+    #[Test]
+    #[DataProvider('viewModelIdentityDataProvider')]
     public function records_identities_of_required_viewmodels(array $viewModelClasses, array $expected): void
     {
         foreach ($viewModelClasses as $viewModelClass) {
@@ -92,7 +99,7 @@ class ViewModelRegistryTest extends TestCase
         $this->assertSame($expected, $vieModelIdentities->get());
     }
 
-    public function viewModelIdentityDataProvider(): array
+    public static function viewModelIdentityDataProvider(): array
     {
         return [
             'no-view-models' => [[], []],

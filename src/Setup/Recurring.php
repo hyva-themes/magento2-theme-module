@@ -7,13 +7,14 @@
 
 declare(strict_types=1);
 
-namespace Hyva\Theme\Plugin\HyvaModulesConfig;
+namespace Hyva\Theme\Setup;
 
 use Hyva\Theme\Model\HyvaModulesConfig;
-use Magento\Framework\Module\Status;
+use Magento\Framework\Setup\InstallSchemaInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
 
-/** @SuppressWarnings(PHPMD.UnusedFormalParameter) */
-class UpdateOnModuleStatusChange
+class Recurring implements InstallSchemaInterface
 {
     /**
      * @var HyvaModulesConfig
@@ -26,17 +27,10 @@ class UpdateOnModuleStatusChange
     }
 
     /**
-     * Regenerate hyva-themes.json after module:enable or module:disable.
-     *
-     * @param Status $subject
-     * @param void $result
-     * @param bool $isEnabled
-     * @param string[] $modules
-     * @return void
+     * Regenerate app/etc/hyva-themes.json during setup:install and setup:upgrade.
      */
-    public function afterSetIsEnabled(Status $subject, $result, $isEnabled, $modules)
+    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $this->hyvaModulesConfig->generateFile();
-        return $result;
     }
 }

@@ -13,6 +13,7 @@ use Hyva\Theme\Service\CurrentTheme;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\TestCase\AbstractController;
+use PHPUnit\Framework\Attributes\Test;
 
 // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
 
@@ -34,6 +35,7 @@ class CurrentThemeServiceTest extends AbstractController
     }
 
     /** @test */
+    #[Test]
     public function luma_is_not_hyva()
     {
         $this->givenCurrentTheme('Magento/luma');
@@ -41,6 +43,7 @@ class CurrentThemeServiceTest extends AbstractController
     }
 
     /** @test */
+    #[Test]
     public function hyva_default_theme_is_hyva()
     {
         $defaultTheme = ThemeFixture::getInstalledHyvaDefaultThemeCode();
@@ -49,6 +52,7 @@ class CurrentThemeServiceTest extends AbstractController
     }
 
     /** @test */
+    #[Test]
     public function custom_theme_extending_hyva_default_is_hyva()
     {
         $defaultTheme = ThemeFixture::getInstalledHyvaDefaultThemeCode();
@@ -60,6 +64,7 @@ class CurrentThemeServiceTest extends AbstractController
     }
 
     /** @test */
+    #[Test]
     public function custom_theme_extending_hyva_reset_is_hyva()
     {
         $this->givenCurrentTheme('Custom/copy');

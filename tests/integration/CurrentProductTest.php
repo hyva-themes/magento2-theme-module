@@ -13,6 +13,7 @@ use Hyva\Theme\ViewModel\CurrentProduct;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\TestFramework\Helper\Bootstrap;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use TddWizard\Fixtures\Catalog\ProductBuilder;
 use TddWizard\Fixtures\Catalog\ProductFixturePool;
@@ -63,6 +64,7 @@ class CurrentProductTest extends TestCase
     /**
      * @test
      */
+    #[Test]
     public function reset_after_loop()
     {
         $originalProduct = $this->productRepository->get('original');
@@ -84,6 +86,7 @@ class CurrentProductTest extends TestCase
     /**
      * @test
      */
+    #[Test]
     public function aggregates_cache_identities_for_loop()
     {
         $originalProduct = $this->productRepository->get('original');

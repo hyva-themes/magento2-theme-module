@@ -16,7 +16,7 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Filesystem\DriverPool;
 use Magento\Framework\View\Design\FileResolution\Fallback\ResolverInterface as ThemeFallbackResolver;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,68 +24,65 @@ use PHPUnit\Framework\TestCase;
  */
 class ThemeLibrariesConfigViewModelTest extends TestCase
 {
-    /**
-     * @return DriverPool|MockObject
-     */
-    private function mockFilesystemDriverPool(): DriverPool
+    private function stubFilesystemDriverPool(): DriverPool
     {
-        $driverPoolMock = $this->createMock(DriverPool::class);
-        $driverPoolMock->method('getDriver')->willReturn($this->createMock(DriverInterface::class));
-        return $driverPoolMock;
+        $driverPoolStub = $this->createStub(DriverPool::class);
+        $driverPoolStub->method('getDriver')->willReturn($this->createStub(DriverInterface::class));
+        return $driverPoolStub;
     }
 
     public function testReturnsEmptyArrayIfConfigNotPresent(): void
     {
-        $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
+        $themeFallbackStub = $this->createStub(ThemeFallbackResolver::class);
 
         $sut = ObjectManager::getInstance()->create(ThemeLibrariesConfig::class, [
-            'themeFallbackResolver' => $themeFallbackMock,
+            'themeFallbackResolver' => $themeFallbackStub,
         ]);
 
-        $themeFallbackMock->method('resolve')->willReturn(false);
+        $themeFallbackStub->method('resolve')->willReturn(false);
 
         $this->assertEqualsCanonicalizing([], $sut->getThemeLibrariesConfig());
     }
 
     public function testReturnsThemeConfigAsArray(): void
     {
-        $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
-        $filesystemDriverPoolMock = $this->mockFilesystemDriverPool();
+        $themeFallbackStub = $this->createStub(ThemeFallbackResolver::class);
+        $filesystemDriverPoolStub = $this->stubFilesystemDriverPool();
 
         $sut = ObjectManager::getInstance()->create(ThemeLibrariesConfig::class, [
-            'filesystemDriverPool'  => $filesystemDriverPoolMock,
-            'themeFallbackResolver' => $themeFallbackMock,
+            'filesystemDriverPool'  => $filesystemDriverPoolStub,
+            'themeFallbackResolver' => $themeFallbackStub,
         ]);
 
         $config = ['alpine' => '3'];
 
-        $themeFallbackMock->method('resolve')->willReturn(ThemeLibrariesConfig::CONFIG_FILE_PATH);
-        $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('fileGetContents')->willReturn(json_encode($config));
-        $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('isExists')->willReturn(true);
+        $themeFallbackStub->method('resolve')->willReturn(ThemeLibrariesConfig::CONFIG_FILE_PATH);
+        $filesystemDriverPoolStub->getDriver(DriverPool::FILE)->method('fileGetContents')->willReturn(json_encode($config));
+        $filesystemDriverPoolStub->getDriver(DriverPool::FILE)->method('isExists')->willReturn(true);
 
         $this->assertEqualsCanonicalizing($config, $sut->getThemeLibrariesConfig());
     }
 
     public function testReturnsNullIfConfigPresentButNoSettingForGivenKey(): void
     {
-        $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
-        $filesystemDriverPoolMock = $this->mockFilesystemDriverPool();
+        $themeFallbackStub = $this->createStub(ThemeFallbackResolver::class);
+        $filesystemDriverPoolStub = $this->stubFilesystemDriverPool();
 
         $sut = ObjectManager::getInstance()->create(ThemeLibrariesConfig::class, [
-            'filesystemDriverPool'  => $filesystemDriverPoolMock,
-            'themeFallbackResolver' => $themeFallbackMock,
+            'filesystemDriverPool'  => $filesystemDriverPoolStub,
+            'themeFallbackResolver' => $themeFallbackStub,
         ]);
 
         $config = ['alpine' => '3'];
 
-        $themeFallbackMock->method('resolve')->willReturn(ThemeLibrariesConfig::CONFIG_FILE_PATH);
-        $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('fileGetContents')->willReturn(json_encode($config));
-        $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('isExists')->willReturn(true);
+        $themeFallbackStub->method('resolve')->willReturn(ThemeLibrariesConfig::CONFIG_FILE_PATH);
+        $filesystemDriverPoolStub->getDriver(DriverPool::FILE)->method('fileGetContents')->willReturn(json_encode($config));
+        $filesystemDriverPoolStub->getDriver(DriverPool::FILE)->method('isExists')->willReturn(true);
 
         $this->assertNull($sut->getVersionIdFor('foo'));
     }
 
-    public function unsafeEvalAllowedDataProvider(): array
+    public static function unsafeEvalAllowedDataProvider(): array
     {
         return [
             'unsafe eval allowed' => [true, '3'],
@@ -96,26 +93,27 @@ class ThemeLibrariesConfigViewModelTest extends TestCase
     /**
      * @dataProvider unsafeEvalAllowedDataProvider
      */
+    #[DataProvider('unsafeEvalAllowedDataProvider')]
     public function testReturnsVersionIfConfigPresentForGivenKeyDependingOnUnsafeEval(bool $isUnsafeEvalAllowed, string $expectedAlpineVersion): void
     {
-        $themeFallbackMock = $this->createMock(ThemeFallbackResolver::class);
-        $filesystemDriverPoolMock = $this->mockFilesystemDriverPool();
-        $hyvaCspMock = $this->createMock(HyvaCsp::class);
-        $unsafeEvalFetchPolicyMock = $this->createMock(FetchPolicy::class);
-        $unsafeEvalFetchPolicyMock->expects($this->any())->method('isEvalAllowed')->willReturn($isUnsafeEvalAllowed);
-        $hyvaCspMock->expects($this->any())->method('getScriptSrcPolicy')->willReturn($unsafeEvalFetchPolicyMock);
+        $themeFallbackStub = $this->createStub(ThemeFallbackResolver::class);
+        $filesystemDriverPoolStub = $this->stubFilesystemDriverPool();
+        $hyvaCspStub = $this->createStub(HyvaCsp::class);
+        $unsafeEvalFetchPolicyStub = $this->createStub(FetchPolicy::class);
+        $unsafeEvalFetchPolicyStub->method('isEvalAllowed')->willReturn($isUnsafeEvalAllowed);
+        $hyvaCspStub->method('getScriptSrcPolicy')->willReturn($unsafeEvalFetchPolicyStub);
 
         $sut = ObjectManager::getInstance()->create(ThemeLibrariesConfig::class, [
-            'filesystemDriverPool'  => $filesystemDriverPoolMock,
-            'themeFallbackResolver' => $themeFallbackMock,
-            'hyvaCsp'               => $hyvaCspMock,
+            'filesystemDriverPool'  => $filesystemDriverPoolStub,
+            'themeFallbackResolver' => $themeFallbackStub,
+            'hyvaCsp'               => $hyvaCspStub,
         ]);
 
         $config = ['alpine' => '3'];
 
-        $themeFallbackMock->method('resolve')->willReturn(ThemeLibrariesConfig::CONFIG_FILE_PATH);
-        $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('fileGetContents')->willReturn(json_encode($config));
-        $filesystemDriverPoolMock->getDriver(DriverPool::FILE)->method('isExists')->willReturn(true);
+        $themeFallbackStub->method('resolve')->willReturn(ThemeLibrariesConfig::CONFIG_FILE_PATH);
+        $filesystemDriverPoolStub->getDriver(DriverPool::FILE)->method('fileGetContents')->willReturn(json_encode($config));
+        $filesystemDriverPoolStub->getDriver(DriverPool::FILE)->method('isExists')->willReturn(true);
 
         $this->assertSame($expectedAlpineVersion, $sut->getVersionIdFor('alpine'));
     }
