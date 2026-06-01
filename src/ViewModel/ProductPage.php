@@ -139,7 +139,9 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     protected function excerptFromDescription(string $description): string
     {
         // if we have at least one <p></p>, take the first one as excerpt
-        if ($paragraphs = preg_split('#</p><p>|<p>|</p>#i', $description, -1, PREG_SPLIT_NO_EMPTY)) {
+        if (stripos($description, '<p>') !== false &&
+            $paragraphs = preg_split('#</p><p>|<p>|</p>#i', $description, -1, PREG_SPLIT_NO_EMPTY)
+        ) {
             return $paragraphs[0];
         }
         // otherwise, take the first sentence
