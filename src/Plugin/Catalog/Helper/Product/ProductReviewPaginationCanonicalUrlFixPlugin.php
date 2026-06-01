@@ -13,6 +13,7 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Helper\Product\View as ProductViewHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Asset\PropertyGroup as PageAssetPropertyGroup;
@@ -49,12 +50,12 @@ class ProductReviewPaginationCanonicalUrlFixPlugin
         ProductRepositoryInterface $productRepository,
         StoreManagerInterface $storeManager,
         HttpRequest $request,
-        ScopeConfigInterface $scopeConfig
+        ?ScopeConfigInterface $scopeConfig = null
     ) {
         $this->productRepository = $productRepository;
         $this->storeManager = $storeManager;
         $this->request = $request;
-        $this->scopeConfig = $scopeConfig;
+        $this->scopeConfig = $scopeConfig ?? ObjectManager::getInstance()->get(ScopeConfigInterface::class);
     }
 
     /**
