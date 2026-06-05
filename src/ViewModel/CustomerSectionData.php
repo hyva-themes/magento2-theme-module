@@ -51,27 +51,37 @@ class CustomerSectionData implements ArgumentInterface
     public function getDefaultSectionData(): array
     {
         /*
-         * Ensure no customer specific data is returned by $sectionPool->getSectionsData().
+         * Store current session state
          */
         $customerId = $this->customerSession->getCustomerId();
         $customerGroupId = $this->customerSession->getCustomerGroupId();
+
+        /*
+         * Ensure no customer specific data is returned by $sectionPool->getSectionsData().
+         */
         $this->customerSession->setCustomerId(null);
         $this->customerSession->setCustomerGroupId(CustomerGroup::NOT_LOGGED_IN_ID);
 
-        $defaultSectionData = [];
-        foreach ($this->sectionPool->getSectionNames() as $key) {
-            $defaultSectionData[$key] = $this->getDefaultDataForSection($key);
+        try {
+            $defaultSectionData = [];
+            foreach ($this->sectionPool->getSectionNames() as $key) {
+                $defaultSectionData[$key] = $this->getDefaultDataForSection($key);
+            }
+
+            return $defaultSectionData;
+        } finally {
+            /*
+             * Restore session state - this is guaranteed to run even if an exception is thrown
+             */
+            $this->customerSession->setCustomerId($customerId);
+            $this->customerSession->setCustomerGroupId($customerGroupId);
         }
-
-        /*
-         * Restore session
-         */
-        $this->customerSession->setCustomerId($customerId);
-        $this->customerSession->setCustomerGroupId($customerGroupId);
-
-        return $defaultSectionData;
     }
 
+    /**
+     * @param string $name
+     * @return array
+     */
     private function getDefaultDataForSection(string $name): array
     {
         if (!isset($this->defaultSectionDataKeys[$name])) {
