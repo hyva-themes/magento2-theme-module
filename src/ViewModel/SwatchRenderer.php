@@ -48,6 +48,10 @@ class SwatchRenderer implements ArgumentInterface
      */
     private $viewConfig;
 
+    /**
+     * @param SwatchHelper $swatchHelper
+     */
+
     public function __construct(
         SwatchHelper $swatchHelper,
         HttpRequest $httpRequest,
