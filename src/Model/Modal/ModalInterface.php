@@ -31,6 +31,9 @@ interface ModalInterface
 
     public function isInitiallyHidden(): bool;
 
+    /**
+     * @since 1.5.0
+     */
     public function getCloseby(): string;
 
     public function getDialogRefName(): string;

@@ -197,95 +197,66 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
     }
 
     /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
+     * @deprecated The "none" position was intended for manual dialog placement with withContainerClasses().
+     * The container element no longer exists. Use addDialogClass() to apply positioning classes to the
+     * <dialog> element directly instead.
      */
     public function positionNone(): ModalBuilderInterface
     {
         return $this->withData('position', 'none');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionTop(): ModalBuilderInterface
     {
         return $this->withData('position', 'top');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionRight(): ModalBuilderInterface
     {
         return $this->withData('position', 'right');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionBottom(): ModalBuilderInterface
     {
         return $this->withData('position', 'bottom');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionLeft(): ModalBuilderInterface
     {
         return $this->withData('position', 'left');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionCenter(): ModalBuilderInterface
     {
         return $this->withData('position', 'center');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionTopLeft(): ModalBuilderInterface
     {
         return $this->withData('position', 'top-left');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionTopRight(): ModalBuilderInterface
     {
         return $this->withData('position', 'top-right');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionBottomRight(): ModalBuilderInterface
     {
         return $this->withData('position', 'bottom-right');
     }
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionBottomLeft(): ModalBuilderInterface
     {
         return $this->withData('position', 'bottom-left');
     }
 
+    /**
+     * Set the value of the native <dialog> closeby attribute.
+     * Accepted values: "any" (close on outside click or ESC), "closerequest" (ESC only), "none" (never auto-close).
+     *
+     * @since 1.5.0
+     */
     public function withCloseby(string $value): ModalBuilderInterface
     {
         return $this->withData('closeby', $value);
@@ -413,6 +384,9 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->data['is-initially-hidden'];
     }
 
+    /**
+     * @since 1.5.0
+     */
     public function getCloseby(): string
     {
         return $this->data['closeby'];

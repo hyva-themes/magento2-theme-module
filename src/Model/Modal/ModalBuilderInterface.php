@@ -60,71 +60,41 @@ interface ModalBuilderInterface
     public function removeContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface;
 
     /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
+     * @deprecated The "none" position was intended for manual dialog placement with withContainerClasses().
+     * The container element no longer exists. Use addDialogClass() to apply positioning classes to the
+     * <dialog> element directly instead.
      */
     public function positionNone(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionTop(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionRight(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionBottom(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionLeft(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionCenter(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionTopLeft(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionTopRight(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionBottomRight(): ModalBuilderInterface;
 
-    /**
-     * @deprecated This method still works and applies margin-based positioning to the <dialog> element.
-     * Prefer using addDialogClass() to apply positioning classes directly instead.
-     */
     public function positionBottomLeft(): ModalBuilderInterface;
 
     /**
      * Set the value of the native <dialog> closeby attribute.
      * Accepted values: "any" (close on outside click or ESC), "closerequest" (ESC only), "none" (never auto-close).
+     *
+     * @since 1.5.0
      */
     public function withCloseby(string $value): ModalBuilderInterface;
 
+    /**
+     * @since 1.5.0
+     */
     public function getCloseby(): string;
 
     public function withDialogRefName(string $refName): ModalBuilderInterface;
