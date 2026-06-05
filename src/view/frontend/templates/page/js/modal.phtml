@@ -27,6 +27,9 @@ $deployMode = $viewModels->require(DeployMode::class);
 <script>
     (function () {
         const modals = [];
+        <?php /* Shared across instances: Escape keydown events bubble through nested native dialogs,
+                 triggering hide() on multiple instances for a single key press. */ ?>
+        let lastHide = 0;
 
         window.hyva.modal = function(options = {}) {
             <?php /* $el is not defined when hyva.modal is called within Object.assign() for example */ ?>
@@ -49,8 +52,6 @@ $deployMode = $viewModels->require(DeployMode::class);
                 transitionLeaveEnd: 'opacity-0',
             }, options);
 
-            const resolvers = {};
-
             return {
                 opened: {},
                 show(dialog, trigger) {
@@ -63,8 +64,9 @@ $deployMode = $viewModels->require(DeployMode::class);
                         return;
                     }
                     this.opened[name] = true;
-                    modals.push({ name, instance: this, time: Date.now() });
-                    return new Promise(resolve => { resolvers[name] = resolve; });
+                    const frame = { name, instance: this, time: Date.now() };
+                    modals.push(frame);
+                    return new Promise(resolve => { frame.resolve = resolve; });
                 },
                 cancel() {
                     this.hide(false);
@@ -73,15 +75,23 @@ $deployMode = $viewModels->require(DeployMode::class);
                     this.hide(true);
                 },
                 hide(value) {
-                    const name = Object.keys(this.opened).find(k => this.opened[k]);
-                    if (!name) return;
-                    this.opened[name] = false;
-                    const idx = modals.findIndex(m => m.instance === this && m.name === name);
-                    if (idx !== -1) modals.splice(idx, 1);
-                    if (resolvers[name] !== undefined) {
-                        resolvers[name](value);
-                        delete resolvers[name];
+                    <?php
+                    // Guard against Escape keydown events bubbling through nested native dialogs
+                    // (each open ancestor dialog receives the event), and against Escape being
+                    // pressed multiple times before a transition is finished.
+                    ?>
+                    if (Date.now() - lastHide < config.duration) {
+                        return;
                     }
+                    lastHide = Date.now();
+
+                    <?php /* Modals are closed in LIFO order: always close the top of the stack. */ ?>
+                    const modal = modals.pop();
+                    if (! modal) {
+                        return;
+                    }
+                    modal.instance.opened[modal.name] = false;
+                    modal.resolve && modal.resolve(value);
                 },
                 /**
                  * @deprecated Use dialogConfig() instead, which is used by the default modal-container.phtml template.
@@ -90,14 +100,22 @@ $deployMode = $viewModels->require(DeployMode::class);
                 overlay(dialog) {
                     dialog = this.$el.dataset.dialogRefName || dialog;
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
-                    return Object.assign({}, this.dialogConfig(), {
+                    if (this.$el.tagName !== 'DIALOG' && ! window.hyva.modal.legacyModalCompatibility) {
+                        console.warn(
+                            '[hyva] Deprecated modal markup detected (x-bind="overlay" on a non-dialog element' +
+                            (name ? ` for "${name}"` : '') + ').\n' +
+                            'Escape and click-outside closing are not available for such dialogs anymore.\n' +
+                            'Install hyva-themes/magento2-legacy-modal-compatibility or migrate to the native <dialog> markup.'
+                        );
+                    }
+                    return Object.assign({}, this.dialogConfig(name), {
                         ['@hyva-modal-show.window'](event) {
                             event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide)
                         }
                     });
                 },
-                dialogConfig() {
-                    const name = this.$el.dataset.dialogRefName || config.dialog;
+                dialogConfig(name) {
+                    name = name || this.$el.dataset.dialogRefName || config.dialog;
                     return {
                         ['x-show']: () => name ? this.opened[name] : false,
                         ['x-transition:enter']: config.transitionEnter,
