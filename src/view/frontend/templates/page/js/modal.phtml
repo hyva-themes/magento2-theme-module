@@ -31,6 +31,46 @@ $deployMode = $viewModels->require(DeployMode::class);
                  triggering hide() on multiple instances for a single key press. */ ?>
         let lastHide = 0;
 
+        function determineTrigger($refs, dialog, trigger) {
+            <?php /* if show() was called without arguments use the event target as open trigger */ ?>
+            if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog && dialog.target instanceof HTMLElement) {
+                return dialog.target;
+            }
+            <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
+            if (typeof dialog === 'string' && typeof trigger === 'object' && trigger && trigger.target instanceof HTMLElement) {
+                return trigger.target;
+            }
+            <?php /* if show('name', 'trigger') was called with the ref name or selector of the trigger element */ ?>
+            if (typeof trigger === 'string') {
+                try {
+                    return ($refs && $refs[trigger]) || document.querySelector(trigger)
+                } catch (e) {<?php /* Intentionally left empty because we don't know if trigger is intended as a valid selector string */ ?>}
+            }
+            <?php /* if show('name', document.querySelector('...')) was called, use that as the trigger */ ?>
+            if (trigger instanceof Element) {
+                return trigger;
+            }
+
+            <?php /* unknown trigger - no focus will be set when the dialog is hidden */ ?>
+            return null;
+        }
+
+        <?php /* Focus the first [x-focus-first] element of the opened dialog that is not part of a nested dialog. */ ?>
+        function setFocusFirstElement(dialogElement) {
+            if (! dialogElement) {
+                return;
+            }
+            window.setTimeout(() => {
+                const candidates = dialogElement.querySelectorAll('[x-focus-first]');
+                for (const candidate of candidates) {
+                    if (candidate.closest('dialog') === dialogElement) {
+                        candidate.focus();
+                        return;
+                    }
+                }
+            }, 50);
+        }
+
         window.hyva.modal = function(options = {}) {
             <?php /* $el is not defined when hyva.modal is called within Object.assign() for example */ ?>
             if (this.$el && this.$el.dataset && this.$el.dataset.options) {
@@ -63,9 +103,14 @@ $deployMode = $viewModels->require(DeployMode::class);
                     if (this.opened[name]) {
                         return;
                     }
+                    const focusTarget = determineTrigger(this.$refs, dialog, trigger);
+                    if (focusTarget) {
+                        focusTarget.setAttribute('aria-expanded', 'true');
+                    }
                     this.opened[name] = true;
-                    const frame = { name, instance: this, time: Date.now() };
+                    const frame = { name, instance: this, focusTarget, time: Date.now() };
                     modals.push(frame);
+                    setFocusFirstElement(this.$refs && this.$refs[name]);
                     return new Promise(resolve => { frame.resolve = resolve; });
                 },
                 cancel() {
@@ -91,6 +136,18 @@ $deployMode = $viewModels->require(DeployMode::class);
                         return;
                     }
                     modal.instance.opened[modal.name] = false;
+
+                    <?php
+                    // Move focus to the trigger element or the configured focusAfterHide target after the
+                    // leave transition. The timeout must fire after the native dialog close() restored
+                    // focus to the previously focused element, so a custom target is not overridden.
+                    ?>
+                    const focusTarget = modal.focusTarget;
+                    focusTarget && window.setTimeout(() => {
+                        focusTarget.setAttribute('aria-expanded', 'false');
+                        focusTarget.focus();
+                    }, config.duration + 50);
+
                     modal.resolve && modal.resolve(value);
                 },
                 /**
@@ -125,7 +182,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                         ['x-transition:leave-start']: config.transitionLeaveStart,
                         ['x-transition:leave-end']: config.transitionLeaveEnd,
                         ['@hyva-modal-show.window'](event) {
-                            event.detail && event.detail.dialog === name && this.show(name);
+                            event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide);
                         },
                     };
                 },
