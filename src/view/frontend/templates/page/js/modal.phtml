@@ -104,9 +104,10 @@ $deployMode = $viewModels->require(DeployMode::class);
 
                     this.opened[name] = true;
                     const focusTarget = determineTrigger(this.$refs, dialog, trigger);
+                    const dialogEl = this.$refs && this.$refs[name];
                     const frame = { name, instance: this, focusTarget, time: Date.now() };
                     modals.push(frame);
-                    setFocusFirstElement(this.$refs && this.$refs[name]);
+                    setFocusFirstElement(dialogEl);
                     return new Promise(resolve => { frame.resolve = resolve; });
                 },
                 cancel() {

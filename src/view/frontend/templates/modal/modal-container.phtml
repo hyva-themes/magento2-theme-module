@@ -26,7 +26,7 @@ use Magento\Framework\View\Element\Template;
 
 /**
  * The following dialog classes are used by default. They are included here so they are not purged by Tailwind.
- * mt-1 mb-1 ms-1 me-1 backdrop:hidden
+ * mt-1 mb-1 ms-1 me-1 z-50 inset-y-0
  */
 ?>
 <dialog
@@ -40,7 +40,11 @@ use Magento\Framework\View\Element\Template;
         aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
     <?php endif; ?>
     x-bind="dialogConfig"
-    x-htmldialog="hide"
+    <?php if ($modal->isOverlayDisabled()): ?>
+        x-htmldialog.modeless="hide"
+    <?php else: ?>
+        x-htmldialog="hide"
+    <?php endif; ?>
     x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>"
     <?php if (! $modal->isInitiallyHidden()): ?>
         x-init="showDialogOnInit"

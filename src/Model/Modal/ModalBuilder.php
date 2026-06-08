@@ -124,10 +124,6 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData('overlay', true);
     }
 
-    /**
-     * @deprecated Overlay is now rendered via the native <dialog> backdrop.
-     * To disable the backdrop, use Tailwind: backdrop:hidden
-     */
     public function overlayDisabled(): ModalBuilderInterface
     {
         return $this->withData('overlay', false);
@@ -412,7 +408,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         $classes = merge(
             $this->data['dialog-classes'],
             $this->positionClasses[$this->data['position']],
-            $this->data['overlay'] ? [] : ['backdrop:hidden'],
+            $this->data['overlay'] ? [] : ['z-50 inset-y-0'],
         );
         return implode(' ', $classes);
     }

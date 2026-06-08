@@ -17,10 +17,6 @@ interface ModalBuilderInterface
      */
     public function overlayEnabled(): ModalBuilderInterface;
 
-    /**
-     * @deprecated Overlay is now rendered via the native <dialog> backdrop.
-     * To disable the backdrop, use Tailwind: backdrop:hidden
-     */
     public function overlayDisabled(): ModalBuilderInterface;
 
     public function initiallyHidden(): ModalBuilderInterface;
