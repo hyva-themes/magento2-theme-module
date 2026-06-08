@@ -57,9 +57,8 @@ $deployMode = $viewModels->require(DeployMode::class);
 
         <?php /* Focus the first [x-focus-first] element of the opened dialog that is not part of a nested dialog. */ ?>
         function setFocusFirstElement(dialogElement) {
-            if (! dialogElement) {
-                return;
-            }
+            if (!dialogElement) return;
+
             window.setTimeout(() => {
                 const candidates = dialogElement.querySelectorAll('[x-focus-first]');
                 for (const candidate of candidates) {
@@ -96,13 +95,8 @@ $deployMode = $viewModels->require(DeployMode::class);
                 opened: {},
                 show(dialog, trigger) {
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
-                    if (! name) {
-                        return;
-                    }
-                    <?php /* Prevent adding the same modal on the stack twice */ ?>
-                    if (this.opened[name]) {
-                        return;
-                    }
+                    if (!name || this.opened[name]) return;
+
                     this.opened[name] = true;
                     const frame = { name, instance: this, focusTarget, time: Date.now() };
                     modals.push(frame);
