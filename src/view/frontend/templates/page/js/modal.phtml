@@ -130,10 +130,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     // focus to the previously focused element, so a custom target is not overridden.
                     ?>
                     const focusTarget = modal.focusTarget;
-                    focusTarget && window.setTimeout(() => {
-                        focusTarget.focus();
-                    }, config.duration + 50);
-
+                    focusTarget && window.setTimeout(() => focusTarget.focus(), config.duration + 50);
                     modal.resolve && modal.resolve(value);
                 },
                 /**
