@@ -31,28 +31,33 @@ $deployMode = $viewModels->require(DeployMode::class);
                  triggering hide() on multiple instances for a single key press. */ ?>
         let lastHide = 0;
 
-        function determineTrigger($refs, dialog, trigger) {
-            <?php /* if show() was called without arguments use the event target as open trigger */ ?>
-            if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog && dialog.target instanceof HTMLElement) {
-                return dialog.target;
-            }
-            <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
-            if (typeof dialog === 'string' && typeof trigger === 'object' && trigger && trigger.target instanceof HTMLElement) {
-                return trigger.target;
-            }
+        <?php /* Resolve a DOM element from an Element reference, Alpine $refs key, or CSS selector string. */ ?>
+        function resolveElement($refs, value) {
+            if (!value) return null;
+            <?php /* if show('name', document.querySelector('...')) was called, use that as the trigger */ ?>
+            if (value instanceof Element) return value;
             <?php /* if show('name', 'trigger') was called with the ref name or selector of the trigger element */ ?>
-            if (typeof trigger === 'string') {
+            if (typeof value === 'string') {
                 try {
-                    return ($refs && $refs[trigger]) || document.querySelector(trigger)
+                    return ($refs && $refs[value]) || document.querySelector(value) || null;
                 } catch (e) {<?php /* Intentionally left empty because we don't know if trigger is intended as a valid selector string */ ?>}
             }
-            <?php /* if show('name', document.querySelector('...')) was called, use that as the trigger */ ?>
-            if (trigger instanceof Element) {
-                return trigger;
+            return null;
+        }
+
+        <?php /* Determine which DOM element opened the modal so focus can be restored on hide. */ ?>
+        function determineTrigger($refs, dialog, trigger) {
+            <?php /* if show() was called without arguments use the event target as open trigger */ ?>
+            if (!trigger && dialog?.target instanceof HTMLElement) {
+                return dialog.target;
             }
 
-            <?php /* unknown trigger - no focus will be set when the dialog is hidden */ ?>
-            return null;
+            <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
+            if (typeof dialog === 'string' && trigger?.target instanceof HTMLElement) {
+                return trigger.target;
+            }
+
+            return resolveElement($refs, trigger);
         }
 
         <?php /* Focus the first [x-focus-first] element of the opened dialog that is not part of a nested dialog. */ ?>
@@ -98,6 +103,7 @@ $deployMode = $viewModels->require(DeployMode::class);
                     if (!name || this.opened[name]) return;
 
                     this.opened[name] = true;
+                    const focusTarget = determineTrigger(this.$refs, dialog, trigger);
                     const frame = { name, instance: this, focusTarget, time: Date.now() };
                     modals.push(frame);
                     setFocusFirstElement(this.$refs && this.$refs[name]);
