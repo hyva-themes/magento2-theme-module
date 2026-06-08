@@ -121,20 +121,17 @@ $deployMode = $viewModels->require(DeployMode::class);
                 },
                 hide(value) {
                     <?php
-                    // Guard against Escape keydown events bubbling through nested native dialogs
+                    // Guard against Escape keydown events bubbling through nested dialogs inside one x-data
                     // (each open ancestor dialog receives the event), and against Escape being
                     // pressed multiple times before a transition is finished.
                     ?>
-                    if (Date.now() - lastHide < config.duration) {
-                        return;
-                    }
+                    if (Date.now() - lastHide < config.duration) return;
                     lastHide = Date.now();
 
                     <?php /* Modals are closed in LIFO order: always close the top of the stack. */ ?>
                     const modal = modals.pop();
-                    if (! modal) {
-                        return;
-                    }
+                    if (!modal) return;
+
                     modal.instance.opened[modal.name] = false;
 
                     <?php
