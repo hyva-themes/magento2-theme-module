@@ -103,10 +103,6 @@ $deployMode = $viewModels->require(DeployMode::class);
                     if (this.opened[name]) {
                         return;
                     }
-                    const focusTarget = determineTrigger(this.$refs, dialog, trigger);
-                    if (focusTarget) {
-                        focusTarget.setAttribute('aria-expanded', 'true');
-                    }
                     this.opened[name] = true;
                     const frame = { name, instance: this, focusTarget, time: Date.now() };
                     modals.push(frame);
@@ -141,7 +137,6 @@ $deployMode = $viewModels->require(DeployMode::class);
                     ?>
                     const focusTarget = modal.focusTarget;
                     focusTarget && window.setTimeout(() => {
-                        focusTarget.setAttribute('aria-expanded', 'false');
                         focusTarget.focus();
                     }, config.duration + 50);
 
