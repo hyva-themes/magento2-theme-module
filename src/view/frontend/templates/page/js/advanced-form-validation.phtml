@@ -363,6 +363,7 @@ use Magento\Framework\View\Element\Template;
                 state: {
                     valid: false,
                 },
+                isSubmitting: false,   // ← Add this
                 fields: {},
                 idSeq: 0,
                 idPrefix: formElement.id || 'vld-msg',
@@ -402,9 +403,15 @@ use Magento\Framework\View\Element\Template;
                     if (event.target.tagName === 'FORM') {
                         event.preventDefault();
 
+                        if (this.isSubmitting) return;  // ← Guard: block re-entry
+                        this.isSubmitting = true;       // ← Lock immediately (synchronously)
+
                         this.validate()
                             .then(() => event.target.submit())
-                            .catch(invalidElements => {<?php /* No default behavior */ ?>});
+                            .catch(invalidElements => {
+                                <?php /* No default behavior */ ?>
+                                this.isSubmitting = false;  // ← Unlock only on validation failure
+                            });
                     }
                 },
                 onChange(event) {
