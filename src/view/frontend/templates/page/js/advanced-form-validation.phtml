@@ -409,7 +409,6 @@ use Magento\Framework\View\Element\Template;
                         this.validate()
                             .then(() => event.target.submit())
                             .catch(invalidElements => {
-                                <?php /* No default behavior */ ?>
                                 this.isSubmitting = false;
                             });
                     }
