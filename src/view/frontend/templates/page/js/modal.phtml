@@ -27,99 +27,52 @@ $deployMode = $viewModels->require(DeployMode::class);
 <script>
     (function () {
         const modals = [];
-        const excludedFromFocusTrapping = new Set();
+        <?php /* Shared across instances: Escape keydown events bubble through nested native dialogs,
+                 triggering hide() on multiple instances for a single key press. */ ?>
+        let lastHide = 0;
 
-        function trapFocusInNextModalWithOverlay() {
-            for (let idx = modals.length -1; idx >= 0; idx--) {
-                const nextOnStack = modals[idx];
-                const nextDialogElement = nextOnStack.instance.$refs[nextOnStack.name];
-                if (! isOverlayDisabled(nextDialogElement)) {
-                    hyva.trapFocus(nextDialogElement);
-                    break;
-                }
-            }
-        }
-
-        function focusables(dialogElement) {
-            const selector = 'button, [href], input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
-            return Array.from(dialogElement.querySelectorAll(selector))
-                .filter(el => !el.hasAttribute('disabled'));
-        }
-
-        function firstVisible(elements) {
-            const a = Array.from(elements);
-            for (let i = 0; i < a.length; i++) {
-                if (a[i].offsetWidth || a[i].offsetHeight || a[i].getClientRects().length) return a[i];
-            }
-            return null;
-        }
-
-        function isInViewport(element) {
-            const rect = element && element.getBoundingClientRect();
-            return rect &&
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.right <= window.innerWidth &&
-                rect.bottom <= window.innerHeight;
-        }
-
-        function setFocusAfterTransition(dialogElement, duration) {
-            <?php
-            /*
-             * If the dialog contains an x-focus-first element that is not within a nested dialog, set focus
-             * immediately from the trapFocus default, to avoid the switch after the transition duration.
-             */
-            ?>
-            const nested = Array.from(dialogElement.querySelectorAll('[role="dialog"]'));
-            const candidates = Array.from(dialogElement.querySelectorAll('[x-focus-first]'));
-            next: for (let candidate of candidates) {
-                for (let child of nested) {
-                    if (child.contains(candidate)) continue next;
-                }
-                setTimeout(() => candidate.focus(), 50);
-                break;
-            }
-            window.setTimeout(() => {
-                const focusElement = firstVisible(dialogElement.querySelectorAll('[x-focus-first]')) ||
-                    focusables(dialogElement)[0] ||
-                    null;
-                focusElement && isInViewport(focusElement) && focusElement.focus();
-            }, Math.max(1, duration));
-        }
-
-        function determineTrigger($refs, dialog, trigger) {
-            <?php /* if show() was called without arguments use the event target as open trigger */ ?>
-            if (typeof trigger === 'undefined' && typeof dialog === 'object' && dialog.target instanceof HTMLElement) {
-                return dialog.target;
-            }
-            <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
-            if (typeof dialog === 'string' && typeof trigger === 'object' && trigger.target instanceof HTMLElement) {
-                return trigger.target;
-            }
-            <?php /* if show('name', 'trigger') was called with the ref name pr selector of the trigger element */ ?>
-            if (typeof trigger === 'string') {
+        <?php /* Resolve a DOM element from an Element reference, Alpine $refs key, or CSS selector string. */ ?>
+        function resolveElement($refs, value) {
+            if (!value) return null;
+            <?php /* if show('name', document.querySelector('...')) was called, use that as the trigger */ ?>
+            if (value instanceof Element) return value;
+            <?php /* if show('name', 'trigger') was called with the ref name or selector of the trigger element */ ?>
+            if (typeof value === 'string') {
                 try {
-                    return $refs[trigger] || document.querySelector(trigger)
+                    return ($refs && $refs[value]) || document.querySelector(value) || null;
                 } catch (e) {<?php /* Intentionally left empty because we don't know if trigger is intended as a valid selector string */ ?>}
             }
-            <?php /* if show('name', document.querySelector('...')) was called, use that as the trigger */ ?>
-            if (trigger instanceof Element) {
-                return trigger;
-            }
-
-            <?php /* unknown trigger - no focus will be set when the dialog is hidden */ ?>
             return null;
         }
 
-        function isOverlayDisabled(dialog) {
-            return dialog && dialog.hasAttribute('x-no-overlay')
+        <?php /* Determine which DOM element opened the modal so focus can be restored on hide. */ ?>
+        function determineTrigger($refs, dialog, trigger) {
+            <?php /* if show() was called without arguments use the event target as open trigger */ ?>
+            if (!trigger && dialog?.target instanceof HTMLElement) {
+                return dialog.target;
+            }
+
+            <?php /* if show('name', $event) was called with the event as the second argument use the event target as trigger */ ?>
+            if (typeof dialog === 'string' && trigger?.target instanceof HTMLElement) {
+                return trigger.target;
+            }
+
+            return resolveElement($refs, trigger);
         }
 
-        function areRemainingModalsWithoutOverlay(modals)
-        {
-            const overflowDisabled = modals.map(modal => modal.instance.$refs[modal.name]).filter(isOverlayDisabled);
+        <?php /* Focus the first [x-focus-first] element of the opened dialog that is not part of a nested dialog. */ ?>
+        function setFocusFirstElement(dialogElement) {
+            if (!dialogElement) return;
 
-            return overflowDisabled.length === modals.length;
+            window.setTimeout(() => {
+                const candidates = dialogElement.querySelectorAll('[x-focus-first]');
+                for (const candidate of candidates) {
+                    if (candidate.closest('dialog') === dialogElement) {
+                        candidate.focus();
+                        return;
+                    }
+                }
+            }, 50);
         }
 
         window.hyva.modal = function(options = {}) {
@@ -142,44 +95,20 @@ $deployMode = $viewModels->require(DeployMode::class);
                 transitionLeaveStart: 'opacity-100',
                 transitionLeaveEnd: 'opacity-0',
             }, options);
-            let lastHide = 0;
 
             return {
                 opened: {},
                 show(dialog, trigger) {
-                    const focusTargetAfterHide = determineTrigger(this.$refs, dialog, trigger);
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
-                    const dialogElement = this.$refs[name];
-                    if (! dialogElement) {
-                        <?php if ($deployMode->isDeveloperMode()): ?>
-                        console.error(`Use $modal->getShowJs() in the open trigger, or specify a custom name with\n$modal->withDialogRefName("my-name") and use show("my-name", $event).`);
-                        <?php endif; ?>
-                        return;
-                    }
-                    const useOverlay = ! dialogElement.hasAttribute('x-no-overlay');
-
-                    dialogElement.scrollTop = 0;
-
-                    <?php /* Prevent adding the same modal on the stack twice */ ?>
-                    if (this.opened[name]) {
-                        return;
-                    }
-
-                    if (focusTargetAfterHide) {
-                        focusTargetAfterHide.setAttribute('aria-expanded', 'true');
-                    }
+                    if (!name || this.opened[name]) return;
 
                     this.opened[name] = true;
-                    useOverlay && this.$nextTick(() => hyva.trapFocus(dialogElement));
-                    setFocusAfterTransition(dialogElement, config.duration);
-
-                    const frame = {name, instance: this, focusTarget: focusTargetAfterHide, time: Date.now()};
-
+                    const focusTarget = determineTrigger(this.$refs, dialog, trigger);
+                    const dialogEl = this.$refs && this.$refs[name];
+                    const frame = { name, instance: this, focusTarget, time: Date.now() };
                     modals.push(frame);
-                    if (useOverlay) {
-                        document.body.classList.add('overflow-hidden');
-                    }
-                    return new Promise(resolve => frame.resolve = resolve);
+                    setFocusFirstElement(dialogEl);
+                    return new Promise(resolve => { frame.resolve = resolve; });
                 },
                 cancel() {
                     this.hide(false);
@@ -189,43 +118,53 @@ $deployMode = $viewModels->require(DeployMode::class);
                 },
                 hide(value) {
                     <?php
-                    // Guard against Escape being pressed multiple times before a transition is finished, otherwise
-                    // this function will pop further dialogs from the stack but the display will not update.
+                    // Guard against Escape keydown events bubbling through nested dialogs inside one x-data
+                    // (each open ancestor dialog receives the event), and against Escape being
+                    // pressed multiple times before a transition is finished.
                     ?>
-                    if (Date.now() - lastHide < config.duration) {
-                        return;
-                    }
+                    if (Date.now() - lastHide < config.duration) return;
                     lastHide = Date.now();
 
-                    const modal = modals.pop() || {};
-                    if (! modal.instance) {
-                        return;
-                    }
+                    <?php /* Modals are closed in LIFO order: always close the top of the stack. */ ?>
+                    const modal = modals.pop();
+                    if (!modal) return;
 
-                    const name = modal.name;
-                    this.opened[name] = false;
-                    hyva.releaseFocus(modal.instance.$refs[modal.name])
-                    trapFocusInNextModalWithOverlay();
+                    modal.instance.opened[modal.name] = false;
 
-                    const nextFocusAfterHide = modal.focusTarget;
-                    nextFocusAfterHide && setTimeout(() => {
-                        nextFocusAfterHide.setAttribute('aria-expanded', 'false');
-                        nextFocusAfterHide.focus()
-                    }, config.duration);
-
-                    if (modals.length === 0 || areRemainingModalsWithoutOverlay(modals)) {
-                        document.body.classList.remove('overflow-hidden');
-                    }
-
-                    modal.resolve(value);
+                    <?php
+                    // Move focus to the trigger element or the configured focusAfterHide target after the
+                    // leave transition. The timeout must fire after the native dialog close() restored
+                    // focus to the previously focused element, so a custom target is not overridden.
+                    ?>
+                    const focusTarget = modal.focusTarget;
+                    focusTarget && window.setTimeout(() => focusTarget.focus(), config.duration + 50);
+                    modal.resolve && modal.resolve(value);
                 },
+                /**
+                 * @deprecated Use dialogConfig() instead, which is used by the default modal-container.phtml template.
+                 * This method is kept for backwards compatibility with custom container templates.
+                 */
                 overlay(dialog) {
                     dialog = this.$el.dataset.dialogRefName || dialog;
                     const name = typeof dialog === 'string' ? dialog : config.dialog;
+                    if (this.$el.tagName !== 'DIALOG' && ! window.hyva.modal.legacyModalCompatibility) {
+                        console.warn(
+                            '[hyva] Deprecated modal markup detected (x-bind="overlay" on a non-dialog element' +
+                            (name ? ` for "${name}"` : '') + ').\n' +
+                            'Escape and click-outside closing are not available for such dialogs anymore.\n' +
+                            'Install hyva-themes/magento2-legacy-modal-compatibility or migrate to the native <dialog> markup.'
+                        );
+                    }
+                    return Object.assign({}, this.dialogConfig(name), {
+                        ['@hyva-modal-show.window'](event) {
+                            event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide)
+                        }
+                    });
+                },
+                dialogConfig(name) {
+                    name = name || this.$el.dataset.dialogRefName || config.dialog;
                     return {
-                        ['x-show']() {
-                            return this.opened[name]
-                        },
+                        ['x-show']: () => name ? this.opened[name] : false,
                         ['x-transition:enter']: config.transitionEnter,
                         ['x-transition:enter-start']: config.transitionEnterStart,
                         ['x-transition:enter-end']: config.transitionEnterEnd,
@@ -233,58 +172,43 @@ $deployMode = $viewModels->require(DeployMode::class);
                         ['x-transition:leave-start']: config.transitionLeaveStart,
                         ['x-transition:leave-end']: config.transitionLeaveEnd,
                         ['@hyva-modal-show.window'](event) {
-                            event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide)
-                        }
+                            event.detail && event.detail.dialog === name && this.show(name, event.detail.focusAfterHide);
+                        },
                     };
                 },
                 showDialogOnInit() {
-                    const parent = this.$el.closest('[data-dialog-ref-name]');
-                    if (parent && parent.dataset.dialogRefName) {
-                        this.$dispatch('hyva-modal-show', {dialog: parent.dataset.dialogRefName})
+                    const name = this.$el.dataset.dialogRefName;
+                    if (name) {
+                        this.show(name);
                     }
                 }
             };
         }
 
-        window.hyva.modal.peek = () => modals.length > 0 && modals[modals.length -1]
+        window.hyva.modal.peek = () => modals.length > 0 && modals[modals.length - 1]
 
         window.hyva.modal.pop = function () {
             if (modals.length > 0) {
-                const modal = modals[modals.length -1];
-                modal.instance.hide();
+                modals[modals.length - 1].instance.hide();
             }
         }
 
-        window.hyva.modal.excludeSelectorsFromFocusTrap = function (selectors) {
-            typeof selectors === 'string' || selectors instanceof String
-                ? excludedFromFocusTrapping.add(selectors)
-                : selectors.map(selector => excludedFromFocusTrapping.add(selector));
-        }
+        /**
+         * @deprecated Native <dialog> handles focus trapping automatically.
+         * Calling this function has no effect. Kept for backwards compatibility.
+         */
+        window.hyva.modal.excludeSelectorsFromFocusTrap = function (selectors) {}
 
+        /**
+         * @deprecated Native <dialog> with x-htmldialog handles ESC key and click-outside events.
+         * These functions have no effect. Kept for backwards compatibility.
+         */
         window.hyva.modal.eventListeners = {
-            keydown: event => {
-                if (event.key === 'Escape') {
-                    window.hyva.modal.pop();
-                }
-            },
-            <?php /* generic modal @click.outside handler */ ?>
-            click: event => {
-                if (modals.length > 0) {
-                    const modal = modals[modals.length -1];
-                    const dialog = modal.instance.$refs[modal.name];
-                    if (modal.time + 50 < Date.now() && // if last click processing is more than 50ms ago
-                        ! isOverlayDisabled(dialog) && // if dialog has overlay
-                        ! dialog.contains(event.target)) { // if click is outside of dialog
-                        modal.instance.hide();
-                    }
-                }
-            }
+            keydown: event => {},
+            click: event => {}
         };
-
-        document.addEventListener('keydown', window.hyva.modal.eventListeners.keydown);
-
-        document.addEventListener('click', window.hyva.modal.eventListeners.click);
     })();
+
     window.addEventListener('alpine:init', () => {
         Alpine.data('hyvaModal', window.hyva.modal);
     }, {once: true});
