@@ -6,7 +6,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.6...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.7...main
+
+## [1.4.7] - 2026-06-30
+
+[1.4.7]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.6...1.4.7
+
+### Added
+
+-   **Add getSwatchDimension**  
+    For more information, please refer to [merge request #669](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/669).
+
+-   **Add `Product\Placeholder` view model**  
+    For more information, please refer to [merge request #656](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/656).
+
+-   **Option to enable or disable the canonical URL for product review pagination**  
+    For more information, please refer to [issue #426](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/426).
 
 ### Changed
 
@@ -19,6 +34,42 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     -   `setupSlides` no longer overwrites an existing `tabindex` on the track
     -   Pager receives `inert` attribute when there is no overflow
     -   Keyboard navigation handles `ArrowDown`/`ArrowUp` as aliases and calls `preventDefault`
+
+    For more information, please refer to [merge request #654](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/654).
+
+-   **Update system config tab + add logo**  
+    For more information, please refer to [merge request #670](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/670).
+
+-   **Fixed Account buttons can be clicked multiple times after submitting causing multiple entries**  
+    For more information, please refer to [issue #1323](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1323).
+
+-   **Fixed broken short description logic**  
+    For more information, please refer to [issue #521](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/521).
+
+-   **Re-apply explicit HyvaThemes injection**  
+    This reverts commit [69a3ee7c](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/69a3ee7cbece9aa22d533b8ba19b6e7717cc9586).
+
+    For more information, please refer to [merge request #661](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/661).
+
+-   **Improve state resilience in CustomerSectionData::getDefaultSectionData using try-finally**  
+    For more information, please refer to [merge request #659](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/659).
+
+    Many thanks to Christoph Hendreich (In Session) for the contribution!
+
+-   **Fixed recalculate styles in private content**  
+    For more information, please refer to [merge request #657](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/657).
+
+-   **Fixed missing configuration options of Confirm Dialog button labels**  
+    For more information, please refer to [issue #528](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/528).
+
+    Many thanks to Frederik Rommel (WEBiDEA) for the contribution!
+
+-   **Add support for passing URL and full paths besides media relative paths**  
+    For more information, please refer to [merge request #642](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/642).
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.4.6] - 2026-05-12
 
