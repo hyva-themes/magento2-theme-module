@@ -72,11 +72,11 @@ use Magento\Framework\View\Element\Template;
 
         window.addEventListener('DOMContentLoaded', hyva.initFormKey);
 
-		window.addEventListener('pageshow', (event) => {
-			if (event.persisted) {
-				hyva.initFormKey();
-			}
-		});
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                hyva.initFormKey();
+            }
+        });
 
         hyva.alpineInitialized(hyva.initMessages)
 
