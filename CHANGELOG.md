@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
--   Updated snap-slider plugin
+-   **Updated snap-slider plugin**
     -   Added `loop` modifier support (`data-loop`, `x-snap-slider.loop`)
     -   Navigation now uses index-based logic with an `isNavigating` guard and `scrollend`/`scroll` fallback
     -   `getInViewItems` filters results to direct slide children only
@@ -36,6 +36,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     -   Keyboard navigation handles `ArrowDown`/`ArrowUp` as aliases and calls `preventDefault`
 
     For more information, please refer to [merge request #654](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/654).
+
+-   **Updated the `x-htmldialog` component to v2.3.0**  
+    Added `modeless` argument support. Passing `modeless` renders the dialog as a non-blocking popup,
+    allowing interaction with the rest of the page while the dialog is open.
 
 -   **Update system config tab + add logo**  
     For more information, please refer to [merge request #670](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/670).
