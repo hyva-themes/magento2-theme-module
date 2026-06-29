@@ -12,7 +12,6 @@ use Magento\Framework\View\Element\Template;
 
 /** @var HyvaCsp $hyvaCsp */
 /** @var Template $block */
-
 ?>
 <script>
     function dispatchMessages(messages, hideAfter) {
@@ -25,12 +24,12 @@ use Magento\Framework\View\Element\Template;
         window.dispatchEvent(messagesEvent);
     }
 
-<?php
+    <?php
     /**
      * The `hyva` JS namespace is being set by Hyva_Theme/src/view/frontend/templates/page/js/hyva.phtml
      * and should be included through Hyva_Theme/src/view/frontend/layout/default_hyva.xml
      */
-?>
+    ?>
     if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
         console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
     }
@@ -84,4 +83,4 @@ use Magento\Framework\View\Element\Template;
     }( window.hyva = window.hyva || {} ));
     //# sourceURL=hyva-cookies.js
 </script>
-<?php $hyvaCsp->registerInlineScript() ?>
+<?php $hyvaCsp->registerInlineScript(); ?>
