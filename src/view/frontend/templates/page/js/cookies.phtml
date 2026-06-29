@@ -38,11 +38,13 @@ use Magento\Framework\View\Element\Template;
     (function( hyva, undefined ) {
 
         hyva.initFormKey = () => {
-            const inputSelector = 'input[name="form_key"]',
-                formKey = hyva.getFormKey();
+            if (typeof hyva.getFormKey !== 'function') return;
 
-            Array.from(document.querySelectorAll(inputSelector)).map(function (input) {
-                input.value = formKey
+            const formKey = hyva.getFormKey();
+            if (!formKey) return;
+
+            document.querySelectorAll('input[name="form_key"]').forEach((input) => {
+                input.value = formKey;
             });
         }
 
@@ -70,6 +72,13 @@ use Magento\Framework\View\Element\Template;
         }
 
         window.addEventListener('DOMContentLoaded', hyva.initFormKey);
+
+		window.addEventListener('pageshow', (event) => {
+			if (event.persisted) {
+				hyva.initFormKey();
+			}
+		});
+
         hyva.alpineInitialized(hyva.initMessages)
 
     }( window.hyva = window.hyva || {} ));

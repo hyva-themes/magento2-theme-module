@@ -92,8 +92,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     Many thanks to Frederik Rommel (WEBiDEA) for the contribution!
 
--   **Add support for passing URL and full paths besides media relative paths**  
+-   **Fixed support for passing URL and full paths besides media relative paths**  
     For more information, please refer to [merge request #642](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/642).
+
+-   **Fixed Refresh form keys after bfcache restore**  
+    For more information, please refer to [merge request #672](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/672).
 
 ### Removed
 
