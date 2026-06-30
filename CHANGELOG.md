@@ -6,7 +6,39 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.7...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.0...main
+
+## [1.5.0] - 2026-06-30
+
+[1.5.0]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.7...1.5.0
+
+### Added
+
+-   Nothing Added
+
+### Changed
+
+-   **Modernize modal system to use HTML Dialog element with `x-htmldialog`**  
+    The Hyva modal is rebuilt on the HTML Dialog element powered by the `x-htmldialog` plugin introduced in v1.4.0.
+    Both the legacy Hyva modal and `x-htmldialog` now share the same foundation, removing a parallel implementation and all the custom logic it required.
+
+    -   Focus trapping, Escape key handling, scroll locking, and backdrop click are now handled by the browser. The JavaScript implementation shrinks by roughly 80 lines as a result.
+    -   Backdrop styling moves to Tailwind's `backdrop:*` utilities on the `<dialog>` element, replacing the overlay and container div wrappers and their associated class methods.
+    -   A new `withCloseby()` builder method controls close behaviour: `"any"` (ESC or click outside, the default), `"closerequest"` (ESC only), or `"none"` (never auto-close).
+    -   Deprecated builder methods (`withOverlayClasses()`, `withContainerClasses()`, `excludeSelectorsFromFocusTrap()`) log a deprecation warning.
+        Use `backdrop:*` utilities and native dialog focus management instead.
+    -   The HTML Dialog element exposes correct ARIA semantics and manages focus restoration to the trigger element without custom code.
+
+    If you have custom JavaScript implementations of the Hyva modal, refer to the [upgrade guide](https://docs.hyva.io/hyva-themes/upgrading/upgrading-to-1-5-0.html) for details.
+
+    For more information, please refer to [merge request #638](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/638).
+
+-   **PageBuilder: Update image size fields to Magento naming**  
+    For more information, please refer to [issue #510](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/510#note_84957).
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.4.7] - 2026-06-30
 

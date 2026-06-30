@@ -20,43 +20,33 @@ use Magento\Framework\View\Element\Template;
 /** @var ModalInterface $modal */
 
 /**
- * This is the default modal container template
+ * This is the default modal container template using the native HTML <dialog> element.
  * @see \Hyva\Theme\Model\Modal\ModalBuilderInterface
  */
 
 /**
- * The following list of classes is used by default for modal dialogs. They are included here so they are not purged.
- *
- * bg-black/50 bg-white bottom-0 fixed flex inline-block inset-0 inset-x-0 inset-y-0 items-center justify-center
- * left-0 max-h-screen max-h-svh overflow-auto p-10 pb-1 pl-1 pr-1 pt-1 right-0 rounded-lg shadow-xl text-left top-0 z-10 z-50
+ * The following dialog classes are used by default. They are included here so they are not purged by Tailwind.
+ * mt-1 mb-1 ms-1 me-1 z-50 inset-y-0
  */
 ?>
-<div <?= $modal->isInitiallyHidden() ? 'x-cloak' : '' ?>
+<dialog
+    class="<?= $escaper->escapeHtmlAttr($modal->getDialogClasses()) ?>"
     data-dialog-ref-name="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>"
-    x-bind="overlay"
-    class="<?= /** @noEscape  */ $modal->getOverlayClasses() ?>">
-    <div class="<?= /** @noEscape  */ $modal->getContainerClasses() ?>">
-        <div x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>" role="dialog" aria-modal="true"
-             <?php if ($modal->isOverlayDisabled()): ?>x-no-overlay<?php endif; ?>
-            <?php if ($modal->getAriaLabel()): ?>
-                aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"
-            <?php endif; ?>
-            <?php if ($modal->getAriaLabelledby()): ?>
-                aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
-            <?php endif; ?>
-             class="<?= /** @noEscape  */ $modal->getDialogClasses() ?>">
-            <?= $modal->getContentHtml() ?>
-        </div>
-    </div>
-    <?php if (! $modal->isInitiallyHidden()): ?>
-    <div x-data x-cloak x-init="showDialogOnInit"></div>
+    closeby="<?= $escaper->escapeHtmlAttr($modal->getCloseby()) ?>"
+    <?php if ($modal->getAriaLabel()): ?>
+        aria-label="<?= $escaper->escapeHtmlAttr($modal->getAriaLabel()) ?>"
     <?php endif; ?>
-</div>
-<?php if ($selectors = $modal->getFocusTrapExcludeSelectors()): ?>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        hyva.modal.excludeSelectorsFromFocusTrap(<?= /** @noEscape */ json_encode($selectors) ?>);
-    });
-</script>
-    <?php $hyvaCsp->registerInlineScript() ?>
-<?php endif; ?>
+    <?php if ($modal->getAriaLabelledby()): ?>
+        aria-labelledby="<?= $escaper->escapeHtmlAttr($modal->getAriaLabelledby()) ?>"
+    <?php endif; ?>
+    x-bind="dialogConfig"
+    <?php if ($modal->isOverlayDisabled()): ?>
+        x-htmldialog.modeless="hide"
+    <?php else: ?>
+        x-htmldialog="hide"
+    <?php endif; ?>
+    x-ref="<?= $escaper->escapeHtmlAttr($modal->getDialogRefName()) ?>"
+    <?php if (! $modal->isInitiallyHidden()): ?>
+        x-init="showDialogOnInit"
+    <?php endif; ?>
+><?= $modal->getContentHtml() ?></dialog>

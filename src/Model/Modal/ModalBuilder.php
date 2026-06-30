@@ -49,7 +49,8 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         'container-classes'   => ['fixed', 'flex', 'justify-center', 'items-center', 'text-left', 'z-40'],
         'position'            => 'center',
         'dialog-name'         => 'dialog',
-        'dialog-classes'      => ['inline-block', 'bg-white', 'shadow-xl', 'rounded-lg', 'p-10', 'max-h-screen', 'max-h-svh', 'overflow-auto', 'overscroll-y-contain'],
+        'closeby'             => 'any',
+        'dialog-classes'      => [],
         'aria-labelledby'     => null,
         'aria-label'          => null,
         'content-template'    => null,
@@ -59,15 +60,15 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
 
     private $positionClasses = [
         'none'         => [],
-        'top'          => ['inset-x-0', 'top-0', 'pt-1'],
-        'right'        => ['inset-y-0', 'right-0', 'pr-1'],
-        'bottom'       => ['inset-x-0', 'bottom-0', 'pb-1'],
-        'left'         => ['inset-y-0', 'left-0', 'pl-1'],
-        'center'       => ['inset-0'],
-        'top-left'     => ['left-0', 'top-0', 'pt-1', 'pl-1'],
-        'top-right'    => ['top-0', 'right-0', 'pt-1', 'pr-1'],
-        'bottom-right' => ['bottom-0', 'right-0', 'pb-1', 'pr-1'],
-        'bottom-left'  => ['bottom-0', 'left-0', 'pb-1', 'pl-1'],
+        'top'          => ['mt-1'],
+        'right'        => ['me-1'],
+        'bottom'       => ['mb-1'],
+        'left'         => ['ms-1'],
+        'center'       => [],
+        'top-left'     => ['mt-1', 'ms-1'],
+        'top-right'    => ['mt-1', 'me-1'],
+        'bottom-right' => ['mb-1', 'me-1'],
+        'bottom-left'  => ['mb-1', 'ms-1'],
     ];
 
     /**
@@ -114,6 +115,10 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData($key, $classes);
     }
 
+    /**
+     * @deprecated Overlay is now rendered via the native <dialog> backdrop.
+     * Use Tailwind's backdrop:* utilities to style it instead.
+     */
     public function overlayEnabled(): ModalBuilderInterface
     {
         return $this->withData('overlay', true);
@@ -134,16 +139,25 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData('is-initially-hidden', false);
     }
 
+    /**
+     * @deprecated Overlay classes are no longer rendered. Use Tailwind's backdrop:* utilities instead.
+     */
     public function withOverlayClasses(string ...$classes): ModalBuilderInterface
     {
         return $this->withData('overlay-classes', $classes);
     }
 
+    /**
+     * @deprecated Overlay classes are no longer rendered. Use Tailwind's backdrop:* utilities instead.
+     */
     public function addOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
         return $this->addClasses('overlay-classes', merge([$class], $moreClasses));
     }
 
+    /**
+     * @deprecated Overlay classes are no longer rendered. Use Tailwind's backdrop:* utilities instead.
+     */
     public function removeOverlayClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
         return $this->removeClasses('overlay-classes', merge([$class], $moreClasses));
@@ -154,21 +168,35 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData('container-template', $template);
     }
 
+    /**
+     * @deprecated Container classes are no longer rendered. The <dialog> element handles its own positioning.
+     */
     public function withContainerClasses(string ...$classes): ModalBuilderInterface
     {
         return $this->withData('container-classes', $classes);
     }
 
+    /**
+     * @deprecated Container classes are no longer rendered. The <dialog> element handles its own positioning.
+     */
     public function addContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
         return $this->addClasses('container-classes', merge([$class], $moreClasses));
     }
 
+    /**
+     * @deprecated Container classes are no longer rendered. The <dialog> element handles its own positioning.
+     */
     public function removeContainerClass(string $class, string ...$moreClasses): ModalBuilderInterface
     {
         return $this->removeClasses('container-classes', merge([$class], $moreClasses));
     }
 
+    /**
+     * @deprecated The "none" position was intended for manual dialog placement with withContainerClasses().
+     * The container element no longer exists. Use addDialogClass() to apply positioning classes to the
+     * <dialog> element directly instead.
+     */
     public function positionNone(): ModalBuilderInterface
     {
         return $this->withData('position', 'none');
@@ -219,6 +247,17 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->withData('position', 'bottom-left');
     }
 
+    /**
+     * Set the value of the native <dialog> closeby attribute.
+     * Accepted values: "any" (close on outside click or ESC), "closerequest" (ESC only), "none" (never auto-close).
+     *
+     * @since 1.5.0
+     */
+    public function withCloseby(string $value): ModalBuilderInterface
+    {
+        return $this->withData('closeby', $value);
+    }
+
     public function withDialogRefName(string $refName): ModalBuilderInterface
     {
         return $this->withData('dialog-name', $refName);
@@ -239,6 +278,9 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->removeClasses('dialog-classes', merge([$class], $moreClasses));
     }
 
+    /**
+     * @deprecated Native <dialog> handles focus trapping automatically. Calling this method has no effect.
+     */
     public function excludeSelectorsFromFocusTrapping(string ...$selectors): ModalBuilderInterface
     {
         $current = $this->data['focus-trap-exclude-selectors'] ?? [];
@@ -279,11 +321,17 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
 
     // --- modal interface methods ---
 
+    /**
+     * @deprecated Overlay classes are no longer rendered by the default template. Use Tailwind's backdrop:* utilities instead.
+     */
     public function getOverlayClasses(): string
     {
         return $this->data['overlay'] ? implode(' ', $this->data['overlay-classes']) : '';
     }
 
+    /**
+     * @deprecated Container classes are no longer rendered by the default template.
+     */
     public function getContainerClasses(): string
     {
         $classes = merge(
@@ -332,6 +380,14 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         return $this->data['is-initially-hidden'];
     }
 
+    /**
+     * @since 1.5.0
+     */
+    public function getCloseby(): string
+    {
+        return $this->data['closeby'];
+    }
+
     public function getDialogRefName(): string
     {
         return $this->data['dialog-name'];
@@ -349,9 +405,17 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
 
     public function getDialogClasses(): string
     {
-        return implode(' ', $this->data['dialog-classes']);
+        $classes = merge(
+            $this->data['dialog-classes'],
+            $this->positionClasses[$this->data['position']],
+            $this->data['overlay'] ? [] : ['z-50 inset-y-0'],
+        );
+        return implode(' ', $classes);
     }
 
+    /**
+     * @deprecated Native <dialog> handles focus trapping automatically.
+     */
     public function getFocusTrapExcludeSelectors(): array
     {
         return $this->data['focus-trap-exclude-selectors'] ?? [];

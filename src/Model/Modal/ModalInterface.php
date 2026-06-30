@@ -17,13 +17,24 @@ interface ModalInterface
 
     public function getContentRenderer(): TemplateBlock;
 
+    /**
+     * @deprecated Overlay classes are no longer rendered by the default template. Use Tailwind's backdrop:* utilities instead.
+     */
     public function getOverlayClasses(): string;
 
+    /**
+     * @deprecated Container classes are no longer rendered by the default template.
+     */
     public function getContainerClasses(): string;
 
     public function getContentHtml(): string;
 
     public function isInitiallyHidden(): bool;
+
+    /**
+     * @since 1.5.0
+     */
+    public function getCloseby(): string;
 
     public function getDialogRefName(): string;
 
@@ -34,6 +45,7 @@ interface ModalInterface
     public function getDialogClasses(): string;
 
     /**
+     * @deprecated Native <dialog> handles focus trapping automatically.
      * @return string[]
      */
     public function getFocusTrapExcludeSelectors(): array;
