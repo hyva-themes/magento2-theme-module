@@ -62,8 +62,8 @@ build:previous-releases:
       allow_failure: true
   parallel:
     matrix:
-      - CI_IMAGE_TAG: ['2.4.8-p4']
-        HYVA_THEME_REF: ['1.3.x-main', '1.2.x-main', '1.1.x-main']
+      - CI_IMAGE_TAG: ['2.4.9']
+        HYVA_THEME_REF: ['1.4.x-main', '1.3.x-main', '1.2.x-main', '1.1.x-main']
 
 build:next-magento:
   extends: .build:hyva
@@ -116,8 +116,8 @@ test:integration:previous-releases:
     - job: build:previous-releases
       parallel:
         matrix:
-          - CI_IMAGE_TAG: ['2.4.8-p4']
-            HYVA_THEME_REF: ['1.3.x-main', '1.2.x-main', '1.1.x-main']
+          - CI_IMAGE_TAG: ['2.4.9']
+            HYVA_THEME_REF: ['1.4.x-main', '1.3.x-main', '1.2.x-main', '1.1.x-main']
     - job: static:lint
       optional: true
     - job: static:phpcs
@@ -129,8 +129,8 @@ test:integration:previous-releases:
       allow_failure: true
   parallel:
     matrix:
-      - CI_IMAGE_TAG: ['2.4.8-p4']
-        HYVA_THEME_REF: ['1.3.x-main', '1.2.x-main', '1.1.x-main']
+      - CI_IMAGE_TAG: ['2.4.9']
+        HYVA_THEME_REF: ['1.4.x-main', '1.3.x-main', '1.2.x-main', '1.1.x-main']
 
 test:integration:next-magento:
   extends: .test:integration
@@ -182,8 +182,8 @@ test:playwright:previous-releases:
     - job: build:previous-releases
       parallel:
         matrix:
-          - CI_IMAGE_TAG: ['2.4.8-p4']
-            HYVA_THEME_REF: ['1.3.x-main', '1.2.x-main', '1.1.x-main']
+          - CI_IMAGE_TAG: ['2.4.9']
+            HYVA_THEME_REF: ['1.4.x-main', '1.3.x-main', '1.2.x-main', '1.1.x-main']
     - job: static:lint
       optional: true
     - job: static:phpcs
@@ -195,13 +195,16 @@ test:playwright:previous-releases:
       allow_failure: true
   parallel:
     matrix:
-      - CI_IMAGE_TAG: ['2.4.8-p4']
+      - CI_IMAGE_TAG: ['2.4.9']
+        HYVA_THEME_REF: '1.4.x-main'
+        HYVA_PLAYWRIGHT_REF: 'hyva-1.4.x'
+      - CI_IMAGE_TAG: ['2.4.9']
         HYVA_THEME_REF: '1.3.x-main'
         HYVA_PLAYWRIGHT_REF: 'hyva-1.3.x'
-      - CI_IMAGE_TAG: ['2.4.8-p4']
+      - CI_IMAGE_TAG: ['2.4.9']
         HYVA_THEME_REF: '1.2.x-main'
         HYVA_PLAYWRIGHT_REF: 'hyva-1.2.x'
-      - CI_IMAGE_TAG: ['2.4.8-p4']
+      - CI_IMAGE_TAG: ['2.4.9']
         HYVA_THEME_REF: '1.1.x-main'
         HYVA_PLAYWRIGHT_REF: 'hyva-1.1.x'
 
