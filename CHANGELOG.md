@@ -23,6 +23,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Option to enable or disable the canonical URL for product review pagination**  
     For more information, please refer to [issue #426](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/426).
 
+-   **Add `hyva:sampledata:deploy` and `hyva:sampledata:remove` CLI commands**  
+    `hyva:sampledata:deploy` discovers Luma sample data packages suggested by installed modules, maps them to their Hyvä (Koti) equivalents, and runs `composer require`.
+    Supports `--no-update`, `--replace-luma`, `--reinstall`, and `--keep-luma`. `hyva:sampledata:remove` removes all installed Koti sample data packages from `composer.json`.
+    The commands are registered via `src/cli_commands.php` using `CommandLocator`, available even when Magento is not fully installed.
+
+    For more information, please refer to [merge request #673](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/673).
+
 ### Changed
 
 -   **Updated snap-slider plugin**
