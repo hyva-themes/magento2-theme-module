@@ -591,10 +591,7 @@ class DeployCommand extends Command
 
         $stale = [];
         foreach ($required as $name => $version) {
-            if (
-                str_starts_with($name, self::HYVA_SAMPLE_DATA_PACKAGE_PREFIX) &&
-                !isset($hyvaPackages[$name])
-            ) {
+            if (str_starts_with($name, self::HYVA_SAMPLE_DATA_PACKAGE_PREFIX) && !isset($hyvaPackages[$name])) {
                 $stale[] = $name;
             }
         }
@@ -639,10 +636,7 @@ class DeployCommand extends Command
         $composer = $this->composerFactory->create();
         $available = [];
 
-        foreach (
-            $composer->getRepositoryManager()->getRepositories()
-            as $repo
-        ) {
+        foreach ($composer->getRepositoryManager()->getRepositories() as $repo) {
             $config = $repo->getRepoConfig();
             $url = $config["url"] ?? "";
             $type = $config["type"] ?? "";
@@ -694,10 +688,7 @@ class DeployCommand extends Command
     {
         if (function_exists("ini_set")) {
             $memoryLimit = trim(ini_get("memory_limit"));
-            if (
-                $memoryLimit !== "-1" &&
-                $this->getMemoryInBytes($memoryLimit) < 756 * 1024 * 1024
-            ) {
+            if ($memoryLimit !== "-1" && $this->getMemoryInBytes($memoryLimit) < 756 * 1024 * 1024) {
                 ini_set("memory_limit", "756M");
             }
         }
@@ -734,13 +725,11 @@ class DeployCommand extends Command
         if (isset(self::EXPLICIT_PACKAGE_MAP[$magentoPackage])) {
             return self::EXPLICIT_PACKAGE_MAP[$magentoPackage];
         }
-        if (
-            preg_match(
-                '#^magento/module-(.+)-sample-data$#',
-                $magentoPackage,
-                $m,
-            )
-        ) {
+        if (preg_match(
+            '#^magento/module-(.+)-sample-data$#',
+            $magentoPackage,
+            $m,
+        )) {
             return self::HYVA_SAMPLE_DATA_PACKAGE_PREFIX . $m[1];
         }
         return null;
