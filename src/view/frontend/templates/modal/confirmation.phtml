@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
+use Magento\Framework\Phrase;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
@@ -19,6 +20,12 @@ use Magento\Framework\View\Element\Template;
  * This is the default modal confirmation dialog template
  * @see \Hyva\Theme\Model\Modal\ConfirmationBuilderInterface
  */
+
+$okLabel = $block->getData('ok');
+$okLabel = is_scalar($okLabel) || $okLabel instanceof Phrase ? $okLabel : __('OK');
+
+$cancelLabel = $block->getData('cancel');
+$cancelLabel = is_scalar($cancelLabel) || $cancelLabel instanceof Phrase ? $cancelLabel : __('Cancel');
 
 ?>
 <?php if ($block->hasData('title')): ?>
@@ -34,6 +41,6 @@ use Magento\Framework\View\Element\Template;
 <?php endif; ?>
 
 <div class="actions-toolbar">
-    <button type="button" class="btn btn-primary" @click="ok"><?= $escaper->escapeHtml(__('OK')) ?></button>
-    <button type="button" class="btn" @click="cancel"><?= $escaper->escapeHtml(__('Cancel')) ?></button>
+    <button type="button" class="btn btn-primary" @click="ok"><?= $escaper->escapeHtml((string) $okLabel) ?></button>
+    <button type="button" class="btn" @click="cancel"><?= $escaper->escapeHtml((string) $cancelLabel) ?></button>
 </div>

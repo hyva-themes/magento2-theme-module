@@ -114,6 +114,12 @@
     <preference for="Hyva\Theme\Block\SortableItemInterface" type="Hyva\Theme\Block\SortableItem"/>
     <preference for="Hyva\Theme\Model\Media\MediaHtmlProviderInterface" type="Hyva\Theme\Model\Media\MediaHtmlProvider"/>
 
+    <type name="Hyva\Theme\Model\Media\MediaHtmlProvider">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem</argument>
+        </arguments>
+    </type>
+
     <type name="Hyva\Theme\Service\HyvaThemes">
         <arguments>
             <argument name="hyvaBaseThemes" xsi:type="array">

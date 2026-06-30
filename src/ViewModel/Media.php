@@ -37,6 +37,16 @@ class Media implements ArgumentInterface
     }
 
     /**
+     * @param string $path  Relative media path, absolute system path, or media URL
+     * @param int|null $width
+     * @param int|null $height
+     */
+    public function getImageUrl(string $path, ?int $width = null, ?int $height = null): string
+    {
+        return $this->mediaHtmlProvider->getImageUrl($path, $width, $height);
+    }
+
+    /**
      * @param string $path
      * @param int|null $width
      * @param int|null $height

@@ -23,7 +23,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
 
 ?>
 <script>
-    {
+    (() => {
         const private_content_key = 'mage-cache-storage';
         const private_content_expire_key = 'mage-cache-timeout';
         const private_content_version_key = 'private_content_version';
@@ -33,12 +33,12 @@ $cookieSettings = $viewModels->require(Cookie::class);
 
         const ttl = <?= $cookieSettings->getLifetime() ?: 3600 ?>;
 
-<?php
+        <?php
         /**
          * The `hyva` JS namespace is being set by Hyva_Theme/src/view/frontend/templates/page/js/hyva.phtml
          * and should be included through Hyva_Theme/src/view/frontend/layout/default_hyva.xml
          */
-?>
+        ?>
         if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
             console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
         }
@@ -57,26 +57,26 @@ $cookieSettings = $viewModels->require(Cookie::class);
             try {
                 let isInvalid = false;
 
-<?php
+                <?php
                 /**
                  * Usually store switch is made via POST requests, but if this happen on other ways (eg. the customer
                  * changing manually the base url, or landing from search engines on a different store) we need to
                  * request again private contents
                  */
-?>
+                ?>
                 if (hyva.getCookie(last_visited_store_key) !== CURRENT_STORE_CODE) {
                     isInvalid = true;
                 }
                 hyva.setCookie(last_visited_store_key, CURRENT_STORE_CODE, false, false);
 
-<?php
+                <?php
                 /**
                  * The `mage-cache-sessid` cookie is being unset from backend to
                  * indicate that sectionData is invalidated and needs to be reloaded
                  * in the frontend. So we mark it as invalid, and then re-set the
                  * `mage-cache-sessid` cookie
                  */
-?>
+                ?>
                 if (!hyva.getCookie(mage_cache_session_id_key)) {
                     isInvalid = true;
                     browserStorage.removeItem(private_content_key);
@@ -113,7 +113,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
                     }
                 } else {
                     if (document.getElementById('default-section-data')) {
-                        const privateContent = JSON.parse(document.getElementById('default-section-data').innerText.trim());
+                        const privateContent = JSON.parse(document.getElementById('default-section-data').textContent.trim());
                         dispatchPrivateContent(privateContent);
                     } else {
                         dispatchPrivateContent({});
@@ -128,12 +128,12 @@ $cookieSettings = $viewModels->require(Cookie::class);
         hyva.alpineInitialized(loadSectionData)
         window.addEventListener('reload-customer-section-data', loadSectionData);
 
-<?php
+        <?php
         /**
          * Extension point: custom scripts and modules can use a Proxy to intercept and mutate section data before it is dispatched.
          * Don't do expensive operations during the call. It can be called multiple times on a page.
          */
-?>
+        ?>
         window.processSectionDataBeforeDispatch = window.processSectionDataBeforeDispatch || (data => data);
 
         function dispatchPrivateContent(data) {
@@ -146,14 +146,14 @@ $cookieSettings = $viewModels->require(Cookie::class);
             window.dispatchEvent(privateContentEvent);
         }
 
-<?php
+        <?php
         /**
          * We use 'X-Requested-With': 'XMLHttpRequest' to prevent Magento from clearing the customer session
          * in \Magento\PageCache\Model\DepersonalizeChecker::checkIfDepersonalize
          * Otherwise, \Magento\Tax\Plugin\Checkout\CustomerData\Cart::afterGetSectionData can't add tax to
          * cart items.
          */
-?>
+        ?>
         function fetchPrivateContent(sections) {
             fetch(`${BASE_URL}customer/section/load/?sections=${encodeURIComponent(sections.join(','))}`, {
                 method: 'GET',
@@ -216,7 +216,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
                     console.warn("Couldn't fetch privateContent", error);
                 });
         }
-    }
+    })();
     //# sourceURL=hyva-private-content.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
