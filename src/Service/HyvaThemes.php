@@ -26,6 +26,45 @@ use function array_reverse as reverse;
 class HyvaThemes
 {
     /**
+     * Default list of Hyvä base themes, used as a fallback when the configured value is absent.
+     *
+     * Observed problem: during `bin/magento setup:static-content:deploy -j <N>` (the multi-process
+     * variant that forks worker processes), this service can be instantiated with
+     * $hyvaBaseThemes === null even though src/etc/di.xml declares the `hyvaBaseThemes` array
+     * argument. The object manager passes null where the configured array is expected, so the
+     * required `array` parameter fatals with "Argument #1 ($hyvaBaseThemes) must be of type array,
+     * null given". Because the minifier plugin builds this service for every asset, that turns into
+     * a failure on every file and the whole deploy fails.
+     *
+     * We do NOT know the fundamental reason the di.xml argument is not passed by the object manager
+     * in this scenario. It has only been observed with multiple static-content-deploy workers; in
+     * normal/single-process setups the argument is compiled and resolved correctly, and we have not
+     * been able to reproduce or explain why the configured value goes missing specifically under the
+     * forked workers. Rather than let the deploy fatal, the constructor accepts a nullable value and
+     * coalesces to this constant.
+     *
+     * LIMITATION — this is a crash guard, not a full fix. `hyvaBaseThemes` is intentionally
+     * configurable in di.xml so projects can register their own custom base themes. This constant
+     * only contains the built-in Hyvä base themes, so when the fallback is hit (the object manager
+     * did not pass the configured array) any CUSTOM base themes added via di.xml are absent from the
+     * list and will NOT be recognized — their assets get minified as if they were not Hyvä themes.
+     * So the fallback prevents the fatal but does not restore correct behaviour for projects with
+     * custom base themes.
+     *
+     * For projects with custom base themes the only known stable workaround is to run
+     * `setup:static-content:deploy` with a single worker (`-j 1`, or omit `-j`), which avoids
+     * triggering the missing-argument condition altogether. That guidance stands until the root
+     * cause (why the object manager drops the configured argument under forked workers) is found.
+     *
+     * Keep this list in sync with the `hyvaBaseThemes` argument in src/etc/di.xml.
+     */
+    private const DEFAULT_HYVA_BASE_THEMES = [
+        'Hyva/reset' => true,
+        'Hyva/default' => true,
+        'Hyva/default-csp' => true,
+    ];
+
+    /**
      * @var ComponentRegistrar
      */
     private $componentRegistrar;
@@ -46,11 +85,11 @@ class HyvaThemes
     private $filesystem;
 
     public function __construct(
-        array $hyvaBaseThemes,
+        ?array $hyvaBaseThemes,
         ComponentRegistrar $componentRegistrar,
         Filesystem $filesystem
     ) {
-        $this->hyvaBaseThemes = keys(filter($hyvaBaseThemes));
+        $this->hyvaBaseThemes = keys(filter($hyvaBaseThemes ?? self::DEFAULT_HYVA_BASE_THEMES));
         $this->componentRegistrar = $componentRegistrar;
         $this->filesystem = $filesystem;
     }
