@@ -9,8 +9,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="hyva_themes" sortOrder="999" translate="label">
-            <label>Hyva Themes</label>
+        <tab id="hyva_themes" sortOrder="920" class="hyva-theme-config-tab">
+            <label>Hyva Theme</label>
         </tab>
 
         <section id="hyva_theme_google" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="100" translate="label">
@@ -132,7 +132,16 @@
                     </depends>
                 </field>
             </group>
-            <group id="crosssell_products" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="product_reviews" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product Reviews</label>
+                <field id="paginated_canonical_url" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Include Review Pagination in Canonical URL</label>
+                    <comment>When disabled, all review pages share the same canonical URL.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="crosssell_products" translate="label comment" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cross-sell Products</label>
                 <field id="limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"
                     canRestore="1">

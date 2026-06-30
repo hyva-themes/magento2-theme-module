@@ -12,7 +12,6 @@ use Magento\Framework\View\Element\Template;
 
 /** @var HyvaCsp $hyvaCsp */
 /** @var Template $block */
-
 ?>
 <script>
     function dispatchMessages(messages, hideAfter) {
@@ -25,12 +24,12 @@ use Magento\Framework\View\Element\Template;
         window.dispatchEvent(messagesEvent);
     }
 
-<?php
+    <?php
     /**
      * The `hyva` JS namespace is being set by Hyva_Theme/src/view/frontend/templates/page/js/hyva.phtml
      * and should be included through Hyva_Theme/src/view/frontend/layout/default_hyva.xml
      */
-?>
+    ?>
     if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
         console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
     }
@@ -38,11 +37,13 @@ use Magento\Framework\View\Element\Template;
     (function( hyva, undefined ) {
 
         hyva.initFormKey = () => {
-            const inputSelector = 'input[name="form_key"]',
-                formKey = hyva.getFormKey();
+            if (typeof hyva.getFormKey !== 'function') return;
 
-            Array.from(document.querySelectorAll(inputSelector)).map(function (input) {
-                input.value = formKey
+            const formKey = hyva.getFormKey();
+            if (!formKey) return;
+
+            document.querySelectorAll('input[name="form_key"]').forEach((input) => {
+                input.value = formKey;
             });
         }
 
@@ -70,9 +71,15 @@ use Magento\Framework\View\Element\Template;
         }
 
         window.addEventListener('DOMContentLoaded', hyva.initFormKey);
-        hyva.alpineInitialized(hyva.initMessages)
 
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                hyva.initFormKey();
+            }
+        });
+
+        hyva.alpineInitialized(hyva.initMessages)
     }( window.hyva = window.hyva || {} ));
     //# sourceURL=hyva-cookies.js
 </script>
-<?php $hyvaCsp->registerInlineScript() ?>
+<?php $hyvaCsp->registerInlineScript(); ?>

@@ -21,7 +21,7 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 
 /**
- * @version 2.2.3
+ * @version 2.3.0
  * @source https://github.com/fylgja/alpinejs-dialog
  */
 ?>
@@ -32,8 +32,8 @@ use Magento\Framework\View\Element\Template;
             Alpine.directive("htmldialog", fylgjaAlpineDialog);
             function fylgjaAlpineDialog(el, { expression, modifiers }, { evaluateLater, cleanup }) {
             const evaluate = expression.length ? evaluateLater(expression) : () => {};
-            const canEvaluate = expression.length > 0;
             const lockPageScroll = modifiers.includes("noscroll");
+            const isModeless = modifiers.includes("modeless");
             const closeBy = el.getAttribute("closeby") || modifierValue(modifiers, "closeby", "closerequest");
             el.style.display = null;
             el.style.length === 0 && el.removeAttribute("style");
@@ -76,7 +76,7 @@ use Magento\Framework\View\Element\Template;
             }
             function open() {
                 if (el.hasAttribute("open")) return;
-                el.showModal();
+                isModeless ? el.show() : el.showModal();
                 scrollLock(lockPageScroll);
             }
             function close() {
@@ -124,4 +124,3 @@ use Magento\Framework\View\Element\Template;
     //# sourceURL=alpine-htmldialog.js
 </script>
 <?php if (isset($hyvaCsp)) $hyvaCsp->registerInlineScript(); ?>
-

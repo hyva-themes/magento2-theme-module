@@ -12,15 +12,20 @@ namespace Hyva\Theme\Plugin\Catalog\Helper\Product;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Helper\Product\View as ProductViewHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Asset\PropertyGroup as PageAssetPropertyGroup;
 use Magento\Framework\View\Page\Config as PageConfig;
 use Magento\Framework\View\Result\Page as ResultPage;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 class ProductReviewPaginationCanonicalUrlFixPlugin
 {
+    private const XML_PATH_PAGINATED_CANONICAL_URL = 'hyva_theme_catalog/product_reviews/paginated_canonical_url';
+
     /**
      * @var ProductRepositoryInterface
      */
@@ -36,14 +41,21 @@ class ProductReviewPaginationCanonicalUrlFixPlugin
      */
     private $request;
 
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
         StoreManagerInterface $storeManager,
-        HttpRequest $request
+        HttpRequest $request,
+        ?ScopeConfigInterface $scopeConfig = null
     ) {
         $this->productRepository = $productRepository;
         $this->storeManager = $storeManager;
         $this->request = $request;
+        $this->scopeConfig = $scopeConfig ?? ObjectManager::getInstance()->get(ScopeConfigInterface::class);
     }
 
     /**
@@ -58,8 +70,12 @@ class ProductReviewPaginationCanonicalUrlFixPlugin
     public function afterPrepareAndRender(ProductViewHelper $subject, $result, ResultPage $resultPage, $productId)
     {
         $pageNumber = $this->request->getParam('p');
+        $paginatedCanonicalEnabled = $this->scopeConfig->isSetFlag(
+            self::XML_PATH_PAGINATED_CANONICAL_URL,
+            ScopeInterface::SCOPE_STORE
+        );
 
-        if ($pageNumber) {
+        if ($pageNumber && $paginatedCanonicalEnabled) {
             $this->updateCanonicalUrlToIncludePagination($resultPage, (int) $productId, (int) $pageNumber);
         }
 

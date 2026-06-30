@@ -6,7 +6,84 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.6...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.7...main
+
+## [1.4.7] - 2026-06-30
+
+[1.4.7]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.6...1.4.7
+
+### Added
+
+-   **Add getSwatchDimension**  
+    For more information, please refer to [merge request #669](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/669).
+
+-   **Add `Product\Placeholder` view model**  
+    For more information, please refer to [merge request #656](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/656).
+
+-   **Option to enable or disable the canonical URL for product review pagination**  
+    For more information, please refer to [issue #426](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/426).
+
+-   **Add `hyva:sampledata:deploy` and `hyva:sampledata:remove` CLI commands**  
+    `hyva:sampledata:deploy` discovers Luma sample data packages suggested by installed modules, maps them to their Hyvä (Koti) equivalents, and runs `composer require`.
+    Supports `--no-update`, `--replace-luma`, `--reinstall`, and `--keep-luma`. `hyva:sampledata:remove` removes all installed Koti sample data packages from `composer.json`.
+    The commands are registered via `src/cli_commands.php` using `CommandLocator`, available even when Magento is not fully installed.
+
+    For more information, please refer to [merge request #673](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/673).
+
+### Changed
+
+-   **Updated snap-slider plugin**
+    -   Added `loop` modifier support (`data-loop`, `x-snap-slider.loop`)
+    -   Navigation now uses index-based logic with an `isNavigating` guard and `scrollend`/`scroll` fallback
+    -   `getInViewItems` filters results to direct slide children only
+    -   `getSlides` excludes elements with `display:none`
+    -   `setupMutationObserver` now watches subtree and `style` attribute changes
+    -   `setupSlides` no longer overwrites an existing `tabindex` on the track
+    -   Pager receives `inert` attribute when there is no overflow
+    -   Keyboard navigation handles `ArrowDown`/`ArrowUp` as aliases and calls `preventDefault`
+
+    For more information, please refer to [merge request #654](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/654).
+
+-   **Updated the `x-htmldialog` component to v2.3.0**  
+    Added `modeless` argument support. Passing `modeless` renders the dialog as a non-blocking popup,
+    allowing interaction with the rest of the page while the dialog is open.
+
+-   **Update system config tab + add logo**  
+    For more information, please refer to [merge request #670](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/670).
+
+-   **Fixed Account buttons can be clicked multiple times after submitting causing multiple entries**  
+    For more information, please refer to [issue #1323](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1323).
+
+-   **Fixed broken short description logic**  
+    For more information, please refer to [issue #521](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/521).
+
+-   **Re-apply explicit HyvaThemes injection**  
+    This reverts commit [69a3ee7c](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/commit/69a3ee7cbece9aa22d533b8ba19b6e7717cc9586).
+
+    For more information, please refer to [merge request #661](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/661).
+
+-   **Improve state resilience in CustomerSectionData::getDefaultSectionData using try-finally**  
+    For more information, please refer to [merge request #659](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/659).
+
+    Many thanks to Christoph Hendreich (In Session) for the contribution!
+
+-   **Fixed recalculate styles in private content**  
+    For more information, please refer to [merge request #657](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/657).
+
+-   **Fixed missing configuration options of Confirm Dialog button labels**  
+    For more information, please refer to [issue #528](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/528).
+
+    Many thanks to Frederik Rommel (WEBiDEA) for the contribution!
+
+-   **Fixed support for passing URL and full paths besides media relative paths**  
+    For more information, please refer to [merge request #642](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/642).
+
+-   **Fixed Refresh form keys after bfcache restore**  
+    For more information, please refer to [merge request #672](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/672).
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.4.6] - 2026-05-12
 

@@ -37,6 +37,9 @@
             </images>
         </hyva_theme_pagebuilder>
         <hyva_theme_catalog>
+            <product_reviews>
+                <paginated_canonical_url>1</paginated_canonical_url>
+            </product_reviews>
             <developer>
                 <cache>
                     <product_list_item_block_cache_enabled>1</product_list_item_block_cache_enabled>

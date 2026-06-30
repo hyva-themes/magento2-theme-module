@@ -363,6 +363,7 @@ use Magento\Framework\View\Element\Template;
                 state: {
                     valid: false,
                 },
+                isSubmitting: false,
                 fields: {},
                 idSeq: 0,
                 idPrefix: formElement.id || 'vld-msg',
@@ -402,9 +403,14 @@ use Magento\Framework\View\Element\Template;
                     if (event.target.tagName === 'FORM') {
                         event.preventDefault();
 
+                        if (this.isSubmitting) return;
+                        this.isSubmitting = true;
+
                         this.validate()
                             .then(() => event.target.submit())
-                            .catch(invalidElements => {<?php /* No default behavior */ ?>});
+                            .catch(invalidElements => {
+                                this.isSubmitting = false;
+                            });
                     }
                 },
                 onChange(event) {
