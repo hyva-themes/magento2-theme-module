@@ -31,9 +31,6 @@ class SampleDataCommandList implements CommandListInterface
         $this->objectManager = $objectManager;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getCommands(): array
     {
         return [

@@ -586,6 +586,7 @@ class DeployCommand extends Command
         OutputInterface $output,
     ): void {
         $composerFile = $baseDir . "composer.json";
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         $composerData = json_decode(file_get_contents($composerFile), true);
         $required = $composerData["require"] ?? [];
 
@@ -689,6 +690,7 @@ class DeployCommand extends Command
         if (function_exists("ini_set")) {
             $memoryLimit = trim(ini_get("memory_limit"));
             if ($memoryLimit !== "-1" && $this->getMemoryInBytes($memoryLimit) < 756 * 1024 * 1024) {
+                // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
                 ini_set("memory_limit", "756M");
             }
         }

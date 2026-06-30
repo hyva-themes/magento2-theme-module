@@ -128,6 +128,7 @@ class RemoveCommand extends Command
         if (function_exists("ini_set")) {
             $memoryLimit = trim(ini_get("memory_limit"));
             if ($memoryLimit !== "-1" && $this->getMemoryInBytes($memoryLimit) < 756 * 1024 * 1024) {
+                // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
                 ini_set("memory_limit", "756M");
             }
         }
