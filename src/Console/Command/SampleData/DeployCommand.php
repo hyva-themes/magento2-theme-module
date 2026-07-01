@@ -18,7 +18,7 @@ use Magento\Framework\Composer\ComposerFactory;
 use Magento\Framework\Composer\ComposerInformation;
 use Magento\Framework\Console\Cli;
 use Magento\Framework\Filesystem;
-use Magento\SampleData\Model\Dependency;
+use Magento\Framework\ObjectManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,6 +42,17 @@ class DeployCommand extends Command
     private const HYVA_SAMPLE_DATA_SUGGEST = "Hyvä Sample Data version:";
     private const RESET_FLAG_FILE = ".hyva-sample-data-reset";
     private const KEEP_LUMA_CONFIG_FILE = "hyva-sample-data-config.json";
+
+    /**
+     * The core sample data dependency resolver.
+     *
+     * Not constructor-injected so the class is not required at DI-compilation
+     * time. Customers sometimes composer-replace magento/module-sample-data as
+     * a performance optimisation, which removes this class; a hard dependency
+     * would make setup:di:compile fail for them. The class is resolved lazily
+     * via the object manager and guarded with class_exists() at runtime.
+     */
+    private const SAMPLE_DATA_DEPENDENCY_CLASS = \Magento\SampleData\Model\Dependency::class;
 
     /** Packages that don't follow the magento/module-{X}-sample-data convention. */
     private const EXPLICIT_PACKAGE_MAP = [
@@ -69,7 +80,7 @@ class DeployCommand extends Command
     ];
 
     private Filesystem $filesystem;
-    private Dependency $sampleDataDependency;
+    private ObjectManagerInterface $objectManager;
     private ComposerInformation $composerInformation;
     private ComposerFactory $composerFactory;
     private ResourceConnection $resourceConnection;
@@ -77,14 +88,14 @@ class DeployCommand extends Command
 
     public function __construct(
         Filesystem $filesystem,
-        Dependency $sampleDataDependency,
+        ObjectManagerInterface $objectManager,
         ComposerInformation $composerInformation,
         ComposerFactory $composerFactory,
         ResourceConnection $resourceConnection,
         CacheManager $cacheManager,
     ) {
         $this->filesystem = $filesystem;
-        $this->sampleDataDependency = $sampleDataDependency;
+        $this->objectManager = $objectManager;
         $this->composerInformation = $composerInformation;
         $this->composerFactory = $composerFactory;
         $this->resourceConnection = $resourceConnection;
@@ -129,6 +140,21 @@ class DeployCommand extends Command
         OutputInterface $output,
     ): int {
         $this->updateMemoryLimit();
+
+        // Guard before any side effects: the destructive --replace-luma /
+        // --reinstall paths run before the sample data resolver is used, and
+        // Luma removal is not rolled back. If the core package has been
+        // composer-replaced the resolver class is absent — fail cleanly here
+        // rather than half-way through.
+        if (!class_exists(self::SAMPLE_DATA_DEPENDENCY_CLASS)) {
+            $output->writeln(sprintf(
+                "<error>The required package magento/module-sample-data is not installed " .
+                    "(the %s class could not be found). " .
+                    "Install magento/module-sample-data to use hyva:sampledata:deploy.</error>",
+                self::SAMPLE_DATA_DEPENDENCY_CLASS,
+            ));
+            return Cli::RETURN_FAILURE;
+        }
 
         $baseDir = $this->filesystem
             ->getDirectoryRead(DirectoryList::ROOT)
@@ -183,7 +209,12 @@ class DeployCommand extends Command
                 $this->writeKeepLumaConfig($output, $cleanups);
             }
 
-            $magentoPackages = $this->sampleDataDependency->getSampleDataPackages();
+            // Resolved lazily (not constructor-injected) so this class carries
+            // no compile-time dependency on magento/module-sample-data. The
+            // class_exists() guard at the top of execute() guarantees it loads.
+            /** @var \Magento\SampleData\Model\Dependency $sampleDataDependency */
+            $sampleDataDependency = $this->objectManager->get(self::SAMPLE_DATA_DEPENDENCY_CLASS);
+            $magentoPackages = $sampleDataDependency->getSampleDataPackages();
 
             // Also discover Hyvä-specific suggestions from composer.lock.
             // Hyvä modules use "Hyvä Sample Data version:" as prefix so the core
