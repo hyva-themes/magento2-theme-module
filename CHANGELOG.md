@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.0...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.1...main
+
+## [1.5.1] - 2026-07-01
+
+[1.5.1]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.0...1.5.1
+
+This release contains the same changes as [1.4.8].
 
 ## [1.5.0] - 2026-06-30
 
@@ -35,6 +41,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **PageBuilder: Update image size fields to Magento naming**  
     For more information, please refer to [issue #510](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/510#note_84957).
+
+### Removed
+
+-   Nothing Removed
+
+## [1.4.8] - 2026-07-01
+
+[1.4.8]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.7...1.4.8
+
+### Added
+
+-   Nothing Added
+
+### Changed
+
+-   **FIX: guard HyvaThemes against null $hyvaBaseThemes during multi-worker SCD**  
+    For more information, please refer to [merge request #674](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/674).
+
+-   **Remove hard dependency on Magento\SampleData\Model\Dependency from hyva:sampledata:deploy**  
+    For more information, please refer to [merge request #676](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/676).
 
 ### Removed
 
