@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.8...main
 
-## [1.4.8] - 2026-06-30
+## [1.4.8] - 2026-07-01
 
 [1.4.8]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.7...1.4.8
 
