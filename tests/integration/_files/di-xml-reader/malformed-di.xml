@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <type name="Hyva\Theme\Service\HyvaThemes">
+        <arguments>
+            <argument name="hyvaBaseThemes" xsi:type="array">
+                <item name="Broken/base" xsi:type="boolean">true
+        <!-- deliberately malformed: unclosed tags -->
+</config>

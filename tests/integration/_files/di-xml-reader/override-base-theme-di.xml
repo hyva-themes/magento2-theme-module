@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Test fixture: a later module overriding an item from an earlier module, using a leading backslash
+ * in the type name (tolerated by Magento's merger, so the reader must tolerate it too).
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="\Hyva\Theme\Service\HyvaThemes">
+        <arguments>
+            <argument name="hyvaBaseThemes" xsi:type="array">
+                <item name="Other/base" xsi:type="boolean">true</item>
+                <item name="Custom/disabled-base" xsi:type="boolean">false</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
