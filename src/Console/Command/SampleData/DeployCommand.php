@@ -54,14 +54,26 @@ class DeployCommand extends Command
      */
     private const SAMPLE_DATA_DEPENDENCY_CLASS = \Magento\SampleData\Model\Dependency::class;
 
-    /** Packages that don't follow the magento/module-{X}-sample-data convention. */
+    /**
+     * Composer vendor names of distributions that publish the upstream Luma
+     * sample-data packages. Mage-OS republishes the same packages under its
+     * own vendor name. To support a future distribution with yet another
+     * vendor name, add it to this list.
+     */
+    private const LUMA_SAMPLE_DATA_VENDORS = ["magento", "mage-os"];
+
+    /**
+     * Packages that don't follow the {vendor}/module-{X}-sample-data
+     * convention, keyed by package name without the vendor prefix.
+     */
     private const EXPLICIT_PACKAGE_MAP = [
-        "magento/sample-data-media" =>
+        "sample-data-media" =>
             self::HYVA_SAMPLE_DATA_PACKAGE_PREFIX . "media",
     ];
 
     /**
-     * Config paths written by Luma sample-data installers.
+     * Config paths written by Luma sample-data installers, keyed by package
+     * name without the vendor prefix.
      *
      * Only full-value writes are listed — paths that are appended to (e.g.
      * design/head/includes in module-theme-sample-data) cannot be reliably
@@ -69,11 +81,11 @@ class DeployCommand extends Command
      * alone for the operator to clean up manually if needed.
      */
     private const LUMA_CONFIG_PATHS = [
-        "magento/module-msrp-sample-data" => ["sales/msrp/enabled"],
-        "magento/module-multiple-wishlist-sample-data" => [
+        "module-msrp-sample-data" => ["sales/msrp/enabled"],
+        "module-multiple-wishlist-sample-data" => [
             "wishlist/general/multiple_enabled",
         ],
-        "magento/module-offline-shipping-sample-data" => [
+        "module-offline-shipping-sample-data" => [
             "carriers/tablerate/active",
             "carriers/tablerate/condition_name",
         ],
@@ -148,9 +160,10 @@ class DeployCommand extends Command
         // rather than half-way through.
         if (!class_exists(self::SAMPLE_DATA_DEPENDENCY_CLASS)) {
             $output->writeln(sprintf(
-                "<error>The required package magento/module-sample-data is not installed " .
+                "<error>The required Magento_SampleData framework module is not installed " .
                     "(the %s class could not be found). " .
-                    "Install magento/module-sample-data to use hyva:sampledata:deploy.</error>",
+                    "Install magento/module-sample-data (mage-os/module-sample-data on Mage-OS) " .
+                    "to use hyva:sampledata:deploy.</error>",
                 self::SAMPLE_DATA_DEPENDENCY_CLASS,
             ));
             return Cli::RETURN_FAILURE;
@@ -377,11 +390,37 @@ class DeployCommand extends Command
     {
         $installedPackages = $this->composerInformation->getInstalledMagentoPackages();
         foreach ($installedPackages as $name => $info) {
-            if (preg_match('#^magento/module-.+-sample-data$#', $name)) {
+            if ($this->isLumaSampleDataPackage($name)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Check whether a Composer package is a Luma sample-data package from
+     * any of the known distribution vendors.
+     */
+    private function isLumaSampleDataPackage(string $package): bool
+    {
+        $name = $this->stripLumaVendor($package);
+        // .+ requires at least one char between module- and -sample-data,
+        // so {vendor}/module-sample-data (framework module) cannot match.
+        return $name !== null && preg_match('#^module-.+-sample-data$#', $name) === 1;
+    }
+
+    /**
+     * Return the package name without the vendor prefix if the package
+     * belongs to one of the known Luma sample-data vendors, null otherwise.
+     */
+    private function stripLumaVendor(string $package): ?string
+    {
+        foreach (self::LUMA_SAMPLE_DATA_VENDORS as $vendor) {
+            if (str_starts_with($package, $vendor . "/")) {
+                return substr($package, strlen($vendor) + 1);
+            }
+        }
+        return null;
     }
 
     /**
@@ -430,9 +469,7 @@ class DeployCommand extends Command
         $installedPackages = $this->composerInformation->getInstalledMagentoPackages();
         $toRemove = [];
         foreach ($installedPackages as $name => $info) {
-            // .+ requires at least one char between module- and -sample-data,
-            // so magento/module-sample-data (framework module) cannot match.
-            if (preg_match('#^magento/module-.+-sample-data$#', $name)) {
+            if ($this->isLumaSampleDataPackage($name)) {
                 $toRemove[] = $name;
             }
         }
@@ -526,8 +563,9 @@ class DeployCommand extends Command
     {
         $paths = [];
         foreach ($removedPackages as $package) {
-            if (isset(self::LUMA_CONFIG_PATHS[$package])) {
-                foreach (self::LUMA_CONFIG_PATHS[$package] as $path) {
+            $name = $this->stripLumaVendor($package);
+            if ($name !== null && isset(self::LUMA_CONFIG_PATHS[$name])) {
+                foreach (self::LUMA_CONFIG_PATHS[$name] as $path) {
                     $paths[$path] = true;
                 }
             }
@@ -749,20 +787,21 @@ class DeployCommand extends Command
     }
 
     /**
-     * Map a Magento sample data package name to its Hyva equivalent.
+     * Map an upstream sample data package name to its Hyva equivalent.
      *
-     * Pattern: magento/module-{X}-sample-data → hyva-themes/koti-sample-data-{X}
+     * Pattern: {vendor}/module-{X}-sample-data → hyva-themes/koti-sample-data-{X}
+     * where {vendor} is one of the known Luma sample-data vendors.
      */
-    private function mapToHyvaPackage(string $magentoPackage): ?string
+    private function mapToHyvaPackage(string $lumaPackage): ?string
     {
-        if (isset(self::EXPLICIT_PACKAGE_MAP[$magentoPackage])) {
-            return self::EXPLICIT_PACKAGE_MAP[$magentoPackage];
+        $name = $this->stripLumaVendor($lumaPackage);
+        if ($name === null) {
+            return null;
         }
-        if (preg_match(
-            '#^magento/module-(.+)-sample-data$#',
-            $magentoPackage,
-            $m,
-        )) {
+        if (isset(self::EXPLICIT_PACKAGE_MAP[$name])) {
+            return self::EXPLICIT_PACKAGE_MAP[$name];
+        }
+        if (preg_match('#^module-(.+)-sample-data$#', $name, $m)) {
             return self::HYVA_SAMPLE_DATA_PACKAGE_PREFIX . $m[1];
         }
         return null;
