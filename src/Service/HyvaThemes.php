@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Service;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\DriverPool;
@@ -21,49 +22,33 @@ use function array_reverse as reverse;
 /**
  * This class exists since release 1.3.18
  *
+ * The $hyvaBaseThemes constructor argument is nullable even though src/etc/di.xml always declares it:
+ *
+ * setup:di:compile does not read the di.xml files directly. It consumes the merged DI configuration
+ * through the config cache (cache id `global::DiConfig`), which is keyed by scope name alone and is not
+ * invalidated when files change. When that cache entry was written at a moment this module's di.xml was
+ * not part of the merge — typically by a Magento bootstrap during the first setup:upgrade after composer
+ * installed the module, while app/etc/config.php did not list the module yet — the compiler finds no
+ * value for the required array argument and records an explicit null in generated/metadata. The compiled
+ * object manager then passes literal null to this constructor. The same happens to the explicit
+ * `hyvaThemes` injections into the minifier plugins, whose in-constructor fallback then builds this
+ * service via ObjectManager::get() with the same broken compiled arguments. Only array and scalar
+ * arguments are affected; object arguments are auto-wired by the compiler even without configuration.
+ *
+ * Since the minifier disable plugins resolve this service for every asset, a null argument would
+ * otherwise fatal on every file of a setup:static-content:deploy run.
+ *
+ * When null is injected, the constructor falls back to HyvaBaseThemesDiXmlReader, which re-reads the
+ * `hyvaBaseThemes` argument from the enabled modules' etc/di.xml source files, bypassing the object
+ * manager and all caches. This recovers the same merged value the compiler should have produced —
+ * including custom base themes that projects add through their own di.xml — and logs a warning, since
+ * the stale compiled configuration should still be repaired by flushing the config cache and running
+ * setup:di:compile again.
+ *
  * phpcs:disable Magento2.Functions.DiscouragedFunction
  */
 class HyvaThemes
 {
-    /**
-     * Default list of Hyvä base themes, used as a fallback when the configured value is absent.
-     *
-     * Observed problem: during `bin/magento setup:static-content:deploy -j <N>` (the multi-process
-     * variant that forks worker processes), this service can be instantiated with
-     * $hyvaBaseThemes === null even though src/etc/di.xml declares the `hyvaBaseThemes` array
-     * argument. The object manager passes null where the configured array is expected, so the
-     * required `array` parameter fatals with "Argument #1 ($hyvaBaseThemes) must be of type array,
-     * null given". Because the minifier plugin builds this service for every asset, that turns into
-     * a failure on every file and the whole deploy fails.
-     *
-     * We do NOT know the fundamental reason the di.xml argument is not passed by the object manager
-     * in this scenario. It has only been observed with multiple static-content-deploy workers; in
-     * normal/single-process setups the argument is compiled and resolved correctly, and we have not
-     * been able to reproduce or explain why the configured value goes missing specifically under the
-     * forked workers. Rather than let the deploy fatal, the constructor accepts a nullable value and
-     * coalesces to this constant.
-     *
-     * LIMITATION — this is a crash guard, not a full fix. `hyvaBaseThemes` is intentionally
-     * configurable in di.xml so projects can register their own custom base themes. This constant
-     * only contains the built-in Hyvä base themes, so when the fallback is hit (the object manager
-     * did not pass the configured array) any CUSTOM base themes added via di.xml are absent from the
-     * list and will NOT be recognized — their assets get minified as if they were not Hyvä themes.
-     * So the fallback prevents the fatal but does not restore correct behaviour for projects with
-     * custom base themes.
-     *
-     * For projects with custom base themes the only known stable workaround is to run
-     * `setup:static-content:deploy` with a single worker (`-j 1`, or omit `-j`), which avoids
-     * triggering the missing-argument condition altogether. That guidance stands until the root
-     * cause (why the object manager drops the configured argument under forked workers) is found.
-     *
-     * Keep this list in sync with the `hyvaBaseThemes` argument in src/etc/di.xml.
-     */
-    private const DEFAULT_HYVA_BASE_THEMES = [
-        'Hyva/reset' => true,
-        'Hyva/default' => true,
-        'Hyva/default-csp' => true,
-    ];
-
     /**
      * @var ComponentRegistrar
      */
@@ -75,7 +60,7 @@ class HyvaThemes
     private $hyvaBaseThemes;
 
     /**
-     * @var bool[|
+     * @var bool[]
      */
     private $memoizedThemes = [];
 
@@ -84,12 +69,29 @@ class HyvaThemes
      */
     private $filesystem;
 
+    /**
+     * The $hyvaBaseThemes argument is nullable to guard against stale compiled DI configuration passing
+     * null instead of the configured array — see the class comment for the full explanation. The reader
+     * argument is nullable for backward compatibility (this class shipped in prior releases); it is only
+     * resolved, and the di.xml sources are only read, when $hyvaBaseThemes actually arrives as null.
+     *
+     * @param bool[]|null $hyvaBaseThemes map of theme path to enabled flag, as declared in di.xml
+     * @param ComponentRegistrar $componentRegistrar
+     * @param Filesystem $filesystem
+     * @param HyvaBaseThemesDiXmlReader|null $baseThemesDiXmlReader
+     */
     public function __construct(
         ?array $hyvaBaseThemes,
         ComponentRegistrar $componentRegistrar,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        ?HyvaBaseThemesDiXmlReader $baseThemesDiXmlReader = null
     ) {
-        $this->hyvaBaseThemes = keys(filter($hyvaBaseThemes ?? self::DEFAULT_HYVA_BASE_THEMES));
+        if ($hyvaBaseThemes === null) {
+            $baseThemesDiXmlReader = $baseThemesDiXmlReader
+                ?? ObjectManager::getInstance()->get(HyvaBaseThemesDiXmlReader::class);
+            $hyvaBaseThemes = $baseThemesDiXmlReader->readBaseThemesFromDiXmlSources();
+        }
+        $this->hyvaBaseThemes = keys(filter($hyvaBaseThemes));
         $this->componentRegistrar = $componentRegistrar;
         $this->filesystem = $filesystem;
     }
