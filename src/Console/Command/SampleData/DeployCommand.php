@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Hyva\Theme\Console\Command\SampleData;
 
 use Composer\Console\Application as ComposerApplication;
+use Composer\Repository\ComposerRepository;
+use Composer\Repository\PathRepository;
 use Composer\Repository\RepositoryInterface;
 use Magento\Framework\App\Cache\Manager as CacheManager;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -267,9 +269,12 @@ class DeployCommand extends Command
                 return Cli::RETURN_FAILURE;
             }
 
-            $available = $this->getAvailableHyvaPackages($output);
+            [$available, $availabilityConclusive] = $this->getAvailableHyvaPackages($output);
             $unavailable = [];
-            if (!empty($available)) {
+            if ($availabilityConclusive) {
+                // We have an authoritative list of what exists, so drop anything that
+                // doesn't (e.g. a package derived by naming convention that has no real
+                // Hyvä equivalent) before requiring.
                 $unavailable = array_diff_key($hyvaPackages, $available);
                 $hyvaPackages = array_intersect_key($hyvaPackages, $available);
             }
@@ -310,27 +315,59 @@ class DeployCommand extends Command
                 $packages[] = "$name:$version";
             }
 
-            $arguments = [
-                "command" => "require",
-                "packages" => $packages,
-                "--working-dir" => $baseDir,
-                "--no-progress" => true,
-            ];
+            if ($availabilityConclusive || $noUpdate) {
+                // Single atomic require. Either every package is known to exist
+                // (conclusive), or --no-update was requested: with --no-update Composer
+                // only edits composer.json and performs no resolution, so it can neither
+                // verify a package exists nor fail on a missing one. The per-package
+                // fallback below would gain nothing there and would falsely report every
+                // spec as installed, so we defer that verification to the later update.
+                if ($noUpdate && !$availabilityConclusive) {
+                    $output->writeln(
+                        "<comment>Availability could not be verified and --no-update skips " .
+                            "dependency resolution, so any package that does not exist will " .
+                            "only surface on the next 'composer update' / setup:upgrade.</comment>",
+                    );
+                    $output->writeln("");
+                }
+                $result = $this->runComposerRequire($packages, $baseDir, $noUpdate, $output);
+                if ($result !== 0) {
+                    $output->writeln(
+                        "<error>Error during Hyvä sample data deployment. Composer changes will be reverted.</error>",
+                    );
+                    return Cli::RETURN_FAILURE;
+                }
+            } else {
+                // Availability could not be verified, so the list may contain a package
+                // that does not exist. A single atomic require (with update) would abort
+                // on it and take the valid packages down with it, so require each package
+                // on its own — a missing one is then skipped instead of blocking the rest.
+                $installed = [];
+                $failed = [];
+                foreach ($packages as $spec) {
+                    if ($this->runComposerRequire([$spec], $baseDir, $noUpdate, $output) === 0) {
+                        $installed[] = $spec;
+                    } else {
+                        $failed[] = $spec;
+                    }
+                }
 
-            if ($noUpdate) {
-                $arguments["--no-update"] = true;
-            }
+                if (empty($installed)) {
+                    $output->writeln(
+                        "<error>No Hyvä sample data packages could be installed. Composer changes have been reverted.</error>",
+                    );
+                    return Cli::RETURN_FAILURE;
+                }
 
-            $application = new ComposerApplication();
-            $application->setAutoExit(false);
-            $result = $application->run(new ArrayInput($arguments), $output);
-
-            if ($result !== 0) {
-                $output->writeln(
-                    "<error>Error during Hyvä sample data deployment. Composer changes will be reverted.</error>",
-                );
-                $application->resetComposer();
-                return Cli::RETURN_FAILURE;
+                if (!empty($failed)) {
+                    $output->writeln("");
+                    $output->writeln(
+                        "<comment>Skipped packages that could not be installed (they may not exist yet):</comment>",
+                    );
+                    foreach ($failed as $spec) {
+                        $output->writeln("  - $spec");
+                    }
+                }
             }
 
             $output->writeln("");
@@ -696,28 +733,67 @@ class DeployCommand extends Command
     /**
      * Query Composer repositories for available Hyvä sample data packages.
      *
-     * Searches the Hyvä private packagist and local path repositories.
-     * Skips packagist.org and other remote repos to avoid unnecessary network calls.
+     * Only composer- and path-type repositories are searched. VCS/git repos and
+     * other types are skipped for speed (a VCS search can fetch or clone the remote)
+     * and because they never host the sample data packages; public Packagist is
+     * skipped as a wasted network call since these packages are private. Every other
+     * composer repo is queried regardless of host, so a privately mirrored Hyvä
+     * Packagist is not missed.
      *
-     * @return array<string, true> Package names as keys
+     * IMPORTANT — a result here is a HINT, not ground truth for what `composer require`
+     * can install. There are two independent reasons this check can report a package as
+     * unavailable even though the require would install it fine:
+     *
+     *   1. Different environment. Magento's ComposerFactory forces COMPOSER_HOME to
+     *      <magento-root>/var/composer_home (DirectoryList::COMPOSER_HOME), which is
+     *      usually empty, so this in-process Composer is blind to the auth.json/config in
+     *      the real user Composer home (~/.composer, COMPOSER_HOME, or one mounted by
+     *      tooling such as Warden). A query against an authenticated repo like the Hyvä
+     *      Packagist can therefore fail here for lack of credentials. (The shell `composer`
+     *      CLI and the require in runComposerRequire() can each differ again.)
+     *   2. Different endpoint. search() fetches the repo's root packages.json
+     *      (loadRootServerFile()), whereas `composer require` resolves via per-package
+     *      metadata (/p2/%package%.json). Different URL and cache state, so the root fetch
+     *      can fail here while per-package resolution still works for the require.
+     *
+     * So a failed or empty check must NOT veto the require — the require is authoritative.
+     * The second return value reports whether the check was *conclusive*: a path repo that
+     * does not exist on this filesystem is benign (contributes nothing), but if any composer
+     * repo we tried fails, the result is inconclusive (NOT "no packages exist") and the
+     * caller falls back to requiring each package individually instead of dropping the ones
+     * it could not verify. The scan does not abort on failure — every repo is tried so all
+     * failures are reported.
+     *
+     * @return array{0: array<string, true>, 1: bool} [available package names as keys, conclusive]
      */
     private function getAvailableHyvaPackages(OutputInterface $output): array
     {
         $composer = $this->composerFactory->create();
         $available = [];
+        $queriedRelevantRepo = false;
+        $composerRepoFailed = false;
 
         foreach ($composer->getRepositoryManager()->getRepositories() as $repo) {
             $config = $repo->getRepoConfig();
             $url = $config["url"] ?? "";
-            $type = $config["type"] ?? "";
 
-            $isHyvaRepo = str_starts_with(
-                $url,
-                "https://hyva-themes.repo.packagist.com",
-            );
-            $isPathRepo = $type === "path";
+            $isPathRepo = $repo instanceof PathRepository;
+            $isComposerRepo = $repo instanceof ComposerRepository;
 
-            if (!$isHyvaRepo && !$isPathRepo) {
+            // Only composer- and path-type repos can cheaply and meaningfully answer.
+            // Everything else (vcs/git/github/gitlab/artifact/package/...) is skipped:
+            // a VCS search may fetch or clone the remote, and none of those repos host
+            // the Hyvä sample data packages. This keeps the check fast when a project
+            // has many VCS repositories configured.
+            if (!$isPathRepo && !$isComposerRepo) {
+                continue;
+            }
+
+            // The sample data packages are private, so querying public Packagist is a
+            // wasted network round trip. Skipping it by its stable host (rather than
+            // allow-listing the Hyvä host) means any OTHER composer repo — including a
+            // privately mirrored Hyvä Packagist on a different host — is still queried.
+            if ($isComposerRepo && $this->isPublicPackagist($url)) {
                 continue;
             }
 
@@ -727,24 +803,95 @@ class DeployCommand extends Command
                         preg_quote(self::HYVA_SAMPLE_DATA_PACKAGE_PREFIX, "/"),
                     RepositoryInterface::SEARCH_NAME,
                 );
-            } catch (\RuntimeException) {
-                // Path repo URL doesn't exist on this filesystem (e.g. inside Docker)
+            } catch (\RuntimeException $e) {
+                if ($isPathRepo) {
+                    // Path repo URL doesn't exist on this filesystem (e.g. inside Docker).
+                    // Benign: it simply contributes no packages.
+                    continue;
+                }
+                // A composer repo we intended to query failed (transport / auth). Record
+                // it and keep going so every failing repo is reported, but the overall
+                // result can no longer be authoritative: a package we would otherwise
+                // drop might live in the repo we could not read.
+                $composerRepoFailed = true;
+                $output->writeln(sprintf(
+                    "<comment>Warning: could not query %s for available Hyvä sample data " .
+                        "packages (%s). Availability cannot be verified.</comment>",
+                    $url,
+                    $e->getMessage(),
+                ));
+                $output->writeln("");
                 continue;
             }
+            $queriedRelevantRepo = true;
             foreach ($results as $result) {
                 $available[$result["name"]] = true;
             }
         }
 
-        if (empty($available)) {
+        // Conclusive only if at least one relevant repository answered AND no composer
+        // repo we tried failed. A single failed composer repo makes the result
+        // inconclusive rather than pretending the packages it might hold don't exist;
+        // the caller then falls back to per-package require instead of dropping them.
+        // If no relevant repo is configured at all, availability cannot be verified.
+        $conclusive = $queriedRelevantRepo && !$composerRepoFailed;
+
+        if ($conclusive && empty($available)) {
             $output->writeln(
-                "<comment>Warning: No Hyvä packages found in any Composer repository. " .
-                    "Skipping availability filter.</comment>",
+                "<comment>Warning: no Hyvä sample data packages found in the configured " .
+                    "Composer repositories.</comment>",
             );
             $output->writeln("");
         }
 
-        return $available;
+        return [$available, $conclusive];
+    }
+
+    /**
+     * Whether the given repository URL points at the public Packagist.
+     *
+     * Matched by host so it is unaffected by scheme, path or trailing slash.
+     */
+    private function isPublicPackagist(string $url): bool
+    {
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
+        $host = parse_url($url, PHP_URL_HOST) ?: "";
+        return in_array($host, ["repo.packagist.org", "packagist.org"], true);
+    }
+
+    /**
+     * Run a single `composer require` for the given package specs.
+     *
+     * Each call runs in its own throwaway ComposerApplication, so no in-process
+     * state carries over to the next call (e.g. the per-package retry loop) — the
+     * next require reads composer.json fresh from disk. Composer itself reverts
+     * composer.json when an update fails, so a failed require does not leave the
+     * requested package behind.
+     *
+     * @param string[] $packages Package specs in "name:constraint" form.
+     * @return int Composer's exit code (0 on success).
+     */
+    private function runComposerRequire(
+        array $packages,
+        string $baseDir,
+        bool $noUpdate,
+        OutputInterface $output,
+    ): int {
+        $arguments = [
+            "command" => "require",
+            "packages" => $packages,
+            "--working-dir" => $baseDir,
+            "--no-progress" => true,
+        ];
+
+        if ($noUpdate) {
+            $arguments["--no-update"] = true;
+        }
+
+        $application = new ComposerApplication();
+        $application->setAutoExit(false);
+
+        return $application->run(new ArrayInput($arguments), $output);
     }
 
     /**
