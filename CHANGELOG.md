@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+-   **FIX: Make `hyva:sampledata:deploy` work on Mage-OS**  
+    The command hard-coded the `magento` vendor name when matching the upstream Luma sample-data packages, so it did not work on Mage-OS, which publishes the same packages under the `mage-os` vendor name.
+    The known vendor names are now declared in a list, so future distributions with different vendor names can be supported by adding an array entry.
+
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.8...main
 
 ## [1.4.8] - 2026-07-01
