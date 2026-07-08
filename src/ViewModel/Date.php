@@ -9,10 +9,18 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\ViewModel;
 
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class Date implements ArgumentInterface
 {
+    private TimezoneInterface $timezone;
+
+    public function __construct(TimezoneInterface $timezone)
+    {
+        $this->timezone = $timezone;
+    }
+
     /**
      * Get input date or the current date in UTC timezone ('Y-m-d')
      *
@@ -21,6 +29,12 @@ class Date implements ArgumentInterface
      */
     public function getDateYMD(?string $date = null): string
     {
-        return $date ? date('Y-m-d', strtotime($date)) : date('Y-m-d');
+        if (!$date) {
+            return date('Y-m-d');
+        }
+        
+        // locale aware parsing (i.e. day-first vs month-first formats like en_GB vs en_US)
+        $timestamp = $this->timezone->date($date, null, false, false)->getTimestamp();
+        return date('Y-m-d', $timestamp);
     }
 }
