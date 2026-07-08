@@ -35,7 +35,6 @@ class Date implements ArgumentInterface
 
         // locale aware parsing (i.e. day-first vs month-first formats like en_GB vs en_US)
         $timestamp = $this->timezone->date($date, null, false, false)->getTimestamp();
-
         return date('Y-m-d', $timestamp);
     }
 }
