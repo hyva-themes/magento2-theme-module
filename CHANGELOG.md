@@ -6,13 +6,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.9...main
+
+## [1.4.9] - 2026-07-09
+
+[1.4.9]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.8...1.4.9
+
+### Added
+
+-   Nothing Added
+
 ### Changed
 
--   **FIX: Make `hyva:sampledata:deploy` work on Mage-OS**  
-    The command hard-coded the `magento` vendor name when matching the upstream Luma sample-data packages, so it did not work on Mage-OS, which publishes the same packages under the `mage-os` vendor name.
-    The known vendor names are now declared in a list, so future distributions with different vendor names can be supported by adding an array entry.
+-   **Fixed `hyva:sampledata:deploy` not working on Mage-OS**  
+    For more information, please refer to [merge request #687](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/687).
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.8...main
+-   **Fixed `hyva:sampledata:deploy` treating an unverifiable sample data package check as not available**  
+    For more information, please refer to [merge request #683](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/683).
+
+-   **Fixed a fatal error when the compiled DI cache is stale and `hyvaBaseThemes` compiles as `null`**  
+    For more information, please refer to [merge request #685](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/685).
+
+-   **Fixed `Date::getDateYMD()` throwing a `TypeError` for day-first slash date formats (e.g. `nl_BE`, `en_GB`)**  
+    For more information, please refer to [issue #532](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/532) and [merge request #690](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/690).
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.4.8] - 2026-07-01
 
