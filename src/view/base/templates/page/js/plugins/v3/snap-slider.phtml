@@ -21,7 +21,7 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 
 /**
- * @version 2.2.2
+ * @version 2.2.3
  * @source https://github.com/fylgja/snap-slider
  */
 ?>
@@ -31,7 +31,8 @@ use Magento\Framework\View\Element\Template;
             labelSepparator = '<?= $escaper->escapeHtmlAttr(__('of')) ?>',
             autoPager,
             groupPager,
-            loop
+            loop,
+            forcePager
         } = {}) {
             this.el = el;
             this.track = this.el.querySelector("[data-track]");
@@ -55,6 +56,7 @@ use Magento\Framework\View\Element\Template;
             this.useAutoPager = autoPager || this.el.hasAttribute("data-auto-pager") || false;
             this.useGroupPager = groupPager || this.el.hasAttribute("data-group-pager") || false;
             this.useLoop = loop || this.el.hasAttribute("data-loop") || false;
+            this.forcePager = forcePager || this.el.hasAttribute("data-force-pager") || false;
             this.sliderLabel = this.el.hasAttribute("aria-label") && this.el.getAttribute("aria-label").toLowerCase().trim().replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "");
             this.sliderId = this.el.id || this.sliderLabel || "slider";
             this.markerIdName = "data-target-id";
@@ -147,8 +149,9 @@ use Magento\Framework\View\Element\Template;
                 }
             });
             if (this.pager) {
-                this.pager.style.visibility = hasNoOverflow ? "hidden" : null;
-                this.pager.toggleAttribute("inert", hasNoOverflow);
+                const hidePager = hasNoOverflow && !this.forcePager;
+                this.pager.style.visibility = hidePager ? "hidden" : null;
+                this.pager.toggleAttribute("inert", hidePager);
             }
             if (!this.initialLoad) {
                 this.el.dispatchEvent(
@@ -376,7 +379,8 @@ use Magento\Framework\View\Element\Template;
                 const slider = new SnapSlider(el, {
                     autoPager: modifiers.includes("auto-pager"),
                     groupPager: modifiers.includes("group-pager"),
-                    loop: modifiers.includes("loop")
+                    loop: modifiers.includes("loop"),
+                    forcePager: modifiers.includes("force-pager")
                 });
                 cleanup(() => {
                     slider.destroy();
