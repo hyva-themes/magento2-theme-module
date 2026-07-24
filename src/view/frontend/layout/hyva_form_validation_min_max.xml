@@ -11,7 +11,7 @@
     <body>
         <referenceContainer name="before.body.end">
             <block name="min.max.validation"
-                   template="Hyva_Enterprise::form/min-max-validation.phtml"
+                   template="Hyva_Theme::form/js/min-max-validation.phtml"
                    after="-"/>
         </referenceContainer>
     </body>
