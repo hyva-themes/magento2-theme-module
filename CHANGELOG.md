@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...main
 
+### Changed
+
+-   **Updated `snap-slider` to v2.2.4**  
+    Fixes the slider refreshing on any DOM change inside a slide, which rebuilt the pager whenever a nested component (such as a swatch tooltip) inserted or removed an element.  
+    For more information, please refer to [issue #537](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/537).
+
 ## [1.5.2] - 2026-07-10
 
 [1.5.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.1...1.5.2
