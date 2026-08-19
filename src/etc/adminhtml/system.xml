@@ -141,6 +141,15 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
+            <group id="product_details" translate="label" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product Details</label>
+                <field id="short_description_fallback" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Use Description as Short Description Fallback</label>
+                    <comment><![CDATA[When disabled, no short description is shown for products that only have a full description.<br/>Themes can override this setting per template by passing an explicit value to <code>getShortDescription()</code>.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
             <group id="crosssell_products" translate="label comment" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cross-sell Products</label>
                 <field id="limit" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1"

@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...main
 
+### Added
+
+-   **Option to disable the short description fallback to the full description**  
+    For more information, please refer to [merge request #699](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/699).
+
 ## [1.5.2] - 2026-07-10
 
 [1.5.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.1...1.5.2
