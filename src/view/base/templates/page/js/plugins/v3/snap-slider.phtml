@@ -21,7 +21,7 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 
 /**
- * @version 2.2.3
+ * @version 2.2.4
  * @source https://github.com/fylgja/snap-slider
  */
 ?>
@@ -299,7 +299,7 @@ use Magento\Framework\View\Element\Template;
         }
         setupMutationObserver() {
             this.mutationObserver = new MutationObserver((mutations) => {
-                if (mutations.some((m) => m.type === "childList" || m.target.parentElement === this.track)) {
+                if (mutations.some((m) => m.type === "childList" ? m.target === this.track : m.target.parentElement === this.track)) {
                     this.refreshSlides();
                 }
             });
