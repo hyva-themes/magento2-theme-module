@@ -82,6 +82,11 @@
         <plugin name="set_product_info_title" type="Hyva\Theme\Plugin\Catalog\Helper\Product\SetProductInfoTitlePlugin" />
     </type>
 
+    <!-- Hide €0.00 (and prefix upgrades with +) on fixed-price bundle selections in cart / mini-cart -->
+    <type name="Magento\Bundle\Helper\Catalog\Product\Configuration">
+        <plugin name="hide_zero_fixed_bundle_selection_price" type="Hyva\Theme\Plugin\Bundle\HideZeroFixedBundleSelectionPricePlugin"/>
+    </type>
+
     <type name="Magento\Customer\Controller\Ajax\Login">
         <!-- The sorOrder is so it runs after \Hyva\ThemeFallback\Plugin\ThemeFallbackPlugin that set's the configured theme -->
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin" sortOrder="30"/>
