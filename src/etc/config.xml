@@ -40,6 +40,9 @@
             <product_reviews>
                 <paginated_canonical_url>1</paginated_canonical_url>
             </product_reviews>
+            <product_details>
+                <short_description_fallback>1</short_description_fallback>
+            </product_details>
             <developer>
                 <cache>
                     <product_list_item_block_cache_enabled>1</product_list_item_block_cache_enabled>

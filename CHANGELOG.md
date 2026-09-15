@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...main
 
+### Added
+
+-   **Option to disable the short description fallback to the full description**  
+    The `ProductPage` view model methods `getShortDescription()` and `getShortDescriptionForProduct()` take an additional
+    optional `?bool $descriptionFallback` argument, so the setting can be overridden per template. Existing calls and
+    plugins are unaffected, but classes that extend `ProductPage` and override either method have to add the argument to
+    their signature.  
+    For more information, please refer to [merge request #699](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/699).
+
 ### Changed
 
 -   **Updated `snap-slider` to v2.2.4**  
