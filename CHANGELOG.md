@@ -26,6 +26,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Keep `+` characters intact in cookie messages**  
     For more information, please refer to [issue #538](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/538).
 
+-   **Apply the search sort order to the product list toolbar**  
+    The layered navigation reached the shared toolbar before the product list handed over its sort options, which left the search results sorted by position with a sort direction toggle that could not change anything.  
+    For more information, please refer to [issue #539](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/539).
+
 ## [1.5.2] - 2026-07-10
 
 [1.5.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.1...1.5.2
