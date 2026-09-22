@@ -30,6 +30,7 @@
                 <block name="alpine-plugin-snap-slider" template="Hyva_Theme::page/js/plugins/snap-slider.phtml"/>
                 <block name="alpine-plugin-htmldialog" template="Hyva_Theme::page/js/plugins/htmldialog.phtml"/>
                 <block name="alpine-plugin-intersect" template="Hyva_Theme::page/js/plugins/intersect.phtml"/>
+                <block name="alpine-plugin-html-safe" template="Hyva_Theme::page/js/plugins/html-safe.phtml"/>
                 <block name="alpine-plugin-ignore" template="Hyva_Theme::page/js/plugins/ignore.phtml"/>
                 <block name="alpine-plugin-defer" template="Hyva_Theme::page/js/plugins/defer.phtml">
                     <block name="alpine-defer-rules" template="Hyva_Theme::page/js/alpine-defer-rules.phtml">
