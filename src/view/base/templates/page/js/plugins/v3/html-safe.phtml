@@ -8,6 +8,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HtmlSafeConfig;
 use Hyva\Theme\ViewModel\HyvaCsp;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
@@ -16,6 +17,11 @@ use Magento\Framework\View\Element\Template;
 /** @var Template $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
+
+$isCspBuild = (bool) $block->getData('is_csp_build');
+
+$mapXHtmlSafeToXHtml = $viewModels->require(HtmlSafeConfig::class)
+    ->shouldMapXHtmlSafeToXHtml($isCspBuild);
 ?>
 <script>
     (() => {
@@ -179,7 +185,7 @@ use Magento\Framework\View\Element\Template;
             }
         }
         function src_default(Alpine) {
-            Alpine.directive("html-safe", (el, { expression }, { evaluateLater, effect }) => {
+            const htmlSafeDirective = (el, { expression }, { evaluateLater, effect }) => {
                 let evaluate = evaluateLater(expression);
                 effect(() => {
                     evaluate((value) => {
@@ -192,7 +198,16 @@ use Magento\Framework\View\Element\Template;
                         });
                     });
                 });
-            });
+            };
+
+            Alpine.directive("html-safe", htmlSafeDirective);
+
+            <?php if ($mapXHtmlSafeToXHtml): ?>
+            // Registered per Hyvä Themes > General > HTML Safe > Map x-html-safe to x-html.
+            // Alpine CSP has no x-html directive, so un-migrated templates using x-html
+            // would otherwise silently render nothing on CSP pages.
+            Alpine.directive("html", htmlSafeDirective);
+            <?php endif; ?>
         }
 
         // packages/html-safe/builds/cdn.js
