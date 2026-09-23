@@ -113,7 +113,7 @@ $mapXHtmlSafeToXHtml = $viewModels->require(HtmlSafeConfig::class)
             // can't reach a downstream numeric parser unbounded.
             unboundedInt: isNumberBetween(-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
         };
-        var GENERIC_ATTRS = /* @__PURE__ */ new Set(["title", "aria-label", "hidden", "role", "lang", "dir"]);
+        var GENERIC_ATTRS = /* @__PURE__ */ new Set(["title", "aria-label", "hidden", "role", "lang", "dir", "class"]);
         var TAG_ATTRS = {
             a: { href: [Validators.safeUrl], target: [Validators.targetKeyword], rel: [] },
             q: { cite: [Validators.safeUrl] },
