@@ -29,6 +29,4 @@ if ($isCspBuild) {
 $block->setData('is_csp_build', $isCspBuild);
 
 ?>
-<?php if ('2' !== $version): ?>
 <?= /** @noEscape */ $block->fetchView($block->getTemplateFile(sprintf('Hyva_Theme::page/js/plugins/v%s/html-safe.phtml', $version))) ?>
-<?php endif; ?>
