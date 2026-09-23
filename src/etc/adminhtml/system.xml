@@ -373,7 +373,7 @@
                 </field>
 
                 <field id="synchronize_with_backend" translate="comment" sortOrder="150">
-                    <comment>Note: this setting has no effect in Hyv&#228; Theme. The recently viewed products are always read from the browser storage.</comment>
+                    <comment>Note: this setting has no effect in Hyvä Theme. The recently viewed products are always read from the browser storage.</comment>
                     <depends>
                         <field id="recently_viewed_enabled">1</field>
                     </depends>
