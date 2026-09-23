@@ -202,10 +202,12 @@ $mapXHtmlSafeToXHtml = $viewModels->require(HtmlSafeConfig::class)
 
             Alpine.directive("html-safe", htmlSafeDirective);
 
+            <?php /**
+                   * Registered per Hyvä Themes > General > HTML Safe > Map x-html-safe to x-html.
+                   * Alpine CSP has no x-html directive, so un-migrated templates using x-html
+                   * would otherwise silently render nothing on CSP pages.
+                   */ ?>
             <?php if ($mapXHtmlSafeToXHtml): ?>
-            // Registered per Hyvä Themes > General > HTML Safe > Map x-html-safe to x-html.
-            // Alpine CSP has no x-html directive, so un-migrated templates using x-html
-            // would otherwise silently render nothing on CSP pages.
             Alpine.directive("html", htmlSafeDirective);
             <?php endif; ?>
         }
