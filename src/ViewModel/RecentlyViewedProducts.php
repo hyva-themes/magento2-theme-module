@@ -20,7 +20,12 @@ class RecentlyViewedProducts implements ArgumentInterface
     /* Recently Viewed lifetime */
     public const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
 
-    /* Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
+    /**
+     * Flag if recently viewed product data should be fetched via graphql or stored completely in local storage
+     *
+     * @deprecated The recently viewed products are always read from the browser storage, so the setting this
+     *             points at has no effect in Hyva Theme.
+     */
     public const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
 
     /* Flag if recently viewed product data should be collected */
@@ -57,6 +62,13 @@ class RecentlyViewedProducts implements ArgumentInterface
         return (bool) $this->scopeConfig->getValue(self::XML_VIEWED_PRODUCTS_SHOW_ON_PLP, ConfigScope::SCOPE_STORE);
     }
 
+    /**
+     * Return whether the recently viewed product data should be fetched from the backend.
+     *
+     * @deprecated The recently viewed products are always read from the browser storage, so the setting this
+     *             reads has no effect in Hyva Theme.
+     * @see \Hyva\Theme\ViewModel\RecentlyViewedProducts::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH
+     */
     public function isFetchRecentlyViewedEnabled(): bool
     {
         return (bool) $this->scopeConfig->getValue(self::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH, ConfigScope::SCOPE_STORE);

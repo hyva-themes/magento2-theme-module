@@ -27,7 +27,13 @@ class ProductPage implements ArgumentInterface, IdentityInterface
     /** Recently Viewed lifetime */
     public const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
 
-    /** Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
+    /**
+     * Flag if recently viewed product data should be fetched via graphql or stored completely in local storage
+     *
+     * @deprecated The recently viewed products are always read from the browser storage, so the setting this
+     *             points at has no effect in Hyva Theme.
+     * @see \Hyva\Theme\ViewModel\RecentlyViewedProducts::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH
+     */
     public const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
 
     /** Flag if product URLs contain the category path */

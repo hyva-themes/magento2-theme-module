@@ -17,6 +17,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     their signature.  
     For more information, please refer to [merge request #699](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/699).
 
+-   **A note on the `catalog/recently_products/synchronize_with_backend` field in the admin**  
+    For more information, please refer to [merge request #1561](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/1561).
+
 ### Changed
 
 -   **Updated `snap-slider` to v2.2.4**  
@@ -29,6 +32,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Apply the search sort order to the product list toolbar**  
     The layered navigation reached the shared toolbar before the product list handed over its sort options, which left the search results sorted by position with a sort direction toggle that could not change anything.  
     For more information, please refer to [issue #539](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/539).
+
+-   **Deprecated The view model members that only served the GraphQL code of the default theme**  
+    For more information, please refer to [merge request #1561](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/1561).
 
 ## [1.5.2] - 2026-07-10
 

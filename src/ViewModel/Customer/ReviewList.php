@@ -69,6 +69,11 @@ class ReviewList implements ArgumentInterface
     }
 
     /**
+     * Return the GraphQL query to fetch the product reviews of the current customer.
+     *
+     * @deprecated The customer product review list of the default theme is rendered with PHP instead of GraphQL.
+     * @see \Magento\Review\Block\Customer\ListCustomer::getReviews()
+     *
      * @return string
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
