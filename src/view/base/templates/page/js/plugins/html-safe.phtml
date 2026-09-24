@@ -1,0 +1,32 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ThemeLibrariesConfig;
+use Magento\Framework\View\Element\Template;
+
+$themeLibrary = $viewModels->require(ThemeLibrariesConfig::class);
+
+$version = $themeLibrary->getVersionIdFor('html-safe-plugin')
+    ?: $themeLibrary->getVersionIdFor('alpine')
+    ?: '2';
+
+$isCspBuild = substr($version, -4) === '-csp';
+
+if ($isCspBuild) {
+    $version = substr($version, 0, -4);
+}
+
+$block->setData('is_csp_build', $isCspBuild);
+
+?>
+<?= /** @noEscape */ $block->fetchView($block->getTemplateFile(sprintf('Hyva_Theme::page/js/plugins/v%s/html-safe.phtml', $version))) ?>

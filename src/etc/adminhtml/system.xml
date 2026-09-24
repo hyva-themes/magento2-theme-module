@@ -222,6 +222,24 @@
                 </field>
             </group>
 
+            <group id="html_safe" translate="label comment" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>HTML Safe</label>
+                <comment>Configures the x-html-safe Alpine plugin, which renders sanitized HTML through a fixed allowlist. Available since Alpine's CSP build dropped x-html support.</comment>
+                <field id="map_x_html_safe_to_x_html" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Map x-html-safe to x-html</label>
+                    <comment><![CDATA[Alpine CSP has no x-html directive, so templates still using x-html render nothing on CSP pages until migrated to x-html-safe. This setting can additionally register x-html itself to use the same sanitized rendering as x-html-safe, so un-migrated templates keep rendering something in the meantime.<br><br>
+                        <strong>Disabled</strong> (default): x-html-safe is never mapped to x-html. Existing x-html behavior is left exactly as-is on both builds, so upgrading does not change anything until this is explicitly enabled.<br>
+                        <strong>On CSP pages only</strong>: maps x-html to the sanitized behavior only on pages where Alpine CSP is active, since that is the only build where x-html does not already work.<br>
+                        <strong>On all pages</strong>: also maps x-html to the sanitized behavior on the regular (non-CSP) build, where x-html already works unsanitized. Only enable this if you specifically want the regular build to sanitize x-html output too.]]></comment>
+                    <options>
+                        <option label="Disabled (default)">disabled</option>
+                        <option label="On CSP pages only">csp</option>
+                        <option label="On all pages">all</option>
+                    </options>
+                </field>
+            </group>
+
             <group id="animations" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Animations and Transitions</label>
                 <field id="enable_view_transition_gallery" translate="label comment" type="select" sortOrder="10" showInDefault="1"

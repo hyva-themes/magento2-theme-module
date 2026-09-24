@@ -19,6 +19,9 @@
             <demo_content>
                 <show_homepage_demo_content>1</show_homepage_demo_content>
             </demo_content>
+            <html_safe>
+                <map_x_html_safe_to_x_html>disabled</map_x_html_safe_to_x_html>
+            </html_safe>
             <speculation_rules>
                 <method>prefetch</method>
                 <eagerness>moderate</eagerness>
