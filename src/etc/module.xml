@@ -11,6 +11,8 @@
     <module name="Hyva_Theme">
         <sequence>
             <module name="Magento_QuoteGraphQl"/>
+            <!-- <module name="Magento_PageBuilder"/> -->
+            <!-- <module name="Magento_PageBuilderImageAttribute"/> -->
         </sequence>
     </module>
 </config>
