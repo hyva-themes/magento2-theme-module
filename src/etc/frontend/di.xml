@@ -89,7 +89,6 @@
 
     <type name="Magento\LayeredNavigation\Block\Navigation">
         <plugin name="configure_toolbar_sort_order" type="Hyva\Theme\Plugin\LayeredNavigation\Block\ConfigureToolbarSortOrderPlugin"/>
-
     </type>
 
     <type name="Magento\Customer\Controller\Ajax\Login">
