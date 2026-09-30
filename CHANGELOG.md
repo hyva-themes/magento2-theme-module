@@ -18,10 +18,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     For more information, please refer to [merge request #699](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/699).
 
--   **A note on the `catalog/recently_products/synchronize_with_backend` field in the admin**  
-    For more information, please refer to [merge request #709](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/709)
-    and [default theme merge request #1561](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/1561).
-
 -   **The `x-html-safe` Alpine plugin**  
     Renders HTML through a fixed tag and attribute allowlist instead of setting `innerHTML` directly, so it works with
     both the standard and the CSP Alpine build. This gives CSP themes an alternative to `x-html`, which the CSP build
