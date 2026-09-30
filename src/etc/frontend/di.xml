@@ -87,6 +87,11 @@
         <plugin name="hide_zero_fixed_bundle_selection_price" type="Hyva\Theme\Plugin\Bundle\HideZeroFixedBundleSelectionPricePlugin"/>
     </type>
 
+    <type name="Magento\LayeredNavigation\Block\Navigation">
+        <plugin name="configure_toolbar_sort_order" type="Hyva\Theme\Plugin\LayeredNavigation\Block\ConfigureToolbarSortOrderPlugin"/>
+
+    </type>
+
     <type name="Magento\Customer\Controller\Ajax\Login">
         <!-- The sorOrder is so it runs after \Hyva\ThemeFallback\Plugin\ThemeFallbackPlugin that set's the configured theme -->
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin" sortOrder="30"/>

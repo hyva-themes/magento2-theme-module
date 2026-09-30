@@ -1,0 +1,222 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HtmlSafeConfig;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var HyvaCsp $hyvaCsp */
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$isCspBuild = (bool) $block->getData('is_csp_build');
+
+$mapXHtmlSafeToXHtml = $viewModels->require(HtmlSafeConfig::class)
+    ->shouldMapXHtmlSafeToXHtml($isCspBuild);
+?>
+<script>
+    (() => {
+        // packages/html-safe/src/index.js
+        var ALLOWED_TAGS = /* @__PURE__ */ new Set([
+            // Inline
+            "a",
+            "b",
+            "i",
+            "em",
+            "strong",
+            "s",
+            "u",
+            "span",
+            "small",
+            "mark",
+            "abbr",
+            "cite",
+            "q",
+            "sup",
+            "sub",
+            "br",
+            "code",
+            "kbd",
+            "samp",
+            "var",
+            "wbr",
+            // Block / structural
+            "p",
+            "div",
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "ul",
+            "ol",
+            "li",
+            "dl",
+            "dt",
+            "dd",
+            "blockquote",
+            "pre",
+            "hr",
+            // Tables
+            "table",
+            "thead",
+            "tbody",
+            "tfoot",
+            "tr",
+            "th",
+            "td",
+            "caption",
+            "colgroup",
+            "col"
+        ]);
+        var ALLOWED_PROTOCOLS = /* @__PURE__ */ new Set(["https:", "http:", "mailto:", "tel:"]);
+        var TARGET_KEYWORDS = /* @__PURE__ */ new Set(["_blank", "_self", "_parent", "_top"]);
+        var isNumberBetween = (min, max) => (value) => {
+            const n = Number(value);
+            return Number.isInteger(n) && n >= min && n <= max;
+        };
+        var Validators = {
+            safeUrl: (value) => {
+                try {
+                    return ALLOWED_PROTOCOLS.has(new URL(value, location.href).protocol);
+                } catch {
+                    return false;
+                }
+            },
+            // Presence-only attribute (e.g. `reversed`) - any value means "on".
+            isBoolean: () => true,
+            targetKeyword: (value) => TARGET_KEYWORDS.has(value),
+            isSameOrigin: (value) => {
+                try {
+                    return new URL(value, location.href).origin === location.origin;
+                } catch {
+                    return false;
+                }
+            },
+            // Bounds below are the WHATWG spec's actual processing-model caps -
+            // colspan/span and rowspan are NOT the same limit.
+            colspan: isNumberBetween(1, 1e3),
+            rowspan: isNumberBetween(1, 65534),
+            span: isNumberBetween(1, 1e3),
+            // li[value] / ol[start] are plain valid integers with no spec-defined
+            // bound - capped at MAX_SAFE_INTEGER purely so a pathological value
+            // can't reach a downstream numeric parser unbounded.
+            unboundedInt: isNumberBetween(-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
+        };
+        var GENERIC_ATTRS = /* @__PURE__ */ new Set(["title", "aria-label", "hidden", "role", "lang", "dir", "class"]);
+        var TAG_ATTRS = {
+            a: { href: [Validators.safeUrl], target: [Validators.targetKeyword], rel: [] },
+            q: { cite: [Validators.safeUrl] },
+            blockquote: { cite: [Validators.safeUrl] },
+            li: { value: [Validators.unboundedInt] },
+            ol: { start: [Validators.unboundedInt], reversed: [Validators.isBoolean] },
+            td: { colspan: [Validators.colspan], rowspan: [Validators.rowspan] },
+            th: { colspan: [Validators.colspan], rowspan: [Validators.rowspan] },
+            col: { span: [Validators.span] }
+        };
+        var PostProcess = {
+            // Reverse-tabnabbing guard. A user can open ANY link in a new browsing
+            // context (ctrl/cmd-click, middle-click, "open in new tab") regardless of
+            // its target attribute - so this can't be conditioned on target="_blank";
+            // only origin is the real gate. Same-origin links are trusted (no
+            // opener/Referer to hide from ourselves); cross-origin links get
+            // noopener/noreferrer so a malicious destination can't rewrite this tab
+            // via window.opener if the user opens it in a new context.
+            a: (el) => {
+                const href = el.getAttribute("href");
+                if (!href || Validators.isSameOrigin(href))
+                    return;
+                const rel = new Set((el.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
+                rel.add("noopener").add("noreferrer");
+                el.setAttribute("rel", [...rel].join(" "));
+            }
+        };
+        var cache = /* @__PURE__ */ new Map();
+        var parser = new DOMParser();
+        function sanitize(html) {
+            if (cache.has(html))
+                return cache.get(html).cloneNode(true);
+            const source = parser.parseFromString(html, "text/html").body;
+            const fragment = document.createDocumentFragment();
+            walk(source, fragment);
+            cache.set(html, fragment.cloneNode(true));
+            return fragment;
+        }
+        function walk(source, target) {
+            for (const node of source.childNodes) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    target.appendChild(document.createTextNode(node.textContent));
+                    continue;
+                }
+                if (node.nodeType !== Node.ELEMENT_NODE)
+                    continue;
+                const tag = node.tagName.toLowerCase();
+                if (!ALLOWED_TAGS.has(tag))
+                    continue;
+                const el = document.createElement(tag);
+                walk(node, el);
+                for (const name of GENERIC_ATTRS) {
+                    if (node.hasAttribute(name))
+                        el.setAttribute(name, node.getAttribute(name));
+                }
+                Object.assign(el.dataset, node.dataset);
+                const tagAttrs = TAG_ATTRS[tag];
+                if (tagAttrs) {
+                    for (const [name, validators] of Object.entries(tagAttrs)) {
+                        if (!node.hasAttribute(name))
+                            continue;
+                        const value = node.getAttribute(name);
+                        if (validators.every((fn) => fn(value)))
+                            el.setAttribute(name, value);
+                    }
+                }
+                PostProcess[tag]?.(el);
+                target.appendChild(el);
+            }
+        }
+        function src_default(Alpine) {
+            const htmlSafeDirective = (el, { expression }, { evaluateLater, effect }) => {
+                let evaluate = evaluateLater(expression);
+                effect(() => {
+                    evaluate((value) => {
+                        Alpine.mutateDom(() => {
+                            el.innerHTML = "";
+                            el.appendChild(sanitize(value ?? ""));
+                            el._x_ignoreSelf = true;
+                            Alpine.initTree(el);
+                            delete el._x_ignoreSelf;
+                        });
+                    });
+                });
+            };
+
+            Alpine.directive("html-safe", htmlSafeDirective);
+
+            <?php /**
+                   * Registered per Hyvä Themes > General > HTML Safe > Map x-html-safe to x-html.
+                   * Alpine CSP has no x-html directive, so un-migrated templates using x-html
+                   * would otherwise silently render nothing on CSP pages.
+                   */ ?>
+            <?php if ($mapXHtmlSafeToXHtml): ?>
+            Alpine.directive("html", htmlSafeDirective);
+            <?php endif; ?>
+        }
+
+        // packages/html-safe/builds/cdn.js
+        document.addEventListener("alpine:init", () => {
+            window.Alpine.plugin(src_default);
+        });
+    })();
+    //# sourceURL=alpine-html-safe.js
+</script>
+<?php if (isset($hyvaCsp)) $hyvaCsp->registerInlineScript(); ?>
