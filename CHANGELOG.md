@@ -42,6 +42,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Show the reCAPTCHA legal notice for v2 invisible**  
+    The badge is hidden by the theme, so v2 invisible forms now render the same legal notice as v3.
+
+    For more information, please refer to [default theme issue #1156](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1156).
+
 -   **Fixed speculation rules preloading excluded paths without a trailing slash**  
     For more information, please refer to [default theme issue #1317](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1317).
 
