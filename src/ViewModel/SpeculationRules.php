@@ -71,7 +71,8 @@ class SpeculationRules implements ArgumentInterface
      * Build the speculation rule structure for the 'not' condition based on a list of exclusion paths.
      *
      * This function processes an array of strings and converts them into valid 'href_matches' patterns.
-     * - Plain strings ('customer') are converted to path pattern ('/customer/*' or if the url has a suffix '/suffix/customer/*').
+     * - Plain strings ('customer') are converted to a path pattern matching the path itself and everything below it
+     *   ('/customer{/*}?' or if the url has a store code prefix '/prefix/customer{/*}?').
      * - Strings starting with a dot ('.pdf') are treated as file extensions and converted to wildcard patterns ('*.pdf').
      * - Strings already containing a '*' are used as-is.
      */
@@ -93,7 +94,7 @@ class SpeculationRules implements ArgumentInterface
             } elseif (strpos($value, '*') !== false) {
                 $excludePatterns[] = $value;
             } else {
-                $pattern = '/' . trim($value, '/') . '/*';
+                $pattern = '/' . trim($value, '/') . '{/*}?';
                 $excludePatterns[] = $urlPrefix . $pattern;
             }
         }
