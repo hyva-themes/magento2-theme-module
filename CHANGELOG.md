@@ -42,6 +42,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Fixed speculation rules preloading excluded paths without a trailing slash**  
+    For more information, please refer to [default theme issue #1317](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1317).
+
 -   **Updated `snap-slider` to v2.2.4**  
     Fixes the slider refreshing on any DOM change inside a slide, which rebuilt the pager whenever a nested component (such as a swatch tooltip) inserted or removed an element.  
     For more information, please refer to [issue #537](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/537).
