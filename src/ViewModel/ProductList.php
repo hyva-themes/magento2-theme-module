@@ -299,7 +299,7 @@ class ProductList implements ArgumentInterface
         return $this->memoizedProductLinkField;
     }
 
-    private function createProductLinkCollection(string $linkType, array $productIds): ProductLinkCollection
+    public function createProductLinkCollection(string $linkType, array $productIds): ProductLinkCollection
     {
         $collection = $this->productLinkCollectionFactory->create(['productIds' => $productIds]);
         $collection->setLinkModel($this->getLinkTypeModel($linkType))
