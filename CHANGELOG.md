@@ -42,6 +42,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Fixed product sliders not purging the full page cache when a listed product changes**  
+    The `ProductList` view model now provides the cache tags of the products it returns.
+
+    For more information, please refer to [default theme issue #1316](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1316).
+
 -   **Made `ProductList::getLinkTypeModel()` public**  
     For more information, please refer to [issue #534](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/534).
 
