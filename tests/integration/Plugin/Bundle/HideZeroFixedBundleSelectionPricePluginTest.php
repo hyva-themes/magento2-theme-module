@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Plugin\Bundle;
 
+use Hyva\Theme\ThemeFixture;
 use Magento\Bundle\Helper\Catalog\Product\Configuration;
 use Magento\Bundle\Model\Product\Price;
 use Magento\Catalog\Model\Product;
@@ -24,6 +25,11 @@ use PHPUnit\Framework\TestCase;
  */
 class HideZeroFixedBundleSelectionPricePluginTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        ThemeFixture::setHyvaDefaultAsCurrentTheme();
+    }
+
     private function executeSut(int $priceType, array $values): array
     {
         $objectManager = ObjectManager::getInstance();
@@ -84,6 +90,14 @@ class HideZeroFixedBundleSelectionPricePluginTest extends TestCase
         $values = ['1 x Desk ' . $this->price(0), '1 x Chair ' . $this->price(12.1)];
 
         $this->assertSame($values, $this->executeSut(Price::PRICE_TYPE_DYNAMIC, $values));
+    }
+
+    public function testDoesNotChangeFixedPriceBundleWithNonHyvaTheme(): void
+    {
+        ThemeFixture::setCurrentTheme('Magento/luma');
+        $values = ['1 x Desk ' . $this->price(0), '1 x Chair ' . $this->price(12.1)];
+
+        $this->assertSame($values, $this->executeSut(Price::PRICE_TYPE_FIXED, $values));
     }
 
     /**

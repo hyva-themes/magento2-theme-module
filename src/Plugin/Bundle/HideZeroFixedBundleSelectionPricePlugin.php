@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Hyva\Theme\Plugin\Bundle;
 
+use Hyva\Theme\Service\CurrentTheme;
 use Magento\Bundle\Helper\Catalog\Product\Configuration;
 use Magento\Bundle\Model\Product\Price;
 use Magento\Catalog\Model\Product\Configuration\Item\ItemInterface;
@@ -17,6 +18,11 @@ use Magento\Tax\Helper\Data as TaxHelper;
 
 class HideZeroFixedBundleSelectionPricePlugin
 {
+    /**
+     * @var CurrentTheme
+     */
+    private $currentTheme;
+
     /**
      * @var PricingHelper
      */
@@ -28,9 +34,11 @@ class HideZeroFixedBundleSelectionPricePlugin
     private $taxHelper;
 
     public function __construct(
+        CurrentTheme $currentTheme,
         PricingHelper $pricingHelper,
         TaxHelper $taxHelper
     ) {
+        $this->currentTheme = $currentTheme;
         $this->pricingHelper = $pricingHelper;
         $this->taxHelper = $taxHelper;
     }
@@ -46,6 +54,9 @@ class HideZeroFixedBundleSelectionPricePlugin
      * A zero on a fixed-price bundle means "included in the bundle price", not "free".
      * Dynamic-price bundles are left unchanged: there the selection price is the child's own price.
      *
+     * Only applies to Hyvä themes, so non-Hyvä store views and pages rendered with a non-Hyvä theme,
+     * like the Luma checkout fallback, keep the Magento default output.
+     *
      * @param Configuration $subject
      * @param array $options
      * @param ItemInterface $item
@@ -55,6 +66,10 @@ class HideZeroFixedBundleSelectionPricePlugin
      */
     public function afterGetBundleOptions(Configuration $subject, array $options, ItemInterface $item): array
     {
+        if (! $this->currentTheme->isHyva()) {
+            return $options;
+        }
+
         // Non-strict on purpose: the constant is an int, the product attribute is a string
         if ($item->getProduct()->getPriceType() != Price::PRICE_TYPE_FIXED) {
             return $options;
