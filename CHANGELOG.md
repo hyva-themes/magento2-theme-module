@@ -42,6 +42,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Made `ProductList::getLinkTypeModel()` public**  
+    For more information, please refer to [issue #534](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/534).
+
 -   **Show the reCAPTCHA legal notice for v2 invisible**  
     The badge is hidden by the theme, so v2 invisible forms now render the same legal notice as v3.
 

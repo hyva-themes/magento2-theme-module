@@ -383,7 +383,7 @@ class ProductList implements ArgumentInterface
         return $collection->getItems();
     }
 
-    private function getLinkTypeModel(string $linkType): Product\Link
+    public function getLinkTypeModel(string $linkType): Product\Link
     {
         $linkModel = $this->productLinkFactory->create();
         switch ($linkType) {
