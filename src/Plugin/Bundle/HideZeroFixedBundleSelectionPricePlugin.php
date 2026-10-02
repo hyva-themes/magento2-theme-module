@@ -38,10 +38,13 @@ class HideZeroFixedBundleSelectionPricePlugin
     /**
      * Omit a zero selection price on fixed-price bundles, and show non-zero ones as an addition.
      *
-     * Magento always appends the formatted price in Configuration::getOptionPriceHtml(), which is
-     * private and cannot be plugged. A zero on a fixed-price bundle means "included in the bundle
-     * price", not "free". Dynamic-price bundles are left unchanged: there the selection price is
-     * the child's own price.
+     * Magento appends the formatted price to each selection value in getBundleOptions(). Since
+     * Magento 2.4.7 this happens in the private Configuration::getOptionPriceHtml(), which also
+     * appends the price excluding tax if the cart displays both prices. Before 2.4.7 only the
+     * single price is appended, regardless of the tax display setting.
+     *
+     * A zero on a fixed-price bundle means "included in the bundle price", not "free".
+     * Dynamic-price bundles are left unchanged: there the selection price is the child's own price.
      *
      * @param Configuration $subject
      * @param array $options
@@ -57,6 +60,7 @@ class HideZeroFixedBundleSelectionPricePlugin
             return $options;
         }
 
+        $zeroPriceSuffixes = $this->getZeroPriceSuffixes();
         foreach ($options as $optionIndex => $option) {
             if (empty($option['value']) || !is_array($option['value'])) {
                 continue;
@@ -65,47 +69,49 @@ class HideZeroFixedBundleSelectionPricePlugin
                 if (!is_string($value)) {
                     continue;
                 }
-                $options[$optionIndex]['value'][$valueIndex] = $this->adjustSelectionValue($value);
+                $options[$optionIndex]['value'][$valueIndex] = $this->adjustSelectionValue($value, $zeroPriceSuffixes);
             }
         }
 
         return $options;
     }
 
-    private function adjustSelectionValue(string $value): string
+    private function adjustSelectionValue(string $value, array $zeroPriceSuffixes): string
     {
-        $zeroPriceSuffix = $this->getZeroPriceSuffix();
-        if (str_ends_with($value, $zeroPriceSuffix)) {
-            return substr($value, 0, -strlen($zeroPriceSuffix));
+        foreach ($zeroPriceSuffixes as $zeroPriceSuffix) {
+            if (str_ends_with($value, $zeroPriceSuffix)) {
+                return substr($value, 0, -strlen($zeroPriceSuffix));
+            }
         }
 
         return $this->prefixNonZeroPriceAsAddition($value);
     }
 
     /**
-     * Build the same trailing price HTML Magento appends for a zero selection.
+     * Build the trailing price HTML Magento appends for a zero selection, longest first.
      *
-     * @see Configuration::getOptionPriceHtml
+     * If the cart displays both prices, Magento 2.4.7 and newer append "<incl> Excl. tax: <excl>",
+     * while older versions append only one price. The longer suffix has to be checked first,
+     * because it also ends with the shorter one.
+     *
+     * @return string[]
      */
-    private function getZeroPriceSuffix(): string
+    private function getZeroPriceSuffixes(): array
     {
-        $formattedZero = (string) $this->pricingHelper->currency(0);
-        $suffix = ' ' . $formattedZero;
-        if ($this->taxHelper->displayCartBothPrices()) {
-            $suffix .= ' ' . __('Excl. tax:') . ' ' . $formattedZero;
+        // Converting zero to the display currency is still zero, so this matches the core output
+        $zeroPriceSuffix = ' ' . $this->pricingHelper->currency(0);
+        if (!$this->taxHelper->displayCartBothPrices()) {
+            return [$zeroPriceSuffix];
         }
 
-        return $suffix;
+        return [$zeroPriceSuffix . ' ' . __('Excl. tax:') . $zeroPriceSuffix, $zeroPriceSuffix];
     }
 
     private function prefixNonZeroPriceAsAddition(string $value): string
     {
         $priceContainer = '<span class="price">';
-        $pos = strpos($value, $priceContainer);
-        if ($pos === false) {
-            return $value;
-        }
 
-        return substr($value, 0, $pos) . '+ ' . substr($value, $pos);
+        // Prefix every price, so both the price including and excluding tax are shown as additions
+        return str_replace($priceContainer, '+ ' . $priceContainer, $value);
     }
 }
