@@ -284,7 +284,7 @@
                     showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Newest Items First</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Order of the items on the cart page and in the mini cart. If disabled, the oldest items are shown first.</comment>
+                    <comment>Order of the items on the cart page and in the mini cart.</comment>
                     <config_path>checkout/cart/show_newest_items_first</config_path>
                 </field>
             </group>
@@ -470,7 +470,7 @@
                     showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Show Newest Items First</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Order of the items on the cart page and in the mini cart in Hyvä themes. If disabled, the oldest items are shown first.</comment>
+                    <comment>Order of the items on the cart page and in the mini cart in Hyvä themes.</comment>
                 </field>
             </group>
         </section>
