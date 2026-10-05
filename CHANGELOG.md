@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Setting to show the newest cart items first**  
     "Stores > Configuration > Hyvä Themes > General > Cart > Show Newest Items First" sets the item order on the cart page
     and in the mini cart. It defaults to Yes, and is also available under "Sales > Checkout > Shopping Cart".
+    Templates read it with `Hyva\Theme\ViewModel\Cart\ItemOrder::isShowNewestItemsFirst()`, and the cart page items are
+    sorted on the collection, so the order is also correct when the cart is paginated.
 
     For more information, please refer to [default theme issue #1373](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1373).
 

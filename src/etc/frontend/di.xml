@@ -88,6 +88,11 @@
         <plugin name="hide_zero_fixed_bundle_selection_price" type="Hyva\Theme\Plugin\Bundle\HideZeroFixedBundleSelectionPricePlugin"/>
     </type>
 
+    <!-- Sort the cart page items by the "Show Newest Items First" setting, including the paginated cart. -->
+    <type name="Magento\Checkout\Block\Cart\Grid">
+        <plugin name="hyva_cart_item_order" type="Hyva\Theme\Plugin\Checkout\CartGridItemOrderPlugin"/>
+    </type>
+
     <type name="Magento\LayeredNavigation\Block\Navigation">
         <plugin name="configure_toolbar_sort_order" type="Hyva\Theme\Plugin\LayeredNavigation\Block\ConfigureToolbarSortOrderPlugin"/>
     </type>
