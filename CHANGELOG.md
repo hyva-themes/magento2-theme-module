@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     Renders HTML through a fixed tag and attribute allowlist instead of setting `innerHTML` directly, so it works with
     both the standard and the CSP Alpine build. This gives CSP themes an alternative to `x-html`, which the CSP build
     does not support.  
-    The new setting "Hyvä Themes > General > HTML Safe > Map x-html-safe to x-html" also registers `x-html` with the
+    The new setting "Hyvä Themes > System > HTML Safe > Map x-html-safe to x-html" also registers `x-html` with the
     sanitized rendering, on CSP pages only or on all pages. It defaults to Disabled, so `x-html` is unchanged unless the
     setting is enabled.
 
