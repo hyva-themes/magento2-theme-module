@@ -67,6 +67,11 @@
                 <autocomplete_on_storefront>1</autocomplete_on_storefront>
             </password>
         </customer>
+        <checkout>
+            <cart>
+                <show_newest_items_first>1</show_newest_items_first>
+            </cart>
+        </checkout>
         <google>
             <gtag>
                 <anonymize>1</anonymize>
@@ -85,4 +90,3 @@
         </system>
     </default>
 </config>
-
