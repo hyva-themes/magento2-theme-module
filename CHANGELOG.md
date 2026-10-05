@@ -48,6 +48,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Keep the punctuation of the first sentence in the short description excerpt**  
+    For more information, please refer to [issue #543](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/543).
+
 -   **Enable autocomplete on the storefront login forms by default**  
     "Customers > Customer Configuration > Password Options > Enable Autocomplete on login/forgot password forms" now
     defaults to Yes, so password managers and browsers can fill in the login and registration forms (WCAG 2.2

@@ -167,8 +167,10 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         ) {
             return $paragraphs[0];
         }
-        // otherwise, take the first sentence
-        return explode('.', $description)[0] . '.';
+        // otherwise, take the first sentence, keeping its own punctuation
+        // a period not followed by whitespace, like in "2.5 kg", does not end the sentence
+        $parts = preg_split('/([.!?])(?=\s|$)/', trim($description), 2, PREG_SPLIT_DELIM_CAPTURE);
+        return $parts[0] . ($parts[1] ?? '.');
     }
 
     /**
