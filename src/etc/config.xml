@@ -24,11 +24,11 @@
                 <eagerness>moderate</eagerness>
             </speculation_rules>
         </hyva_theme_general>
-        <hyva_theme_system>
+        <hyva_theme_dev>
             <html_safe>
                 <map_x_html_safe_to_x_html>disabled</map_x_html_safe_to_x_html>
             </html_safe>
-        </hyva_theme_system>
+        </hyva_theme_dev>
         <hyva_theme_pagebuilder>
             <images>
                 <!-- Loading background images for page-builder components on intersection is possible since 1.3.10. -->
