@@ -60,6 +60,11 @@
                 <show_add_to_compare_on_product_page>1</show_add_to_compare_on_product_page>
             </frontend>
         </catalog>
+        <checkout>
+            <cart>
+                <show_newest_items_first>1</show_newest_items_first>
+            </cart>
+        </checkout>
         <google>
             <gtag>
                 <anonymize>1</anonymize>

@@ -452,6 +452,17 @@
             </group>
         </section>
 
+        <section id="checkout">
+            <group id="cart">
+                <field id="show_newest_items_first" translate="label comment" type="select" sortOrder="100" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Newest Items First</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Order of the items on the cart page and in the mini cart in Hyvä themes. If disabled, the oldest items are shown first.</comment>
+                </field>
+            </group>
+        </section>
+
         <section id="customer">
             <group id="captcha">
                 <comment><![CDATA[These CAPTCHA options are unsupported by Hyvä.<br>
