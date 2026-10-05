@@ -48,6 +48,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Enable autocomplete on the storefront login forms by default**  
+    "Customers > Customer Configuration > Password Options > Enable Autocomplete on login/forgot password forms" now
+    defaults to Yes, so password managers and browsers can fill in the login and registration forms (WCAG 2.2
+    `3.3.8 Accessible Authentication`). Stores that rely on the Magento default of No and want to keep it have to set
+    it to No explicitly.
+
+    For more information, please refer to [default theme issue #1354](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1354).
+
 -   **Fixed product sliders not purging the full page cache when a listed product changes**  
     The `ProductList` view model now provides the cache tags of the products it returns.
 
