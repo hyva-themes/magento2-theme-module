@@ -15,7 +15,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class HtmlSafeConfig implements ArgumentInterface
 {
-    public const XML_PATH_MAP_X_HTML_SAFE_TO_X_HTML = 'hyva_theme_system/html_safe/map_x_html_safe_to_x_html';
+    public const XML_PATH_MAP_X_HTML_SAFE_TO_X_HTML = 'hyva_theme_dev/html_safe/map_x_html_safe_to_x_html';
 
     public const MAP_ON_CSP_PAGES_ONLY = 'csp';
     public const MAP_ON_ALL_PAGES = 'all';
