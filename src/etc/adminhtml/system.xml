@@ -195,6 +195,18 @@
                 </field>
             </group>
 
+            <group id="cart" translate="label comment" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cart</label>
+                <comment>(This setting can also be found in Sales > Checkout > Shopping Cart)</comment>
+                <field id="show_newest_items_first" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                    showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Newest Items First</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Order of the items on the cart page and in the mini cart.</comment>
+                    <config_path>checkout/cart/show_newest_items_first</config_path>
+                </field>
+            </group>
+
             <group id="demo_content" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="20" translate="label">
                 <label>Hyvä Demo Content</label>
                 <field id="show_homepage_demo_content" translate="label comment" type="select" sortOrder="10" showInDefault="1"
@@ -274,18 +286,6 @@
                         <option label="Conservative">conservative</option>
                     </options>
                     <comment>Defines when to speculate on links, from as soon as possible (immediate) to on user interaction (conservative).</comment>
-                </field>
-            </group>
-
-            <group id="cart" translate="label comment" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Cart</label>
-                <comment>(This setting can also be found in Sales > Checkout > Shopping Cart)</comment>
-                <field id="show_newest_items_first" translate="label comment" type="select" sortOrder="10" showInDefault="1"
-                    showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Show Newest Items First</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>Order of the items on the cart page and in the mini cart.</comment>
-                    <config_path>checkout/cart/show_newest_items_first</config_path>
                 </field>
             </group>
         </section>
