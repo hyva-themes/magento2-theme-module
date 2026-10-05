@@ -48,6 +48,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Keep the punctuation of the first sentence in the short description excerpt**  
+    For more information, please refer to [issue #543](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/543).
+
 -   **Fixed product sliders not purging the full page cache when a listed product changes**  
     The `ProductList` view model now provides the cache tags of the products it returns.
 
