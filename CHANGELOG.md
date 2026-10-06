@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.10...1.4.x-main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.11...1.4.x-main
+
+## [1.4.11] - 2026-10-12
+
+[1.4.11]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.10...1.4.11
 
 ### Added
 
@@ -336,6 +340,22 @@ model**
 -   **Fixed TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
     For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
   
+### Removed
+
+-   Nothing removed
+
+## [1.3.23] - 2026-10-12
+
+[1.3.23]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.22...1.3.23
+
+### Added
+
+-   Nothing added
+
+### Changed
+
+-   Nothing changed
+
 ### Removed
 
 -   Nothing removed
