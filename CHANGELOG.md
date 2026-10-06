@@ -107,6 +107,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **Made `ProductList::createProductLinkCollection()` public**  
     For more information, please refer to [issue #527](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/527).
 
+-   **Hide zero selection prices on fixed-price bundles in the cart and mini cart**  
+    A zero price selection is included in the bundle price, so it is shown without a price. Other selection prices are
+    prefixed with `+`, matching the product page. Dynamic-price bundles are unchanged.
+
+    For more information, please refer to [issue #540](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/540).
+
+    Many thanks to Valeriia Prokhina (Perspective) for the contribution!
+
 ## [1.5.2] - 2026-07-10
 
 [1.5.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.1...1.5.2
