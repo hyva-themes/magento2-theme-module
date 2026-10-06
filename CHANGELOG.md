@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
+
+## [1.5.3] - 2026-10-12
+
+[1.5.3]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...1.5.3
 
 ### Added
 
@@ -167,6 +171,31 @@ This release contains the same changes as [1.4.8].
 
 -   **PageBuilder: Update image size fields to Magento naming**  
     For more information, please refer to [issue #510](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/510#note_84957).
+
+### Removed
+
+-   Nothing Removed
+
+## [1.4.11] - 2026-10-12
+
+[1.4.11]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.10...1.4.11
+
+### Added
+
+-   Nothing Added
+
+### Changed
+
+-   **Fix the template path of the min-max form validation**  
+    The `hyva_form_validation_min_max` layout handle now references `Hyva_Theme::form/js/min-max-validation.phtml`
+    instead of `Hyva_Enterprise::form/min-max-validation.phtml`.
+
+    For more information, please refer to [merge request #695](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/695).
+
+-   **Fix the admin config tab logo 404 after `setup:static-content:deploy -s compact`**  
+    The logo is now referenced with module notation from `view/adminhtml`.
+
+    For more information, please refer to [merge request #710](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/710).
 
 ### Removed
 
@@ -479,6 +508,22 @@ model**
 -   **Fixed TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
     For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
   
+### Removed
+
+-   Nothing removed
+
+## [1.3.23] - 2026-10-12
+
+[1.3.23]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.22...1.3.23
+
+### Added
+
+-   Nothing added
+
+### Changed
+
+-   Nothing changed
+
 ### Removed
 
 -   Nothing removed
