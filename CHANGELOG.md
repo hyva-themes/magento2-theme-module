@@ -24,9 +24,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 -   **Option to disable the short description fallback to the full description**  
     The `ProductPage` view model methods `getShortDescription()` and `getShortDescriptionForProduct()` take an additional
-    optional `?bool $descriptionFallback` argument, so the setting can be overridden per template. Existing calls and
-    plugins are unaffected, but classes that extend `ProductPage` and override either method have to add the argument to
-    their signature.
+    optional `?bool $descriptionFallback` argument, so the setting can be overridden per template. Existing calls, and
+    before and after plugins, are unaffected. Classes that extend `ProductPage` and override either method have to add
+    the argument to their signature, and around plugins should forward the new argument to `$proceed`.
 
     For more information, please refer to [merge request #699](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/699).
 
@@ -119,6 +119,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     Many thanks to Valeriia Prokhina (Perspective) for the contribution!
 
+### Removed
+
+-   Nothing Removed
+
 ## [1.5.2] - 2026-07-10
 
 [1.5.2]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.1...1.5.2
@@ -186,13 +190,13 @@ This release contains the same changes as [1.4.8].
 
 ### Changed
 
--   **Fix the template path of the min-max form validation**  
+-   **Fixed the template path of the min-max form validation**  
     The `hyva_form_validation_min_max` layout handle now references `Hyva_Theme::form/js/min-max-validation.phtml`
     instead of `Hyva_Enterprise::form/min-max-validation.phtml`.
 
     For more information, please refer to [merge request #695](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/695).
 
--   **Fix the admin config tab logo 404 after `setup:static-content:deploy -s compact`**  
+-   **Fixed the admin config tab logo 404 after `setup:static-content:deploy -s compact`**  
     The logo is now referenced with module notation from `view/adminhtml`.
 
     For more information, please refer to [merge request #710](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/710).
