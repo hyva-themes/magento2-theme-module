@@ -50,7 +50,7 @@ use Magento\Framework\View\Element\Template;
         hyva.initMessages = () => {
             try {
                 const messages = hyva.getCookie('mage-messages');
-                window.mageMessages = messages ? JSON.parse(decodeURIComponent(messages).replace(/\+/g, ' ')) : [];
+                window.mageMessages = messages ? JSON.parse(decodeURIComponent(messages.replace(/\+/g, '%20'))) : [];
 
                 dispatchMessages(window.mageMessages);
 

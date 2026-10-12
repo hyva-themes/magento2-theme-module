@@ -82,6 +82,21 @@
         <plugin name="set_product_info_title" type="Hyva\Theme\Plugin\Catalog\Helper\Product\SetProductInfoTitlePlugin" />
     </type>
 
+    <!-- Hide €0.00 (and prefix upgrades with +) on fixed-price bundle selections wherever a Hyvä theme renders the
+         bundle option list, e.g. cart, mini-cart and wishlist. Non-Hyvä themes keep the Magento default output. -->
+    <type name="Magento\Bundle\Helper\Catalog\Product\Configuration">
+        <plugin name="hide_zero_fixed_bundle_selection_price" type="Hyva\Theme\Plugin\Bundle\HideZeroFixedBundleSelectionPricePlugin"/>
+    </type>
+
+    <!-- Sort the cart page items by the "Show Newest Items First" setting, including the paginated cart. -->
+    <type name="Magento\Checkout\Block\Cart\Grid">
+        <plugin name="hyva_cart_item_order" type="Hyva\Theme\Plugin\Checkout\CartGridItemOrderPlugin"/>
+    </type>
+
+    <type name="Magento\LayeredNavigation\Block\Navigation">
+        <plugin name="configure_toolbar_sort_order" type="Hyva\Theme\Plugin\LayeredNavigation\Block\ConfigureToolbarSortOrderPlugin"/>
+    </type>
+
     <type name="Magento\Customer\Controller\Ajax\Login">
         <!-- The sorOrder is so it runs after \Hyva\ThemeFallback\Plugin\ThemeFallbackPlugin that set's the configured theme -->
         <plugin name="hyva_theme" type="Hyva\Theme\Plugin\Customer\AjaxLoginFormkeyValidationPlugin" sortOrder="30"/>

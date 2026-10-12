@@ -20,17 +20,27 @@ use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Helper\Output as ProductOutputHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class ProductPage implements ArgumentInterface, IdentityInterface
 {
     /** Recently Viewed lifetime */
     public const XML_LIFETIME_PATH = "catalog/recently_products/recently_viewed_lifetime";
 
-    /** Flag if recently viewed product data should be fetched via graphql or stored completely in local storage */
+    /**
+     * Flag if recently viewed product data should be fetched via graphql or stored completely in local storage
+     *
+     * @deprecated The recently viewed products are always read from the browser storage, so the setting this
+     *             points at has no effect in Hyva Theme.
+     * @see \Hyva\Theme\ViewModel\RecentlyViewedProducts::XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH
+     */
     public const XML_VIEWED_PRODUCTS_SYNC_BACKEND_PATH = 'catalog/recently_products/synchronize_with_backend';
 
     /** Flag if product URLs contain the category path */
     public const XML_PRODUCT_URL_USE_CATEGORY_PATH = 'catalog/seo/product_use_categories';
+
+    /** Flag if the description may be used when a product has no short description */
+    public const XML_SHORT_DESCRIPTION_FALLBACK_PATH = 'hyva_theme_catalog/product_details/short_description_fallback';
 
     /**
      * @var Product
@@ -93,8 +103,16 @@ class ProductPage implements ArgumentInterface, IdentityInterface
 
     public function isProductUrlIncludesCategory(): bool
     {
-        $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+        $storeScope = ScopeInterface::SCOPE_STORE;
         return (bool) $this->scopeConfigInterface->getValue(self::XML_PRODUCT_URL_USE_CATEGORY_PATH, $storeScope);
+    }
+
+    public function isShortDescriptionFallbackEnabled(): bool
+    {
+        return $this->scopeConfigInterface->isSetFlag(
+            self::XML_SHORT_DESCRIPTION_FALLBACK_PATH,
+            ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**
@@ -108,22 +126,27 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         return $this->_product;
     }
 
-    public function getShortDescription(bool $excerpt = true, bool $stripTags = true): string
-    {
-        return $this->getShortDescriptionForProduct($this->getProduct(), $excerpt, $stripTags);
+    public function getShortDescription(
+        bool $excerpt = true,
+        bool $stripTags = true,
+        ?bool $descriptionFallback = null
+    ): string {
+        return $this->getShortDescriptionForProduct($this->getProduct(), $excerpt, $stripTags, $descriptionFallback);
     }
 
     public function getShortDescriptionForProduct(
         Product $product,
         bool $excerpt = true,
-        bool $stripTags = true
+        bool $stripTags = true,
+        ?bool $descriptionFallback = null
     ): string {
         $result = "";
+        $useFallback = $descriptionFallback ?? $this->isShortDescriptionFallbackEnabled();
 
         if ($shortDescription = $product->getShortDescription()) {
             $shortDescription = $excerpt ? $this->excerptFromDescription($shortDescription) : $shortDescription;
             $result = $this->productAttributeHtml($product, $shortDescription, 'short_description');
-        } elseif ($description = $product->getDescription()) {
+        } elseif ($useFallback && ($description = $product->getDescription())) {
             $description = $excerpt ? $this->excerptFromDescription($description) : $description;
             $result = $this->productAttributeHtml($product, $description, 'description');
         }
@@ -144,8 +167,10 @@ class ProductPage implements ArgumentInterface, IdentityInterface
         ) {
             return $paragraphs[0];
         }
-        // otherwise, take the first sentence
-        return explode('.', $description)[0] . '.';
+        // otherwise, take the first sentence, keeping its own punctuation
+        // a period not followed by whitespace, like in "2.5 kg", does not end the sentence
+        $parts = preg_split('/([.!?])(?=\s|$)/', trim($description), 2, PREG_SPLIT_DELIM_CAPTURE);
+        return $parts[0] . ($parts[1] ?? '.');
     }
 
     /**

@@ -28,6 +28,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrderBuilder;
 use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\EntityManager\MetadataPool as EntityMetadataPool;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface as ConfigScope;
@@ -42,6 +43,7 @@ use function array_map as map;
 use function array_merge as merge;
 use function array_slice as slice;
 use function array_unique as unique;
+use function array_values as values;
 
 // phpcs:disable Magento2.Functions.DiscouragedFunction.Discouraged
 
@@ -51,7 +53,7 @@ use function array_unique as unique;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
  */
-class ProductList implements ArgumentInterface
+class ProductList implements ArgumentInterface, IdentityInterface
 {
     public const XML_CROSSSELL_PRODUCTS_LIMIT = 'hyva_theme_catalog/crosssell_products/limit';
 
@@ -59,6 +61,11 @@ class ProductList implements ArgumentInterface
      * @var SearchCriteriaBuilder
      */
     private $searchCriteriaBuilder;
+
+    /**
+     * @var string[]
+     */
+    private $cacheIdentities = [];
 
     /**
      * @var ?int
@@ -202,7 +209,7 @@ class ProductList implements ArgumentInterface
         $this->applyCriteria($this->searchCriteriaBuilder->create(), $collection);
         $collection->each('setDoNotUseCategoryId', [true]);
 
-        return $collection->getItems();
+        return $this->collectIdentities($collection->getItems());
     }
 
     /**
@@ -257,7 +264,32 @@ class ProductList implements ArgumentInterface
         $collection->setGroupBy(); // group by product id field - required to avoid duplicate products in collection
         $collection->each('setDoNotUseCategoryId', [true]);
 
-        return $collection->getItems();
+        return $this->collectIdentities($collection->getItems());
+    }
+
+    /**
+     * @param ProductInterface[] $items
+     * @return ProductInterface[]
+     */
+    private function collectIdentities(array $items): array
+    {
+        foreach ($items as $item) {
+            if ($item instanceof IdentityInterface) {
+                $this->cacheIdentities = merge($this->cacheIdentities, values($item->getIdentities()));
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Product cache tags of all items returned so far, so the full page cache is purged when one of them changes
+     *
+     * @return string[]
+     */
+    public function getIdentities()
+    {
+        return values(unique($this->cacheIdentities));
     }
 
     private function applyCriteria(SearchCriteriaInterface $criteria, AbstractDb $collection): void
@@ -299,7 +331,7 @@ class ProductList implements ArgumentInterface
         return $this->memoizedProductLinkField;
     }
 
-    private function createProductLinkCollection(string $linkType, array $productIds): ProductLinkCollection
+    public function createProductLinkCollection(string $linkType, array $productIds): ProductLinkCollection
     {
         $collection = $this->productLinkCollectionFactory->create(['productIds' => $productIds]);
         $collection->setLinkModel($this->getLinkTypeModel($linkType))
@@ -380,10 +412,10 @@ class ProductList implements ArgumentInterface
 
         $collection->each('setDoNotUseCategoryId', [true]);
 
-        return $collection->getItems();
+        return $this->collectIdentities($collection->getItems());
     }
 
-    private function getLinkTypeModel(string $linkType): Product\Link
+    public function getLinkTypeModel(string $linkType): Product\Link
     {
         $linkModel = $this->productLinkFactory->create();
         switch ($linkType) {

@@ -6,7 +6,122 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
+
+## [1.5.3] - 2026-10-12
+
+[1.5.3]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...1.5.3
+
+### Added
+
+-   **Setting to show the newest cart items first**  
+    "Stores > Configuration > Hyvä Themes > General > Cart > Show Newest Items First" sets the item order on the cart page
+    and in the mini cart. It defaults to Yes, and is also available under "Sales > Checkout > Shopping Cart".
+    Templates read it with `Hyva\Theme\ViewModel\Cart\ItemOrder::isShowNewestItemsFirst()`, and the cart page items are
+    sorted on the collection, so the order is also correct when the cart is paginated.
+
+    For more information, please refer to [default theme issue #1373](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1373).
+
+-   **Option to disable the short description fallback to the full description**  
+    The `ProductPage` view model methods `getShortDescription()` and `getShortDescriptionForProduct()` take an additional
+    optional `?bool $descriptionFallback` argument, so the setting can be overridden per template. Existing calls, and
+    before and after plugins, are unaffected. Classes that extend `ProductPage` and override either method have to add
+    the argument to their signature, and around plugins should forward the new argument to `$proceed`.
+
+    For more information, please refer to [merge request #699](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/699).
+
+-   **The `x-html-safe` Alpine plugin**  
+    Renders HTML through a fixed tag and attribute allowlist instead of setting `innerHTML` directly, so it works with
+    both the standard and the CSP Alpine build. This gives CSP themes an alternative to `x-html`, which the CSP build
+    does not support.  
+    The new setting "Hyvä Themes > Developer > HTML Safe > Map x-html-safe to x-html" also registers `x-html` with the
+    sanitized rendering, on CSP pages only or on all pages. It defaults to Disabled, so `x-html` is unchanged unless the
+    setting is enabled.
+
+    For more information, please refer to [merge request #707](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/707).
+
+-   **A view model to list only the selectable configurable options**  
+    `Hyva\Theme\ViewModel\Product\Options::getEnabledAttributeOptions()` leaves out options whose only child products
+    are disabled or not assigned to the current website.
+
+    For more information, please refer to [default theme issue #1360](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1360).
+
+-   **An i18n source dictionary for the module**  
+    `i18n/en_US.csv` lists the module phrases that the Magento core dictionaries do not already provide. The locale packs
+    in `hyva-themes/internationalization` translate these phrases.
+
+    For more information, please refer to [merge request #704](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/704).
+
+### Changed
+
+-   **Keep the punctuation of the first sentence in the short description excerpt**  
+    For more information, please refer to [issue #543](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/543).
+
+-   **Enable autocomplete on the storefront login forms by default**  
+    "Customers > Customer Configuration > Password Options > Enable Autocomplete on login/forgot password forms" now
+    defaults to Yes, so password managers and browsers can fill in the login and registration forms (WCAG 2.2
+    `3.3.8 Accessible Authentication`). Stores that rely on the Magento default of No and want to keep it have to set
+    it to No explicitly.
+
+    For more information, please refer to [default theme issue #1354](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1354).
+
+-   **Fixed product sliders not purging the full page cache when a listed product changes**  
+    The `ProductList` view model now provides the cache tags of the products it returns.
+
+    For more information, please refer to [default theme issue #1316](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1316).
+
+-   **Made `ProductList::getLinkTypeModel()` public**  
+    For more information, please refer to [issue #534](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/534).
+
+-   **Show the reCAPTCHA legal notice for v2 invisible**  
+    The badge is hidden by the theme, so v2 invisible forms now render the same legal notice as v3.
+
+    For more information, please refer to [default theme issue #1156](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1156).
+
+-   **Fixed speculation rules preloading excluded paths without a trailing slash**  
+    For more information, please refer to [default theme issue #1317](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/issues/1317).
+
+-   **Updated `snap-slider` to v2.2.4**  
+    Fixes the slider refreshing on any DOM change inside a slide, which rebuilt the pager whenever a nested component (such as a swatch tooltip) inserted or removed an element.  
+    For more information, please refer to [issue #537](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/537).
+
+-   **Keep `+` characters intact in cookie messages**  
+    For more information, please refer to [issue #538](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/538).
+
+-   **Apply the search sort order to the product list toolbar**  
+    The layered navigation reached the shared toolbar before the product list handed over its sort options, which left the search results sorted by position with a sort direction toggle that could not change anything.
+
+    For more information, please refer to [issue #539](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/539).
+
+-   **Deprecate the view model members that only served the GraphQL code of the default theme**  
+    For more information, please refer to [merge request #709](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/709)
+    and [default theme merge request #1561](https://gitlab.hyva.io/hyva-themes/magento2-default-theme/-/merge_requests/1561).
+
+-   **Fixed the template path of the min-max form validation**  
+    The `hyva_form_validation_min_max` layout handle now references `Hyva_Theme::form/js/min-max-validation.phtml`
+    instead of `Hyva_Enterprise::form/min-max-validation.phtml`.
+
+    For more information, please refer to [merge request #693](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/693).
+
+-   **Fixed the admin config tab logo 404 after `setup:static-content:deploy -s compact`**  
+    The logo is now referenced with module notation from `view/adminhtml`.
+
+    For more information, please refer to [merge request #706](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/706).
+
+-   **Made `ProductList::createProductLinkCollection()` public**  
+    For more information, please refer to [issue #527](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/527).
+
+-   **Hide zero selection prices on fixed-price bundles in the cart and mini cart**  
+    A zero price selection is included in the bundle price, so it is shown without a price. Other selection prices are
+    prefixed with `+`, matching the product page. Dynamic-price bundles are unchanged.
+
+    For more information, please refer to [issue #540](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/540).
+
+    Many thanks to Valeriia Prokhina (Perspective) for the contribution!
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.5.2] - 2026-07-10
 
@@ -60,6 +175,31 @@ This release contains the same changes as [1.4.8].
 
 -   **PageBuilder: Update image size fields to Magento naming**  
     For more information, please refer to [issue #510](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/510#note_84957).
+
+### Removed
+
+-   Nothing Removed
+
+## [1.4.11] - 2026-10-12
+
+[1.4.11]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.4.10...1.4.11
+
+### Added
+
+-   Nothing Added
+
+### Changed
+
+-   **Fixed the template path of the min-max form validation**  
+    The `hyva_form_validation_min_max` layout handle now references `Hyva_Theme::form/js/min-max-validation.phtml`
+    instead of `Hyva_Enterprise::form/min-max-validation.phtml`.
+
+    For more information, please refer to [merge request #695](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/695).
+
+-   **Fixed the admin config tab logo 404 after `setup:static-content:deploy -s compact`**  
+    The logo is now referenced with module notation from `view/adminhtml`.
+
+    For more information, please refer to [merge request #710](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/710).
 
 ### Removed
 
@@ -372,6 +512,22 @@ model**
 -   **Fixed TypeError in PageJsDependencyRegistry when block HTML contains Phrase object**  
     For more information, please refer to [issue #480](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/480)
   
+### Removed
+
+-   Nothing removed
+
+## [1.3.23] - 2026-10-12
+
+[1.3.23]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.3.22...1.3.23
+
+### Added
+
+-   Nothing added
+
+### Changed
+
+-   Nothing changed
+
 ### Removed
 
 -   Nothing removed

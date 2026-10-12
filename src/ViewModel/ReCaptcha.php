@@ -161,7 +161,7 @@ class ReCaptcha implements ArgumentInterface
         return [
             // Renders the DOM nodes that capture the reCaptcha result
             self::RECAPTCHA_INPUT_FIELD  => $this->getInputFieldBockName($recaptchaType),
-            // Renders the legal notice for reCaptcha v3
+            // Renders the legal notice for reCaptcha v3 and v2 invisible
             self::RECAPTCHA_LEGAL_NOTICE => $this->getLegalNoticeBlockName($recaptchaType),
             // Renders the JS that triggers the validation
             self::RECAPTCHA_SCRIPT_TOKEN => $this->getScriptTokenBlockName($recaptchaType, $formId),
@@ -177,7 +177,7 @@ class ReCaptcha implements ArgumentInterface
 
     private function getLegalNoticeBlockName(string $type): string
     {
-        return $type === 'recaptcha_v3'
+        return in_array($type, ['recaptcha_v3', 'invisible'], true)
             ? self::RECAPTCHA_LEGAL_NOTICE_BLOCK
             : '';
     }
