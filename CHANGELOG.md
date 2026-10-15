@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
 
+### Fixed
+
+-   **Luma checkout data removed on every section reload without `hyva-themes/magento2-graphql-tokens`**  
+    The `checkout-data` was removed whenever the `cart` section had no `cartId`, which is only added by
+    `hyva-themes/magento2-graphql-tokens`. It is now removed when the cart is empty, which is still the case after a
+    logout or an expired session.
+
+    For more information, please refer to [issue #544](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/544).
+
 ## [1.5.3] - 2026-10-12
 
 [1.5.3]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.2...1.5.3
