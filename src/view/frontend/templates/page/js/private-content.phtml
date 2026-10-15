@@ -172,8 +172,8 @@ $cookieSettings = $viewModels->require(Cookie::class);
                                 // merge new data preserving non-invalidated sections
                                 const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}') || {};
 
-                                <?php /** Ensure no checkout data remains after logout (from Luma checkout) */ ?>
-                                if ((! data.cart || ! data.cart.cartId) && oldSectionData['checkout-data']) {
+                                <?php /** Ensure no checkout data remains after logout or an expired session (from Luma checkout) */ ?>
+                                if ((! data.cart || ! data.cart.summary_count) && oldSectionData['checkout-data']) {
                                     delete oldSectionData['checkout-data'];
                                 }
                                 const newSectionData = Object.assign(oldSectionData, data);
