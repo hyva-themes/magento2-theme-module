@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+-   **`<picture>` sources built with `getPictureHtml()`/`getResponsivePictureHtml()` now carry their own width and height**  
+    `MediaHtmlProvider::getPictureHtml()` had the `width`/`height` of each responsive image available but never wrote them
+    onto the matching `<source>` tag, only onto the final `<img>`. Browsers reserve layout space for a `<picture>` from the
+    selected source's own `width`/`height` when present, so without them every breakpoint reserved space based on the
+    `<img>`'s single set of attributes, which could cause a layout shift once a different breakpoint's image decoded.
+
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
 
 ## [1.5.3] - 2026-10-12
