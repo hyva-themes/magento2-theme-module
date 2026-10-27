@@ -63,12 +63,11 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
                 }
 
                 // Lets the browser reserve this source's own box before any image decodes,
-                // instead of falling back to the <img>'s attributes for every breakpoint.
-                if (isset($image['width'])) {
+                // instead of falling back to the <img>'s attributes for every breakpoint. Only
+                // written as a pair: a lone width or height does not give the browser enough to
+                // derive an aspect ratio, so it would just sit there with no effect.
+                if (isset($image['width']) && isset($image['height'])) {
                     $sourceAttributes['width'] = (string) $image['width'];
-                }
-
-                if (isset($image['height'])) {
                     $sourceAttributes['height'] = (string) $image['height'];
                 }
 
@@ -91,11 +90,8 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
                 $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
             }
 
-            if (isset($fallbackImage['width'])) {
+            if (isset($fallbackImage['width']) && isset($fallbackImage['height'])) {
                 $fallbackSourceAttributes['width'] = (string) $fallbackImage['width'];
-            }
-
-            if (isset($fallbackImage['height'])) {
                 $fallbackSourceAttributes['height'] = (string) $fallbackImage['height'];
             }
 
