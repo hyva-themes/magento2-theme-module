@@ -235,30 +235,42 @@ $cookieSettings = $viewModels->require(Cookie::class);
              * JSON is used over structuredClone, since processSectionDataBeforeDispatch can return a Proxy.
              */
             ?>
+            let sections;
             try {
-                store.data = JSON.parse(JSON.stringify(event.detail.data || {}));
-                store.loaded = true;
+                sections = JSON.parse(JSON.stringify(event.detail.data || {}));
             } catch (error) {
                 console.warn("Couldn't update the privateContent store", error);
+                return;
             }
+
+            <?php /** Sections that are no longer in the section data, e.g. checkout-data after logout */ ?>
+            Object.keys(store).forEach(key => {
+                if (key !== 'loaded' && !(key in sections)) delete store[key];
+            });
+
+            <?php /** Unchanged sections keep their object, so components using them don't update */ ?>
+            Object.entries(sections).forEach(([key, section]) => {
+                if (JSON.stringify(store[key]) !== JSON.stringify(section)) store[key] = section;
+            });
+
+            store.loaded = true;
         });
     })();
 
     <?php
     /**
-     * Alpine store with the section data, e.g. $store.privateContent.data.cart
+     * Alpine store with one property per customer section, e.g. $store.privateContent.cart
      * Components can read it reactively instead of listening to the private-content-loaded event,
      * which also works with Alpine CSP. The event stays supported.
      *
      * `loaded` is false until the first private-content-loaded event, so a component can tell
-     * the real section data apart from the empty initial state.
+     * the real section data apart from the empty initial state, so `loaded` can't be used as a section name.
      * The first section data load waits for alpine:initialized, so the store exists by then.
      */
     ?>
     window.addEventListener('alpine:init', () => {
         Alpine.store('privateContent', {
-            loaded: false,
-            data: {}
+            loaded: false
         });
     }, { once: true });
     //# sourceURL=hyva-private-content.js
