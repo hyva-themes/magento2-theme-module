@@ -11,8 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 -   **`privateContent` Alpine store with the customer section data**  
     `Alpine.store('privateContent')` holds a copy of every customer section as its own property, e.g.
     `$store.privateContent.cart`, updated on each `private-content-loaded` event, and `loaded` turns true after the first
-    one. Unchanged sections keep their object, so components only update for the sections they read. Components read the
-    store reactively without an event listener, which also works with Alpine CSP. The store is part of
+    one. Components read the store reactively without an event listener, which also works with Alpine CSP. The store is part of
     `private-content.phtml`, and the `private-content-loaded` event remains supported.
 
     For more information, please refer to [issue #545](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/545).

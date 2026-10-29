@@ -235,25 +235,11 @@ $cookieSettings = $viewModels->require(Cookie::class);
              * JSON is used over structuredClone, since processSectionDataBeforeDispatch can return a Proxy.
              */
             ?>
-            let sections;
             try {
-                sections = JSON.parse(JSON.stringify(event.detail.data || {}));
+                Object.assign(store, JSON.parse(JSON.stringify(event.detail.data || {})), { loaded: true });
             } catch (error) {
                 console.warn("Couldn't update the privateContent store", error);
-                return;
             }
-
-            <?php /** Sections that are no longer in the section data, e.g. checkout-data after logout */ ?>
-            Object.keys(store).forEach(key => {
-                if (key !== 'loaded' && !(key in sections)) delete store[key];
-            });
-
-            <?php /** Unchanged sections keep their object, so components using them don't update */ ?>
-            Object.entries(sections).forEach(([key, section]) => {
-                if (JSON.stringify(store[key]) !== JSON.stringify(section)) store[key] = section;
-            });
-
-            store.loaded = true;
         });
     })();
 
