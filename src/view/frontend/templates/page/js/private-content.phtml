@@ -136,11 +136,56 @@ $cookieSettings = $viewModels->require(Cookie::class);
         ?>
         window.processSectionDataBeforeDispatch = window.processSectionDataBeforeDispatch || (data => data);
 
+        <?php
+        /**
+         * Alpine store with the dispatched section data, e.g. $store.privateContent.data.cart
+         * Components can read it reactively instead of listening to the private-content-loaded event,
+         * which also works with Alpine CSP. The event stays supported.
+         *
+         * `loaded` is false until the first dispatch, so a component can tell the real section data
+         * apart from the empty initial state.
+         */
+        ?>
+        let latestPrivateContent = null;
+
+        window.addEventListener('alpine:init', () => {
+            Alpine.store('privateContent', {
+                loaded: latestPrivateContent !== null,
+                data: latestPrivateContent || {}
+            });
+        }, { once: true });
+
+        function updatePrivateContentStore(data) {
+            <?php
+            /**
+             * The data is copied, because it is mutated after dispatch (the persisted messages are cleared).
+             * JSON is used over structuredClone, since processSectionDataBeforeDispatch can return a Proxy.
+             */
+            ?>
+            try {
+                latestPrivateContent = JSON.parse(JSON.stringify(data || {}));
+            } catch (error) {
+                console.warn("Couldn't update the privateContent store", error);
+                return;
+            }
+
+            <?php /** Alpine v2 has no stores */ ?>
+            const store = window.Alpine && typeof Alpine.store === 'function' && Alpine.store('privateContent');
+            if (store) {
+                store.data = latestPrivateContent;
+                store.loaded = true;
+            }
+        }
+
         function dispatchPrivateContent(data) {
+            const processedData = window.processSectionDataBeforeDispatch(data);
+
+            <?php /** The store is updated first, so event listeners can read it as well */ ?>
+            updatePrivateContentStore(processedData);
 
             const privateContentEvent = new CustomEvent("private-content-loaded", {
                 detail: {
-                    data: window.processSectionDataBeforeDispatch(data)
+                    data: processedData
                 }
             });
             window.dispatchEvent(privateContentEvent);
