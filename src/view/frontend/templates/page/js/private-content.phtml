@@ -216,32 +216,21 @@ $cookieSettings = $viewModels->require(Cookie::class);
                     console.warn("Couldn't fetch privateContent", error);
                 });
         }
-    })();
 
-    {
         <?php
         /**
-         * Alpine store with the dispatched section data, e.g. $store.privateContent.data.cart
-         * Components can read it reactively instead of listening to the private-content-loaded event,
-         * which also works with Alpine CSP. The event stays supported.
-         *
-         * `loaded` is false until the first private-content-loaded event, so a component can tell
-         * the real section data apart from the empty initial state.
-         *
+         * Keep the privateContent store in sync, see the store registration below.
          * Scripts in the page body register their listeners before this one, so inside a
          * private-content-loaded listener use the event data, the store may not be updated yet.
          */
         ?>
-        let latestPrivateContent = null;
-
-        window.addEventListener('alpine:init', () => {
-            Alpine.store('privateContent', {
-                loaded: latestPrivateContent !== null,
-                data: latestPrivateContent || {}
-            });
-        }, { once: true });
-
         window.addEventListener('private-content-loaded', (event) => {
+            <?php /** Alpine v2 has no stores */ ?>
+            const store = window.Alpine && typeof Alpine.store === 'function' && Alpine.store('privateContent');
+            if (!store) {
+                return;
+            }
+
             <?php
             /**
              * The data is copied, because it is mutated after dispatch (the persisted messages are cleared).
@@ -249,20 +238,31 @@ $cookieSettings = $viewModels->require(Cookie::class);
              */
             ?>
             try {
-                latestPrivateContent = JSON.parse(JSON.stringify(event.detail.data || {}));
+                store.data = JSON.parse(JSON.stringify(event.detail.data || {}));
+                store.loaded = true;
             } catch (error) {
                 console.warn("Couldn't update the privateContent store", error);
-                return;
-            }
-
-            <?php /** Alpine v2 has no stores */ ?>
-            const store = window.Alpine && typeof Alpine.store === 'function' && Alpine.store('privateContent');
-            if (store) {
-                store.data = latestPrivateContent;
-                store.loaded = true;
             }
         });
-    }
+    })();
+
+    <?php
+    /**
+     * Alpine store with the section data, e.g. $store.privateContent.data.cart
+     * Components can read it reactively instead of listening to the private-content-loaded event,
+     * which also works with Alpine CSP. The event stays supported.
+     *
+     * `loaded` is false until the first private-content-loaded event, so a component can tell
+     * the real section data apart from the empty initial state.
+     * The first section data load waits for alpine:initialized, so the store exists by then.
+     */
+    ?>
+    window.addEventListener('alpine:init', () => {
+        Alpine.store('privateContent', {
+            loaded: false,
+            data: {}
+        });
+    }, { once: true });
     //# sourceURL=hyva-private-content.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>
