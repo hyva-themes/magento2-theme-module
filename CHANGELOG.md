@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 
 -   **`privateContent` Alpine store with the customer section data**  
-    `Alpine.store('privateContent')` holds a copy of the dispatched section data in `data`, updated right before each
+    `Alpine.store('privateContent')` holds a copy of the section data in `data`, updated on each
     `private-content-loaded` event, and `loaded` turns true after the first one. Components read it reactively, e.g.
     `$store.privateContent.data.cart`, without an event listener, which also works with Alpine CSP. The store is part of
     `private-content.phtml`, and the `private-content-loaded` event remains supported.
