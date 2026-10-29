@@ -14,6 +14,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
     selected source's own `width`/`height` when present, so without them every breakpoint reserved space based on the
     `<img>`'s single set of attributes, which could cause a layout shift once a different breakpoint's image decoded.
 
+-   **`x-html-safe` no longer renders empty in Safari for some `data-*` attribute names**  
+    The HTML parser accepts `data-*` names such as `data-a"b`, but WebKit (Safari and every iOS browser) throws an
+    `InvalidCharacterError` when such a name is copied, so the whole `x-html-safe` value rendered empty. These names are
+    now skipped.
+
+    For more information, please refer to [issue #547](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/547).
+
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
 
 ## [1.5.3] - 2026-10-12
