@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+-   **`privateContent` Alpine store with the customer section data**  
+    `Alpine.store('privateContent')` holds a copy of the section data of every `private-content-loaded` event in `data`,
+    and `loaded` turns true after the first event. Components read it reactively, e.g. `$store.privateContent.data.cart`,
+    without an event listener, which also works with Alpine CSP. The `private-content-loaded` event is unchanged and
+    remains supported.
+
+    For more information, please refer to [issue #545](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/545).
+
 ### Fixed
 
 -   **`<picture>` sources built with `getPictureHtml()`/`getResponsivePictureHtml()` now carry their own width and height**  
