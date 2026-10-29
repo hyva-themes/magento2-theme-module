@@ -249,8 +249,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
      * Components can read it reactively instead of listening to the private-content-loaded event,
      * which also works with Alpine CSP. The event stays supported.
      *
-     * `loaded` is false until the first private-content-loaded event, so a component can tell
-     * the real section data apart from the empty initial state, so `loaded` can't be used as a section name.
+     * `loaded` is false until the first private-content-loaded event, and can't be used as a section name.
      * The first section data load waits for alpine:initialized, so the store exists by then.
      */
     ?>
