@@ -227,9 +227,7 @@ $cookieSettings = $viewModels->require(Cookie::class);
         window.addEventListener('private-content-loaded', (event) => {
             <?php /** Alpine v2 has no stores */ ?>
             const store = window.Alpine && typeof Alpine.store === 'function' && Alpine.store('privateContent');
-            if (!store) {
-                return;
-            }
+            if (!store) return;
 
             <?php
             /**
