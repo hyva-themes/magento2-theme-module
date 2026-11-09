@@ -229,17 +229,10 @@ $cookieSettings = $viewModels->require(Cookie::class);
             const store = window.Alpine && typeof Alpine.store === 'function' && Alpine.store('privateContent');
             if (!store) return;
 
-            <?php
-            /**
-             * The data is copied, because it is mutated after dispatch (the persisted messages are cleared).
-             * JSON is used over structuredClone, since processSectionDataBeforeDispatch can return a Proxy.
-             */
-            ?>
-            try {
-                Object.assign(store, JSON.parse(JSON.stringify(event.detail.data || {})), { loaded: true });
-            } catch (error) {
-                console.warn("Couldn't update the privateContent store", error);
-            }
+            <?php /** Held by reference, so the store matches the persisted data, including the cleared messages */ ?>
+            const data = event.detail.data || {};
+            Object.keys(store).forEach(key => key === 'loaded' || key in data || delete store[key]);
+            Object.assign(store, data, { loaded: true });
         });
     })();
 
@@ -250,7 +243,12 @@ $cookieSettings = $viewModels->require(Cookie::class);
      * which also works with Alpine CSP. The event stays supported.
      *
      * `loaded` is false until the first private-content-loaded event, and can't be used as a section name.
+     * A section can still be undefined after that, e.g. a first visit without default section data.
      * The first section data load waits for alpine:initialized, so the store exists by then.
+     *
+     * Treat the store as read-only: writes are never persisted and the next section reload replaces them.
+     * Copy arrays before sorting them, e.g. [...$store.privateContent.cart.items].sort().
+     * messages.messages is always empty, flash messages are only in the private-content-loaded event data.
      */
     ?>
     window.addEventListener('alpine:init', () => {
