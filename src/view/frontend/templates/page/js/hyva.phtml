@@ -347,11 +347,19 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
             hyva.initMessages();
         }
 
+        const executableScriptTypes = [
+            '', 'module', 'text/javascript', 'application/javascript', 'text/ecmascript', 'application/ecmascript',
+            'text/x-javascript', 'application/x-javascript', 'text/x-ecmascript', 'application/x-ecmascript'
+        ];
+
+        const isExecutableScript = (script) => {
+            return executableScriptTypes.includes((script.getAttribute('type') ?? '').trim().toLowerCase());
+        }
+
         hyva.removeScripts = (contentNode) => {
-            const scripts = contentNode.getElementsByTagName('script');
-            for (let i = 0; i < scripts.length; i++) {
-                scripts[i].parentNode.removeChild(scripts[i]);
-            }
+            Array.from(contentNode.getElementsByTagName('script'))
+                .filter(isExecutableScript)
+                .forEach(script => script.remove());
             const templates = contentNode.getElementsByTagName('template');
             for (let i = 0; i < templates.length; i++) {
                 const container = document.createElement('div');
@@ -370,7 +378,7 @@ $alpineVersion = $viewModels->require(ThemeLibrariesConfig::class)->getVersionId
              */
 ?>
             // Create new array from HTMLCollection to avoid mutation of collection while manipulating the DOM.
-            const scripts = Array.from(contentNode.getElementsByTagName('script'));
+            const scripts = Array.from(contentNode.getElementsByTagName('script')).filter(isExecutableScript);
 
             // Iterate over all script tags to duplicate+inject each into the head
             for (const original of scripts) {

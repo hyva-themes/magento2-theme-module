@@ -34,6 +34,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     For more information, please refer to [issue #547](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/547).
 
+-   **`hyva.replaceDomElement()` keeps data blocks like `application/json` in place**  
+    Only executable scripts are moved to the head, or removed when inline scripts are not allowed. Before, inline JSON
+    configs were detached from their component, which broke the swatches in the cart cross-sell after a quantity update.
+
+    For more information, please refer to [issue #549](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/549).
+
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
 
 ### Fixed
