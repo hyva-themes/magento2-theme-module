@@ -12,26 +12,26 @@ namespace Hyva\Theme\Model;
 class PageBuilderDefaultClasses
 {
     /**
-     * @var string[] Classes keyed by data-content-type value
+     * @var string[] Classes keyed by the data-content-type value of the elements they are added to
      */
-    private readonly array $contentTypeClasses;
+    private readonly array $classesByContentType;
 
     /**
-     * @var string[] Classes keyed by the Page Builder button class they are added to
+     * @var string[] Classes keyed by the CSS class of the elements they are added to
      */
-    private readonly array $buttonClasses;
+    private readonly array $classesByCssClass;
 
-    public function __construct(array $contentTypeClasses = [], array $buttonClasses = [])
+    public function __construct(array $classesByContentType = [], array $classesByCssClass = [])
     {
-        $this->contentTypeClasses = array_filter($contentTypeClasses);
-        $this->buttonClasses = array_filter($buttonClasses);
+        $this->classesByContentType = array_filter($classesByContentType);
+        $this->classesByCssClass = array_filter($classesByCssClass);
     }
 
     public function addToHtml(string $html): string
     {
-        $html = $this->addClasses($html, '\bdata-content-type="(%s)"', $this->contentTypeClasses);
+        $html = $this->addClasses($html, '\bdata-content-type="(%s)"', $this->classesByContentType);
 
-        return $this->addClasses($html, '\bclass="[^"]*(?<![\w-])(%s)(?![\w-])[^"]*"', $this->buttonClasses);
+        return $this->addClasses($html, '\bclass="[^"]*(?<![\w-])(%s)(?![\w-])[^"]*"', $this->classesByCssClass);
     }
 
     private function addClasses(string $html, string $attributePattern, array $classMap): string

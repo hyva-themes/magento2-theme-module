@@ -52,7 +52,7 @@
 
     <type name="Hyva\Theme\Model\PageBuilderDefaultClasses">
         <arguments>
-            <argument name="buttonClasses" xsi:type="array">
+            <argument name="classesByCssClass" xsi:type="array">
                 <item name="pagebuilder-button-primary" xsi:type="string">btn btn-primary</item>
                 <item name="pagebuilder-button-secondary" xsi:type="string">btn btn-secondary</item>
             </argument>
