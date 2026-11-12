@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Hyva\Theme\Plugin\PageBuilder;
 
 use Hyva\Theme\Model\InjectImageDimensions;
+use Hyva\Theme\Model\PageBuilderDefaultClasses;
 use Hyva\Theme\Service\CurrentTheme;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Filter\Template as FrameworkTemplateFilter;
@@ -40,17 +41,24 @@ class OverrideTemplatePlugin
     private $injectImageDimensions;
 
     /**
+     * @var PageBuilderDefaultClasses
+     */
+    private $defaultClasses;
+
+    /**
      * @param CurrentTheme $theme
      * @param ConfigInterface $viewConfig
      */
     public function __construct(
         CurrentTheme $theme,
         MathRandom $mathRandom,
-        ?InjectImageDimensions $injectImageDimensions = null
+        ?InjectImageDimensions $injectImageDimensions = null,
+        ?PageBuilderDefaultClasses $defaultClasses = null
     ) {
         $this->theme = $theme;
         $this->mathRandom = $mathRandom;
         $this->injectImageDimensions = $injectImageDimensions ?? ObjectManager::getInstance()->get(InjectImageDimensions::class);
+        $this->defaultClasses = $defaultClasses ?? ObjectManager::getInstance()->get(PageBuilderDefaultClasses::class);
     }
 
     /**
@@ -78,6 +86,7 @@ class OverrideTemplatePlugin
 
         if ($this->theme->isHyva() && is_string($result)) {
             $result = $this->removeEagerLoadingBackgroundImageStyles($result);
+            $result = $this->defaultClasses->addToHtml($result);
             $result = $this->unmaskAlpineAttributes($result);
         }
         return $result;

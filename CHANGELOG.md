@@ -19,6 +19,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     For more information, please refer to [issue #545](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/545).
 
+-   **Default classes on Page Builder content**  
+    Page Builder primary and secondary buttons get the `btn btn-primary` and `btn btn-secondary` classes when rendered.
+    Classes can be added to any Page Builder element in `di.xml` with the `PageBuilderDefaultClasses` arguments
+    `classesByContentType`, keyed by the `data-content-type` value, and `classesByCssClass`, keyed by an existing class.
+
+    For more information, please refer to [issue #530](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/530).
+
 ### Fixed
 
 -   **`<picture>` sources built with `getPictureHtml()`/`getResponsivePictureHtml()` now carry their own width and height**  
