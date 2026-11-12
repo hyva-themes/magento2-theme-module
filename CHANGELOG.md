@@ -6,7 +6,63 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.4...main
+
+## [1.5.4] - 2026-11-12
+
+[1.5.4]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...1.5.4
+
+### Added
+
+-   **`privateContent` Alpine store with the customer section data**  
+    `Alpine.store('privateContent')` holds every customer section as its own property, e.g.
+    `$store.privateContent.cart`, updated on each `private-content-loaded` event, and `loaded` turns true after the first
+    one. Components read the store reactively without an event listener, which also works with Alpine CSP. The store is
+    part of `private-content.phtml`, and the `private-content-loaded` event remains supported.
+
+    Treat the store as read-only: writes are not persisted, and copy arrays before sorting them. `messages.messages`
+    is always empty, flash messages are only in the event data.
+
+    For more information, please refer to [issue #545](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/545).
+
+-   **Default classes on Page Builder content**  
+    Page Builder primary and secondary buttons get the `btn btn-primary` and `btn btn-secondary` classes when rendered.
+    Classes can be added to any Page Builder element in `di.xml` with the `PageBuilderDefaultClasses` arguments
+    `classesByContentType`, keyed by the `data-content-type` value, and `classesByCssClass`, keyed by an existing class.
+
+    For more information, please refer to [issue #530](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/530).
+
+### Changed
+
+-   **`<picture>` sources built with `getPictureHtml()`/`getResponsivePictureHtml()` now carry their own width and height**  
+    `MediaHtmlProvider::getPictureHtml()` had the `width`/`height` of each responsive image available but never wrote them
+    onto the matching `<source>` tag, only onto the final `<img>`. Browsers reserve layout space for a `<picture>` from the
+    selected source's own `width`/`height` when present, so without them every breakpoint reserved space based on the
+    `<img>`'s single set of attributes, which could cause a layout shift once a different breakpoint's image decoded.
+
+-   **`x-html-safe` no longer renders empty in Safari for some `data-*` attribute names**  
+    The HTML parser accepts `data-*` names such as `data-a"b`, but WebKit (Safari and every iOS browser) throws an
+    `InvalidCharacterError` when such a name is copied, so the whole `x-html-safe` value rendered empty. These names are
+    now skipped.
+
+    For more information, please refer to [issue #547](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/547).
+
+-   **`hyva.replaceDomElement()` keeps data blocks like `application/json` in place**  
+    Only executable scripts are moved to the head, or removed when inline scripts are not allowed. Before, inline JSON
+    configs were detached from their component, which broke the swatches in the cart cross-sell after a quantity update.
+
+    For more information, please refer to [issue #549](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/549).
+
+-   **Luma checkout data removed on every section reload without `hyva-themes/magento2-graphql-tokens`**  
+    The `checkout-data` was removed whenever the `cart` section had no `cartId`, which is only added by
+    `hyva-themes/magento2-graphql-tokens`. It is now removed when the cart is empty, which is still the case after a
+    logout or an expired session.
+
+    For more information, please refer to [issue #544](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/544).
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.5.3] - 2026-10-12
 

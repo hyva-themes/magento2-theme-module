@@ -169,7 +169,15 @@ $mapXHtmlSafeToXHtml = $viewModels->require(HtmlSafeConfig::class)
                     if (node.hasAttribute(name))
                         el.setAttribute(name, node.getAttribute(name));
                 }
-                Object.assign(el.dataset, node.dataset);
+                for (const attr of node.attributes) {
+                    if (!attr.name.startsWith("data-"))
+                        continue;
+                    // Engines with the strict XML name check (WebKit) throw on names the parser accepts.
+                    try {
+                        el.setAttribute(attr.name, attr.value);
+                    } catch {
+                    }
+                }
                 const tagAttrs = TAG_ATTRS[tag];
                 if (tagAttrs) {
                     for (const [name, validators] of Object.entries(tagAttrs)) {

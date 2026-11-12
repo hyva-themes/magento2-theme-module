@@ -172,8 +172,8 @@ $cookieSettings = $viewModels->require(Cookie::class);
                                 // merge new data preserving non-invalidated sections
                                 const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}') || {};
 
-                                <?php /** Ensure no checkout data remains after logout (from Luma checkout) */ ?>
-                                if ((! data.cart || ! data.cart.cartId) && oldSectionData['checkout-data']) {
+                                <?php /** Ensure no checkout data remains after logout or an expired session (from Luma checkout) */ ?>
+                                if ((! data.cart || ! data.cart.summary_count) && oldSectionData['checkout-data']) {
                                     delete oldSectionData['checkout-data'];
                                 }
                                 const newSectionData = Object.assign(oldSectionData, data);
@@ -216,7 +216,46 @@ $cookieSettings = $viewModels->require(Cookie::class);
                     console.warn("Couldn't fetch privateContent", error);
                 });
         }
+
+        <?php
+        /**
+         * Keep the privateContent store in sync, see the store registration below.
+         * Scripts in the page body register their listeners before this one, so inside a
+         * private-content-loaded listener use the event data, the store may not be updated yet.
+         */
+        ?>
+        window.addEventListener('private-content-loaded', (event) => {
+            <?php /** Alpine v2 has no stores */ ?>
+            const store = window.Alpine && typeof Alpine.store === 'function' && Alpine.store('privateContent');
+            if (!store) return;
+
+            <?php /** Held by reference, so the store matches the persisted data, including the cleared messages */ ?>
+            const data = event.detail.data || {};
+            Object.keys(store).forEach(key => key === 'loaded' || key in data || delete store[key]);
+            Object.assign(store, data, { loaded: true });
+        });
     })();
+
+    <?php
+    /**
+     * Alpine store with one property per customer section, e.g. $store.privateContent.cart
+     * Components can read it reactively instead of listening to the private-content-loaded event,
+     * which also works with Alpine CSP. The event stays supported.
+     *
+     * `loaded` is false until the first private-content-loaded event, and can't be used as a section name.
+     * A section can still be undefined after that, e.g. a first visit without default section data.
+     * The first section data load waits for alpine:initialized, so the store exists by then.
+     *
+     * Treat the store as read-only: writes are never persisted and the next section reload replaces them.
+     * Copy arrays before sorting them, e.g. [...$store.privateContent.cart.items].sort().
+     * messages.messages is always empty, flash messages are only in the private-content-loaded event data.
+     */
+    ?>
+    window.addEventListener('alpine:init', () => {
+        Alpine.store('privateContent', {
+            loaded: false
+        });
+    }, { once: true });
     //# sourceURL=hyva-private-content.js
 </script>
 <?php $hyvaCsp->registerInlineScript() ?>

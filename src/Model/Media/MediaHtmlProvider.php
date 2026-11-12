@@ -62,6 +62,16 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
                     $sourceAttributes['sizes'] = $image['sizes'];
                 }
 
+                // Lets the browser reserve this source's own box before any image decodes,
+                // instead of falling back to the <img>'s attributes for every breakpoint.
+                if (isset($image['width'])) {
+                    $sourceAttributes['width'] = (string) $image['width'];
+                }
+
+                if (isset($image['height'])) {
+                    $sourceAttributes['height'] = (string) $image['height'];
+                }
+
                 $sourceTag = $this->buildSourceTag($sourceAttributes);
 
                 if ($image['fallback'] === true) {
@@ -79,6 +89,14 @@ class MediaHtmlProvider implements MediaHtmlProviderInterface
 
             if (isset($fallbackImage['sizes'])) {
                 $fallbackSourceAttributes['sizes'] = $fallbackImage['sizes'];
+            }
+
+            if (isset($fallbackImage['width'])) {
+                $fallbackSourceAttributes['width'] = (string) $fallbackImage['width'];
+            }
+
+            if (isset($fallbackImage['height'])) {
+                $fallbackSourceAttributes['height'] = (string) $fallbackImage['height'];
             }
 
             $fallbackSourceTags[] = $this->buildSourceTag($fallbackSourceAttributes);
