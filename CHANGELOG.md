@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.4...main
+
+## [1.5.4] - 2026-11-12
+
+[1.5.4]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...1.5.4
+
 ### Added
 
 -   **`privateContent` Alpine store with the customer section data**  
@@ -19,7 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     For more information, please refer to [issue #545](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/545).
 
-### Fixed
+### Changed
 
 -   **`<picture>` sources built with `getPictureHtml()`/`getResponsivePictureHtml()` now carry their own width and height**  
     `MediaHtmlProvider::getPictureHtml()` had the `width`/`height` of each responsive image available but never wrote them
@@ -40,16 +46,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
     For more information, please refer to [issue #549](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/549).
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...main
-
-### Fixed
-
 -   **Luma checkout data removed on every section reload without `hyva-themes/magento2-graphql-tokens`**  
     The `checkout-data` was removed whenever the `cart` section had no `cartId`, which is only added by
     `hyva-themes/magento2-graphql-tokens`. It is now removed when the cart is empty, which is still the case after a
     logout or an expired session.
 
     For more information, please refer to [issue #544](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/issues/544).
+
+### Removed
+
+-   Nothing Removed
 
 ## [1.5.3] - 2026-10-12
 
