@@ -50,6 +50,15 @@
         <plugin name="convertBackgroundImages_override" type="Hyva\Theme\Plugin\PageBuilder\OverrideTemplatePlugin"/>
     </type>
 
+    <type name="Hyva\Theme\Model\PageBuilderDefaultClasses">
+        <arguments>
+            <argument name="buttonClasses" xsi:type="array">
+                <item name="pagebuilder-button-primary" xsi:type="string">btn btn-primary</item>
+                <item name="pagebuilder-button-secondary" xsi:type="string">btn btn-secondary</item>
+            </argument>
+        </arguments>
+    </type>
+
     <!-- Add workaround for baseOldPrice missing in Magento versiony < 2.4.2 -->
     <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
         <plugin name="polyfill_base_old_price" type="Hyva\Theme\Plugin\BaseOldPricePolyfill\AddBaseOldPriceToConfigurableProductOptions"/>
