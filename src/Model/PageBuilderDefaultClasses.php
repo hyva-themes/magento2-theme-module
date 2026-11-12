@@ -14,12 +14,12 @@ class PageBuilderDefaultClasses
     /**
      * @var string[] Classes keyed by data-content-type value
      */
-    private array $contentTypeClasses;
+    private readonly array $contentTypeClasses;
 
     /**
      * @var string[] Classes keyed by the Page Builder button class they are added to
      */
-    private array $buttonClasses;
+    private readonly array $buttonClasses;
 
     public function __construct(array $contentTypeClasses = [], array $buttonClasses = [])
     {
@@ -29,41 +29,38 @@ class PageBuilderDefaultClasses
 
     public function addToHtml(string $html): string
     {
-        if ($this->contentTypeClasses) {
-            $html = preg_replace_callback(
-                '#<([a-zA-Z][a-zA-Z0-9]*)(\s[^>]*\bdata-content-type="(' . $this->toPattern($this->contentTypeClasses) . ')"[^>]*)>#',
-                fn(array $m): string => '<' . $m[1] . $this->mergeClasses($m[2], $this->contentTypeClasses[$m[3]]) . '>',
-                $html
-            ) ?? $html;
-        }
+        $html = $this->addClasses($html, '\bdata-content-type="(%s)"', $this->contentTypeClasses);
 
-        if ($this->buttonClasses) {
-            $html = preg_replace_callback(
-                '#<([a-zA-Z][a-zA-Z0-9]*)(\s[^>]*\bclass="[^"]*(?<![\w-])(' . $this->toPattern($this->buttonClasses) . ')(?![\w-])[^"]*"[^>]*)>#',
-                fn(array $m): string => '<' . $m[1] . $this->mergeClasses($m[2], $this->buttonClasses[$m[3]]) . '>',
-                $html
-            ) ?? $html;
-        }
-
-        return $html;
+        return $this->addClasses($html, '\bclass="[^"]*(?<![\w-])(%s)(?![\w-])[^"]*"', $this->buttonClasses);
     }
 
-    private function toPattern(array $classMap): string
+    private function addClasses(string $html, string $attributePattern, array $classMap): string
     {
-        return implode('|', array_map(fn(string $key): string => preg_quote($key, '#'), array_keys($classMap)));
+        if (! $classMap) {
+            return $html;
+        }
+
+        $keys = implode('|', array_map(fn(string $key): string => preg_quote($key, '#'), array_keys($classMap)));
+
+        return preg_replace_callback(
+            '#<([a-zA-Z][a-zA-Z0-9]*)(\s[^>]*' . sprintf($attributePattern, $keys) . '[^>]*)>#',
+            fn(array $m): string => '<' . $m[1] . $this->mergeClasses($m[2], $classMap[$m[3]]) . '>',
+            $html
+        ) ?? $html;
     }
 
     private function mergeClasses(string $attributes, string $classes): string
     {
-        if (! preg_match('#\sclass="([^"]*)"#', $attributes, $m)) {
-            return ' class="' . $classes . '"' . $attributes;
-        }
+        $merged = preg_replace_callback(
+            '#\sclass="([^"]*)"#',
+            fn(array $m): string => ' class="' . implode(' ', array_unique(
+                preg_split('#\s+#', $m[1] . ' ' . $classes, -1, PREG_SPLIT_NO_EMPTY)
+            )) . '"',
+            $attributes,
+            1,
+            $count
+        );
 
-        $merged = array_unique(array_merge(
-            preg_split('#\s+#', trim($m[1]), -1, PREG_SPLIT_NO_EMPTY),
-            preg_split('#\s+#', trim($classes), -1, PREG_SPLIT_NO_EMPTY)
-        ));
-
-        return str_replace($m[0], ' class="' . implode(' ', $merged) . '"', $attributes);
+        return $count ? $merged : ' class="' . $classes . '"' . $attributes;
     }
 }
