@@ -50,7 +50,7 @@ class ModalBuilder implements ModalBuilderInterface, ModalInterface
         'position'            => 'center',
         'dialog-name'         => 'dialog',
         'closeby'             => 'any',
-        'dialog-classes'      => [],
+        'dialog-classes'      => ['p-6', 'rounded-2xl'],
         'aria-labelledby'     => null,
         'aria-label'          => null,
         'content-template'    => null,
