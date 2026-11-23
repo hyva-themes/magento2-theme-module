@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.4...main
 
+### Changed
+
+-   **Fixed CSP img-src report when opening a gallery video in the lightbox**  
+    For more information, please refer to [issue #551](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/551).
+
 ## [1.5.4] - 2026-11-12
 
 [1.5.4]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...1.5.4
