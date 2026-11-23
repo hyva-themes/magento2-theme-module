@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Fixed CSP img-src report when opening a gallery video in the lightbox**  
+    For more information, please refer to [issue #551](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/551).
+
 -   **Fixed unstyled modal dialog on 1.3 themes**  
     The dialog now has default `p-6 rounded-2xl` classes, matching the dialog padding and rounding of 1.4+ themes.
     Use `withDialogClasses()` or `removeDialogClass()` to change them.
