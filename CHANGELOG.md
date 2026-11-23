@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 [Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.4...main
 
+### Changed
+
+-   **Updated Lucide icons from v0.563 to v1.76**  
+    The 19 icons Lucide 1.0 removed, mostly brand icons like `youtube` and `facebook`, are kept from v0.563 for now.
+
+    For more information, please refer to [merge request #734](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/734).
+
 ## [1.5.4] - 2026-11-12
 
 [1.5.4]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.3...1.5.4
