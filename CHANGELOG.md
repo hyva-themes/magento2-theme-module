@@ -10,6 +10,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+-   **Updated Lucide icons from v0.563 to v1.76**  
+    Lucide 1.0 removed 19 icons: the brand icons `chrome`, `chromium`, `codepen`, `codesandbox`, `dribbble`,
+    `facebook`, `figma`, `framer`, `github`, `gitlab`, `instagram`, `linkedin`, `pocket`, `slack`, `trello`, `twitch`,
+    `twitter` and `youtube`, and `rail-symbol`. Their v0.563 versions are kept, so methods like `youtubeHtml()` still
+    work, but they no longer get updates. They will be removed in the 1.6 release, so replace them with your own SVGs
+    before then.
+
+    For more information, please refer to [merge request #734](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/734).
+
 -   **Fixed CSP img-src report when opening a gallery video in the lightbox**  
     For more information, please refer to [issue #551](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/551).
 
