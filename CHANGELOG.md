@@ -6,7 +6,31 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.4...main
+[Unreleased]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.5...main
+
+## [1.5.5] - 2026-11-25
+
+[1.5.5]: https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/compare/1.5.4...1.5.5
+
+### Changed
+
+-   **Updated Lucide icons from v0.563 to v1.76**  
+    Lucide 1.0 removed 19 icons: the brand icons `chrome`, `chromium`, `codepen`, `codesandbox`, `dribbble`,
+    `facebook`, `figma`, `framer`, `github`, `gitlab`, `instagram`, `linkedin`, `pocket`, `slack`, `trello`, `twitch`,
+    `twitter` and `youtube`, and `rail-symbol`. Their v0.563 versions are kept, so methods like `youtubeHtml()` still
+    work, but they no longer get updates. They will be removed in the 1.6 release, so replace them with your own SVGs
+    before then.
+
+    For more information, please refer to [merge request #734](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/merge_requests/734).
+
+-   **Fixed CSP img-src report when opening a gallery video in the lightbox**  
+    For more information, please refer to [issue #551](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/551).
+
+-   **Fixed unstyled modal dialog on 1.3 themes**  
+    The dialog now has default `p-6 rounded-2xl` classes, matching the dialog padding and rounding of 1.4+ themes.
+    Use `withDialogClasses()` or `removeDialogClass()` to change them.
+
+    For more information, please refer to [issue #550](https://gitlab.hyva.io/hyva-themes/magento2-theme-module/-/work_items/550).
 
 ## [1.5.4] - 2026-11-12
 
